@@ -9,7 +9,7 @@
 <div *ngIf="!currNode.options.plugin" class="data-format-selector-wrapper">
     <div>
         <odp-search-box open="true" (enteredText)="searchNode($event)" (reset)="clearSearch()" tooltipDir="left"
-            (keydown.delete)="$event.stopPropagation();">
+            (keydown.delete)="$event.stopPropagation();" [edit]="{status:true}">
         </odp-search-box>
     </div>
     <div *ngIf="pluginList && pluginList.length>0" class="list-group my-3">

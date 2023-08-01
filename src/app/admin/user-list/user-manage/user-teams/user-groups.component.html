@@ -20,7 +20,7 @@
     </div>
     <div class="w-75 bg-gray service-roles px-3 py-5 d-flex flex-column">
         <div class="d-flex justify-content-center mb-4">
-            <odp-search-box (enteredText)="queryStr($event)" (reset)="render()">
+            <odp-search-box (enteredText)="queryStr($event)" (reset)="render()" [edit]="{status:true}">
             </odp-search-box>
         </div>
         <div *ngIf="showLazyLoader">

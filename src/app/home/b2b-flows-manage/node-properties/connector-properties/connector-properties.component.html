@@ -33,7 +33,7 @@
     <!-- <label class="text-dark font-14 fw-400">Connectors</label> -->
     <div>
         <odp-search-box open="true" (enteredText)="searchConnector($event)" (reset)="clearSearch()"
-            (keydown.delete)="$event.stopPropagation();"></odp-search-box>
+            (keydown.delete)="$event.stopPropagation();" [edit]="{status:true}"></odp-search-box>
     </div>
     <div class="list-group my-3">
         <div class="list-group-item list-group-item-action d-flex align-items-center justify-content-between hover"

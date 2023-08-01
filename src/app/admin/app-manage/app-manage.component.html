@@ -269,7 +269,7 @@
     </div>
     <ng-container class="position-absolute">
         <div class="d-flex mb-4 position-relative justify-content-center">
-            <odp-search-box (enteredText)="filterUserText = $event" (reset)="filterUserText = null"></odp-search-box>
+            <odp-search-box (enteredText)="filterUserText = $event" (reset)="filterUserText = null" [edit]="{status:true}"></odp-search-box>
         </div>
     </ng-container>
     <div class="d-flex flex-column w-100">

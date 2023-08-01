@@ -225,7 +225,7 @@
                         <span class="fa fa-exchange-alt mr-2 text-accent"></span>
                         <span class="text font-weight-bold">Integration Flows</span>
                     </div>
-                    <odp-search-box (reset)="flowSearchTerm=null" (enteredText)="flowSearchTerm=$event;">
+                    <odp-search-box (reset)="flowSearchTerm=null" (enteredText)="flowSearchTerm=$event;" [edit]="{status:true}">
                     </odp-search-box>
                     <span>&nbsp;</span>
                 </div>
