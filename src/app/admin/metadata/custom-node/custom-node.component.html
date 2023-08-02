@@ -9,7 +9,7 @@
 <div class="node-page d-flex w-100 page-padding">
     <div class="node-list-wrapper d-flex flex-column pb-4 mr-3">
         <div class="d-flex align-items-center justify-content-between mb-3">
-            <odp-search-box (enteredText)="searchTerm=$event" (reset)="searchTerm=null"></odp-search-box>
+            <odp-search-box (enteredText)="searchTerm=$event" (reset)="searchTerm=null" [edit]="{status:true}"></odp-search-box>
             <button id="createNode" type="button" class="add-new btn btn-primary ml-3 d-flex align-items-center"
                 (click)="newNode()" [disabled]="!hasWritePermission('NODE')">
                 <span class="dsi dsi-plus mr-2"></span>

@@ -207,7 +207,7 @@
                 </label>
             </div>
             <div *ngIf="form.get('type').value === 'PLUGIN'" class="form-group">
-                <odp-search-box open="true" (enteredText)="searchPlugin($event)"></odp-search-box>
+                <odp-search-box open="true" (enteredText)="searchPlugin($event)" [edit]="{status:true}"></odp-search-box>
                 <div class="plugins-list-wrapper border rounded mt-3">
                     <div class="list-group list-group-flush">
                         <div class="list-group-item" *ngIf="!staterPluginList || staterPluginList.length==0">

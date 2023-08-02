@@ -3,8 +3,8 @@ set -e
 
 if [ -f $WORKSPACE/../TOGGLE ]; then
     echo "****************************************************"
-    echo "data.stack:sm :: Toggle mode is on, terminating build"
-    echo "data.stack:sm :: BUILD CANCLED"
+    echo "datanimbus.io.ui-author :: Toggle mode is on, terminating build"
+    echo "datanimbus.io.ui-author :: BUILD CANCLED"
     echo "****************************************************"
     exit 0
 fi
@@ -19,8 +19,8 @@ fi
 
 if [ ! $REL ]; then
     echo "****************************************************"
-    echo "data.stack:sm :: Please Create file DATA_STACK_RELEASE with the releaese at $WORKSPACE or provide it as 1st argument of this script."
-    echo "data.stack:sm :: BUILD FAILED"
+    echo "datanimbus.io.ui-author :: Please Create file DATA_STACK_RELEASE with the releaese at $WORKSPACE or provide it as 1st argument of this script."
+    echo "datanimbus.io.ui-author :: BUILD FAILED"
     echo "****************************************************"
     exit 0
 fi
@@ -32,12 +32,12 @@ if [ $2 ]; then
 fi
 
 echo "****************************************************"
-echo "ds-ui-author :: Building Image :: "$TAG
+echo "datanimbus.io.ui-author :: Building Image :: "$TAG
 echo "****************************************************"
 cd $WORKSPACE
 
 # ng build --prod
 
-docker build -t data.stack.ui-author:$TAG .
+docker build -t datanimbus.io.ui-author:$TAG .
 
 echo $TAG > $WORKSPACE/../LATEST_AUTHOR
