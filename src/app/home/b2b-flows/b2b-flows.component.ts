@@ -141,10 +141,8 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
     this.subscriptions['flow.status'] = this.commonService.flow.status.subscribe(data => {
       const index = this.flowList.findIndex(e => e._id === data[0]._id);
       if (index !== -1) {
-        this.flowList[index].status = data[0].status;
-        const name = this.flowList[index].name;
-        const msg = name + ' is now ' + data[0].status;
-       data[0].status === 'Active' ? this.ts.success(msg) : this.ts.error(msg)
+        // this.flowList[index].status = data[0].status;
+        this.getFlow(index)
          
       }
     });
@@ -306,6 +304,23 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
       this.commonService.errorToast(err);
     });
   }
+
+  getFlow(index) {
+    return this.commonService.get('partnerManager', `/${this.commonService.app._id}/flow`, {
+      filter: {
+        _id: this.flowList[index]._id
+      }
+    }).subscribe((res: any) => {
+    res.forEach(item => {
+      item.url = 'https://' + this.commonService.userDetails.fqdn + `/b2b/pipes/${this.app}` + item.inputNode.options.path;
+    });
+    this.flowList[index] = res[0];
+
+    const name = this.flowList[index].name;
+    const msg = name + ' is now ' + res[0].status;
+   res[0].status === 'Active' ? this.ts.success(msg) : this.ts.error(msg)
+  });
+}
 
   getStaterPlugins() {
     this.showLazyLoader = true;
