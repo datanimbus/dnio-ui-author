@@ -306,19 +306,15 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
   }
 
   getFlow(index) {
-    return this.commonService.get('partnerManager', `/${this.commonService.app._id}/flow`, {
-      filter: {
-        _id: this.flowList[index]._id
-      }
+    return this.commonService.get('partnerManager', `/${this.commonService.app._id}/flow/${this.flowList[index]._id}`, {
     }).subscribe((res: any) => {
-    res.forEach(item => {
-      item.url = 'https://' + this.commonService.userDetails.fqdn + `/b2b/pipes/${this.app}` + item.inputNode.options.path;
-    });
-    this.flowList[index] = res[0];
+      res.url = 'https://' + this.commonService.userDetails.fqdn + `/b2b/pipes/${this.app}` + res.inputNode.options.path;
+  
+    this.flowList[index] = res;
 
     const name = this.flowList[index].name;
-    const msg = name + ' is now ' + res[0].status;
-   res[0].status === 'Active' ? this.ts.success(msg) : this.ts.error(msg)
+    const msg = name + ' is now ' + res.status;
+   res.status === 'Active' ? this.ts.success(msg) : this.ts.error(msg)
   });
 }
 
