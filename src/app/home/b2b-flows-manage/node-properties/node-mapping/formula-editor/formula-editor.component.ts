@@ -54,7 +54,7 @@ export class FormulaEditorComponent implements OnInit {
         name: `/${this.searchTerm}/`
       };
     }
-    this.commonService.get('user', '/admin/metadata/mapper/formula', options).subscribe(res => {
+    this.commonService.get('user', `/${this.commonService.app._id}/metadata/mapper/formula`, options).subscribe(res => {
       this.availableMethods = res;
       this.availableMethods.forEach(item => {
         if (!item.params) {
