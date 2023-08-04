@@ -39,7 +39,7 @@ export class PluginSelectorComponent implements OnInit {
     if (this.isInputNode) {
       filter = { type: 'INPUT' };
     }
-    this.commonService.get('partnerManager', '/admin/node', {
+    this.commonService.get('partnerManager', `/${this.commonService.app._id}/node`, {
       sort: 'name',
       filter: filter,
       count: 5,
@@ -69,7 +69,7 @@ export class PluginSelectorComponent implements OnInit {
     };
     this.searchTerm = searchTerm;
     this.showLoader = true;
-    this.commonService.get('partnerManager', '/admin/node', options).subscribe((res) => {
+    this.commonService.get('partnerManager', `/${this.commonService.app._id}/node`, options).subscribe((res) => {
       this.showLoader = false;
       this.pluginList = res;
       this.selectDefault();

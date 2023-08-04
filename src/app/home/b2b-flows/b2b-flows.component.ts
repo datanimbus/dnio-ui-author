@@ -314,7 +314,7 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
     if (this.pluginFilter) {
       filter.name = '/' + this.pluginFilter + '/';
     }
-    this.commonService.get('partnerManager', `/Admin/node`, {
+    this.commonService.get('partnerManager', `/${this.commonService.app._id}/node`, {
       filter: filter,
       noApp: true,
       select: 'name type category'
