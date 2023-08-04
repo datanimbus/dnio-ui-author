@@ -30,8 +30,10 @@
         [currNode]="currNode"></odp-mongodb-connector>
 </ng-container>
 <div *ngIf="!selectedConnector" class="data-format-selector-wrapper">
-    <!-- <label class="text-dark font-14 fw-400">Connectors</label> -->
+    <label class="text-secondary" for="connectorSelector">Select Connector
+    </label>
     <div>
+
         <odp-search-box open="true" (enteredText)="searchConnector($event)" (reset)="clearSearch()"
             (keydown.delete)="$event.stopPropagation();" [edit]="{status:true}"></odp-search-box>
     </div>
