@@ -32,7 +32,7 @@ export class MapperFormulasComponent implements OnInit {
   }
 
   fetchAllFormulas() {
-    this.commonService.get('user', '/admin/metadata/mapper/formula/count', {noApp: true})
+    this.commonService.get('user', '/admin/metadata/mapper/formula/count', { noApp: true })
       .pipe(switchMap((ev: any) => {
         return this.commonService.get('user', '/admin/metadata/mapper/formula', { count: ev, noApp: true })
       }))
