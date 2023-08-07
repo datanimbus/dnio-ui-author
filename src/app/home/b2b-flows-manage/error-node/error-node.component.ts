@@ -118,12 +118,12 @@ export class ErrorNodeComponent implements OnInit {
     });
   }
 
-  @HostListener('document:keydown', ['$event'])
-  onDeleteKey(event: any) {
-    if (((event.metaKey || event.ctrlKey) && event.key == 'Backspace') || event.key == 'Delete') {
-      this.deletePath();
-    }
-  }
+  // @HostListener('document:keydown', ['$event'])
+  // onDeleteKey(event: any) {
+  //   if (((event.metaKey || event.ctrlKey) && event.key == 'Backspace') || event.key == 'Delete') {
+  //     this.deletePath();
+  //   }
+  // }
 
   deletePath() {
     let onSuccess = true;

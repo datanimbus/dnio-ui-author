@@ -510,23 +510,23 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   }
 
 
-  @HostListener('document:keydown', ['$event'])
-  onDeleteKey(event: any) {
-    if ((((event.metaKey || event.ctrlKey) && event.key == 'Backspace') || event.key == 'Delete') && this.selectedNode) {
-      this.nodeList.forEach((node: any) => {
-        if (this.selectedNode.prevNode && node._id == this.selectedNode.prevNode._id) {
-          let tempIndex = node.onSuccess.findIndex(e => e._id == this.selectedNode.currNode._id);
-          node.onSuccess.splice(tempIndex, 1);
-        }
-      });
-      let index = this.nodeList.findIndex(e => e._id == this.selectedNode.currNode._id);
-      if (this.flowData.inputNode._id != this.selectedNode.currNode._id) {
-        this.nodeList.splice(index, 1);
-        this.flowService.reCreatePaths.emit(null);
-        this.flowService.selectedNode.emit(null);
-      }
-    }
-  }
+  // @HostListener('document:keydown', ['$event'])
+  // onDeleteKey(event: any) {
+  //   if ((((event.metaKey || event.ctrlKey) && event.key == 'Backspace') || event.key == 'Delete') && this.selectedNode) {
+  //     this.nodeList.forEach((node: any) => {
+  //       if (this.selectedNode.prevNode && node._id == this.selectedNode.prevNode._id) {
+  //         let tempIndex = node.onSuccess.findIndex(e => e._id == this.selectedNode.currNode._id);
+  //         node.onSuccess.splice(tempIndex, 1);
+  //       }
+  //     });
+  //     let index = this.nodeList.findIndex(e => e._id == this.selectedNode.currNode._id);
+  //     if (this.flowData.inputNode._id != this.selectedNode.currNode._id) {
+  //       this.nodeList.splice(index, 1);
+  //       this.flowService.reCreatePaths.emit(null);
+  //       this.flowService.selectedNode.emit(null);
+  //     }
+  //   }
+  // }
 
   // deleteNode(event) {
   //   console.log("what is this")
