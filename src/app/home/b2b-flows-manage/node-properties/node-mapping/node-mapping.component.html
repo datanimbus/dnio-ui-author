@@ -130,7 +130,7 @@
                                     <i class="hover mx-2"
                                         [ngClass]="{'text-success':isValidFunction(def),'text-danger':!isValidFunction(def)}">f(x)</i>
                                 </a>
-                                <odp-formula-editor *ngIf="def._showFn"
+                                <odp-formula-editor *ngIf="def._showFn" [edit]="edit"
                                     class="function-wrapper position-absolute bg-white border rounded" [data]="def"
                                     (close)="def._showFn=false" [edit]="edit"></odp-formula-editor>
                                 <div class="mapped-sources d-flex ml-3 text-secondary font-12">
