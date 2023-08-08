@@ -28,6 +28,7 @@ export class FaasListingComponent implements OnInit, OnDestroy {
   searchTerm: string;
   faasList: Array<any>;
   isClone: boolean = false;
+  baseUrl: string;
   alertModal: {
     statusChange?: boolean;
     title: string;
@@ -78,6 +79,7 @@ export class FaasListingComponent implements OnInit, OnDestroy {
       active: true,
       label: 'Functions'
     }];
+    this.baseUrl = 'https://' + this.commonService.userDetails.fqdn+ '/api/a/faas/' + this.app
   }
   ngOnInit() {
     this.commonService.changeBreadcrumb(this.breadcrumbPaths)
@@ -412,6 +414,10 @@ export class FaasListingComponent implements OnInit, OnDestroy {
     })
     this.selectedLibrary = this.faasList[i];
     this.showOptionsDropdown[i] = true;
+  }
+
+  showUrl(url){
+    return '/'+ url.split('/').pop();
   }
 
   private compare(a: any, b: any) {

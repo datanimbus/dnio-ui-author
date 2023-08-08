@@ -4,6 +4,11 @@
 .faas-page {
   height: calc(100vh - 60px);
 
+  .item-url {
+    min-width: 325px;
+    max-width: 325px;
+  }
+
   .card-container {
     height: calc(100vh - 170px);
     overflow: auto;
@@ -22,10 +27,6 @@
         max-width: 245px;
       }
 
-      .item-url {
-        min-width: 325px;
-        max-width: 325px;
-      }
 
       .item-status {
         min-width: 95px;
