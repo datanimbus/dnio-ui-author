@@ -201,7 +201,7 @@ export class CustomNodeComponent implements OnInit {
         this.records[data.index]._id;
       this.showLazyLoader = true;
       this.subscriptions['deleteservice'] = this.commonService
-        .delete('partnerManager', url)
+        .delete('partnerManager', url, { noApp: true })
         .subscribe(
           (d) => {
             this.showLazyLoader = false;
