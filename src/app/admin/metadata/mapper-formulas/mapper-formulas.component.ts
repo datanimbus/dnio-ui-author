@@ -89,7 +89,7 @@ export class MapperFormulasComponent implements OnInit {
 
   triggerDeleteFormula(item: any) {
     this.createFormulaLoader = true;
-    this.commonService.delete('user', `/admin/metadata/mapper/formula/${item._id}`).subscribe(res => {
+    this.commonService.delete('user', `/admin/metadata/mapper/formula/${item._id}`, { noApp: true }).subscribe(res => {
       this.fetchAllFormulas();
       this.createFormulaLoader = false;
       this.ts.success('Formula Deleted.');
