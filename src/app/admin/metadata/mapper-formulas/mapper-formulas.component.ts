@@ -38,6 +38,7 @@ export class MapperFormulasComponent implements OnInit {
       }))
       .subscribe(res => {
         this.formulaList = res;
+        this.selectedFormula = this.formulaList[0];
       }, err => {
         this.commonService.errorToast(err);
       });
