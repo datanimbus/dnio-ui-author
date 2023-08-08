@@ -48,6 +48,7 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
   cloneData: any;
   staterPluginList: Array<any>;
   pluginFilter: string;
+  baseUrl: string;
   constructor(public commonService: CommonService,
     private appService: AppService,
     private router: Router,
@@ -86,6 +87,7 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
       this.getFlows();
     });
     this.staterPluginList = [];
+    this.baseUrl = 'https://' + this.commonService.userDetails.fqdn + '/b2b/pipes/' + this.app
   }
   ngOnInit() {
     this.getFlows();
@@ -663,6 +665,10 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
     } else {
       return 0;
     }
+  }
+
+  showUrl(url){
+    return '/'+ url.split('/').pop();
   }
 
   get invalidForm() {
