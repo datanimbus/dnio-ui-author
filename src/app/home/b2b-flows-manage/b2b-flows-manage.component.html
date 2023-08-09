@@ -85,10 +85,10 @@
         <div *ngIf="activeTab==1" class="flow-designer d-flex">
             <div class="row w-100">
                 <div class="border-right col">
-                    <odp-flow-contants [data]="flowData" [nodeList]="nodeList"></odp-flow-contants>
+                    <odp-flow-contants [data]="flowData" [nodeList]="nodeList" [edit]="edit"></odp-flow-contants>
                 </div>
                 <div class="col">
-                    <odp-flow-volume-mounts [data]="flowData" [nodeList]="nodeList"></odp-flow-volume-mounts>
+                    <odp-flow-volume-mounts [data]="flowData" [nodeList]="nodeList" [edit]="edit"></odp-flow-volume-mounts>
                 </div>
             </div>
         </div>

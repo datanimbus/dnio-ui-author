@@ -13,6 +13,7 @@ export class FlowVolumeMountsComponent implements OnInit {
 
   @Input() data: any;
   @Input() nodeList: any;
+  @Input() edit: any;
 
   toggleVariableForm: boolean;
   form: any;
@@ -32,6 +33,10 @@ export class FlowVolumeMountsComponent implements OnInit {
         value: 'PVC'
       }
     ]
+
+    this.edit={
+      status: false
+    }
   }
 
   ngOnInit(): void {
@@ -112,5 +117,18 @@ export class FlowVolumeMountsComponent implements OnInit {
       }
     }
     return false;
+  }
+
+  get requiredNameError(){
+    if(this.form && this.form.name){
+      return false
+    }
+    return true
+  }
+  get requiredHostError(){
+    if(this.form && this.form.hostPath){
+      return false
+    }
+    return true
   }
 }
