@@ -5,11 +5,13 @@ import { switchMap } from 'rxjs/operators';
 import { AppService } from 'src/app/utils/services/app.service';
 import { CommonService } from 'src/app/utils/services/common.service';
 import { ApiKeysService } from '../api-keys.service';
+import { CommonFilterPipe } from 'src/app/utils/pipes/common-filter/common-filter.pipe';
 
 @Component({
   selector: 'odp-api-keys-list',
   templateUrl: './api-keys-list.component.html',
-  styleUrls: ['./api-keys-list.component.scss']
+  styleUrls: ['./api-keys-list.component.scss'],
+  providers: [CommonFilterPipe],
 })
 export class ApiKeysListComponent implements OnInit {
 
@@ -19,15 +21,19 @@ export class ApiKeysListComponent implements OnInit {
   keyList: Array<any>;
   selectedKey: any;
   searchTerm: string;
+  originalKeysList: any;
   openDeleteModal: EventEmitter<any>;
   subscriptions: any;
   showKeyDetails: boolean;
   copied: boolean;
-  constructor(private fb: UntypedFormBuilder,
+  constructor(
+    private fb: UntypedFormBuilder,
     private commonService: CommonService,
     private appService: AppService,
     private apiKeyService: ApiKeysService,
-    private ts: ToastrService) {
+    private ts: ToastrService,
+    private CommonFilterPipe: CommonFilterPipe
+    ) {
     this.keyForm = this.fb.group({
       name: [null, [Validators.required]],
       expiryAfter: [365, [Validators.required]],
@@ -61,6 +67,7 @@ export class ApiKeysListComponent implements OnInit {
       })).subscribe((res) => {
         this.showLazyLoader = false;
         this.keyList = res;
+        this.originalKeysList = res;
         if (this.keyList && this.keyList.length > 0) {
           this.selectedKey = this.keyList[0];
         }
@@ -111,5 +118,28 @@ export class ApiKeysListComponent implements OnInit {
     setTimeout(() => {
       this.copied = false;
     }, 2000);
+  }
+
+  enterToSelect(event) {
+    if(event === 'reset'){
+      this.searchTerm = '';
+      this.keyList = this.originalKeysList;
+      this.showDetails(this.originalKeysList[0]);
+    } else {
+      this.searchTerm = event;
+
+      if (this.searchTerm) {
+        const matchingKeys = this.CommonFilterPipe.transform(
+          this.originalKeysList,
+          'name',
+          this.searchTerm
+        );
+        this.keyList = matchingKeys;
+
+        if (matchingKeys.length > 0) {
+          this.showDetails(matchingKeys[0]);
+        }
+      }
+    }
   }
 }
