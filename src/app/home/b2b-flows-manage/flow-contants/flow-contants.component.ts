@@ -14,6 +14,7 @@ export class FlowContantsComponent implements OnInit {
 
   @Input() data: any;
   @Input() nodeList: any;
+  @Input() edit: any;
 
   toggleVariableForm: boolean;
   form: any;
@@ -22,6 +23,9 @@ export class FlowContantsComponent implements OnInit {
     private appService: AppService,
     private flowService: B2bFlowService) {
     this.selectedIndex = -1;
+    this.edit= {
+      status: false
+    }
   }
 
   ngOnInit(): void {
@@ -84,5 +88,12 @@ export class FlowContantsComponent implements OnInit {
       }
     }
     return false;
+  }
+
+  get requiredError(){
+    if(this.form && this.form.key && this.form.dataType){
+      return false
+    }
+    return true
   }
 }

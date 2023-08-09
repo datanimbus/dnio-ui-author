@@ -10,7 +10,7 @@
             <div class="grid-cell border-right">Host Path</div>
             <div class="grid-cell border-right">Flow Path</div>
             <div class="grid-cell d-flex align-items-center justify-content-end flex-fill">
-                <span class="hover" (click)="addVolumeMount()">
+                <span class="hover" (click)="addVolumeMount()" *ngIf="edit.status">
                     <span class="dsi dsi-plus-circle text-primary"></span>
                 </span>
             </div>
@@ -23,10 +23,10 @@
                 <div class="grid-cell border-right text-truncate">{{item.hostPath}}</div>
                 <div class="grid-cell border-right text-truncate">{{item.containerPath}}</div>
                 <div class="grid-cell d-flex align-items-center justify-content-end flex-fill">
-                    <span class="hover mr-2" (click)="editVolumeMount(index)">
+                    <span class="hover mr-2" (click)="editVolumeMount(index)" *ngIf="edit.status">
                         <span class="dsi dsi-edit text-accent"></span>
                     </span>
-                    <span class="hover" (click)="deleteVolumeMount(index)">
+                    <span class="hover" (click)="deleteVolumeMount(index)" *ngIf="edit.status">
                         <span class="dsi dsi-trash text-danger"></span>
                     </span>
                 </div>
@@ -50,6 +50,7 @@
                 <input id="name" type="text" [class.is-invalid]="nameError" class="form-control" [(ngModel)]="form.name"
                     (blur)="onKeyBlur()" required>
                 <span *ngIf="nameError" class="form-text text-danger">Duplicate Name</span>
+                <span *ngIf="requiredNameError" class="form-text text-danger">Name is required</span>
             </div>
             <div class="form-group">
                 <label for="mountType">Mount Type</label>
@@ -60,6 +61,7 @@
             <div class="form-group">
                 <label for="hostPath">{{form.mountType=='HOSTPATH' ? 'Host Path' : 'Claim Name'}}</label>
                 <input id="hostPath" type="text" class="form-control" [(ngModel)]="form.hostPath" required>
+                <span *ngIf="requiredHostError" class="form-text text-danger">{{form.mountType=='HOSTPATH' ? 'Host Path' : 'Claim Name'}} is required</span>
             </div>
             <div class="form-group">
                 <label for="containerPath">Flow Path</label>
@@ -69,7 +71,7 @@
         <div class="d-flex align-items-center justify-content-end">
             <button type="button" class="btn btn-min-width btn-dark mr-3" (click)="cancel()">Cancel</button>
             <button type="button" class="btn btn-min-width btn-primary" (click)="saveData()"
-                [disabled]="nameError">Save</button>
+                [disabled]="nameError || requiredHostError || requiredNameError">Save</button>
         </div>
     </div>
 </odp-side-canvas>
