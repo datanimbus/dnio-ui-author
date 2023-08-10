@@ -19,7 +19,6 @@
     </div>
     <div class="formula-config flex-fill border rounded p-3">
         <ng-container *ngIf="!selectedFormula">
-            <p *ngIf="formulaList.length>0" class="text-muted">Please Select a Formula</p>
             <p *ngIf="formulaList.length==0" class="text-muted">Please Create a Formula</p>
         </ng-container>
         <ng-container *ngIf="selectedFormula">
