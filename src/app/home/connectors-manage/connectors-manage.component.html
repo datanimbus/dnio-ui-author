@@ -16,7 +16,7 @@
                         class="btn btn-white border mr-3" (click)="deleteConnector()">
                         <span class="dsi dsi-trash"></span>
                     </button>
-                    <button class="btn btn-outline-primary btn-min-width mr-3" (click)="testConnection()">
+                    <button class="btn btn-outline-primary btn-min-width mr-3" (click)="testConnection()" *ngIf="connector.category === 'DB'">
                         <span>Test</span>
                     </button>
                     <button class="btn btn-white border btn-min-width mr-3" routerLink="../">
