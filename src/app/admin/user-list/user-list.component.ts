@@ -595,7 +595,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         if (data) {
             const url = '/admin/user/' + data._id;
             this.showSpinner = true;
-            this.subscriptions['deleteUser'] = this.commonService.delete('user', url).subscribe(
+            this.subscriptions['deleteUser'] = this.commonService.delete('user', url, {noApp: true}).subscribe(
                 d => {
                     this.showSpinner = false;
                     this.showUserDetails = false;
