@@ -46,20 +46,20 @@
                         <div class="item-actions"></div>
                     </div>
                 </div>
-                <div class="list-group-item d-flex align-items-center justify-content-start hover"
+                <div class="list-group-item list-group-item-action d-flex align-items-center justify-content-start hover"
                     *ngFor="let item of records;let i=index" (dblclick)="selectNode(item)" (click)="selectNode(item)"
-                    [ngClass]="{'selected':selectedNode._id==item._id}">
-                    <div class="item-name fw-500 d-flex align-items-center">
-                        <span class="ml-2 pl-1 text-dark text-truncate" [ngbTooltip]="item.name"
+                    [ngClass]="{'selected text-primary':selectedNode._id==item._id}">
+                    <div class="item-name d-flex align-items-center">
+                        <span class="ml-2 pl-1 text-truncate" [ngbTooltip]="item.name"
                             placement="right">{{item.name}}</span>
                         <span class="ml-2 version sub-heading font-11 text-uppercase">(v{{(item.version||1)}})</span>
                         <span *ngIf="item.draftVersion"
                             class="ml-2 draft sub-heading font-11 text-uppercase">(Draft)</span>
                     </div>
-                    <div class="item-type fw-500 d-flex align-items-center">
+                    <div class="item-type d-flex align-items-center">
                         <span class="ml-2 pl-1 text-dark text-truncate" placement="right">{{item.type}}</span>
                     </div>
-                    <!-- <div class="item-category fw-500 d-flex align-items-center">
+                    <!-- <div class="item-category d-flex align-items-center">
                         <span class="ml-2 pl-1 text-dark text-truncate" placement="right">{{item.category}}</span>
                     </div> -->
                     <span class="dsi dsi-trash text-danger hover" (click)="deleteNode(i)"></span>
