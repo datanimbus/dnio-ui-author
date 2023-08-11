@@ -79,27 +79,26 @@ export class AppManageComponent implements OnInit, OnDestroy {
         private router: Router,
         private ts: ToastrService,
         private route: ActivatedRoute) {
-        const self = this;
-        self.activeTab = 1;
-        self.activeImageTab = 1;
-        self.appData = {};
-        self.appData.appCenterStyle = {
+        this.activeTab = 1;
+        this.activeImageTab = 1;
+        this.appData = {};
+        this.appData.appCenterStyle = {
             bannerColor: true,
             primaryColor: '44a8f1',
             theme: 'Light',
             textColor: 'FFFFFF'
         };
-        self.appData.workflowConfig = {
+        this.appData.workflowConfig = {
             user: false,
             bot: false,
             group: false
         };
-        self.appData.logo = {};
-        self.addUserModal = false;
-        self.allUsers = false;
-        self.confirmModalState = {};
-        self.confirmModalStateFlow = {};
-        self.startServiceAttributes = {
+        this.appData.logo = {};
+        this.addUserModal = false;
+        this.allUsers = false;
+        this.confirmModalState = {};
+        this.confirmModalStateFlow = {};
+        this.startServiceAttributes = {
             startCircle: 'cricleEnd',
             iconAnimate: 'iconInit',
             loadAnimate: 'unload',
@@ -113,7 +112,7 @@ export class AppManageComponent implements OnInit, OnDestroy {
             playLoader: 'loadingHide',
             stopLoader: 'loadingHide'
         };
-        self.startFlowAttributes = {
+        this.startFlowAttributes = {
             startCircle: 'cricleEnd',
             iconAnimate: 'iconInit',
             loadAnimate: 'unload',
@@ -127,56 +126,54 @@ export class AppManageComponent implements OnInit, OnDestroy {
             playLoader: 'loadingHide',
             stopLoader: 'loadingHide'
         };
-        self.openDeleteModal = new EventEmitter();
-        self.alertModal = {
+        this.openDeleteModal = new EventEmitter();
+        this.alertModal = {
             statusChange: false,
             title: '',
             message: '',
             _id: null
         };
-        self.retainDataHistory = true;
-        self.data = {};
-        self.versionConfig = {};
-        self.authType = self.commonService.userDetails.auth.authType;
+        this.retainDataHistory = true;
+        this.data = {};
+        this.versionConfig = {};
+        this.authType = this.commonService.userDetails.auth.authType;
         this.timezones = this.appService.getTimezones();
     }
 
     ngOnInit() {
-        const self = this;
         this.breadcrumbPaths.push({
             active: true,
             label: 'App Panel',
         });
         this.commonService.changeBreadcrumb(this.breadcrumbPaths)
-        self.userConfig.count = -1;
-        self.userConfig.noApp = true;
-        self.userConfig.filter = {};
-        self.userConfig.select = 'basicDetails.name username email _metadata.lastUpdated';
-        self.groupConfig.count = -1;
-        self.groupConfig.noApp = true;
-        self.groupConfig.select = 'name users';
-        self.renderer.listen('body', 'keyup', (event: KeyboardEvent) => {
+        this.userConfig.count = -1;
+        this.userConfig.noApp = true;
+        this.userConfig.filter = {};
+        this.userConfig.select = 'basicDetails.name username email _metadata.lastUpdated';
+        this.groupConfig.count = -1;
+        this.groupConfig.noApp = true;
+        this.groupConfig.select = 'name users';
+        this.renderer.listen('body', 'keyup', (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
-                self.onCancel();
+                this.onCancel();
             }
         });
-        self.infoStatus = 'hideInfo';
-        self.getApp(self.commonService.app._id);
-        self.getCalenderDataService();
-        self.confirmModalState['allservice'] = true;
-        self.confirmModalState['startAll'] = false;
-        self.confirmModalStateFlow['allFlow'] = true;
-        self.confirmModalStateFlow['startAll'] = false;
+        this.infoStatus = 'hideInfo';
+        this.getApp(this.commonService.app._id);
+        this.getCalenderDataService();
+        this.confirmModalState['allservice'] = true;
+        this.confirmModalState['startAll'] = false;
+        this.confirmModalStateFlow['allFlow'] = true;
+        this.confirmModalStateFlow['startAll'] = false;
 
-        self.afterStatus = 'beforeStart';
-        self.proccessing = false;
+        this.afterStatus = 'beforeStart';
+        this.proccessing = false;
     }
     onCancel() {
-        const self = this;
-        if (self.addUserModal) {
-            self.addUserModal = false;
-            self.allUsers = false;
-            self.selectedUsersForAddition = [];
+        if (this.addUserModal) {
+            this.addUserModal = false;
+            this.allUsers = false;
+            this.selectedUsersForAddition = [];
         }
     }
 
@@ -185,62 +182,59 @@ export class AppManageComponent implements OnInit, OnDestroy {
     }
 
     getApp(id: string) {
-        const self = this;
-        self.showLazyLoader = true;
-        self.commonService.get('user', '/data/app/' + id, { noApp: true }).subscribe(res => {
-            self.showLazyLoader = false;
-            self.tempList = res.users;
-            self.appData = Object.assign(self.appData, res);
-            self.oldData = self.appService.cloneObject(self.appData);
-            self.getUserDetail();
-            // self.getIdentityDetails();
-            self.configureVersionSettings();
+        this.showLazyLoader = true;
+        this.commonService.get('user', '/data/app/' + id, { noApp: true }).subscribe(res => {
+            this.showLazyLoader = false;
+            this.tempList = res.users;
+            this.appData = Object.assign(this.appData, res);
+            this.oldData = this.appService.cloneObject(this.appData);
+            this.getUserDetail();
+            // this.getIdentityDetails();
+            this.configureVersionSettings();
         }, err => {
-            self.showLazyLoader = false;
+            this.showLazyLoader = false;
         });
     }
 
     configureVersionSettings() {
-        const self = this;
-        if (!self.appData.serviceVersionValidity) {
-            self.appData.serviceVersionValidity = {
+        if (!this.appData.serviceVersionValidity) {
+            this.appData.serviceVersionValidity = {
                 validityType: 'count',
                 validityValue: -1
             };
         }
-        if (self.appData.serviceVersionValidity.validityValue === '0' || self.appData.serviceVersionValidity.validityValue === 0) {
-            self.retainDataHistory = false;
+        if (this.appData.serviceVersionValidity.validityValue === '0' || this.appData.serviceVersionValidity.validityValue === 0) {
+            this.retainDataHistory = false;
         }
-        self.versionConfig.type = self.appData.serviceVersionValidity.validityType;
-        const validityValue = self.appData.serviceVersionValidity.validityValue.toString();
+        this.versionConfig.type = this.appData.serviceVersionValidity.validityType;
+        const validityValue = this.appData.serviceVersionValidity.validityValue.toString();
         if (+validityValue.split(' ')[0] > 0) {
-            const defaultIndex = self.defaultVersionValues.findIndex(e => {
+            const defaultIndex = this.defaultVersionValues.findIndex(e => {
                 if (e === validityValue) {
                     return e;
                 }
             });
             if (!(defaultIndex > -1)) {
-                self.versionConfig.value = 'custom';
-                self.versionConfig.customValue = validityValue.split(' ')[0];
-                self.versionConfig.customValueSuffix = validityValue.split(' ')[1];
-                self.versionConfig.isCustomValue = true;
+                this.versionConfig.value = 'custom';
+                this.versionConfig.customValue = validityValue.split(' ')[0];
+                this.versionConfig.customValueSuffix = validityValue.split(' ')[1];
+                this.versionConfig.isCustomValue = true;
             } else {
-                self.versionConfig.value = validityValue;
+                this.versionConfig.value = validityValue;
             }
         } else {
-            self.versionConfig.value = validityValue;
+            this.versionConfig.value = validityValue;
         }
     }
 
     download(type?: string) {
-        const self = this;
         const ele: HTMLAnchorElement = document.createElement('a');
         ele.target = '_blank';
         let queryParams;
         if (type !== 'csr') {
-            queryParams = `identity/${self.commonService.app._id}/fetch/download`;
+            queryParams = `identity/${this.commonService.app._id}/fetch/download`;
         } else {
-            queryParams = `identity/${self.commonService.app._id}/csr`;
+            queryParams = `identity/${this.commonService.app._id}/csr`;
         }
         if (environment.production) {
             ele.href = `${environment.url.sec}/${queryParams}`;
@@ -251,22 +245,20 @@ export class AppManageComponent implements OnInit, OnDestroy {
         ele.remove();
     }
     getUserDetail() {
-        const self = this;
-        self.subscriptions['userDetails'] = self.commonService.get('user', `/data/app/${self.appData._id}`, { noApp: true, count: -1 })
+        this.subscriptions['userDetails'] = this.commonService.get('user', `/data/app/${this.appData._id}`, { noApp: true, count: -1 })
             .subscribe(d => {
                 if (d.length > 0) {
-                    self.userList = d;
+                    this.userList = d;
                 }
             }, err => {
-                self.commonService.errorToast(err, 'Unable to fetch users, please try again later');
+                this.commonService.errorToast(err, 'Unable to fetch users, please try again later');
             });
     }
 
     otherAppUsers() {
-        const self = this;
-        self.addUserModal = true;
+        this.addUserModal = true;
         const existingUserIds = [];
-        self.userList.forEach(e => existingUserIds.push(e._id));
+        this.userList.forEach(e => existingUserIds.push(e._id));
         const config = {
             count: -1,
             noApp: true,
@@ -274,130 +266,121 @@ export class AppManageComponent implements OnInit, OnDestroy {
                 _id: { $nin: existingUserIds }
             }
         };
-        self.subscriptions['userlist'] = self.commonService.get('user', `/${this.appData._id}/user`, config).subscribe((d: Array<UserDetails>) => {
+        this.subscriptions['userlist'] = this.commonService.get('user', `/${this.appData._id}/user`, config).subscribe((d: Array<UserDetails>) => {
             if (d.length > 0) {
                 d.forEach(u => {
                     u.checked = false;
                 });
-                self.appUsers = d;
+                this.appUsers = d;
             }
         }, err => {
-            self.commonService.errorToast(err, 'Unable to fetch users, please try again later');
+            this.commonService.errorToast(err, 'Unable to fetch users, please try again later');
         });
     }
 
     toggleUserSelection(user) {
-        const self = this;
         if (!user.checked) {
-            self.selectUsr(user);
+            this.selectUsr(user);
         } else {
-            self.deSelectUsr(user);
+            this.deSelectUsr(user);
         }
     }
 
     selectUsr(user) {
-        const self = this;
         user.checked = !user.checked;
-        self.allUsers = self.appUsers.every(e => e.checked);
-        const userIndex = self.selectedUsersForAddition.findIndex(e => e === user._id);
+        this.allUsers = this.appUsers.every(e => e.checked);
+        const userIndex = this.selectedUsersForAddition.findIndex(e => e === user._id);
         if (userIndex >= 0) {
             return;
         } else {
-            self.selectedUsersForAddition.push(user._id);
+            this.selectedUsersForAddition.push(user._id);
         }
     }
 
     deSelectUsr(user) {
-        const self = this;
-        const idx = self.selectedUsersForAddition.findIndex(e => e === user._id);
+        const idx = this.selectedUsersForAddition.findIndex(e => e === user._id);
         if (idx >= 0) {
-            self.selectedUsersForAddition.splice(idx, 1);
+            this.selectedUsersForAddition.splice(idx, 1);
         }
         user.checked = !user.checked;
-        const i = self.appUsers.findIndex(e => e.checked === false);
+        const i = this.appUsers.findIndex(e => e.checked === false);
         if (i > 0) {
-            self.allUsers = false;
+            this.allUsers = false;
         }
     }
 
     selectAllUsrs() {
-        const self = this;
-        if (self.allUsers) {
-            self.appUsers.forEach(e => e['checked'] = true);
-            self.selectedUsersForAddition = [];
-            self.appUsers.forEach(e => self.selectedUsersForAddition.push(e._id));
+        if (this.allUsers) {
+            this.appUsers.forEach(e => e['checked'] = true);
+            this.selectedUsersForAddition = [];
+            this.appUsers.forEach(e => this.selectedUsersForAddition.push(e._id));
         } else {
-            self.appUsers.forEach(e => e['checked'] = false);
-            self.selectedUsersForAddition = [];
+            this.appUsers.forEach(e => e['checked'] = false);
+            this.selectedUsersForAddition = [];
         }
     }
 
 
 
     imageUpload(data: { message?: string, image?: string }, type: string) {
-        const self = this;
         if (type === 'logo') {
-            self.appData.logo.full = data.image;
+            this.appData.logo.full = data.image;
         } else {
-            self.appData.logo.thumbnail = data.image;
+            this.appData.logo.thumbnail = data.image;
         }
     }
 
     save() {
-        const self = this;
         if (!this.changesDone) {
             return;
         }
-        if (self.appData && self.appData.logo) {
-            if (!self.appData.logo.full) {
-                self.appData.logo.full = null;
+        if (this.appData && this.appData.logo) {
+            if (!this.appData.logo.full) {
+                this.appData.logo.full = null;
             }
-            if (!self.appData.logo.thumbnail) {
-                self.appData.logo.thumbnail = null;
+            if (!this.appData.logo.thumbnail) {
+                this.appData.logo.thumbnail = null;
             }
         }
-        self.commonService.put('user', '/data/app/' + self.appData._id, self.appData).subscribe(res => {
-            self.oldData = self.appService.cloneObject(self.appData);
-            self.ts.success('App saved successfully');
-            self.commonService.appUpdates.emit(self.appData);
-            self.commonService.app = res;
+        this.commonService.put('user', '/data/app/' + this.appData._id, this.appData).subscribe(res => {
+            this.oldData = this.appService.cloneObject(this.appData);
+            this.ts.success('App saved successfully');
+            this.commonService.appUpdates.emit(this.appData);
+            this.commonService.app = res;
         }, err => {
-            self.commonService.errorToast(err);
+            this.commonService.errorToast(err);
         });
     }
 
     deleteApp() {
-        const self = this;
-        self.alertModal.statusChange = false;
-        self.alertModal.title = 'Delete App';
-        self.alertModal.message = 'Are you sure you want to delete app <span class="text-delete font-weight-bold">' + self.appData._id
+        this.alertModal.statusChange = false;
+        this.alertModal.title = 'Delete App';
+        this.alertModal.message = 'Are you sure you want to delete app <span class="text-delete font-weight-bold">' + this.appData._id
             + '</span>? This action will delete the entire app including all the data services within it. This action is undoable.';
-        self.openDeleteModal.emit(self.alertModal);
+        this.openDeleteModal.emit(this.alertModal);
     }
 
     closeDeleteModal(data) {
-        const self = this;
         if (data) {
             const url = '/admin/app/' + data._id;
-            self.showLazyLoader = true;
-            self.subscriptions['deleteApp'] = self.commonService.delete('user', url).subscribe(d => {
-                self.showLazyLoader = false;
-                self.ts.success('App deleted successfully');
-                self.router.navigate(['/admin']);
+            this.showLazyLoader = true;
+            this.subscriptions['deleteApp'] = this.commonService.delete('user', url).subscribe(d => {
+                this.showLazyLoader = false;
+                this.ts.success('App deleted successfully');
+                this.router.navigate(['/admin']);
             }, err => {
-                self.showLazyLoader = false;
-                self.commonService.errorToast(err, 'Unable to delete, please try again later');
+                this.showLazyLoader = false;
+                this.commonService.errorToast(err, 'Unable to delete, please try again later');
             });
         }
     }
 
     get selectedColorStyle() {
-        const self = this;
         let retValue;
-        if (self.appData.appCenterStyle.primaryColor.charAt(0) === '#') {
-            retValue = self.appData.appCenterStyle.primaryColor;
+        if (this.appData.appCenterStyle.primaryColor.charAt(0) === '#') {
+            retValue = this.appData.appCenterStyle.primaryColor;
         } else {
-            retValue = '#' + self.appData.appCenterStyle.primaryColor;
+            retValue = '#' + this.appData.appCenterStyle.primaryColor;
         }
         return {
             background: retValue
@@ -405,8 +388,7 @@ export class AppManageComponent implements OnInit, OnDestroy {
     }
 
     get changesDone() {
-        const self = this;
-        if (JSON.stringify(self.appData) === JSON.stringify(self.oldData)) {
+        if (JSON.stringify(this.appData) === JSON.stringify(this.oldData)) {
             return false;
         } else {
             return true;
@@ -429,140 +411,132 @@ export class AppManageComponent implements OnInit, OnDestroy {
     }
 
     getGroups(appId: string) {
-        const self = this;
-        self.groupConfig.filter = {
+        this.groupConfig.filter = {
             app: appId
         };
-        self.commonService.get('user', `/${this.commonService.app._id}/group`, self.groupConfig).subscribe(res => {
+        this.commonService.get('user', `/${this.commonService.app._id}/group`, this.groupConfig).subscribe(res => {
             if (res.length > 0) {
-                self.groupList = res;
-                const index = self.groupList.findIndex(e => e.name === '#');
+                this.groupList = res;
+                const index = this.groupList.findIndex(e => e.name === '#');
                 if (index >= 0) {
-                    self.groupList.splice(index, 1);
+                    this.groupList.splice(index, 1);
                 }
-                self.selectedGroup = self.groupList[0];
-                self.getUsers();
+                this.selectedGroup = this.groupList[0];
+                this.getUsers();
             }
         }, err => {
-            self.commonService.errorToast(err, 'Unable to fetch  groups, please try again later');
+            this.commonService.errorToast(err, 'Unable to fetch  groups, please try again later');
         });
     }
 
     getUsers() {
-        const self = this;
-        if (self.selectedGroup && self.selectedGroup.length > 0) {
-            self.userConfig.filter['_id'] = { $in: self.selectedGroup.users };
-            self.subscriptions['getuserlist'] = self.commonService.get('user', `/${this.appData._id}/user`, self.userConfig).subscribe(d => {
+        if (this.selectedGroup && this.selectedGroup.length > 0) {
+            this.userConfig.filter['_id'] = { $in: this.selectedGroup.users };
+            this.subscriptions['getuserlist'] = this.commonService.get('user', `/${this.appData._id}/user`, this.userConfig).subscribe(d => {
                 if (d.length > 0) {
-                    self.groupUserList = d;
+                    this.groupUserList = d;
                 }
             }, err => {
-                self.commonService.errorToast(err, 'Unable to fetch users, please try again later');
+                this.commonService.errorToast(err, 'Unable to fetch users, please try again later');
             });
         }
     }
 
     addSelectedUsers() {
-        const self = this;
-        if (self.selectedUsersForAddition.length > 0) {
-            const payload = { users: self.selectedUsersForAddition };
-            self.subscriptions['userAddition'] = self.commonService
-                .put('user', `/data/app/${self.appData._id}/addUsers`, payload)
+        if (this.selectedUsersForAddition.length > 0) {
+            const payload = { users: this.selectedUsersForAddition };
+            this.subscriptions['userAddition'] = this.commonService
+                .put('user', `/data/app/${this.appData._id}/addUsers`, payload)
                 .subscribe(() => {
-                    self.onCancel();
-                    self.getUserDetail();
-                    self.ts.success(`User(s) successfully added to ${self.appData._id} App`);
+                    this.onCancel();
+                    this.getUserDetail();
+                    this.ts.success(`User(s) successfully added to ${this.appData._id} App`);
                 }, (err) => {
-                    self.onCancel();
-                    self.ts.warning(err.error.message);
+                    this.onCancel();
+                    this.ts.warning(err.error.message);
                 });
         } else {
-            self.ts.warning('Please Select at least one user to proceed');
+            this.ts.warning('Please Select at least one user to proceed');
         }
     }
 
     ngOnDestroy() {
-        const self = this;
-        Object.keys(self.subscriptions).forEach(e => {
-            self.subscriptions[e].unsubscribe();
+        Object.keys(this.subscriptions).forEach(e => {
+            this.subscriptions[e].unsubscribe();
         });
     }
 
     isAppAdmin(user: UserDetails) {
-        const self = this;
         if (user.accessControl
             && user.accessControl.apps
             && user.accessControl.apps.length > 0
-            && user.accessControl.apps.find(e => e._id === self.appData._id)) {
+            && user.accessControl.apps.find(e => e._id === this.appData._id)) {
             return true;
         }
         return false;
     }
 
     startAllServices() {
-        const self = this;
-        self.startServiceAttributes['playCircle'] = 'circleShrink';
-        self.startServiceAttributes['playLoader'] = 'loadingShow';
-        self.startServiceAttributes['startGroup'] = 'buttonGroupHide';
-        self.startServiceAttributes['processing'] = 'playIcon';
-        self.startServiceAttributes['playIcon'] = 'midStage';
-        self.proccessing = true;
-        self.cardActionDisabled = 'disabled';
-        self.commonService.put('serviceManager', `/${self.appData._id}/service/utils/startAll`, { app: this.commonService.app._id }).subscribe(res => {
-            self.startAllServices['processing'] = 'playIconHide';
+        this.startServiceAttributes['playCircle'] = 'circleShrink';
+        this.startServiceAttributes['playLoader'] = 'loadingShow';
+        this.startServiceAttributes['startGroup'] = 'buttonGroupHide';
+        this.startServiceAttributes['processing'] = 'playIcon';
+        this.startServiceAttributes['playIcon'] = 'midStage';
+        this.proccessing = true;
+        this.cardActionDisabled = 'disabled';
+        this.commonService.put('serviceManager', `/${this.appData._id}/service/utils/startAll`, { app: this.commonService.app._id }).subscribe(res => {
+            this.startAllServices['processing'] = 'playIconHide';
             if (res) {
-                self.startAllServices['processing'] = 'playIconHide';
-                self.startAllServices['processing'] = 'playIconHide';
-                self.startServiceAttributes['playIcon'] = 'playIconHide';
-                self.startServiceAttributes['playLoader'] = 'hideProcessing';
-                self.startServiceAttributes['tickAction'] = 'playIcon';
-                self.proccessing = false;
-                self.startServiceAttributes['complete'] = 'showProcessing';
-                self.cardActionDisabled = 'enable';
-                self.getManagementDetails();
-                self.startAllServices['processing'] = 'playIconHide';
+                this.startAllServices['processing'] = 'playIconHide';
+                this.startAllServices['processing'] = 'playIconHide';
+                this.startServiceAttributes['playIcon'] = 'playIconHide';
+                this.startServiceAttributes['playLoader'] = 'hideProcessing';
+                this.startServiceAttributes['tickAction'] = 'playIcon';
+                this.proccessing = false;
+                this.startServiceAttributes['complete'] = 'showProcessing';
+                this.cardActionDisabled = 'enable';
+                this.getManagementDetails();
+                this.startAllServices['processing'] = 'playIconHide';
             }
         });
     }
     stopAllServices() {
-        const self = this;
-        self.startServiceAttributes['stopCircle'] = 'stopCircleShrink';
-        self.startServiceAttributes['stopLoader'] = 'loadingShow';
-        self.startServiceAttributes['stopGroup'] = 'buttonGroupHide';
-        self.startServiceAttributes['processing'] = 'playIcon';
-        self.proccessing = true;
-        self.cardActionDisabled = 'disabled';
-        self.commonService.put('serviceManager', `/${self.appData._id}/service/utils/stopAll`, { app: this.commonService.app._id }).subscribe(res => {
+        this.startServiceAttributes['stopCircle'] = 'stopCircleShrink';
+        this.startServiceAttributes['stopLoader'] = 'loadingShow';
+        this.startServiceAttributes['stopGroup'] = 'buttonGroupHide';
+        this.startServiceAttributes['processing'] = 'playIcon';
+        this.proccessing = true;
+        this.cardActionDisabled = 'disabled';
+        this.commonService.put('serviceManager', `/${this.appData._id}/service/utils/stopAll`, { app: this.commonService.app._id }).subscribe(res => {
             if (res) {
-                self.startAllServices['processing'] = 'playIconHide';
-                self.startAllServices['processing'] = 'playIconHide';
-                self.startServiceAttributes['stopIcon'] = 'playIconHide';
-                self.startServiceAttributes['stopCircle'] = 'hideProcessing';
-                self.startServiceAttributes['stopTickAction'] = 'playIcon';
-                self.startServiceAttributes['stopLoader'] = 'loadingHide';
-                self.proccessing = false;
-                self.startServiceAttributes['complete'] = 'showProcessing';
-                self.cardActionDisabled = 'enable';
-                self.getManagementDetails();
+                this.startAllServices['processing'] = 'playIconHide';
+                this.startAllServices['processing'] = 'playIconHide';
+                this.startServiceAttributes['stopIcon'] = 'playIconHide';
+                this.startServiceAttributes['stopCircle'] = 'hideProcessing';
+                this.startServiceAttributes['stopTickAction'] = 'playIcon';
+                this.startServiceAttributes['stopLoader'] = 'loadingHide';
+                this.proccessing = false;
+                this.startServiceAttributes['complete'] = 'showProcessing';
+                this.cardActionDisabled = 'enable';
+                this.getManagementDetails();
             }
         });
     }
 
     toggleStopCard(name: string) {
-        const self = this;
 
-        if (self.startServiceAttributes['playLoader'] === 'loadingShow' || self.startServiceAttributes['stopLoader'] === 'loadingShow') {
+        if (this.startServiceAttributes['playLoader'] === 'loadingShow' || this.startServiceAttributes['stopLoader'] === 'loadingShow') {
             return false;
         }
-        if (!self.serviceStatus.Active && name === 'stopAll') {
+        if (!this.serviceStatus.Active && name === 'stopAll') {
             return false;
         }
-        Object.keys(self.confirmModalState).forEach(key => {
-            self.confirmModalState[key] = false;
+        Object.keys(this.confirmModalState).forEach(key => {
+            this.confirmModalState[key] = false;
         });
-        self.startServiceAttributes['stopLoader'] = 'loadingHide';
-        if (!self.confirmModalState['startAll']) {
-            self.startServiceAttributes = {
+        this.startServiceAttributes['stopLoader'] = 'loadingHide';
+        if (!this.confirmModalState['startAll']) {
+            this.startServiceAttributes = {
                 stopCard: 'expand',
                 stopanimateItems: 'centerLocate',
                 stopCircle: 'stopCircleExpand',
@@ -571,8 +545,8 @@ export class AppManageComponent implements OnInit, OnDestroy {
                 playLoader: 'loadingHide'
             };
 
-        } else if (self.confirmModalState['allservice']) {
-            self.startServiceAttributes = {
+        } else if (this.confirmModalState['allservice']) {
+            this.startServiceAttributes = {
                 stopCard: 'collapse',
                 stopanimateItems: 'initLocate',
                 stopCircle: 'stopCircleExpand',
@@ -585,24 +559,23 @@ export class AppManageComponent implements OnInit, OnDestroy {
 
     }
     toggleCard(name: string) {
-        const self = this;
-        if (self.startServiceAttributes['playLoader'] === 'loadingShow' || self.startServiceAttributes['stopLoader'] === 'loadingShow') {
+        if (this.startServiceAttributes['playLoader'] === 'loadingShow' || this.startServiceAttributes['stopLoader'] === 'loadingShow') {
             return false;
         }
-        if (self.startServiceAttributes['tickAction'] === 'playIcon' && name === 'startAll') {
+        if (this.startServiceAttributes['tickAction'] === 'playIcon' && name === 'startAll') {
             return false;
         }
-        if (!self.serviceStatus.Undeployed && name === 'startAll') {
+        if (!this.serviceStatus.Undeployed && name === 'startAll') {
             return false;
         }
-        Object.keys(self.confirmModalState).forEach(key => {
-            self.confirmModalState[key] = false;
+        Object.keys(this.confirmModalState).forEach(key => {
+            this.confirmModalState[key] = false;
         });
-        self.startServiceAttributes['playIcon'] = 'playIcon';
-        self.startServiceAttributes['playLoader'] = 'loadingHide';
-        self.confirmModalState[name] = true;
-        if (self.confirmModalState['startAll']) {
-            self.startServiceAttributes = {
+        this.startServiceAttributes['playIcon'] = 'playIcon';
+        this.startServiceAttributes['playLoader'] = 'loadingHide';
+        this.confirmModalState[name] = true;
+        if (this.confirmModalState['startAll']) {
+            this.startServiceAttributes = {
                 startCard: 'expand',
                 animateItems: 'centerLocate',
                 playCircle: 'circleExpand',
@@ -611,8 +584,8 @@ export class AppManageComponent implements OnInit, OnDestroy {
                 stopLoader: 'loadingHide',
             };
 
-        } else if (self.confirmModalState['allservice']) {
-            self.startServiceAttributes = {
+        } else if (this.confirmModalState['allservice']) {
+            this.startServiceAttributes = {
                 startCard: 'collapse',
                 animateItems: 'initLocate',
                 startGroup: 'buttonGroupHide',
@@ -623,44 +596,41 @@ export class AppManageComponent implements OnInit, OnDestroy {
     }
 
     getManagementDetails() {
-        const self = this;
-        self.commonService.get('serviceManager', `/${this.commonService.app._id}/service/utils/status/count`, { filter: { app: this.commonService.app._id } }).subscribe(res => {
-            self.serviceStatus = res;
+        this.commonService.get('serviceManager', `/${this.commonService.app._id}/service/utils/status/count`, { filter: { app: this.commonService.app._id } }).subscribe(res => {
+            this.serviceStatus = res;
         }, (err) => {
-            self.ts.warning(err.error.message);
+            this.ts.warning(err.error.message);
         });
 
     }
     getIdentityDetails() {
-        const self = this;
-        self.commonService.get('sec', `/identity/${self.commonService.app._id}`).subscribe(res => {
+        this.commonService.get('sec', `/identity/${this.commonService.app._id}`).subscribe(res => {
             if (res) {
-                self.identityDetails = res.message;
+                this.identityDetails = res.message;
                 if (res.message.info) {
-                    if (self.identityDetails.info['subject']['OU'] === self.identityDetails.info['issuer']['OU']) {
-                        self.signedType = 'self';
+                    if (this.identityDetails.info['subject']['OU'] === this.identityDetails.info['issuer']['OU']) {
+                        this.signedType = 'self';
                     } else {
-                        self.signedType = self.identityDetails.info['issuer']['OU'];
+                        this.signedType = this.identityDetails.info['issuer']['OU'];
                     }
                 }
             }
         }, err => {
-            self.commonService.errorToast(err);
+            this.commonService.errorToast(err);
         });
     }
 
     patchVersionValue(reset?: boolean) {
-        const self = this;
         let value;
         if (reset) {
-            if (self.versionConfig.type === 'count') {
-                self.versionConfig = {
+            if (this.versionConfig.type === 'count') {
+                this.versionConfig = {
                     type: 'count',
                     value: '-1',
                     customValue: 10
                 };
             } else {
-                self.versionConfig = {
+                this.versionConfig = {
                     type: 'time',
                     value: '',
                     customValue: 10,
@@ -668,28 +638,27 @@ export class AppManageComponent implements OnInit, OnDestroy {
                 };
             }
         }
-        self.versionConfig.isCustomValue = false;
-        if (self.versionConfig.value === 'custom') {
-            self.versionConfig.isCustomValue = true;
-            value = self.versionConfig.customValue >= 0 ? self.versionConfig.customValue.toString() : null;
-            if (value && self.versionConfig.type === 'time') {
-                value += ' ' + self.versionConfig.customValueSuffix;
+        this.versionConfig.isCustomValue = false;
+        if (this.versionConfig.value === 'custom') {
+            this.versionConfig.isCustomValue = true;
+            value = this.versionConfig.customValue >= 0 ? this.versionConfig.customValue.toString() : null;
+            if (value && this.versionConfig.type === 'time') {
+                value += ' ' + this.versionConfig.customValueSuffix;
             }
         } else {
-            value = self.versionConfig.value;
+            value = this.versionConfig.value;
         }
-        self.appData.serviceVersionValidity.validityType = self.versionConfig.type;
-        self.appData.serviceVersionValidity.validityValue = value;
+        this.appData.serviceVersionValidity.validityType = this.versionConfig.type;
+        this.appData.serviceVersionValidity.validityValue = value;
     }
 
     onVersionChange(value) {
-        const self = this;
         if (value) {
-            self.patchVersionValue(true);
+            this.patchVersionValue(true);
         } else {
-            self.retainDataHistory = false;
-            self.appData.serviceVersionValidity.validityType = 'count';
-            self.appData.serviceVersionValidity.validityValue = 0;
+            this.retainDataHistory = false;
+            this.appData.serviceVersionValidity.validityType = 'count';
+            this.appData.serviceVersionValidity.validityValue = 0;
         }
     }
 
@@ -702,44 +671,42 @@ export class AppManageComponent implements OnInit, OnDestroy {
     }
 
     openPropertiesModal(data?: any) {
-        const self = this;
         if (data) {
-            self.data = data;
-            self.data.isEdit = true;
+            this.data = data;
+            this.data.isEdit = true;
         }
-        self.keyValModalTemplateRef = self.commonService
-            .modal(self.keyValModalTemplate, { centered: true, windowClass: 'key-value-modal' });
-        self.keyValModalTemplateRef.result.then(close => {
+        this.keyValModalTemplateRef = this.commonService
+            .modal(this.keyValModalTemplate, { centered: true, windowClass: 'key-value-modal' });
+        this.keyValModalTemplateRef.result.then(close => {
             if (close) {
-                let temp = self.appData.headers;
+                let temp = this.appData.headers;
                 if (!temp) {
                     temp = [];
                 }
-                const tempIndex = temp.findIndex(e => e.key === self.data.key);
+                const tempIndex = temp.findIndex(e => e.key === this.data.key);
                 if (tempIndex > -1) {
                     temp.splice(tempIndex, 1);
                 }
                 temp.push({
-                    key: self.data.key,
-                    value: self.data.value,
-                    header: self.convertHeader(self.data.key)
+                    key: this.data.key,
+                    value: this.data.value,
+                    header: this.convertHeader(this.data.key)
                 });
-                self.appData.headers = temp;
+                this.appData.headers = temp;
             }
-            self.data = {};
+            this.data = {};
         }, dismiss => {
-            self.data = {};
+            this.data = {};
         });
     }
 
     removeProperty(key: string) {
-        const self = this;
-        const temp = self.appData.headers;
+        const temp = this.appData.headers;
         const tempIndex = temp.findIndex(e => e.key === key);
         if (tempIndex > -1) {
             temp.splice(tempIndex, 1);
         }
-        self.appData.headers = temp;
+        this.appData.headers = temp;
     }
 
     convertHeader(key: string) {
@@ -753,19 +720,17 @@ export class AppManageComponent implements OnInit, OnDestroy {
     }
 
     get keyValueList() {
-        const self = this;
-        return self.appData.headers || [];
+        return this.appData.headers || [];
     }
     toggleCardFlow(name: string) {
-        const self = this;
-        Object.keys(self.confirmModalStateFlow).forEach(key => {
-            self.confirmModalStateFlow[key] = false;
+        Object.keys(this.confirmModalStateFlow).forEach(key => {
+            this.confirmModalStateFlow[key] = false;
         });
-        self.startFlowAttributes['playIcon'] = 'playIcon';
-        self.startFlowAttributes['playLoader'] = 'loadingHide';
-        self.confirmModalStateFlow[name] = true;
-        if (self.confirmModalStateFlow['startAll']) {
-            self.startFlowAttributes = {
+        this.startFlowAttributes['playIcon'] = 'playIcon';
+        this.startFlowAttributes['playLoader'] = 'loadingHide';
+        this.confirmModalStateFlow[name] = true;
+        if (this.confirmModalStateFlow['startAll']) {
+            this.startFlowAttributes = {
                 startCard: 'expand',
                 animateItems: 'centerLocate',
                 playCircle: 'circleExpand',
@@ -774,8 +739,8 @@ export class AppManageComponent implements OnInit, OnDestroy {
                 stopLoader: 'loadingHide',
             };
 
-        } else if (self.confirmModalStateFlow['allFlow']) {
-            self.startFlowAttributes = {
+        } else if (this.confirmModalStateFlow['allFlow']) {
+            this.startFlowAttributes = {
                 startCard: 'collapse',
                 animateItems: 'initLocate',
                 startGroup: 'buttonGroupHide',
@@ -785,13 +750,12 @@ export class AppManageComponent implements OnInit, OnDestroy {
         }
     }
     toggleStopCardFlow(name: string) {
-        const self = this;
-        Object.keys(self.confirmModalStateFlow).forEach(key => {
-            self.confirmModalStateFlow[key] = false;
+        Object.keys(this.confirmModalStateFlow).forEach(key => {
+            this.confirmModalStateFlow[key] = false;
         });
-        self.startFlowAttributes['stopLoader'] = 'loadingHide';
-        if (!self.confirmModalStateFlow['startAll']) {
-            self.startFlowAttributes = {
+        this.startFlowAttributes['stopLoader'] = 'loadingHide';
+        if (!this.confirmModalStateFlow['startAll']) {
+            this.startFlowAttributes = {
                 stopCard: 'expand',
                 stopanimateItems: 'centerLocate',
                 stopCircle: 'stopCircleExpand',
@@ -800,8 +764,8 @@ export class AppManageComponent implements OnInit, OnDestroy {
                 playLoader: 'loadingHide'
             };
 
-        } else if (self.confirmModalStateFlow['allflow']) {
-            self.startFlowAttributes = {
+        } else if (this.confirmModalStateFlow['allflow']) {
+            this.startFlowAttributes = {
                 stopCard: 'collapse',
                 stopanimateItems: 'initLocate',
                 stopCircle: 'stopCircleExpand',
@@ -812,78 +776,74 @@ export class AppManageComponent implements OnInit, OnDestroy {
         }
     }
     getFlowCount() {
-        const self = this;
-        self.showLazyLoader = true;
+        this.showLazyLoader = true;
         const option: GetOptions = {
             filter: {
-                app: self.commonService.app._id,
+                app: this.commonService.app._id,
             }
         };
-        self.commonService.get('partnerManager', `/${self.commonService.app._id}/flow/utils/status/count`).subscribe(res => {
-            self.partnerFlowStatus = res;
-            self.showLazyLoader = false;
+        this.commonService.get('partnerManager', `/${this.commonService.app._id}/flow/utils/status/count`).subscribe(res => {
+            this.partnerFlowStatus = res;
+            this.showLazyLoader = false;
 
         }, err => {
-            self.showLazyLoader = false;
-            self.commonService.errorToast(err);
+            this.showLazyLoader = false;
+            this.commonService.errorToast(err);
         });
     }
 
 
 
     startAllFlows() {
-        const self = this;
-        self.startFlowAttributes['playCircle'] = 'circleShrink';
-        self.startFlowAttributes['playLoader'] = 'loadingShow';
-        self.startFlowAttributes['startGroup'] = 'buttonGroupHide';
-        self.startFlowAttributes['processing'] = 'playIcon';
-        self.startFlowAttributes['playIcon'] = 'midStage';
-        self.proccessing = true;
-        self.cardActionDisabled = 'disabled';
-        self.commonService.put('partnerManager', `/${self.commonService.app._id}/flow/utils/startAll`, { app: this.commonService.app._id }).subscribe(res => {
+        this.startFlowAttributes['playCircle'] = 'circleShrink';
+        this.startFlowAttributes['playLoader'] = 'loadingShow';
+        this.startFlowAttributes['startGroup'] = 'buttonGroupHide';
+        this.startFlowAttributes['processing'] = 'playIcon';
+        this.startFlowAttributes['playIcon'] = 'midStage';
+        this.proccessing = true;
+        this.cardActionDisabled = 'disabled';
+        this.commonService.put('partnerManager', `/${this.commonService.app._id}/flow/utils/startAll`, { app: this.commonService.app._id }).subscribe(res => {
 
             if (res) {
-                self.startFlowAttributes['playIcon'] = 'playIconHide';
-                self.startFlowAttributes['playLoader'] = 'hideProcessing';
-                self.startFlowAttributes['tickAction'] = 'playIcon';
-                self.proccessing = false;
-                self.startFlowAttributes['complete'] = 'showProcessing';
-                self.cardActionDisabled = 'enable';
-                self.getFlowCount();
+                this.startFlowAttributes['playIcon'] = 'playIconHide';
+                this.startFlowAttributes['playLoader'] = 'hideProcessing';
+                this.startFlowAttributes['tickAction'] = 'playIcon';
+                this.proccessing = false;
+                this.startFlowAttributes['complete'] = 'showProcessing';
+                this.cardActionDisabled = 'enable';
+                this.getFlowCount();
 
             }
         }, (err => {
-            self.commonService.errorToast(err);
+            this.commonService.errorToast(err);
 
         }));
     }
     stopAllFlows() {
-        const self = this;
-        self.startFlowAttributes['stopCircle'] = 'stopCircleShrink';
-        self.startFlowAttributes['stopLoader'] = 'loadingShow';
-        self.startFlowAttributes['stopGroup'] = 'buttonGroupHide';
-        self.startFlowAttributes['processing'] = 'playIcon';
-        self.proccessing = true;
-        self.cardActionDisabled = 'disabled';
-        self.commonService.put('partnerManager', `/${self.commonService.app._id}/flow/utils/stopAll`).subscribe(res => {
+        this.startFlowAttributes['stopCircle'] = 'stopCircleShrink';
+        this.startFlowAttributes['stopLoader'] = 'loadingShow';
+        this.startFlowAttributes['stopGroup'] = 'buttonGroupHide';
+        this.startFlowAttributes['processing'] = 'playIcon';
+        this.proccessing = true;
+        this.cardActionDisabled = 'disabled';
+        this.commonService.put('partnerManager', `/${this.commonService.app._id}/flow/utils/stopAll`).subscribe(res => {
             if (res) {
-                self.startFlowAttributes['stopIcon'] = 'playIconHide';
-                self.startFlowAttributes['stopCircle'] = 'hideProcessing';
-                self.startFlowAttributes['stopTickAction'] = 'playIcon';
-                self.startFlowAttributes['stopLoader'] = 'loadingHide';
-                self.proccessing = false;
-                self.startFlowAttributes['complete'] = 'showProcessing';
-                self.cardActionDisabled = 'enable';
-                self.getFlowCount();
+                this.startFlowAttributes['stopIcon'] = 'playIconHide';
+                this.startFlowAttributes['stopCircle'] = 'hideProcessing';
+                this.startFlowAttributes['stopTickAction'] = 'playIcon';
+                this.startFlowAttributes['stopLoader'] = 'loadingHide';
+                this.proccessing = false;
+                this.startFlowAttributes['complete'] = 'showProcessing';
+                this.cardActionDisabled = 'enable';
+                this.getFlowCount();
             }
         }, (err => {
-            self.commonService.errorToast(err);
+            this.commonService.errorToast(err);
 
         }));
     }
     goTopartnerPage() {
-        const self = this;
-        self.router.navigate(['/app', self.commonService.app._id, 'pm']);
+        this.router.navigate(['/app', this.commonService.app._id, 'pm']);
     }
 
     ipInvalid(ipAddress) {
@@ -924,63 +884,57 @@ export class AppManageComponent implements OnInit, OnDestroy {
     }
 
     addIP() {
-        const self = this;
-        const list = self.ipList;
+        const list = this.ipList;
         list.push('');
     }
 
     removeIP(index) {
-        const self = this;
-        const list = self.ipList;
+        const list = this.ipList;
         list.splice(index, 1);
     }
 
     changeIP(ipAddress, index) {
-        const self = this;
-        const list = self.ipList;
+        const list = this.ipList;
         list.splice(index, 1, ipAddress);
     }
 
     ChangeCalendarSettings(value) {
-        const self = this;
         const url = value ? '/calendar/enable' : '/calendar/disable';
         const data = {
-            app: self.commonService.app._id
+            app: this.commonService.app._id
         }
-        self.commonService.put('serviceManager', url, data).subscribe(res => {
-            self.ts.success(value ? 'Calendar enabled' : 'Calendar disabled')
+        this.commonService.put('serviceManager', url, data).subscribe(res => {
+            this.ts.success(value ? 'Calendar enabled' : 'Calendar disabled')
             if (!environment.production) {
                 console.log(res);
             }
         }, err => {
-            self.commonService.errorToast(err, 'Unable to enable the Calendar dataservice');
+            this.commonService.errorToast(err, 'Unable to enable the Calendar dataservice');
         });
 
     }
 
     getCalenderDataService() {
-        const self = this;
         const options = {
             filter: {
-                app: `${self.commonService.app._id}`,
+                app: `${this.commonService.app._id}`,
                 type: 'internal',
                 status: 'Active'
             }
         };
-        self.commonService.get('serviceManager', `/${this.commonService.app._id}/service`, options).subscribe(res => {
+        this.commonService.get('serviceManager', `/${this.commonService.app._id}/service`, options).subscribe(res => {
             if (res.length) {
-                self.isCalenderEnabled = true;
+                this.isCalenderEnabled = true;
             }
         }, err => {
-            self.commonService.errorToast(err);
+            this.commonService.errorToast(err);
         });
     }
 
     changeTab() {
-        const self = this;
-        self.activeTab = 3;
-        self.getFlowCount();
-        self.getManagementDetails();
+        this.activeTab = 3;
+        this.getFlowCount();
+        this.getManagementDetails();
     }
 
     reset() {
@@ -994,35 +948,31 @@ export class AppManageComponent implements OnInit, OnDestroy {
     }
 
     set enabledTrustedIP(val) {
-        const self = this;
-        if (!self.appData.agentTrustedIP) {
-            self.appData.agentTrustedIP = {
+        if (!this.appData.agentTrustedIP) {
+            this.appData.agentTrustedIP = {
                 list: [],
                 enabled: false
             };
         }
-        self.appData.agentTrustedIP.enabled = val;
+        this.appData.agentTrustedIP.enabled = val;
     }
 
     get enabledTrustedIP() {
-        const self = this;
-        if (self.appData.agentTrustedIP) {
-            return self.appData.agentTrustedIP.enabled;
+        if (this.appData.agentTrustedIP) {
+            return this.appData.agentTrustedIP.enabled;
         }
         return false;
     }
 
     get ipList() {
-        const self = this;
-        if (self.appData.agentTrustedIP && self.appData.agentTrustedIP.list) {
-            return self.appData.agentTrustedIP.list;
+        if (this.appData.agentTrustedIP && this.appData.agentTrustedIP.list) {
+            return this.appData.agentTrustedIP.list;
         }
         return [];
     }
 
     get isInvalid() {
-        const self = this;
-        return (self.ipList.map(self.ipInvalid).filter(e => e).length > 0) || (self.ipList.map(self.ipRequired).filter(e => e).length > 0);
+        return (this.ipList.map(this.ipInvalid).filter(e => e).length > 0) || (this.ipList.map(this.ipRequired).filter(e => e).length > 0);
     }
 }
 
