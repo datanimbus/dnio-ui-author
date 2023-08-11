@@ -160,6 +160,9 @@ export class CustomNodeComponent implements OnInit {
     })).subscribe((res: any) => {
       this.showLazyLoader = false;
       this.customNodeList = res;
+      if (this.customNodeList.length > 0) {
+        this.selectedNode = this.customNodeList[0];
+      }
     }, err => {
       this.showLazyLoader = false;
       console.log(err);

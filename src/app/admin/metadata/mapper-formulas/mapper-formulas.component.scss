@@ -12,10 +12,12 @@
     max-width: 360px;
 }
 
-.formula-config {}
 
 .list-group-item {
+    border-left: 5px solid transparent;
+
     &.selected {
+        border-left: 5px solid $primary;
         color: $accent;
         font-weight: 500;
     }

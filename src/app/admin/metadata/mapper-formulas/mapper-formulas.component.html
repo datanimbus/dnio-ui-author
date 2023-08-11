@@ -2,9 +2,9 @@
     <div class="formula-list border rounded mr-3">
         <div class="formula-list-header p-3 d-flex align-items-center justify-content-between">
             <span class="font-16 fw-500">Formula List</span>
-            <button type="button" class="btn btn-link d-flex align-items-center justify-content-between"
+            <button type="button" class="btn btn-primary d-flex align-items-center justify-content-between"
                 (click)="openNewFormulaWindow()">
-                <span class="dsi dsi-plus-circle mr-2"></span>
+                <span class="dsi dsi-plus mr-2"></span>
                 <span>New</span>
             </button>
         </div>
@@ -21,31 +21,40 @@
             <p *ngIf="formulaList.length==0" class="text-muted">Please Create a Formula</p>
         </ng-container>
         <ng-container *ngIf="selectedFormula">
-            <div class="form-group">
-                <label for="name">Formula Name</label>
-                <input id="name" class="form-control" type="text" [(ngModel)]="selectedFormula.name" odpAutoFocus>
-            </div>
-            <div class="form-group">
-                <label for="returnType">Return Type</label>
-                <select id="returnType" class="form-control" [(ngModel)]="selectedFormula.returnType">
-                    <option value="String">String</option>
-                    <option value="Number">Number</option>
-                    <option value="Boolean">Boolean</option>
-                    <option value="Date">Date</option>
-                    <option value="Object">Object</option>
-                    <option value="Array">Array</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="forDataType">Applicable For Data type</label>
-                <select id="forDataType" class="form-control" [(ngModel)]="selectedFormula.forDataType">
-                    <option value="String">String</option>
-                    <option value="Number">Number</option>
-                    <option value="Boolean">Boolean</option>
-                    <option value="Date">Date</option>
-                    <option value="Object">Object</option>
-                    <option value="Array">Array</option>
-                </select>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="name">Formula Name</label>
+                        <input id="name" class="form-control" type="text" [(ngModel)]="selectedFormula.name"
+                            odpAutoFocus>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="returnType">Return Type</label>
+                        <select id="returnType" class="form-control" [(ngModel)]="selectedFormula.returnType">
+                            <option value="String">String</option>
+                            <option value="Number">Number</option>
+                            <option value="Boolean">Boolean</option>
+                            <option value="Date">Date</option>
+                            <option value="Object">Object</option>
+                            <option value="Array">Array</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="forDataType">Applicable For Data type</label>
+                        <select id="forDataType" class="form-control" [(ngModel)]="selectedFormula.forDataType">
+                            <option value="String">String</option>
+                            <option value="Number">Number</option>
+                            <option value="Boolean">Boolean</option>
+                            <option value="Date">Date</option>
+                            <option value="Object">Object</option>
+                            <option value="Array">Array</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="form-group d-flex align-items-center justify-content-between">
                 <label for="params">Params</label>
@@ -105,9 +114,7 @@
                     [(ngModel)]="selectedFormula.code"></textarea> -->
             </div>
             <div class="form-group d-flex align-items-center justify-content-end">
-                <button type="button" class="btn btn-danger mr-3"
-                    (click)="deleteFormula(this.selectedFormula)">Delete</button>
-                <button type="button" class="btn btn-success" (click)="saveFormula()">Save</button>
+                <button type="button" class="btn btn-primary w-100" (click)="saveFormula()">Save</button>
             </div>
         </ng-container>
     </div>
