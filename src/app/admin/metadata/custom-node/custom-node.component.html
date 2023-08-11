@@ -7,8 +7,8 @@
     </div>
 </div>
 <div class="node-page d-flex w-100 page-padding">
-    <div class="node-list-wrapper d-flex flex-column pb-4 mr-3">
-        <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="node-list-wrapper d-flex flex-column mr-3 border rounded">
+        <div class="d-flex align-items-center justify-content-between p-3 border-bottom">
             <odp-search-box (enteredText)="searchTerm=$event" (reset)="searchTerm=null" [edit]="{status:true}"></odp-search-box>
             <button id="createNode" type="button" class="add-new btn btn-primary ml-3 d-flex align-items-center"
                 (click)="newNode()" [disabled]="!hasWritePermission('NODE')">
@@ -16,15 +16,15 @@
                 <span class="text">New</span>
             </button>
         </div>
-        <div class="card-container d-flex flex-column w-100 mb-3">
-            <div *ngIf="records.length==0" class="rounded-lg border bg-white p-4">
+        <div class="card-container d-flex flex-column w-100" [class.bg-light]="records.length==0">
+            <div *ngIf="records.length==0" class="p-4">
                 <p class="m-0">No Records Found,
                     <button type="button" class="btn btn-link px-1 py-0" (click)="newNode()">Click Here</button>
                     to create a new Node
                     <span *ngIf="searchTerm">:&nbsp;<span class="fw-500">{{searchTerm}}</span></span>
                 </p>
             </div>
-            <div *ngIf="records.length>0" class="list-group mb-3">
+            <div *ngIf="records.length>0" class="list-group list-group-flush mb-3">
                 <div
                     class="list-group-item header d-flex align-items-center justify-content-start py-0 bg-light text-uppercase font-11 fw-500">
                     <div (click)="applySort('name')" class="hover d-flex align-items-center item-name">
@@ -118,7 +118,7 @@
                         <thead class="table-grey font-10 text-uppercase text-secondary">
                             <tr>
                                 <th>Label</th>
-                                <th>Key</th>
+                                <th>Variable</th>
                                 <th>Data Type</th>
                                 <th>HTML Type</th>
                                 <th>
@@ -136,7 +136,7 @@
                                         (ngModelChange)="convertToKey($event,item)">
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control" [(ngModel)]="item.key">
+                                    <input type="text" class="form-control" [(ngModel)]="item.key" readonly>
                                 </td>
                                 <td>
                                     <select class="form-control" [(ngModel)]="item.dataType">
@@ -161,7 +161,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="bg-light border rounded p-2 d-flex flex-column w-100 text-monospace">
+                <div class="bg-light border rounded p-2 d-flex flex-column w-100 text-monospace mb-3">
                     <div class="d-flex align-items-center justify-content-start">
                         <span class="text-info fw-500 mr-2 d-flex">
                             <strong>var</strong>
@@ -190,7 +190,7 @@
                             start the flow. Where <span class="text-success fw-600">data</span> being the initial body.</span>
                     </div>
                 </div>
-                <div class="code-editor-wrapper d-flex flex-column border rounded w-100 mt-3"
+                <div class="code-editor-wrapper d-flex flex-column border rounded w-100"
                     [class.expanded]="toggleExpand">
                     <div class="border-bottom d-flex align-items-center justify-content-between w-100 p-2 bg-light">
                         <span class="text-monospace font-12 fw-600 text-secondary">Write Your Code Here</span>

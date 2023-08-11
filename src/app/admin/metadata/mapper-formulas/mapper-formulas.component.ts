@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { switchMap } from 'rxjs/operators';
+import * as _ from 'lodash';
 import { CommonService } from 'src/app/utils/services/common.service';
 
 @Component({
@@ -17,6 +18,7 @@ export class MapperFormulasComponent implements OnInit {
   toggleNewFormulaWindow: boolean;
   createFormulaLoader: boolean;
   openDeleteModal: EventEmitter<any>;
+  toggleExpand: boolean;
   constructor(private fb: UntypedFormBuilder,
     private commonService: CommonService,
     private ts: ToastrService) {
@@ -111,5 +113,11 @@ export class MapperFormulasComponent implements OnInit {
       this.createFormulaLoader = false;
       this.commonService.errorToast(err);
     });
+  }
+
+  onBlur(param) {
+    if (param.name) {
+      param.name = _.camelCase(param.name);
+    }
   }
 }

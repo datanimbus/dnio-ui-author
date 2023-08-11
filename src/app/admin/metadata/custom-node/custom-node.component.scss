@@ -2,15 +2,15 @@
 @import "src/assets/scss/bootstrap/_variables.scss";
 
 .node-page {
-    height: calc(100vh - 60px);
+    height: calc(100vh - 148px);
 
     .node-list-wrapper {
-        min-width: 360px;
-        max-width: 360px;
+        min-width: 480px;
+        max-width: 480px;
     }
 
     .card-container {
-        height: calc(100vh - 170px);
+        height: calc(100vh - 286px);
         overflow: auto;
 
         .list-group-item {
@@ -23,8 +23,8 @@
             }
 
             .item-name {
-                min-width: 120px;
-                max-width: 120px;
+                min-width: 180px;
+                max-width: 180px;
             }
 
             .item-type {
@@ -133,7 +133,12 @@
 }
 
 .code-editor-wrapper {
+    max-height: 100px;
+    overflow: hidden;
     &.expanded {
+        overflow: visible;
+        max-height: 100%;
+        width: 100%;
         position: fixed;
         left: 0;
         top: 0;
@@ -144,6 +149,7 @@
 
         .code-editor {
             height: calc(100vh - 40px);
+            // max-height: 100px;
         }
     }
 }
