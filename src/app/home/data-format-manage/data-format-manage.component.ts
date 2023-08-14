@@ -85,7 +85,7 @@ export class DataFormatManageComponent implements
         this.form = this.fb.group({
             name: [null, [Validators.required]],
             description: [null],
-            type: ['', [Validators.required]],
+            type: ['Object', [Validators.required]],
             strictValidation: [false],
             definition: this.fb.array([
                 this.schemaService.getDefinitionStructure()
@@ -207,11 +207,10 @@ export class DataFormatManageComponent implements
                         name: res.name,
                         description: res.description,
                         strictValidation: res.strictValidation,
-                        excelType: res.excelType,
-                        type: res.type
+                        excelType: res.excelType
                     };
                     this.form.patchValue(temp);
-                    // this.form.get('type').patchValue('Object');
+                    this.form.get('type').patchValue('Object');
                     temp.definition = this.schemaService.generateStructure(res.definition);
                     (this.form.get('definition') as UntypedFormArray).controls.splice(0);
                     temp.definition.forEach((element, i) => {
