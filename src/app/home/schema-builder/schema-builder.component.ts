@@ -597,7 +597,7 @@ export class SchemaBuilderComponent implements
         } else {
             response = self.commonService.post('serviceManager', `/${this.commonService.app._id}/service`, payload);
         }
-        response.subscribe(res => {
+        this.subscriptions['save'] =   response.subscribe(res => {
             self.showLazyLoader = false;
             self.action.loading = false;
             self.roleChange = false;
@@ -627,7 +627,7 @@ export class SchemaBuilderComponent implements
         const self = this;
         if (!self.isSchemaFree && self.form.get(['definition', 0, 'counter']).dirty && self.edit.id) {
             const payload = self.schemaStructurePipe.transform(self.form.value);
-            self.commonService.get('serviceManager', `/${this.commonService.app._id}/service/utils/${this.edit.id}/idCount`, { filter: { app: this.commonService.app._id } }).subscribe(res => {
+            this.subscriptions['checkSaveAndDeploy'] =  self.commonService.get('serviceManager', `/${this.commonService.app._id}/service/utils/${this.edit.id}/idCount`, { filter: { app: this.commonService.app._id } }).subscribe(res => {
                 if (payload.definition.find(d => d.key === '_id').counter <= res) {
                     self.commonService.errorToast(
                         { status: 400 }, 'Invalid value for counter because the current counter value is  ' + res);
@@ -647,7 +647,7 @@ export class SchemaBuilderComponent implements
     deploy(payload: any) {
         const self = this;
         self.showLazyLoader = true;
-        self.commonService.put('serviceManager', `/${this.commonService.app._id}/service/utils/${payload._id}/deploy`, { app: this.commonService.app._id }).subscribe(res => {
+       this.subscriptions['deploy'] = self.commonService.put('serviceManager', `/${this.commonService.app._id}/service/utils/${payload._id}/deploy`, { app: this.commonService.app._id }).subscribe(res => {
             self.showLazyLoader = false;
             self.action.loading = false;
             self.roleChange = false;

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { switchMap } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { CommonService } from 'src/app/utils/services/common.service';
   templateUrl: './mapper-formulas.component.html',
   styleUrls: ['./mapper-formulas.component.scss']
 })
-export class MapperFormulasComponent implements OnInit {
+export class MapperFormulasComponent implements OnInit, OnDestroy {
 
   form: UntypedFormGroup;
   formulaList: Array<any>;
@@ -19,6 +19,7 @@ export class MapperFormulasComponent implements OnInit {
   createFormulaLoader: boolean;
   openDeleteModal: EventEmitter<any>;
   toggleExpand: boolean;
+  subscriptions: Array<any> = []
   constructor(private fb: UntypedFormBuilder,
     private commonService: CommonService,
     private ts: ToastrService) {
@@ -34,7 +35,7 @@ export class MapperFormulasComponent implements OnInit {
   }
 
   fetchAllFormulas() {
-    this.commonService.get('user', '/admin/metadata/mapper/formula/count', { noApp: true })
+    this.subscriptions['formulaList'] = this.commonService.get('user', '/admin/metadata/mapper/formula/count', { noApp: true })
       .pipe(switchMap((ev: any) => {
         return this.commonService.get('user', '/admin/metadata/mapper/formula', { count: ev, noApp: true })
       }))
@@ -64,7 +65,7 @@ export class MapperFormulasComponent implements OnInit {
     }
     this.createFormulaLoader = true;
     let payload = this.form.value;
-    this.commonService.post('user', '/admin/metadata/mapper/formula', payload).subscribe(res => {
+    this.subscriptions['formulaCreate'] =  this.commonService.post('user', '/admin/metadata/mapper/formula', payload).subscribe(res => {
       this.createFormulaLoader = false;
       this.selectedFormula = res;
       this.ts.success('Formula Created.');
@@ -92,7 +93,7 @@ export class MapperFormulasComponent implements OnInit {
 
   triggerDeleteFormula(item: any) {
     this.createFormulaLoader = true;
-    this.commonService.delete('user', `/admin/metadata/mapper/formula/${item._id}`, { noApp: true }).subscribe(res => {
+    this.subscriptions['deleteFormula'] =  this.commonService.delete('user', `/admin/metadata/mapper/formula/${item._id}`, { noApp: true }).subscribe(res => {
       this.fetchAllFormulas();
       this.createFormulaLoader = false;
       this.ts.success('Formula Deleted.');
@@ -105,7 +106,7 @@ export class MapperFormulasComponent implements OnInit {
 
   saveFormula() {
     this.createFormulaLoader = true;
-    this.commonService.put('user', `/admin/metadata/mapper/formula/${this.selectedFormula._id}`, this.selectedFormula).subscribe(res => {
+    this.subscriptions['save'] =  this.commonService.put('user', `/admin/metadata/mapper/formula/${this.selectedFormula._id}`, this.selectedFormula).subscribe(res => {
       this.fetchAllFormulas();
       this.createFormulaLoader = false;
       this.ts.success('Formula Updated.');
@@ -119,5 +120,11 @@ export class MapperFormulasComponent implements OnInit {
     if (param.name) {
       param.name = _.camelCase(param.name);
     }
+  }
+
+  ngOnDestroy(): void {
+    Object.keys(this.subscriptions).forEach(e => {
+      this.subscriptions[e].unsubscribe();
+  });
   }
 }

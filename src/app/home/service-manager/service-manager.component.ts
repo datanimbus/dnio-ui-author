@@ -161,7 +161,7 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
       if (index > -1) {
         this.serviceList[index].status = 'Active';
       } else {
-        this.commonService
+       this.subscriptions['getService']=  this.commonService
           .get(
             'serviceManager',
             `/${this.commonService.app._id}/service/` + data._id,
@@ -273,7 +273,7 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
               `/${this.commonService.app._id}/service/utils/${id}/draftDelete`
             );
           }
-          request.subscribe(
+       this.subscriptions['discardDraft'] = request.subscribe(
             (res) => {
               this.ts.success('Draft Deleted.');
               if (service.status !== 'Draft') {
@@ -309,7 +309,7 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
       delete payload.versionValidity;
     }
 
-    this.commonService
+   this.subscriptions['createService'] =  this.commonService
       .post('serviceManager', `/${this.commonService.app._id}/service`, payload)
       .subscribe(
         (res) => {
@@ -453,7 +453,7 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
     delete payload.expTab;
     delete payload.rolTab;
     delete payload.setTab;
-    this.commonService
+   this.subscriptions['cloneService'] =  this.commonService
       .post('serviceManager', `/${this.commonService.app._id}/service`, payload)
       .subscribe(
         (res) => {

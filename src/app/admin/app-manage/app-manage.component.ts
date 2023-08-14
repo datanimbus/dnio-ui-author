@@ -93,7 +93,7 @@ export class AppManageComponent implements OnInit, OnDestroy {
 
     getApp(id: string) {
         const self = this;
-        self.commonService.get('user', '/admin/app/' + id, { noApp: true }).subscribe(res => {
+        this.subscriptions['app'] =  self.commonService.get('user', '/admin/app/' + id, { noApp: true }).subscribe(res => {
             self.tempList = res.users;
             self.appData = Object.assign(self.appData, res);
             self.oldData = self.appService.cloneObject(self.appData);
@@ -222,7 +222,7 @@ export class AppManageComponent implements OnInit, OnDestroy {
         if (!this.changesDone) {
             return;
         }
-        self.commonService.put('user', '/admin/app/' + self.appData._id, self.appData).subscribe(res => {
+       this.subscriptions['save'] = self.commonService.put('user', '/admin/app/' + self.appData._id, self.appData).subscribe(res => {
             self.oldData = self.appService.cloneObject(self.appData);
             self.ts.success('App saved successfully');
             self.router.navigate(['/admin']);
@@ -282,7 +282,7 @@ export class AppManageComponent implements OnInit, OnDestroy {
         self.groupConfig.filter = {
             app: appId
         };
-        self.commonService.get('user', `/${this.commonService.app._id}/group`, self.groupConfig).subscribe(res => {
+        this.subscriptions['groupList'] =  self.commonService.get('user', `/${this.commonService.app._id}/group`, self.groupConfig).subscribe(res => {
             if (res.length > 0) {
                 self.groupList = res;
                 const index = self.groupList.findIndex(e => e.name === '#');

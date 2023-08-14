@@ -83,7 +83,7 @@ export class NpmLibrariesComponent implements OnInit {
     } else {
       request = this.commonService.post('partnerManager', `/admin/flow/utils/node-library`, payload)
     }
-    request.subscribe(res => {
+    this.subscriptions['save'] = request.subscribe(res => {
       this.showLazyLoader = false;
       if (payload._id) {
         this.ts.success('Library has been updated.');
@@ -100,7 +100,7 @@ export class NpmLibrariesComponent implements OnInit {
   getNpmLibraries() {
     this.showLazyLoader = true;
     this.customNodeList = [];
-    this.commonService.get('partnerManager', `/admin/flow/utils/node-library`, {
+    this.subscriptions['libraryList'] = this.commonService.get('partnerManager', `/admin/flow/utils/node-library`, {
       noApp: true
     }).subscribe((res: any) => {
       this.showLazyLoader = false;

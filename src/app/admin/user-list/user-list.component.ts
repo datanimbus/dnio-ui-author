@@ -436,7 +436,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         const username = this.userForm.get('username').value;
         this.invalidUniqueUsername = false;
         if (username) {
-            this.commonService.get('user', '/auth/authType/' + username).subscribe(
+            this.subscriptions['checkDuplicates'] =    this.commonService.get('user', '/auth/authType/' + username).subscribe(
                 res => {
                     this.invalidUniqueUsername = true;
                 },
@@ -511,7 +511,7 @@ export class UserListComponent implements OnInit, OnDestroy {
             noApp: true,
             sort: '_id'
         };
-        this.commonService.get('user', '/admin/app', config).subscribe(
+        this.subscriptions['allApps'] =  this.commonService.get('user', '/admin/app', config).subscribe(
             res => {
                 this.appList = res;
             },
