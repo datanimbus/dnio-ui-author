@@ -418,6 +418,9 @@ export class NodeMappingComponent implements OnInit {
     if (!def.source) {
       def.source = [];
     }
+    if(def.source.find(ele => ele.dataPath === this.dragItem.dataPath)){
+      return ;
+    }
     if (this.dragItem) {
       def.source.push(this.dragItem);
       this.mappingService.reCreatePaths.emit();
