@@ -10,7 +10,7 @@
     }
 
     .card-container {
-        height: calc(100vh - 170px);
+        height: calc(100vh - 210px);
         overflow: auto;
 
         .list-group-item {
@@ -133,7 +133,7 @@
 
 .edit-node-window {
     overflow-y: auto;
-    max-height: calc(100vh - 200px);
+    max-height: calc(100vh - 240px);
 }
 
 .code-editor-wrapper {
