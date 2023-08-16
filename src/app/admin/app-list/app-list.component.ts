@@ -166,7 +166,7 @@ export class AppListComponent implements OnInit, OnDestroy {
 
   getApps() {
     const self = this;
-    self.commonService.get('user', '/admin/app', self.apiConfig).subscribe(
+    this.subscriptions['appList'] =  self.commonService.get('user', '/admin/app', self.apiConfig).subscribe(
       (res) => {
         self.appList = [];
         self.commonService.appList = [];
@@ -194,7 +194,7 @@ export class AppListComponent implements OnInit, OnDestroy {
 
   getUserApps() {
     const self = this;
-    self.commonService.get('user', '/data/app', self.apiConfig).subscribe(
+    this.subscriptions['userApps'] = self.commonService.get('user', '/data/app', self.apiConfig).subscribe(
       (res) => {
         self.appList = [];
         self.commonService.appList = [];

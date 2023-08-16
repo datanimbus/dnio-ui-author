@@ -114,7 +114,7 @@ export class CustomNodeComponent implements OnInit {
     const payload = this.form.value;
     payload.app = this.commonService.app._id;
     payload.nodes = [];
-    this.commonService.post('partnerManager', `/admin/node`, payload).subscribe(res => {
+    this.subscriptions['createNode'] = this.commonService.post('partnerManager', `/admin/node`, payload).subscribe(res => {
       this.showLazyLoader = false;
       this.ts.success('Process Node has been created.');
       this.getNodes();
@@ -137,11 +137,11 @@ export class CustomNodeComponent implements OnInit {
     const val = this.form.get('name').value
     this.cloneData.name = val;
     this.cloneData.inputNode.options.path = val ? '/' + _.camelCase(val) : null;
-    this.commonService.post('partnerManager', `/admin/node`, this.cloneData).subscribe(res => {
+    this.subscriptions['cloneNode'] =  this.commonService.post('partnerManager', `/admin/node`, this.cloneData).subscribe(res => {
       this.showLazyLoader = false;
       this.isClone = false;
       this.ts.success('Process Node has been cloned.');
-      this.getNodes();
+      this.subscriptions['nodeList'] = this.getNodes();
     }, err => {
       this.showLazyLoader = false;
       this.isClone = false;
