@@ -92,6 +92,10 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
     this.slideState = 'blur';
   }
 
+  resetSearchInput() {
+    this.searchTerm = null;
+  }
+  
   get info() {
     if (this.onEnter) {
       return 'Search will be executed on Enter Pressed';
