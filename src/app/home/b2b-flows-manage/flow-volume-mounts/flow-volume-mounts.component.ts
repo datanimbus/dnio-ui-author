@@ -120,13 +120,13 @@ export class FlowVolumeMountsComponent implements OnInit {
   }
 
   get requiredNameError(){
-    if(this.form && this.form.name){
+    if(this.form && this.form.name && this.form.name.trim()){
       return false
     }
     return true
   }
   get requiredHostError(){
-    if(this.form && this.form.hostPath){
+    if(this.form && this.form.hostPath && this.form.hostPath.trim()){
       return false
     }
     return true
