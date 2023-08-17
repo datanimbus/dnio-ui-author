@@ -44,14 +44,13 @@ export class ConnectorPropertiesComponent implements OnInit {
   loadInitial() {
     this.showLoader = true;
     this.commonService.get('user', `/${this.commonService.app._id}/connector`, {
-      sort: 'name',
-      select: 'name type category',
-      count: 5,
+      sort: '-_metadata.lastUpdated',
       filter: {
         type: {
           $in: this.typeList
         }
-      }
+      },
+      
     }).subscribe((res) => {
       this.showLoader = false;
       this.connectorList = res;
@@ -64,7 +63,7 @@ export class ConnectorPropertiesComponent implements OnInit {
 
   searchConnector(searchTerm: string) {
     const options: GetOptions = {
-      sort: 'name',
+      sort: '-_metadata.lastUpdated',
       filter: {
         type: {
           $in: this.typeList
