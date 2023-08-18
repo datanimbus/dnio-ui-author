@@ -91,7 +91,7 @@ export class FlowContantsComponent implements OnInit {
   }
 
   get requiredError(){
-    if(this.form && this.form.key && this.form.dataType){
+    if(this.form && this.form.key && this.form.dataType && this.form.key.trim()){
       return false
     }
     return true
