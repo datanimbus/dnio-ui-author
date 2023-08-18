@@ -50,7 +50,6 @@
         max-width: 200px;
         position: absolute;
         right: -500px;
-        top: 12px;
         transition: 0.2s;
 
         .actions {
@@ -69,6 +68,13 @@
             }
           }
         }
+      }
+
+      .btn-sm {
+        height: 30px;
+        line-height: 18px !important;
+        font-size: 13px;
+        box-shadow: none;
       }
 
       &:hover {
