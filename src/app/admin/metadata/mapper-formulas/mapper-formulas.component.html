@@ -1,12 +1,20 @@
 <div class="p-3 d-flex align-items-start">
     <div class="formula-list border rounded mr-3">
         <div class="formula-list-header p-3 d-flex align-items-center justify-content-between">
-            <span class="font-16 fw-500">Formula List</span>
+            <odp-search-box (enteredText)="searchFormula($event)" (reset)="clearSearch()" [edit]="{status:true}"></odp-search-box>
             <button type="button" class="btn btn-primary d-flex align-items-center justify-content-between"
                 (click)="openNewFormulaWindow()">
                 <span class="dsi dsi-plus mr-2"></span>
                 <span>New</span>
             </button>
+        </div>
+        <div *ngIf="!formulaList || formulaList.length == 0 && selectedFormula"
+            class="list-group-item d-flex align-items-center text-secondary">
+            <p class="m-0">No Records Found,
+                <button type="button" class="btn btn-link px-1 py-0" (click)="openNewFormulaWindow()">Click Here</button>
+                to create a new Formula
+                <span *ngIf="searchTerm">:&nbsp;<span class="fw-500">{{searchTerm}}</span></span>
+            </p>
         </div>
         <div class="list-group list-group-flush">
             <div class="list-group-item list-group-item-action hover d-flex align-items-center justify-content-between"
@@ -77,7 +85,7 @@
                     <tr *ngFor="let param of selectedFormula.params;let i=index">
                         <td>
                             <input [attr.id]="'paramName_'+i" class="form-control border-0" type="text"
-                                [(ngModel)]="param.name" (blur)="onBlur(param)" odpAutoFocus>
+                                [(ngModel)]="param.name" (blur)="onBlur(param)">
                         </td>
                         <td>
                             <select [attr.id]="'paramType_'+i" class="form-control border-0" [(ngModel)]="param.type">

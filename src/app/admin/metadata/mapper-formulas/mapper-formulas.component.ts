@@ -1,9 +1,10 @@
-import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { SearchBoxComponent } from 'src/app/utils/search-box/search-box.component';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { CommonService } from 'src/app/utils/services/common.service';
+import { CommonService, GetOptions } from 'src/app/utils/services/common.service';
 
 @Component({
   selector: 'odp-mapper-formulas',
@@ -12,12 +13,14 @@ import { CommonService } from 'src/app/utils/services/common.service';
 })
 export class MapperFormulasComponent implements OnInit, OnDestroy {
 
+  @ViewChild(SearchBoxComponent) SearchBoxComponent: SearchBoxComponent;
   form: UntypedFormGroup;
   formulaList: Array<any>;
   selectedFormula: any;
   toggleNewFormulaWindow: boolean;
   createFormulaLoader: boolean;
   openDeleteModal: EventEmitter<any>;
+  searchTerm: string;
   toggleExpand: boolean;
   subscriptions: Array<any> = []
   constructor(private fb: UntypedFormBuilder,
@@ -42,6 +45,8 @@ export class MapperFormulasComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         this.formulaList = res;
         this.selectedFormula = this.formulaList[0];
+        // // Reset the search term in the search bar
+        this.SearchBoxComponent.resetSearchInput();
       }, err => {
         this.commonService.errorToast(err);
       });
@@ -126,5 +131,36 @@ export class MapperFormulasComponent implements OnInit, OnDestroy {
     Object.keys(this.subscriptions).forEach(e => {
       this.subscriptions[e].unsubscribe();
   });
+  }
+
+  searchFormula(searchTerm: string) {
+    const options: GetOptions = {
+      sort: 'name',
+      filter: { name: '/' + searchTerm + '/' },
+      noApp: true,
+      count: 5
+    };
+  
+    this.searchTerm = searchTerm;
+    this.createFormulaLoader = true;
+  
+    this.commonService.get('user', '/admin/metadata/mapper/formula', options)
+      .subscribe(
+        (res) => {
+          this.createFormulaLoader = false;
+          this.formulaList = res;
+        },
+        (err) => {
+          this.createFormulaLoader = false;
+          this.formulaList = [];
+          this.commonService.errorToast(err);
+        }
+      );
+  }
+
+  clearSearch() {
+    this.formulaList = [];
+    this.searchTerm = null;
+    this.fetchAllFormulas();
   }
 }
