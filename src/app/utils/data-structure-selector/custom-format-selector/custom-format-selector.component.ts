@@ -52,6 +52,7 @@ export class CustomFormatSelectorComponent implements OnInit {
     }
     def.properties.name = val;
     def.properties.dataPath = val;
+    def.properties.dataPathSegs = [val]
   }
 
   clearSchema() {
