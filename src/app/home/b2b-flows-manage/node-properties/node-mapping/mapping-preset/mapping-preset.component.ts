@@ -398,6 +398,10 @@ export class MappingPresetComponent implements OnInit {
     if (!def.source) {
       def.source = [];
     }
+
+    if(def.source.find(ele => ele.dataPath === this.dragItem.dataPath && ele.nodeId === this.dragItem.nodeId)){
+      return ;
+    }
     if (this.dragItem) {
       def.source.push(this.dragItem);
       this.mappingService.reCreatePaths.emit();

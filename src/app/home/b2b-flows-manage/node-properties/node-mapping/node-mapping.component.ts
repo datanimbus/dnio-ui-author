@@ -418,7 +418,7 @@ export class NodeMappingComponent implements OnInit {
     if (!def.source) {
       def.source = [];
     }
-    if(def.source.find(ele => ele.dataPath === this.dragItem.dataPath)){
+    if(def.source.find(ele => ele.dataPath === this.dragItem.dataPath && ele.nodeId === this.dragItem.nodeId)){
       return ;
     }
     if (this.dragItem) {
