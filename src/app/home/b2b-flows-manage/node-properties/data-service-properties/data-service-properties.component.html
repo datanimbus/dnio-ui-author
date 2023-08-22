@@ -15,7 +15,7 @@
         <div class="form-group position-relative">
             <label for="authorization" class="d-flex align-items-center justify-content-between">
                 <span>Authorization Token</span>
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['token']=!toggle['token']"></span>
+                <span class="dsi dsi-settings text-primary hover" (click)="toggle['token']=!toggle['token']" *ngIf="edit.status"></span>
             </label>
             <!-- <input id="authorization" type="text" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.authorization"> -->
@@ -48,7 +48,7 @@
         <div class="form-group position-relative ">
             <label for="select" class="d-flex align-items-center justify-content-between">
                 Select
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['select']=!toggle['select']"></span>
+                <span class="dsi dsi-settings text-primary hover" (click)="toggle['select']=!toggle['select']" *ngIf="edit.status"></span>
             </label>
             <!-- <input id="select" type="text" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.select"> -->
@@ -60,7 +60,7 @@
         <div class="form-group position-relative ">
             <label for="count" class="d-flex align-items-center justify-content-between">
                 Count
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['count']=!toggle['count']"></span>
+                <span class="dsi dsi-settings text-primary hover" (click)="toggle['count']=!toggle['count']" *ngIf="edit.status"></span>
             </label>
             <!-- <input id="count" type="number" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.count"> -->
@@ -71,7 +71,7 @@
         <div class="form-group position-relative ">
             <label for="page" class="d-flex align-items-center justify-content-between">
                 Page
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['page']=!toggle['page']"></span>
+                <span class="dsi dsi-settings text-primary hover" (click)="toggle['page']=!toggle['page']" *ngIf="edit.status"></span>
             </label>
             <!-- <input id="page" type="number" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.page"> -->
@@ -82,7 +82,7 @@
         <div class="form-group position-relative ">
             <label for="sort" class="d-flex align-items-center justify-content-between">
                 Sort
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['sort']=!toggle['sort']"></span>
+                <span class="dsi dsi-settings text-primary hover" (click)="toggle['sort']=!toggle['sort']" *ngIf="edit.status"></span>
             </label>
             <!-- <input id="sort" type="text" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.sort"> -->
@@ -97,7 +97,7 @@
         <div class="form-group position-relative ">
             <label for="filter" class="d-flex align-items-center justify-content-between">
                 Filter
-                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['filter']=!toggle['filter']"></span> -->
+                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['filter']=!toggle['filter']"></s *ngIf="edit.status"pan> -->
             </label>
             <textarea id="filter" class="form-control" [(ngModel)]="currNode.options.filter" (keydown.delete)="$event.stopPropagation()"></textarea>
             <!-- <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['filter']" [textarea]="true" [nodeList]="nodeList"
@@ -109,7 +109,7 @@
         <div class="form-group position-relative ">
             <label for="docId" class="d-flex align-items-center justify-content-between">
                 ID
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['id']=!toggle['id']"></span>
+                <span class="dsi dsi-settings text-primary hover" (click)="toggle['id']=!toggle['id']" *ngIf="edit.status"></span>
             </label>
             <!-- <input id="docId" type="text" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.documentId"> -->
@@ -122,7 +122,7 @@
         <div class="form-group position-relative ">
             <label for="fields" class="d-flex align-items-center justify-content-between">
                 Update Based on Fields
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['fields']=!toggle['fields']"></span>
+                <span class="dsi dsi-settings text-primary hover" (click)="toggle['fields']=!toggle['fields']" *ngIf="edit.status"></span>
             </label>
             <!-- <input id="fields" type="text" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.fields"> -->

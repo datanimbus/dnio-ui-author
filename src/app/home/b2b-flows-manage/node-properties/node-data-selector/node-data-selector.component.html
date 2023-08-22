@@ -136,7 +136,7 @@
                 <span>Value</span>
                 <div class="d-flex align-items-center">
                     <span class="dsi dsi-settings text-primary hover"
-                        (click)="openSelector=!openSelector"></span>
+                        (click)="openSelector=!openSelector" *ngIf="edit.status"></span>
                     <span class="ml-3 font-12 fw-400">Insert Variable</span>
                 </div>
             </label>

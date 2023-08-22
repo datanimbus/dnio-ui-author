@@ -2,7 +2,7 @@
     <div class="d-flex align-items-center justify-content-between px-4 py-2 mt-4">
         <span class="font-20 fw-600">Path Properties</span>
         <div class="d-flex">
-            <button type="button" class="btn btn-link" (click)="deletePath()">
+            <button type="button" class="btn btn-link" (click)="deletePath()" *ngIf="edit.status">
                 <span class="dsi dsi-trash text-danger"></span>
             </button>
             <button type="button" class="btn btn-link" (click)="cancel()">
@@ -51,6 +51,6 @@
             <span>Path Condition</span>
         </label>
         <odp-path-condition-creator [nodeList]="nodeList" [(value)]="condition"
-            [prevNode]="path.path._id"></odp-path-condition-creator>
+            [prevNode]="path.path._id" [edit]="edit"></odp-path-condition-creator>
     </div>
 </div>
