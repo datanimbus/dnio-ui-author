@@ -197,7 +197,7 @@ export class NodeMappingComponent implements OnInit {
       minMatchCharLength: 4,
       keys: ['dataPath']
     };
-    this.allTargets.forEach((def: any) => {
+    this.allTargets.filter(e => e.type != 'Object').forEach((def: any) => {
       let temp = this.allSources.find(e => (e.dataPath == def.dataPath) || (_.toLower(_.camelCase(e.dataPath)) == _.toLower(_.camelCase(def.dataPath))));
       if (!def.source) {
         def.source = [];
@@ -206,10 +206,10 @@ export class NodeMappingComponent implements OnInit {
         def.source.push(temp);
       }
     });
-    this.allTargets.forEach((def: any) => {
+    this.allTargets.filter(e => e.type != 'Object').forEach((def: any) => {
       if (def.type !== 'Array' && def.dataPath?.indexOf('[#]') == -1) {
         const fuse = new Fuse(this.allSources.filter(e => e.type != 'Object'), options);
-        let result = fuse.search(def.dataPath).filter(e => e.score < 0.3);
+        let result = fuse.search(def.dataPath).filter(e => e.score < 0.3 );
         if (!def.source) {
           def.source = [];
         }
