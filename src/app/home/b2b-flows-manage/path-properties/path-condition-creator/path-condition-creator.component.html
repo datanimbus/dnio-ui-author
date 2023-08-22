@@ -14,7 +14,7 @@
             <span *ngIf="value"
                 class="icon dsi dsi-minus-circle text-danger hover d-flex align-items-center justify-content-center"
                 (click)="unsetValue()"></span>
-            <span class="icon dsi dsi-settings text-accent hover d-flex align-items-center justify-content-center"
+            <span class="icon dsi dsi-settings text-accent hover d-flex align-items-center justify-content-center" *ngIf="edit.status"
                 (click)="showConditionWindow=!showConditionWindow"></span>
         </div>
     </div>

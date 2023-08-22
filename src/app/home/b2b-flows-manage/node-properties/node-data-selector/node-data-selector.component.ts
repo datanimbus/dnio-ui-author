@@ -28,7 +28,7 @@ export class NodeDataSelectorComponent implements OnInit {
   constructor(private flowService: B2bFlowService) {
     this.nodeList = [];
     this.edit = {
-      status: false
+      status: true
     };
     this.toggleChange = new EventEmitter();
     this.valueChange = new EventEmitter();

@@ -33,7 +33,7 @@
                 <odp-change-on-edit id="nodeName" [(ngModel)]="currNode.name" (ngModelChange)="nodeNameChanged($event)"
                     (ngModelChange)="changesDone.emit()" (tempValue)="checkNameForUnique($event)"
                     [errorMessage]="nodeNameErrorMessage"
-                    (keydown.delete)="$event.stopPropagation();"></odp-change-on-edit>
+                    (keydown.delete)="$event.stopPropagation();" [edit]="edit"></odp-change-on-edit>
             </div>
             <div class="form-group" *ngIf="currNode?.type!='ERROR'">
                 <label class="font-14 fw-400 text-dark" for="nodeType">Node Type</label>
@@ -123,7 +123,7 @@
                     <label class="font-14 fw-400 text-dark" for="nodeEndpoint">API Endpoint</label>
                     <odp-change-on-edit id="nodeEndpoint" [(ngModel)]="currNode.options.path"
                         (ngModelChange)="changesDone.emit()"
-                        (keydown.delete)="$event.stopPropagation();"></odp-change-on-edit>
+                        (keydown.delete)="$event.stopPropagation();" [edit]="edit"></odp-change-on-edit>
                 </div>
                 <div class="form-group">
                     <label class="font-14 fw-400 text-dark" for="nodeContentType">Content-Type</label>
@@ -137,7 +137,7 @@
                 <div class="form-group position-relative">
                     <label class="font-14 fw-400 text-dark" for="requestTimeout">Timeout (sec)</label>
                     <odp-change-on-edit id="requestTimeout" [isTimeout]="true" [(ngModel)]="currNode.options.timeout"
-                        (ngModelChange)="changesDone.emit()"></odp-change-on-edit>
+                        (ngModelChange)="changesDone.emit()" [edit]="edit"></odp-change-on-edit>
                     <!-- <input id="requestTimeout" class="form-control" type="number" [(ngModel)]="currNode.options.timeout"> -->
                 </div>
             </ng-container>
@@ -145,7 +145,7 @@
                 <div class="form-group">
                     <label class="font-14 fw-400 text-dark" for="nodeEndpoint">CRON Expression</label>
                     <odp-change-on-edit id="nodeEndpoint" [(ngModel)]="currNode.options.cron"
-                        (ngModelChange)="changesDone.emit()"></odp-change-on-edit>
+                        (ngModelChange)="changesDone.emit()" [edit]="edit"></odp-change-on-edit>
                 </div>
             </ng-container>
             <div *ngIf="currNode?.type!='TIMER' && currNode?.type!='PLUGIN'"
@@ -167,7 +167,7 @@
                 <div class="position-relative z-0">
                     <odp-autocomplete-on-edit #typeAhead [(ngModel)]="currNode.options.url"
                         (ngModelChange)="onValueChange($event)" [currNode]="currNode"
-                        class="styled-wrapper"></odp-autocomplete-on-edit>
+                        class="styled-wrapper" [edit]="edit"></odp-autocomplete-on-edit>
                 </div>
             </div>
             <div class="form-group">
@@ -197,7 +197,7 @@
                 </label>
                 <div class="position-relative z-0">
                     <odp-autocomplete-on-edit #typeAhead [(ngModel)]="currNode.options.url"
-                        (ngModelChange)="onValueChange($event)" [currNode]="currNode"
+                        (ngModelChange)="onValueChange($event)" [currNode]="currNode" [edit]="edit"
                         class="styled-wrapper"></odp-autocomplete-on-edit>
                 </div>
             </div>
@@ -526,19 +526,19 @@
             <div class="form-group position-relative">
                 <label class="font-14 fw-400 text-dark" for="requestTimeout">Timeout (sec)</label>
                 <odp-change-on-edit id="requestTimeout" [(ngModel)]="currNode.options.timeout"
-                    (ngModelChange)="changesDone.emit()"></odp-change-on-edit>
+                    (ngModelChange)="changesDone.emit()" [edit]="edit"></odp-change-on-edit>
                 <!-- <input id="a" class="form-control" type="number" [(ngModel)]="currNode.options.timeout"> -->
             </div>
             <div class="form-group position-relative">
                 <label class="font-14 fw-400 text-dark" for="retryCount">Retry Count</label>
                 <odp-change-on-edit id="retryCount" [(ngModel)]="currNode.options.retry.count"
-                    (ngModelChange)="changesDone.emit()"></odp-change-on-edit>
+                    (ngModelChange)="changesDone.emit()" [edit]="edit"></odp-change-on-edit>
                 <!-- <input id="retryCount" class="form-control" type="number" [(ngModel)]="currNode.options.retry.count"> -->
             </div>
             <div class="form-group position-relative mb-0">
                 <label class="font-14 fw-400 text-dark" for="retryInterval">Retry Interval (sec)</label>
                 <odp-change-on-edit id="retryInterval" [(ngModel)]="currNode.options.retry.interval"
-                    (ngModelChange)="changesDone.emit()"></odp-change-on-edit>
+                    (ngModelChange)="changesDone.emit()" [edit]="edit"></odp-change-on-edit>
                 <!-- <input id="retryInterval" class="form-control" type="number"
                     [(ngModel)]="currNode.options.retry.interval"> -->
             </div>

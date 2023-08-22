@@ -32,6 +32,7 @@ export class AutocompleteOnEditComponent implements OnInit, ControlValueAccessor
   @Input() placeholder: string = '';
   @Input() pattern: RegExp = /.*/g;
   @Input() currNode: any;
+  @Input() edit: any;
   @Output() onPaste: EventEmitter<any> = new EventEmitter();
   @Output() onEnter: EventEmitter<any> = new EventEmitter();
   @ViewChild('renderer') renderer: any;
@@ -45,7 +46,11 @@ export class AutocompleteOnEditComponent implements OnInit, ControlValueAccessor
   editEnabled: boolean;
   @Input() errorMessage: string;
   @Output() tempValue: EventEmitter<string>;
-  constructor(private flowService: B2bFlowService) { }
+  constructor(private flowService: B2bFlowService) { 
+    this.edit = {
+      status : true
+    }
+  }
 
   ngOnInit() {
     if (!this.value) {

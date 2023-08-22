@@ -24,10 +24,14 @@ export class ChangeOnEditComponent implements ControlValueAccessor {
   editEnabled: boolean;
   @Input() errorMessage: string;
   @Input() isTimeout: boolean;
+  @Input() edit: any;
   @Output() tempValue: EventEmitter<string>;
   constructor() {
     this.tempValue = new EventEmitter();
     this.errorMessage = '';
+    this.edit = {
+      status: true
+    }
   }
 
   ngAfterViewInit() {
