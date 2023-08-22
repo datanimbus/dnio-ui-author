@@ -62,7 +62,17 @@
                 <label for="value">Value</label>
                 <input *ngIf="form.dataType=='String'" id="value" type="text" class="form-control" [(ngModel)]="form.value">
                 <input *ngIf="form.dataType=='Number'" id="value" type="number" class="form-control" [(ngModel)]="form.value">
-                <input *ngIf="form.dataType=='Boolean'" id="value" type="checkbox" class="form-control" [(ngModel)]="form.value">
+                <div *ngIf="form.dataType=='Boolean'">
+                    
+                    <label class="mr-4">
+                        <input type="radio" value="true" [(ngModel)]="form.value" class="mr-2" [checked]="radioButtonValue">
+                        <span class="font-14 text-dark">True</span>
+                      </label>
+                      <label class="mr-4">
+                        <input type="radio" value="false" [(ngModel)]="form.value" [checked]="!radioButtonValue" class="mr-2">
+                        <span class="font-14 text-dark">False</span>
+                      </label>
+                    </div>
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-end">
