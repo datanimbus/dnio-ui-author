@@ -50,6 +50,9 @@ export class FlowContantsComponent implements OnInit {
   }
 
   saveData() {
+    if(this.form.dataType === 'Boolean' && !this.form.value){
+      this.form.value = false;
+    }
     let newData = this.appService.cloneObject(this.form);
     if (this.selectedIndex > -1) {
       this.constantList.splice(this.selectedIndex, 1, newData)
