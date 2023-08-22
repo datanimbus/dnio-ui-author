@@ -96,4 +96,14 @@ export class FlowContantsComponent implements OnInit {
     }
     return true
   }
+
+  get radioButtonValue(){
+    if(this.form.value === 'true'){
+      return true
+    }
+    else{
+      this.form.value = 'false';
+      return false
+    }
+  }
 }
