@@ -119,246 +119,31 @@
 
 
 <div *ngIf="contextMenuStyle && edit.status" class="available-nodes-dropdown bg-white position-fixed border rounded"
-    [ngStyle]="contextMenuStyle" odpClickOutside (outside)="contextMenuStyle=null">
-    <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover">
-        <div class="d-flex align-items-center">
-            <span class="node-icon font-16 fw-400 dsi dsi-file mr-2"></span>
-            <span class="font-13 fw-400">File</span>
-        </div>
-        <span class="node-icon font-16 fw-400 dsi dsi-drop-up fa-rotate-90 text-secondary"></span>
-        <div class="node-list-item bg-white rounded border" style="top: 0px;">
-            <div class="node-item border-bottom px-3 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'FILE')">
-                <span class="node-icon font-16 fw-400 dsi dsi-file mr-2"></span>
-                <span class="font-13 fw-400">File Agent</span>
-            </div>
-            <!-- <div class="node-item border-bottom px-3 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'FILE_READ')">
-                <span class="node-icon font-16 fw-400 dsi read dsi-file mr-2"></span>
-                <span class="font-13 fw-400">File Reader</span>
-            </div>
-            <div class="node-item px-3 py-2 d-flex align-items-center hover" (click)="addNode($event,'FILE_WRITE')">
-                <span class="node-icon font-16 fw-400 dsi write dsi-file mr-2"></span>
-                <span class="font-13 fw-400">File Writer</span>
-            </div> -->
-        </div>
-    </div>
-    <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover">
-        <div class="d-flex align-items-center">
-            <span class="node-icon font-16 fw-400 dsi dsi-invoke-api mr-2"></span>
-            <span class="font-13 fw-400">API</span>
-        </div>
-        <span class="node-icon font-16 fw-400 dsi dsi-drop-up fa-rotate-90 text-secondary"></span>
-        <div class="node-list-item bg-white rounded border" style="top: 31px;">
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'API')">
-                <span class="node-icon font-16 fw-400 dsi dsi-invoke-api mr-2"></span>
-                <span class="font-13 fw-400">Invoke JSON API</span>
-            </div>
-            <!-- <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'API_XML')">
-                <span class="node-icon font-16 fw-400 dsi dsi-invoke-api text-secondary mr-2"></span>
-                <span class="font-13 fw-400">Invoke XML API</span>
-            </div>
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'API_MULTIPART')">
-                <span class="node-icon font-16 fw-400 dsi dsi-invoke-api text-warning mr-2"></span>
-                <span class="font-13 fw-400">API Multipart Upload</span>
-            </div> -->
-            <!-- <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'API', true)">
-                <span class="node-icon font-16 fw-400 dsi dsi-api-reciever mr-2"></span>
-                <span class="font-13 fw-400">API Receiver</span>
-            </div> -->
-            <div class="node-item px-3 py-2 d-flex align-items-center hover" (click)="addNode($event,'RESPONSE')">
-                <span class="node-icon font-16 fw-400 dsi dsi-response mr-2"></span>
-                <span class="font-13 fw-400">Response</span>
-            </div>
-        </div>
-    </div>
-    <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover">
-        <div class="d-flex align-items-center">
-            <span class="node-icon font-16 fw-400 dsi dsi-function alt mr-2"></span>
-            <span class="font-13 fw-400">Process</span>
-        </div>
-        <span class="node-icon font-16 fw-400 dsi dsi-drop-up fa-rotate-90 text-secondary"></span>
-        <div class="node-list-item bg-white rounded border" style="top: 63px;">
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'CONNECTOR')">
-                <span class="node-icon font-16 fw-400 dsi dsi-connector mr-2"></span>
-                <span class="font-13 fw-400">Connector</span>
-            </div>
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover">
-                <div class="d-flex align-items-center">
-                    <span class="node-icon font-16 fw-400 dsi dsi-data-service alt mr-2"></span>
-                    <span class="font-13 fw-400">Data Service</span>
-                </div>
-                <span class="node-icon font-16 fw-400 dsi dsi-drop-up fa-rotate-90 text-secondary"></span>
-                <div class="node-list-item-1 bg-white rounded border" style="top: 31px; left: 198px">
-                    <div class="node-item-1 border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                        (click)="addNode($event,'DATASERVICE')">
-                        <span class="node-icon font-16 fw-400 dsi dsi-data-service mr-2"></span>
-                        <span class="font-13 fw-400">Fetch</span>
-                    </div>
-                    <div class="node-item-1 border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                        (click)="addNode($event,'DATASERVICE')">
-                        <span class="node-icon font-16 fw-400 dsi dsi-data-service mr-2"></span>
-                        <span class="font-13 fw-400">Update</span>
-                    </div>
-                    <div class="node-item-1 border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover" (click)="addNode($event,'DATASERVICE')">
-                        <span class="node-icon font-16 fw-400 dsi dsi-data-service mr-2"></span>
-                        <span class="font-13 fw-400">Insert</span>
-                    </div>
-                    <div class="node-item-1 border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover" (click)="addNode($event,'DATASERVICE')">
-                        <span class="node-icon font-16 fw-400 dsi dsi-data-service mr-2"></span>
-                        <span class="font-13 fw-400">Delete</span>
-                    </div>
-                    <div class="node-item-1 border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover" (click)="addNode($event,'DATASERVICE')">
-                        <span class="node-icon font-16 fw-400 dsi dsi-data-service mr-2"></span>
-                        <span class="font-13 fw-400">Workflow Approve</span>
-                    </div>
-                    <div class="node-item-1 border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover" (click)="addNode($event,'DATASERVICE')">
-                        <span class="node-icon font-16 fw-400 dsi dsi-data-service mr-2"></span>
-                        <span class="font-13 fw-400">Workflow Reject</span>
-                    </div>
-                </div>
-            </div>
-            <div class="node-item pl-3 pr-2 py-2 d-flex align-items-center hover" (click)="addNode($event,'FUNCTION')">
-                <span class="node-icon font-16 fw-400 dsi dsi-function mr-2"></span>
-                <span class="font-13 fw-400">Function</span>
-            </div>
-        </div>
-    </div>
-    <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover">
-        <div class="d-flex align-items-center">
-            <span class="node-icon font-16 fw-400 dsi dsi-join mr-2"></span>
-            <span class="font-13 fw-400">Transform</span>
-        </div>
-        <span class="node-icon font-16 fw-400 dsi dsi-drop-up fa-rotate-90 text-secondary"></span>
-        <div class="node-list-item bg-white rounded border" style="top: 95px;">
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'MAPPING')">
-                <span class="node-icon font-16 fw-400 dsi dsi-mapping mr-2"></span>
-                <span class="font-13 fw-400">Mapping</span>
-            </div>
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'CONVERT_JSON_JSON')">
-                <span class="node-icon font-16 fw-400 dsi dsi-refresh text-secondary mr-2"></span>
-                <span class="font-13 fw-400">Converter</span>
-            </div>
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'DEDUPE')">
-                <span class="node-icon font-16 fw-400 dsi dsi-copy mr-2"></span>
-                <span class="font-13 fw-400">De-Dupe</span>
-            </div>
-            <!-- <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'CONFLICT')">
-                <span class="node-icon font-16 fw-400 dsi dsi-insight mr-2"></span>
-                <span class="font-13 fw-400">Conflict</span>
-            </div> -->
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'CODEBLOCK')">
-                <span class="node-icon font-16 fw-400 dsi dsi-console mr-2 text-secondary"></span>
-                <span class="font-13 fw-400">Code Block</span>
-            </div>
-            <div class="node-item pl-3 pr-2 py-2 d-flex align-items-center hover" (click)="addNode($event,'UNWIND')">
-                <span class="node-icon font-16 fw-400 dsi dsi-expand mr-2"></span>
-                <span class="font-13 fw-400">Change Root</span>
-            </div>
-        </div>
-    </div>
-    <!-- <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover">
-        <div class="d-flex align-items-center">
-            <span class="node-icon font-16 fw-400 dsi dsi-refresh mr-2"></span>
-            <span class="font-13 fw-400">Parser</span>
-        </div>
-        <span class="node-icon font-16 fw-400 dsi dsi-drop-up fa-rotate-90 text-secondary"></span>
-        <div class="node-list-item bg-white rounded border" style="top: 95px;">
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'CONVERT_JSON_JSON')">
-                <span class="node-icon node-text-icon font-10 fw-600 text-primary mr-2">JSON</span>
-                <span class="font-13 fw-400">Parse JSON</span>
-            </div>
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'CONVERT_JSON_XML')">
-                <span class="node-icon node-text-icon font-10 fw-600 text-accent mr-2">XML</span>
-                <span class="font-13 fw-400">Parse XML</span>
-            </div>
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'CONVERT_JSON_CSV')">
-                <span class="node-icon node-text-icon font-10 fw-600 text-success mr-2">CSV</span>
-                <span class="font-13 fw-400">Parse CSV</span>
-            </div>
-        </div>
-    </div> -->
-    <!-- <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover">
-        <div class="d-flex align-items-center">
-            <span class="node-icon font-16 fw-400 dsi dsi-refresh mr-2"></span>
-            <span class="font-13 fw-400">Converter</span>
-        </div>
-        <span class="node-icon font-16 fw-400 dsi dsi-drop-up fa-rotate-90 text-secondary"></span>
-        <div class="node-list-item bg-white rounded border" style="top: 95px;">
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'CONVERT_JSON_JSON')">
-                <span class="node-icon font-16 fw-400 dsi dsi-refresh text-secondary mr-2"></span>
-                <span class="font-13 fw-400">JSON-JSON</span>
-            </div>
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'CONVERT_JSON_XML')">
-                <span class="node-icon font-16 fw-400 dsi dsi-refresh text-accent mr-2"></span>
-                <span class="font-13 fw-400">JSON-XML</span>
-            </div>
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'CONVERT_XML_JSON')">
-                <span class="node-icon font-16 fw-400 dsi dsi-refresh text-primary mr-2"></span>
-                <span class="font-13 fw-400">XML-JSON</span>
-            </div>
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'CONVERT_JSON_CSV')">
-                <span class="node-icon font-16 fw-400 dsi dsi-refresh text-success mr-2"></span>
-                <span class="font-13 fw-400">JSON-CSV</span>
-            </div>
-            <div class="node-item pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'CONVERT_CSV_JSON')">
-                <span class="node-icon font-16 fw-400 dsi dsi-refresh text-dark mr-2"></span>
-                <span class="font-13 fw-400">CSV-JSON</span>
-            </div>
-        </div>
-    </div> -->
-    <!-- <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover">
-        <div class="d-flex align-items-center">
-            <span class="node-icon font-16 fw-400 dsi dsi-relation mr-2"></span>
-            <span class="font-13 fw-400">Loop</span>
-        </div>
-        <span class="node-icon font-16 fw-400 dsi dsi-drop-up fa-rotate-90 text-secondary"></span>
-        <div class="node-list-item bg-white rounded border" style="top: 127px;">
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'FOREACH')">
-                <span class="node-icon font-16 fw-400 dsi dsi-refresh mr-2"></span>
-                <span class="font-13 fw-400">For Each</span>
-            </div>
-            <div class="node-item pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'REDUCE')">
-                <span class="node-icon font-16 fw-400 dsi dsi-undo mr-2"></span>
-                <span class="font-13 fw-400">Reduce</span>
-            </div>
-        </div>
-    </div> -->
-    <!-- <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-        (click)="addNode($event,'DECISION')">
-        <span class="node-icon font-16 fw-400 dsi dsi-branch text-primary mr-2"></span>
-        <span class="font-13 fw-400">Decision</span>
-    </div> -->
-    <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-        (click)="addNode($event,'PLUGIN')">
-        <span class="node-icon font-16 fw-400 dsi dsi-api-doc text-info mr-2"></span>
-        <span class="font-13 fw-400">Plugin</span>
-    </div>
-    <div *ngIf="!hasErrorNode" class="node-item pl-3 pr-2 py-2 d-flex align-items-center hover"
-        (click)="addNode($event,'ERROR')">
-        <span class="node-icon font-16 fw-400 dsi dsi-danger-circle text-danger mr-2"></span>
-        <span class="font-13 fw-400">Global Error</span>
-    </div>
+     [ngStyle]="contextMenuStyle" odpClickOutside (outside)="contextMenuStyle=null">
 
+  <ng-container *ngFor="let item of nodeOptions; let i = index">
+    <ng-template [ngTemplateOutlet]="recursiveTemplate" 
+                 [ngTemplateOutletContext]="{ item: item, index: i, ctr: 1 }"></ng-template>
+  </ng-container>
+
+  <ng-template #recursiveTemplate let-item="item" let-index="index" let-ctr="ctr">
+    <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover" *ngIf="evaluateCondition(item.condition)">
+      <div class="d-flex align-items-center" (click)="addNode($event, item.action)">
+        <span class="node-icon font-16 fw-400 mr-2" [ngClass]="item.icon"></span>
+        <span class="font-13 fw-400">{{ item.name }}</span>
+      </div>
+      <span class="node-icon font-16 fw-400 dsi dsi-drop-up fa-rotate-90 text-secondary" *ngIf="item.children"></span>
+      <div *ngIf="item.children" 
+           class="node-list-item bg-white rounded border"
+           [style.left.px]="ctr > 1 ? 200 : 140" 
+           [style.top.px]="index * 32">
+        <ng-container *ngFor="let child of item.children; let i = index">
+          <ng-template [ngTemplateOutlet]="recursiveTemplate" 
+                       [ngTemplateOutletContext]="{ item: child, index: i , ctr: ctr+1}"></ng-template>
+        </ng-container>
+      </div>
+    </div>
+  </ng-template>
 
 </div>
+

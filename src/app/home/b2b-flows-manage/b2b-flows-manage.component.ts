@@ -55,6 +55,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
   activeTab: number;
   data: any;
+  nodeOptions: Array<any> = [];
   constructor(private commonService: CommonService,
     private appService: AppService,
     private route: ActivatedRoute,
@@ -86,34 +87,8 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.data = [{
-      name: 'File',
-      children: [
-        {
-          name: 'File Agent',
-          action: "addNode($event,'FILE')",
-          icon: 'dsi dsi-file'
-        }
-      ],
-      icon: 'dsi dsi-file'
-    },
-    {
-      name: 'File',
-      children: [
-        {
-          name: 'File Agent',
-          children: [
-            {
-              name: 'File Agent',
-              action: "addNode($event,'FILE')",
-              icon: 'dsi dsi-file'
-            }
-          ],
-          icon: 'dsi dsi-file'
-        }
-      ],
-      icon: 'dsi dsi-file'
-    }]
+    this.nodeOptions = this.flowService.getNodeOptions();
+  ;  
     this.flowService.showAddNodeDropdown.pipe(
       tap(() => {
         this.resetSelection();
@@ -503,6 +478,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   }
 
   addNode(event: any, type: string, anotherInputNode: boolean = false) {
+  if(type){
     this.contextMenuStyle = null;
     const tempNode = this.flowService.getNodeObject(type, this.nodeList, anotherInputNode);
     tempNode.coordinates = {};
@@ -511,6 +487,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     tempNode.coordinates.x = event.pageX - rect.left - 70;
     tempNode.coordinates.y = event.pageY - rect.top - 18;
     this.nodeList.push(tempNode);
+  }
   }
 
   addNodeToCanvas(type: string) {
@@ -614,6 +591,13 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
         this.flowService.reCreatePaths.emit();
       }
     }
+  }
+
+  evaluateCondition(condition: string): boolean {
+    if(!condition){
+      return true
+    }
+    return eval(condition); 
   }
 
   get hasErrorNode() {
