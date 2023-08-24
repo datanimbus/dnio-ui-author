@@ -1,5 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { OperatorFunction, Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { AppService } from 'src/app/utils/services/app.service';
+import { B2bFlowService } from '../../b2b-flow.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'odp-data-service-properties',
@@ -13,7 +17,8 @@ export class DataServicePropertiesComponent implements OnInit {
   @Input() nodeList: Array<any>;
   prevNode: any;
   toggle: any;
-  constructor(private appService: AppService) {
+  searchTerm: any;
+  constructor(private appService: AppService, private flowService: B2bFlowService) {
     this.edit = { status: false };
     this.toggle = {};
   }
@@ -92,6 +97,40 @@ export class DataServicePropertiesComponent implements OnInit {
     }
     this.setDefaultData();
   }
+
+
+  formatter(result: any) {
+    if (result && typeof result == 'object') {
+      return result.label;
+    }
+    return result;
+  };
+
+  search: OperatorFunction<string, readonly { label: string, value: string }[]> = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map((term) => {
+        const regex = /{{(?!.*}})(.*)/g;
+        const matches = term.match(regex) || [];
+        this.searchTerm = matches.length > 0 ? _.cloneDeep(matches).pop() : '';
+        // term = term.split(' ').filter((ele) => ele.startsWith("{{") && !ele.endsWith("}")).pop() || '';
+        // this.searchTerm = term;
+        if (this.searchTerm) {
+          term = this.searchTerm.replace('{{', '');
+        }
+        return matches.length === 0 && this.searchTerm === '' ? [] : this.variableSuggestions.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 15);
+      }),
+    );
+
+  onValueChange(value: any) {
+    this.currNode.options.authorization = value;
+  }
+
+  get variableSuggestions() {
+    return this.flowService.getSuggestions(this.currNode)
+  }
+
 
   get isDataServiceSelected() {
     if (this.currNode.options.dataService && this.currNode.options.dataService._id) {

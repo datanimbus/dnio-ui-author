@@ -102,7 +102,7 @@ const routes: Routes = [
     FlowContantsComponent,
     FlowVolumeMountsComponent,
     MappingPresetComponent,
-    FileRwPropertiesComponent
+    FileRwPropertiesComponent,
   ],
   imports: [
     CommonModule,
