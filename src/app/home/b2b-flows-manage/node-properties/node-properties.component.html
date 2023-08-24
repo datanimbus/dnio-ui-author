@@ -8,7 +8,7 @@
             <button *ngIf="!edit.status" type="button" class="btn btn-link" (click)="enableEditing()">
                 <span class="dsi dsi-edit text-info"></span>
             </button>
-            <button *ngIf="!isInputNode" type="button" class="btn btn-link" (click)="deleteNode()">
+            <button *ngIf="!isInputNode" type="button" class="btn btn-link" (click)="confirmNodeDeletion()">
                 <span class="dsi dsi-trash text-danger"></span>
             </button>
             <button type="button" class="btn btn-link" (click)="cancel()">
@@ -590,6 +590,7 @@
         (dataChange)="selectAgent($event)"></odp-agent-selector>
 </div>
 
+<odp-delete-modal [open]="openDeleteModal" (close)="closeDeleteModal($event)"></odp-delete-modal>
 
 <!-- <div [ngClass]="{'show':toggle['systemTask']}" class="node-agent-window border-left position-fixed bg-white p-4">
     <div class="d-flex align-items-center justify-content-between mb-4">
