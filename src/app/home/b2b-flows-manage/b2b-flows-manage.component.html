@@ -188,10 +188,40 @@
                 <span class="node-icon font-16 fw-400 dsi dsi-connector mr-2"></span>
                 <span class="font-13 fw-400">Connector</span>
             </div>
-            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
-                (click)="addNode($event,'DATASERVICE')">
-                <span class="node-icon font-16 fw-400 dsi dsi-data-service mr-2"></span>
-                <span class="font-13 fw-400">Data Service</span>
+            <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover">
+                <div class="d-flex align-items-center">
+                    <span class="node-icon font-16 fw-400 dsi dsi-data-service alt mr-2"></span>
+                    <span class="font-13 fw-400">Data Service</span>
+                </div>
+                <span class="node-icon font-16 fw-400 dsi dsi-drop-up fa-rotate-90 text-secondary"></span>
+                <div class="node-list-item-1 bg-white rounded border" style="top: 31px; left: 198px">
+                    <div class="node-item-1 border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
+                        (click)="addNode($event,'DATASERVICE')">
+                        <span class="node-icon font-16 fw-400 dsi dsi-data-service mr-2"></span>
+                        <span class="font-13 fw-400">Fetch</span>
+                    </div>
+                    <div class="node-item-1 border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover"
+                        (click)="addNode($event,'DATASERVICE')">
+                        <span class="node-icon font-16 fw-400 dsi dsi-data-service mr-2"></span>
+                        <span class="font-13 fw-400">Update</span>
+                    </div>
+                    <div class="node-item-1 border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover" (click)="addNode($event,'DATASERVICE')">
+                        <span class="node-icon font-16 fw-400 dsi dsi-data-service mr-2"></span>
+                        <span class="font-13 fw-400">Insert</span>
+                    </div>
+                    <div class="node-item-1 border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover" (click)="addNode($event,'DATASERVICE')">
+                        <span class="node-icon font-16 fw-400 dsi dsi-data-service mr-2"></span>
+                        <span class="font-13 fw-400">Delete</span>
+                    </div>
+                    <div class="node-item-1 border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover" (click)="addNode($event,'DATASERVICE')">
+                        <span class="node-icon font-16 fw-400 dsi dsi-data-service mr-2"></span>
+                        <span class="font-13 fw-400">Workflow Approve</span>
+                    </div>
+                    <div class="node-item-1 border-bottom pl-3 pr-2 py-2 d-flex align-items-center hover" (click)="addNode($event,'DATASERVICE')">
+                        <span class="node-icon font-16 fw-400 dsi dsi-data-service mr-2"></span>
+                        <span class="font-13 fw-400">Workflow Reject</span>
+                    </div>
+                </div>
             </div>
             <div class="node-item pl-3 pr-2 py-2 d-flex align-items-center hover" (click)="addNode($event,'FUNCTION')">
                 <span class="node-icon font-16 fw-400 dsi dsi-function mr-2"></span>

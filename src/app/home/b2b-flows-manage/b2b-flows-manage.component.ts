@@ -54,6 +54,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   processNodeList: any = [];
 
   activeTab: number;
+  data: any;
   constructor(private commonService: CommonService,
     private appService: AppService,
     private route: ActivatedRoute,
@@ -81,9 +82,38 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     this.openDeleteModal = new EventEmitter();
     this.nodeList = [];
     this.activeTab = 0;
+
   }
 
   ngOnInit(): void {
+    this.data = [{
+      name: 'File',
+      children: [
+        {
+          name: 'File Agent',
+          action: "addNode($event,'FILE')",
+          icon: 'dsi dsi-file'
+        }
+      ],
+      icon: 'dsi dsi-file'
+    },
+    {
+      name: 'File',
+      children: [
+        {
+          name: 'File Agent',
+          children: [
+            {
+              name: 'File Agent',
+              action: "addNode($event,'FILE')",
+              icon: 'dsi dsi-file'
+            }
+          ],
+          icon: 'dsi dsi-file'
+        }
+      ],
+      icon: 'dsi dsi-file'
+    }]
     this.flowService.showAddNodeDropdown.pipe(
       tap(() => {
         this.resetSelection();
@@ -154,14 +184,14 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     }
   }
 
-  getProcessNodes(){
+  getProcessNodes() {
     this.nodeList = [];
     return this.commonService.get('config', `/${this.commonService.app._id}/processnode/utils/count`).pipe(switchMap((count: any) => {
       return this.commonService.get('config', `/${this.commonService.app._id}/processnode`, {
         count: count,
       });
     })).subscribe((res: any) => {
-    
+
       // res.forEach(item => {
       //   item.url = 'https://' + this.commonService.userDetails.fqdn + `/b2b/pipes/${this.app}` + item.inputNode.options.path;
       //   // this.flowList.push(item);
@@ -173,7 +203,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       //   }
       // })
     }, err => {
-      
+
       console.log(err);
       this.commonService.errorToast(err);
     });
@@ -279,13 +309,13 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     this.subscriptions['discardDraft'] = call.subscribe(res => {
       this.apiCalls.discardDraft = false;
       this.ts.success('Draft Deleted.');
-      if(isNew){
+      if (isNew) {
         this.router.navigate(['/app', this.commonService.app._id, 'flow']);
       }
-      else{
+      else {
         this.getFlow(this.flowData._id);
       }
-      
+
     }, err => {
       this.apiCalls.discardDraft = false;
       this.commonService.errorToast(err);

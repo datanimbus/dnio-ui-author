@@ -146,19 +146,50 @@
       position: absolute;
       left: 140px;
       display: none;
-      overflow: hidden;
+      // overflow: hidden;
 
       .node-item {
         min-height: 32px;
         max-height: 32px;
         min-width: 200px;
         max-width: 200px;
+        
+        .node-list-item-1 {
+          min-width: 200px;
+          max-width: 200px;
+          position: absolute;
+          // left: 140px;
+          display: none;
+          // overflow: hidden;
+    
+          .node-item-1 {
+            min-height: 32px;
+            max-height: 32px;
+            min-width: 200px;
+            max-width: 200px;
+
+            &:hover {
+              background: $light;
+              border-right: 1px solid $border-color;
+            }
+          }
+          
+        }
+    
+        &:hover {
+          background: $light;
+          border-right: 1px solid $border-color;
+          border-radius: $border-radius;
+          .node-list-item-1 {
+            display: block;
+          }
+        }
       }
     }
 
     &:hover {
       background: $light;
-
+      border-radius: $border-radius;
       .node-list-item {
         display: block;
       }
