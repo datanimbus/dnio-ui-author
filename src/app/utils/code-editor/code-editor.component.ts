@@ -25,7 +25,7 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
     private ele: ElementRef) {
     this.theme = 'vs-light';
     this.fontSize = 14;
-    this.edit = { status: false };
+    this.edit = { status: true };
     this.codeChange = new EventEmitter();
     this.insertText = new EventEmitter();
     this.type = 'javascript';
