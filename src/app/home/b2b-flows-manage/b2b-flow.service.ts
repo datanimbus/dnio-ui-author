@@ -196,9 +196,10 @@ export class B2bFlowService {
         outgoing: {}
       }
     };
-    if (type == 'DATASERVICE') {
-      temp.options.update = true;
-      temp.options.insert = true;
+    if (type.startsWith('DS_')) {
+      temp.type = 'DATASERVICE';
+      const subType = type.split('_')[1];
+      temp.options[subType.toLowerCase()]=true
     }
 
     if (type == 'FOREACH' || type == 'REDUCE') {
@@ -438,22 +439,22 @@ export class B2bFlowService {
                   icon: 'dsi dsi-data-service alt' ,
                   children: [
                       {
-                          action: 'DATASERVICE',
+                          action: 'DS_GET',
                           name: 'Data Service Fetch',
                           icon: 'dsi dsi-data-service alt '   
                       },
                       {
-                          action: 'DATASERVICE',
+                          action: 'DS_INSERT',
                           name: 'Data Service Insert',
                           icon: 'dsi dsi-data-service alt '   
                       },
                       {
-                          action: 'DATASERVICE',
+                          action: 'DS_UPDATE',
                           name: 'Data Service Update',
                           icon: 'dsi dsi-data-service alt '   
                       },
                       {
-                          action: 'DATASERVICE',
+                          action: 'DS_DELETE',
                           name: 'Data Service Delete',
                           icon: 'dsi dsi-data-service alt '   
                       },
