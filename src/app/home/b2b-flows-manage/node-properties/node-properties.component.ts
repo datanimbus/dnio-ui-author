@@ -21,6 +21,12 @@ export class NodePropertiesComponent implements OnInit {
   @Input() nodeList: Array<any>;
   @Output() close: EventEmitter<any>;
   @Output() changesDone: EventEmitter<any>;
+  alertModal: {
+    statusChange?: boolean;
+    title: string;
+    message: string;
+  };
+  openDeleteModal: EventEmitter<any>;
   prevNode: any;
   toggle: any;
   nodeNameErrorMessage: string;
@@ -36,6 +42,12 @@ export class NodePropertiesComponent implements OnInit {
     this.changesDone = new EventEmitter();
     this.toggle = {};
     this.activeTab = 0;
+    this.alertModal = {
+      statusChange: false,
+      title: '',
+      message: ''
+    };
+    this.openDeleteModal = new EventEmitter();
   }
 
   ngOnInit(): void {
@@ -89,6 +101,14 @@ export class NodePropertiesComponent implements OnInit {
     this.edit.status = true;
   }
 
+  confirmNodeDeletion() {
+    this.alertModal.statusChange = false;
+    this.alertModal.title = 'Delete Node?';
+    this.alertModal.message =
+    `Are you sure you want to delete this node? This action will delete: ${this.currNode.name}`;
+    this.openDeleteModal.emit(this.alertModal);
+  }
+
   deleteNode() {
     if (this.prevNode) {
       const prevIndex = this.nodeList.findIndex(e => e._id == this.prevNode._id);
@@ -111,6 +131,12 @@ export class NodePropertiesComponent implements OnInit {
     this.flowService.selectedNode.emit(null);
   }
 
+  closeDeleteModal(data){
+    if(data != null){
+      this.deleteNode();
+    }
+  }
+  
   onTypeChange(type: string) {
     if (!environment.production) {
       console.log(type);
