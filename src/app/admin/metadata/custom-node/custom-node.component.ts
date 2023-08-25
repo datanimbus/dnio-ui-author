@@ -112,7 +112,7 @@ export class CustomNodeComponent implements OnInit {
     this.showLazyLoader = true;
     this.showNewNodeWindow = false;
     const payload = this.form.value;
-    payload.app = this.commonService.app._id;
+    // payload.app = this.commonService.app._id;
     payload.nodes = [];
     this.subscriptions['createNode'] = this.commonService.post('partnerManager', `/admin/node`, payload).subscribe(res => {
       this.showLazyLoader = false;
