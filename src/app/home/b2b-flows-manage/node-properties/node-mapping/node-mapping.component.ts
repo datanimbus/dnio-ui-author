@@ -56,6 +56,9 @@ export class NodeMappingComponent implements OnInit {
     if (!this.mappingType) {
       this.mappingType = 'custom';
     }
+    if (!this.flowData.constants) {
+      this.flowData.constants = [];
+    }
     this.nodeList = this.flowService.getNodesBefore(this.currNode);
     this.configureMappingData();
     if (this.currNode.mappings && this.currNode.mappings.length > 0) {
@@ -307,13 +310,13 @@ export class NodeMappingComponent implements OnInit {
               list = list.concat(this.flattenSource(node, def.definition[0].definition, bodyKey, def));
             }
           } else if (def.type == 'Object') {
-            if(def.properties._typeChanged === 'Relation'){
+            if (def.properties._typeChanged === 'Relation') {
               const idDef = def.definition.filter(d => d.key === '_id')[0];
-              idDef.properties['dataPath'] = def.dataPath+'._id';
-              idDef.properties['dataPathSegs'] = [def.dataPath,'_id'];
+              idDef.properties['dataPath'] = def.dataPath + '._id';
+              idDef.properties['dataPathSegs'] = [def.dataPath, '_id'];
               list = list.concat(this.flattenSource(node, [idDef], bodyKey, def))
             }
-            else{
+            else {
               list = list.concat(this.flattenSource(node, def.definition, bodyKey, def));
             }
           }
