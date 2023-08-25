@@ -34,6 +34,10 @@
         (click)="activeTab = 2">
         <span class="text">App Variables</span>
       </div>
+      <div class="tab d-flex align-items-center px-3 hover" [ngClass]="{ active: activeTab == 3 }"
+        (click)="activeTab = 3">
+        <span class="text">Configuration</span>
+      </div>
     </div>
     <div class="tab-content w-100">
       <ng-container *ngIf="activeTab == 1">
@@ -84,6 +88,9 @@
       </ng-container>
       <ng-container *ngIf="activeTab == 2">
         <odp-app-secrets></odp-app-secrets>
+      </ng-container>
+      <ng-container *ngIf="activeTab == 3">
+        <odp-npm-libraries></odp-npm-libraries>
       </ng-container>
     </div>
   </div>
