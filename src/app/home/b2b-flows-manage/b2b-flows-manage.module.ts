@@ -64,6 +64,8 @@ import { SideCanvasModule } from 'src/app/utils/side-canvas/side-canvas.module';
 import { MappingPresetComponent } from './node-properties/node-mapping/mapping-preset/mapping-preset.component';
 import { FileRwPropertiesComponent } from './node-properties/file-rw-properties/file-rw-properties.component';
 import { ViewBoxModule } from 'src/app/utils/view-box/view-box.module';
+import { NodeAdvancedFilterComponent } from './node-properties/node-advanced-filter/node-advanced-filter.component';
+import { DatePickerModule } from 'src/app/utils/date-picker/datePicker.module';
 
 const routes: Routes = [
   {
@@ -103,6 +105,7 @@ const routes: Routes = [
     FlowVolumeMountsComponent,
     MappingPresetComponent,
     FileRwPropertiesComponent,
+    NodeAdvancedFilterComponent,
   ],
   imports: [
     CommonModule,
@@ -135,7 +138,8 @@ const routes: Routes = [
     AutocompleteOnEditModule,
     EditorModule,
     SideCanvasModule,
-    ViewBoxModule
+    ViewBoxModule,
+    DatePickerModule,
   ],
   exports: [B2bFlowsManageComponent],
   providers: [B2bFlowService, MappingService, ChangeOnEditComponent, B2bPathService]
