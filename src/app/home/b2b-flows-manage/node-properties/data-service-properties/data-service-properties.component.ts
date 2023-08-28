@@ -65,6 +65,8 @@ export class DataServicePropertiesComponent implements OnInit {
   selectDataService(data: any) {
     this.currNode.dataStructure.incoming = this.appService.cloneObject(data);
     this.currNode.dataStructure.outgoing = this.appService.cloneObject(data);
+    this.currNode.options.filter = [];
+    this.currNode.options.filterString = [];
   }
 
   setDataServiceOperation(type: string, val: any) {
@@ -123,8 +125,10 @@ export class DataServicePropertiesComponent implements OnInit {
       }),
     );
 
-  onValueChange(value: any) {
-    this.currNode.options.authorization = value;
+  onValueChange(value: any, type: any) {
+    if (type) {
+      this.currNode.options[type] = type === 'count' || type === 'page' ? parseInt(value) : value;
+    }
   }
 
   get variableSuggestions() {
@@ -137,5 +141,9 @@ export class DataServicePropertiesComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+  get isSchemaFree(){
+    return this.currNode.options?.dataService?.schemaFree || false
   }
 }

@@ -1,0 +1,35 @@
+.dynamic-variable-button {
+    top: 39px;
+    left: 9px;
+}
+
+.node-data-selector-wrapper {
+    min-width: 500px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    top: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.node-type {
+    width: 120px;
+}
+
+.node-id {
+    width: 100px;
+}
+
+.undo-btn {
+    // width: 180px;
+}
+
+.word-wrap {
+    word-break: break-all;
+}
+
+.form-control{
+    width: 150px;
+}
