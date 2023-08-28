@@ -17,6 +17,7 @@ import { UploadImageModule } from 'src/app/utils/upload-image/upload-image.modul
 import { TimezonePickerModule } from 'src/app/utils/timezone-picker/timezone-picker.module';
 import { AppSecretsComponent } from './app-secrets/app-secrets.component';
 import { AutoFocusModule } from 'src/app/utils/directives/auto-focus/auto-focus.module';
+import { NpmLibrariesComponent } from './npm-libraries/npm-libraries.component';
 const routes: Routes = [
   { path: '', component: AppManageComponent, canActivate: [AppPanelGuard] },
 ];
@@ -43,6 +44,6 @@ const routes: Routes = [
   exports: [
     RouterModule
   ],
-  declarations: [AppManageComponent, AppSecretsComponent]
+  declarations: [AppManageComponent, AppSecretsComponent, NpmLibrariesComponent]
 })
 export class AppManageModule { }
