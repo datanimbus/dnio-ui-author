@@ -187,3 +187,11 @@
 .spacer-lock {
   min-width: 260px;
 }
+
+
+.disabled{
+    background-color: $gray-95;
+    pointer-events: none;
+    border-right: 1px solid $border-color;
+    cursor: none !important;
+}

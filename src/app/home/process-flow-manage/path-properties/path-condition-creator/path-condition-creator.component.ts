@@ -17,6 +17,7 @@ export class PathConditionCreatorComponent implements OnInit {
   @Input() value: string;
   @Input() prevNode: any;
   @Output() valueChange: EventEmitter<string>;
+  @Input() edit: any;
   showConditionWindow: boolean;
   tempValue: string;
   segments: Array<{ label: string, value: string }>;
@@ -29,6 +30,9 @@ export class PathConditionCreatorComponent implements OnInit {
     this.segments = [];
     this.logicalConditions = ['<', '>', '=', '!', '&&', '||', '(', ')'];
     this.valueChange = new EventEmitter();
+    this.edit = {
+      status: true
+    }
   }
 
   ngOnInit(): void {
