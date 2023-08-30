@@ -116,11 +116,11 @@
         <div class="form-group position-relative ">
             <label for="filter" class="d-flex align-items-center justify-content-between">
                 Filter
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['filter']=!toggle['filter']" *ngIf="edit.status"></span>
+                <span class="dsi dsi-settings text-primary hover" (click)="toggle['filter']=!toggle['filter']" *ngIf="edit.status && !currNode?.options?.dataService?.schemaFree"></span>
             </label>
-            <!-- <textarea id="filter" class="form-control" [(ngModel)]="currNode.options.filter" (keydown.delete)="$event.stopPropagation()"></textarea> -->
+            <textarea placeholder="{}" id="filter" class="form-control" [(ngModel)]="currNode.options.filter" (keydown.delete)="$event.stopPropagation()" *ngIf="currNode?.options?.dataService?.schemaFree"></textarea>
             <odp-node-advanced-filter [edit]="edit" [(toggle)]="toggle['filter']" [textarea]="true" [currNode]="currNode"
-                [(value)]="currNode.options.filter">
+                [(value)]="currNode.options.filter" *ngIf="!currNode?.options?.dataService?.schemaFree">
             </odp-node-advanced-filter>
         </div>
     </ng-container>
