@@ -3,7 +3,7 @@
     left: 9px;
 }
 
-.node-data-selector-wrapper {
+.node-filter-wrapper {
     min-width: 500px;
     display: flex;
     flex-direction: column;
@@ -32,4 +32,9 @@
 
 .form-control{
     width: 150px;
+}
+
+.filter-wrapper{
+    max-height: 200px;
+    overflow-y: auto;
 }

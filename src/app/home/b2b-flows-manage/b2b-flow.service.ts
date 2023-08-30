@@ -343,12 +343,15 @@ export class B2bFlowService {
       });
     }
     return list;
+    
   }
 
   getSuggestions(currNode?): Array<{ label: string, value: string }> {
     if (!this.nodeList || this.nodeList.length == 0) {
       return [];
     }
+
+    const availableHeaderKeys = ['authorization', 'content-type', 'token', 'ip', 'custom'];
     const list = currNode ? this.getNodesBefore(currNode) : this.nodeList;
     const temp = list.map(node => {
       let list = [];
@@ -360,10 +363,15 @@ export class B2bFlowService {
       status.label = (node._id || node.type) + '/status'
       status.value = node._id + '.status'
       list.push(status);
-      let headers: any = {};
-      headers.label = (node._id || node.type) + '/headers'
-      headers.value = node._id + '.headers'
-      list.push(headers);
+      availableHeaderKeys.forEach(key => {
+        let headers: any = {};
+        headers.label = (node._id || node.type) + '/headers/' + key;
+        headers.value = node._id + '.headers.' + key;
+        list.push(headers);
+      })
+      // headers.label = (node._id || node.type) + '/headers'
+      // headers.value = node._id + '.headers'
+      // list.push(headers);
       if (!node.dataStructure) {
         node.dataStructure = {};
       }

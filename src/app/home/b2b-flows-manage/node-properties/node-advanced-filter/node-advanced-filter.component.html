@@ -1,7 +1,7 @@
 <div class="d-flex align-items-center justify-content-start">
 
     <ng-container *ngIf="value">
-       <div class="d-flex flex-column">
+       <div class="d-flex flex-column filter-wrapper">
         <span class="word-wrap fw-500 rounded bg-light p-2 border font-12 d-flex align-items-center" *ngFor="let item of showFilterString()"
         [innerHTML]="show(item) || '{}'" ></span>
    
@@ -9,7 +9,7 @@
     </ng-container>
 </div>
 
-<div *ngIf="toggle" class="node-data-selector-wrapper p-3 bg-white position-fixed border-left ">
+<div *ngIf="toggle" class="node-filter-wrapper p-3 bg-white position-fixed border-left ">
     <div class="d-flex justify-content-between mb-5">
         <h3 class="font-20 fw-600">Advanced Filter</h3>
         <span class="dsi dsi-close hover" (click)="cancel()"></span>
