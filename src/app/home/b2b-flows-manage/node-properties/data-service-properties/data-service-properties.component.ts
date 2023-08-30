@@ -25,7 +25,7 @@ export class DataServicePropertiesComponent implements OnInit {
 
   setDefaultData() {
     if (this.currNode && this.currNode.options) {
-      if (this.prevNode && (!this.currNode.options.authorization || !this.currNode?.options?.authorization?.includes(this.prevNode._id))) {
+      if (this.prevNode && (!this.currNode.options.authorization)) {
         this.currNode.options.authorization = `{{${this.prevNode?._id}.headers.authorization}}`;
       }
       if (this.currNode.options.update && !this.currNode.options.fields) {
