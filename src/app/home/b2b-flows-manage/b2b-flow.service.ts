@@ -449,32 +449,34 @@ export class B2bFlowService {
                       {
                           action: 'DS_GET',
                           name: 'Data Service Fetch',
-                          icon: 'dsi dsi-data-service alt '   
+                          icon: 'dsi dsi-data-service alt'   
                       },
                       {
                           action: 'DS_INSERT',
                           name: 'Data Service Insert',
-                          icon: 'dsi dsi-data-service alt '   
+                          icon: 'dsi dsi-data-service alt'   
                       },
                       {
                           action: 'DS_UPDATE',
                           name: 'Data Service Update',
-                          icon: 'dsi dsi-data-service alt '   
+                          icon: 'dsi dsi-data-service alt'   
                       },
                       {
                           action: 'DS_DELETE',
                           name: 'Data Service Delete',
-                          icon: 'dsi dsi-data-service alt '   
+                          icon: 'dsi dsi-data-service alt'   
                       },
                       {
                           action: 'DATASERVICE',
                           name: 'Workflow Approve',
-                          icon: 'dsi dsi-data-service alt '   
+                          icon: 'dsi dsi-data-service alt',
+                          disabled: true   
                       },
                       {
                           action: 'DATASERVICE',
                           name: 'Workflow Reject',
-                          icon: 'dsi dsi-data-service alt '   
+                          icon: 'dsi dsi-data-service alt',
+                          disabled: true   
                       },
                   ]  
               },

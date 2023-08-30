@@ -127,7 +127,7 @@
   </ng-container>
 
   <ng-template #recursiveTemplate let-item="item" let-index="index" let-ctr="ctr">
-    <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover" *ngIf="evaluateCondition(item.condition)">
+    <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover" *ngIf="evaluateCondition(item.condition)" [ngClass]="{'disabled': item.disabled}">
       <div class="d-flex align-items-center" (click)="addNode($event, item.action)">
         <span class="node-icon font-16 fw-400 mr-2" [ngClass]="item.icon"></span>
         <span class="font-13 fw-400">{{ item.name }}</span>
