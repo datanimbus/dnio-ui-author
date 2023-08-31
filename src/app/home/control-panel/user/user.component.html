@@ -176,9 +176,9 @@
                     </div>
                     <div class="list-group-item" *ngFor="let attr of details['attributesData']">
                       <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex-1">{{attr.label}}</div>
-                        <div class="d-flex-1">{{attr.type}}</div>
-                        <div class="d-flex-1">{{attr.value}}</div>
+                        <div class="d-flex-1">{{attr?.label}}</div>
+                        <div class="d-flex-1">{{attr?.type}}</div>
+                        <div class="d-flex-1">{{attr?.value}}</div>
 
                         <div class="group-actions" *ngIf="hasPermission('PMUBU')">
                           <button type="button" class="btn btn-link text-muted p-1" (click)="editAttribute(attr)"
