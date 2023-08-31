@@ -1076,7 +1076,7 @@ export class UserComponent implements OnInit, OnDestroy {
     if (user.attributes && user.attributes !== null) {
       user.attributesData = Object.values(user.attributes).map((ele: Object, i) => {
         const key = Object.keys(user.attributes)[i];
-        if(ele!==null){
+        if(ele){
           return { ...ele, key }
         }
       
