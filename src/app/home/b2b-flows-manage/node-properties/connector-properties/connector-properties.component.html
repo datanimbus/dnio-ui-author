@@ -6,6 +6,9 @@
         <div class="text-secondary mt-2">Processing</div>
     </div>
 </div>
+
+<label class="text-secondary" for="connectorSelector">Select Connector
+</label>
 <ng-container *ngIf="selectedConnector">
     <div class="list-group">
         <div class="list-group-item d-flex align-items-center justify-content-between mb-3">
@@ -30,8 +33,7 @@
         [currNode]="currNode"></odp-mongodb-connector>
 </ng-container>
 <div *ngIf="!selectedConnector" class="data-format-selector-wrapper">
-    <label class="text-secondary" for="connectorSelector">Select Connector
-    </label>
+   
     <div>
 
         <odp-search-box open="true" (enteredText)="searchConnector($event)" (reset)="clearSearch()"
