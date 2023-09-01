@@ -48,8 +48,9 @@ export class ConnectorPropertiesComponent implements OnInit {
       filter: {
         type: {
           $in: this.typeList
-        }
+        },
       },
+      count: 5
       
     }).subscribe((res) => {
       this.showLoader = false;
