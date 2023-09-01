@@ -1076,8 +1076,11 @@ export class UserComponent implements OnInit, OnDestroy {
     if (user.attributes && user.attributes !== null) {
       user.attributesData = Object.values(user.attributes).map((ele: Object, i) => {
         const key = Object.keys(user.attributes)[i];
-        return { ...ele, key }
-      });
+        if(ele){
+          return { ...ele, key }
+        }
+      
+      }).filter(ele => ele);
     }
     if (this.details._id !== user._id) {
       this.details = user;
@@ -1362,5 +1365,4 @@ export class UserComponent implements OnInit, OnDestroy {
     }
     return true
   }
-
 }
