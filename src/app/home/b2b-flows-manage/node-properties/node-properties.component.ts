@@ -77,6 +77,7 @@ export class NodePropertiesComponent implements OnInit {
       filter: {
         app: this.commonService.app._id
       },
+      sort: '-_metadata.lastUpdated',
       select: 'agentId'
     }
     this.commonService.get('partnerManager', `/${this.commonService.app._id}/agent`, options).subscribe(res => {
