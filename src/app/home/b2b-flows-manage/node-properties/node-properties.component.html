@@ -58,6 +58,7 @@
                     <option *ngIf="!isInputNode" value="UNWIND">Change Root</option>
                     <option *ngIf="!isInputNode" value="DATASERVICE">Data Service</option>
                     <option *ngIf="!isInputNode" value="FUNCTION">Function</option>
+                    <option *ngIf="!isInputNode" value="FLOW">Flow</option>
                     <option *ngIf="!isInputNode" value="RESPONSE">Response</option>
                     <option *ngIf="!isInputNode" value="CONVERT_JSON_JSON">Converter</option>
                     <!-- <option *ngIf="!isInputNode" value="CONVERT_JSON_XML">Convert JSON to XML</option>
@@ -160,37 +161,39 @@
         </ng-container>
         <!-- <hr> -->
         <ng-container *ngIf="currNode?.type=='API' && !isInputNode">
-            <div class="form-group position-relative">
-                <label class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between" for="nodeUrl">
-                    URL
-                </label>
-                <div class="position-relative z-0">
-                    <odp-autocomplete-on-edit #typeAhead [(ngModel)]="currNode.options.url"
-                        (ngModelChange)="onValueChange($event)" [currNode]="currNode" class="styled-wrapper"
-                        [edit]="edit"></odp-autocomplete-on-edit>
+            <div class="p-2 bg-light rounded border mb-3">
+                <div class="form-group position-relative">
+                    <label class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between" for="nodeUrl">
+                        URL
+                    </label>
+                    <div class="position-relative z-0">
+                        <odp-autocomplete-on-edit #typeAhead [(ngModel)]="currNode.options.url"
+                            (ngModelChange)="onValueChange($event)" [currNode]="currNode" class="styled-wrapper"
+                            [edit]="edit"></odp-autocomplete-on-edit>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="font-14 fw-400 text-dark" for="nodeHTTPMethod">HTTP Method</label>
+                    <select [disabled]="!edit.status" id="nodeHTTPMethod" class="form-control"
+                        [(ngModel)]="currNode.options.method" (ngModelChange)="changesDone.emit()">
+                        <option value="POST" selected>POST</option>
+                        <option value="GET">GET</option>
+                        <option value="PUT">PUT</option>
+                        <option value="DELETE">DELETE</option>
+                    </select>
+                </div>
+                <div class="form-group position-relative">
+                    <label class="font-14 fw-400 text-dark" for="nodeContentType">Content-Type</label>
+                    <div class="form-control form-control-readonly">application/json</div>
+                </div>
+                <div class="form-group">
+                    <odp-add-headers [edit]="edit" [nodeList]="nodeList" [currNode]="currNode"
+                        [(value)]="currNode.options.headers">
+                    </odp-add-headers>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="font-14 fw-400 text-dark" for="nodeHTTPMethod">HTTP Method</label>
-                <select [disabled]="!edit.status" id="nodeHTTPMethod" class="form-control"
-                    [(ngModel)]="currNode.options.method" (ngModelChange)="changesDone.emit()">
-                    <option value="POST" selected>POST</option>
-                    <option value="GET">GET</option>
-                    <option value="PUT">PUT</option>
-                    <option value="DELETE">DELETE</option>
-                </select>
-            </div>
-            <div class="form-group position-relative">
-                <label class="font-14 fw-400 text-dark" for="nodeContentType">Content-Type</label>
-                <div class="form-control form-control-readonly">application/json</div>
-            </div>
-            <div class="form-group">
-                <odp-add-headers [edit]="edit" [nodeList]="nodeList" [currNode]="currNode"
-                    [(value)]="currNode.options.headers">
-                </odp-add-headers>
-            </div>
-            <div class="form-group position-relative">
-                <label class="font-14 fw-400 text-dark" for="nodeContentType">For Each Record</label>
+            <div class="form-group position-relative d-flex align-items-center justify-content-between p-2 border bg-light rounded">
+                <label class="font-14 fw-400 text-dark mb-0" for="forEachRecord">For Each Record</label>
                 <odp-checkbox [edit]="edit" class="mx-2 pl-1" [(checked)]="currNode.options.multipleRequests">
                 </odp-checkbox>
             </div>
@@ -413,6 +416,10 @@
         <ng-container *ngIf="currNode?.type=='DATASERVICE'">
             <odp-data-service-properties [edit]="edit" [nodeList]="nodeList" [currNode]="currNode">
             </odp-data-service-properties>
+        </ng-container>
+        <ng-container *ngIf="currNode?.type=='FLOW'">
+            <odp-flow-properties [edit]="edit" [nodeList]="nodeList" [currNode]="currNode">
+            </odp-flow-properties>
         </ng-container>
         <ng-container *ngIf="currNode?.type=='FUNCTION'">
             <div class="form-group">

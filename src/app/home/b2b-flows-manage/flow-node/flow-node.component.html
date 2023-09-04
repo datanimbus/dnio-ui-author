@@ -50,6 +50,8 @@
                 class="node-icon font-18 fw-500 dsi dsi-data-service" [attr.data-id]="currNode._id"></span>
             <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='FUNCTION'"
                 class="node-icon font-18 fw-500 dsi dsi-function" [attr.data-id]="currNode._id"></span>
+            <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='FLOW'"
+                class="node-icon font-18 fw-500 dsi dsi-flow" [attr.data-id]="currNode._id"></span>
             <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='MAPPING'"
                 class="node-icon font-18 fw-500 dsi dsi-mapping" [attr.data-id]="currNode._id"></span>
             <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='DEDUPE'"
@@ -85,7 +87,7 @@
     <g *ngFor="let p of successPaths;let i=index" id="successGroup">
         <path [attr.d]="p.path" class="svg-path svg-path-transparent ignore-outside"
             [class.selected]="isSelectedPath && selectedPathIndex == i && selectedPathType=='success'"
-            (click)="selectPath($event,i,p,'success')"/>
+            (click)="selectPath($event,i,p,'success')" />
         <path [attr.d]="p.path" class="svg-path ignore-outside"
             [class.selected]="isSelectedPath && selectedPathIndex == i && selectedPathType=='success'"
             (click)="selectPath($event,i,p,'success')" [style]="'stroke:#'+p.color" />
@@ -96,10 +98,10 @@
     <g *ngFor="let p of errorPaths;let i=index">
         <path [attr.d]="p.path" class="svg-path svg-path-transparent ignore-outside"
             [class.selected]="isSelectedPath && selectedPathIndex == i && selectedPathType=='error'"
-            (click)="selectPath($event,i,p,'error')"/>
+            (click)="selectPath($event,i,p,'error')" />
         <path [attr.d]="p.path" class="svg-path ignore-outside"
             [class.selected]="isSelectedPath && selectedPathIndex == i && selectedPathType=='error'"
-            (click)="selectPath($event,i,p,'error')" [style]="'stroke:#'+p.color"/>
+            (click)="selectPath($event,i,p,'error')" [style]="'stroke:#'+p.color" />
         <text x="0" y="0" class="path-text" [style]="getPathTextStyle(p)" text-anchor="middle"
             [attr.data-id]="currNode._id"
             [class.selected]="isSelectedPath && selectedPathIndex == i && selectedPathType=='error'">{{p.name}}</text>

@@ -66,6 +66,7 @@ import { FileRwPropertiesComponent } from './node-properties/file-rw-properties/
 import { ViewBoxModule } from 'src/app/utils/view-box/view-box.module';
 import { NodeAdvancedFilterComponent } from './node-properties/node-advanced-filter/node-advanced-filter.component';
 import { DatePickerModule } from 'src/app/utils/date-picker/datePicker.module';
+import { FlowPropertiesComponent } from './node-properties/flow-properties/flow-properties.component';
 
 const routes: Routes = [
   {
@@ -106,6 +107,7 @@ const routes: Routes = [
     MappingPresetComponent,
     FileRwPropertiesComponent,
     NodeAdvancedFilterComponent,
+    FlowPropertiesComponent,
   ],
   imports: [
     CommonModule,

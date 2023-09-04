@@ -88,7 +88,6 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.nodeOptions = this.flowService.getNodeOptions();
-  ;  
     this.flowService.showAddNodeDropdown.pipe(
       tap(() => {
         this.resetSelection();
@@ -478,16 +477,16 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   }
 
   addNode(event: any, type: string, anotherInputNode: boolean = false) {
-  if(type){
-    this.contextMenuStyle = null;
-    const tempNode = this.flowService.getNodeObject(type, this.nodeList, anotherInputNode);
-    tempNode.coordinates = {};
-    const ele: HTMLElement = document.querySelectorAll('.flow-designer-svg')[0] as HTMLElement;
-    const rect = ele.getBoundingClientRect();
-    tempNode.coordinates.x = event.pageX - rect.left - 70;
-    tempNode.coordinates.y = event.pageY - rect.top - 18;
-    this.nodeList.push(tempNode);
-  }
+    if (type) {
+      this.contextMenuStyle = null;
+      const tempNode = this.flowService.getNodeObject(type, this.nodeList, anotherInputNode);
+      tempNode.coordinates = {};
+      const ele: HTMLElement = document.querySelectorAll('.flow-designer-svg')[0] as HTMLElement;
+      const rect = ele.getBoundingClientRect();
+      tempNode.coordinates.x = event.pageX - rect.left - 70;
+      tempNode.coordinates.y = event.pageY - rect.top - 18;
+      this.nodeList.push(tempNode);
+    }
   }
 
   addNodeToCanvas(type: string) {
@@ -594,10 +593,10 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   }
 
   evaluateCondition(condition: string): boolean {
-    if(!condition){
+    if (!condition) {
       return true
     }
-    return eval(condition); 
+    return eval(condition);
   }
 
   get hasErrorNode() {

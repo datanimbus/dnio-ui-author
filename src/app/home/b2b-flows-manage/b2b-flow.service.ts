@@ -484,7 +484,12 @@ export class B2bFlowService {
                   name: 'Function',
                   action: 'FUNCTION',
                   icon: 'dsi dsi-function'   
-              }
+              },
+              {
+                name: 'Flow',
+                action: 'FLOW',
+                icon: 'dsi dsi-flow'
+            },
           ],
        icon: 'dsi dsi-function alt'   
   },
