@@ -116,7 +116,7 @@ export class CustomNodeComponent implements OnInit {
     payload.nodes = [];
     this.subscriptions['createNode'] = this.commonService.post('partnerManager', `/admin/node`, payload).subscribe(res => {
       this.showLazyLoader = false;
-      this.ts.success('Process Node has been created.');
+      this.ts.success('Plugin has been created.');
       this.getNodes();
     }, err => {
       this.showLazyLoader = false;
@@ -140,7 +140,7 @@ export class CustomNodeComponent implements OnInit {
     this.subscriptions['cloneNode'] =  this.commonService.post('partnerManager', `/admin/node`, this.cloneData).subscribe(res => {
       this.showLazyLoader = false;
       this.isClone = false;
-      this.ts.success('Process Node has been cloned.');
+      this.ts.success('Plugin has been cloned.');
       this.subscriptions['nodeList'] = this.getNodes();
     }, err => {
       this.showLazyLoader = false;
@@ -209,6 +209,7 @@ export class CustomNodeComponent implements OnInit {
           (d) => {
             this.showLazyLoader = false;
             this.records.splice(data.index, 1);
+            this.ts.success('Plugin has been deleted.');
           },
           (err) => {
             this.showLazyLoader = false;
@@ -241,9 +242,9 @@ export class CustomNodeComponent implements OnInit {
 
   deleteNode(index: number) {
     this.alertModal.statusChange = false;
-    this.alertModal.title = 'Delete Node?';
+    this.alertModal.title = 'Delete Plugin?';
     this.alertModal.message =
-      'Are you sure you want to delete this node? This action will delete : ' + this.records[index].name;
+      'Are you sure you want to delete this plugin? This action will delete : ' + this.records[index].name;
     this.alertModal.index = index;
     this.openDeleteModal.emit(this.alertModal);
   }
