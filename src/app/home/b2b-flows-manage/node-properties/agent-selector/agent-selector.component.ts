@@ -32,7 +32,7 @@ export class AgentSelectorComponent implements OnInit {
   loadInitial() {
     this.showLoader = true;
     this.commonService.get('partnerManager', `/${this.commonService.app._id}/agent`, {
-      sort: 'name',
+      sort: '-_metadata.lastUpdated',
       select: 'name status agentId',
       count: 10
     }).subscribe((res) => {
