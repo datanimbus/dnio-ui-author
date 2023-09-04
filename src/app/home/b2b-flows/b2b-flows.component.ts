@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, EventEmitter, TemplateRef, ViewChild } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
@@ -9,8 +10,7 @@ import { GetOptions, CommonService } from 'src/app/utils/services/common.service
 import { AppService } from 'src/app/utils/services/app.service';
 import { Breadcrumb } from 'src/app/utils/interfaces/breadcrumb';
 import { CommonFilterPipe } from 'src/app/utils/pipes/common-filter/common-filter.pipe';
-import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { interval } from 'rxjs';
+
 
 @Component({
   selector: 'odp-b2b-flows',
@@ -145,7 +145,7 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
       if (index !== -1) {
         // this.flowList[index].status = data[0].status;
         this.getFlow(index)
-         
+
       }
     });
     this.subscriptions['flow.new'] = this.commonService.flow.new.subscribe(data => {
@@ -311,14 +311,14 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
     return this.commonService.get('partnerManager', `/${this.commonService.app._id}/flow/${this.flowList[index]._id}`, {
     }).subscribe((res: any) => {
       res.url = 'https://' + this.commonService.userDetails.fqdn + `/b2b/pipes/${this.app}` + res.inputNode.options.path;
-  
-    this.flowList[index] = res;
 
-    const name = this.flowList[index].name;
-    const msg = name + ' is now ' + res.status;
-   res.status === 'Active' ? this.ts.success(msg) : this.ts.error(msg)
-  });
-}
+      this.flowList[index] = res;
+
+      const name = this.flowList[index].name;
+      const msg = name + ' is now ' + res.status;
+      res.status === 'Active' ? this.ts.success(msg) : this.ts.error(msg)
+    });
+  }
 
   getStaterPlugins() {
     this.showLazyLoader = true;
@@ -327,7 +327,7 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
     if (this.pluginFilter) {
       filter.name = '/' + this.pluginFilter + '/';
     }
-    this.commonService.get('partnerManager', `/${this.commonService.app._id}/node`, {
+    this.commonService.get('partnerManager', `/${this.commonService.app._id}/plugin`, {
       filter: filter,
       noApp: true,
       select: 'name type category'
@@ -393,10 +393,10 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
   }
 
   canDeployFlow(flow) {
-    if(flow.status === 'Draft'){
+    if (flow.status === 'Draft') {
       return true;
     }
-    if (!flow.draftVersion ) {
+    if (!flow.draftVersion) {
       return false;
     }
     if (this.commonService.userDetails.isSuperAdmin) {
@@ -667,8 +667,8 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
     }
   }
 
-  showUrl(url){
-    return '/'+ url.split('/').pop();
+  showUrl(url) {
+    return '/' + url.split('/').pop();
   }
 
   get invalidForm() {
@@ -702,7 +702,7 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
           if (typeof a[field] == 'number' || typeof b[field] == 'number') {
             return this.compare((a[field]), (b[field]));
           } else {
-            if(field == 'inputNode.type'){
+            if (field == 'inputNode.type') {
               return this.compare(_.lowerCase(a.inputNode.type), _.lowerCase(b.inputNode.type));
             } else {
               return this.compare(_.lowerCase(a[field]), _.lowerCase(b[field]));
@@ -712,7 +712,7 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
           if (typeof a[field] == 'number' || typeof b[field] == 'number') {
             return this.compare((b[field]), (a[field]));
           } else {
-            if(field == 'inputNode.type'){
+            if (field == 'inputNode.type') {
               return this.compare(_.lowerCase(b.inputNode.type), _.lowerCase(a.inputNode.type));
             } else {
               return this.compare(_.lowerCase(b[field]), _.lowerCase(a[field]));
