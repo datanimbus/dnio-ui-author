@@ -29,28 +29,36 @@
         [ngClass]="{'text-dark font-weight-bold': activeSubTab==6}" (click)="activeSubTab=6">
         <span class="">Agents</span>
       </div>
-      <div *ngIf="hasPermission('PVGAIS') || hasPermission('PMGAIS')" class="px-3 py-2 hover"
+      <div *ngIf="hasPermission('PVGAPL') || hasPermission('PMGAPL')" class="px-3 py-2 hover"
         [ngClass]="{'text-dark font-weight-bold': activeSubTab==7}" (click)="activeSubTab=7">
+        <span class="">Plugins</span>
+      </div>
+      <div *ngIf="hasPermission('PVGAFO') || hasPermission('PMGAFO')" class="px-3 py-2 hover"
+        [ngClass]="{'text-dark font-weight-bold': activeSubTab==8}" (click)="activeSubTab=8">
+        <span class="">Formulas</span>
+      </div>
+      <!-- <div *ngIf="hasPermission('PVGAIS') || hasPermission('PMGAIS')" class="px-3 py-2 hover"
+        [ngClass]="{'text-dark font-weight-bold': activeSubTab==9}" (click)="activeSubTab=9">
         <span class="">Process Nodes</span>
       </div>
       <div *ngIf="hasPermission('PVGAIS') || hasPermission('PMGAIS')" class="px-3 py-2 hover"
-        [ngClass]="{'text-dark font-weight-bold': activeSubTab==8}" (click)="activeSubTab=8">
+        [ngClass]="{'text-dark font-weight-bold': activeSubTab==10}" (click)="activeSubTab=10">
         <span class="">Process Flows</span>
-      </div>
+      </div> -->
       <div *ngIf="hasPermission('PVGAU') || hasPermission('PMGAU')" class="px-3 py-2 hover"
-        [ngClass]="{'text-dark font-weight-bold': activeSubTab==9}" (click)="activeSubTab=9">
+        [ngClass]="{'text-dark font-weight-bold': activeSubTab==11}" (click)="activeSubTab=11">
         <span class="">Users</span>
       </div>
       <div *ngIf="(hasPermission('PVGAB') || hasPermission('PMGAB'))" class="px-3 py-2 hover"
-        [ngClass]="{'text-dark font-weight-bold': activeSubTab==10}" (click)="activeSubTab=10">
+        [ngClass]="{'text-dark font-weight-bold': activeSubTab==12}" (click)="activeSubTab=12">
         <span class="">Bots</span>
       </div>
       <div *ngIf="hasPermission('PVGAG') || hasPermission('PMGAG')" class="px-3 py-2 hover"
-        [ngClass]="{'text-dark font-weight-bold': activeSubTab==11}" (click)="activeSubTab=11">
+        [ngClass]="{'text-dark font-weight-bold': activeSubTab==13}" (click)="activeSubTab=13">
         <span class="">Groups</span>
       </div>
       <div *ngIf="hasPermission('PVGAIS') || hasPermission('PMGAIS')" class="px-3 py-2 hover"
-        [ngClass]="{'text-dark font-weight-bold': activeSubTab==12}" (click)="activeSubTab=12">
+        [ngClass]="{'text-dark font-weight-bold': activeSubTab==14}" (click)="activeSubTab=14">
         <span class="">Insights</span>
       </div>
     </div>
@@ -74,19 +82,25 @@
     </odp-group-author-data-formats>
     <odp-group-author-agents *ngIf="activeSubTab==6" [(roles)]="roles" (rolesChange)="onChange($event)" class="w-100">
     </odp-group-author-agents>
-    <odp-group-author-process-flows-nodes *ngIf="activeSubTab==7" [(roles)]="roles" (rolesChange)="onChange($event)"
+
+    <odp-group-author-plugins *ngIf="activeSubTab==7" [(roles)]="roles" (rolesChange)="onChange($event)" class="w-100">
+    </odp-group-author-plugins>
+    <odp-group-author-formulas *ngIf="activeSubTab==8" [(roles)]="roles" (rolesChange)="onChange($event)" class="w-100">
+    </odp-group-author-formulas>
+
+    <odp-group-author-process-flows-nodes *ngIf="activeSubTab==9" [(roles)]="roles" (rolesChange)="onChange($event)"
       class="w-100">
     </odp-group-author-process-flows-nodes>
-    <odp-group-author-process-flows *ngIf="activeSubTab==8" [(roles)]="roles" (rolesChange)="onChange($event)"
+    <odp-group-author-process-flows *ngIf="activeSubTab==10" [(roles)]="roles" (rolesChange)="onChange($event)"
       class="w-100">
     </odp-group-author-process-flows>
-    <odp-group-author-users *ngIf="activeSubTab==9" [(roles)]="roles" (rolesChange)="onChange($event)" class="w-100">
+    <odp-group-author-users *ngIf="activeSubTab==11" [(roles)]="roles" (rolesChange)="onChange($event)" class="w-100">
     </odp-group-author-users>
-    <odp-group-author-bots *ngIf="activeSubTab==10" [(roles)]="roles" (rolesChange)="onChange($event)" class="w-100">
+    <odp-group-author-bots *ngIf="activeSubTab==12" [(roles)]="roles" (rolesChange)="onChange($event)" class="w-100">
     </odp-group-author-bots>
-    <odp-group-author-groups *ngIf="activeSubTab==11" [(roles)]="roles" (rolesChange)="onChange($event)" class="w-100">
+    <odp-group-author-groups *ngIf="activeSubTab==13" [(roles)]="roles" (rolesChange)="onChange($event)" class="w-100">
     </odp-group-author-groups>
-    <odp-group-author-insights *ngIf="activeSubTab==12" [(roles)]="roles" (rolesChange)="onChange($event)"
+    <odp-group-author-insights *ngIf="activeSubTab==14" [(roles)]="roles" (rolesChange)="onChange($event)"
       class="w-100">
     </odp-group-author-insights>
     <!-- <odp-group-author-bookmarks *ngIf="activeSubTab==7" [(roles)]="roles" (rolesChange)="onChange($event)"

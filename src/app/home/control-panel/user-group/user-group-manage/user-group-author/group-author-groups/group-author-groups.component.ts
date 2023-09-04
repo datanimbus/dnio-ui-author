@@ -28,11 +28,6 @@ export class GroupAuthorGroupsComponent implements OnInit {
     this.viewPermissions = ['PVGB', 'PVGMB', 'PVGMU', 'PVGADS', 'PVGAL', 'PVGACON', 'PVGADF', 'PVGAF', 'PVGAA', 'PVGABM', 'PVGAU', 'PVGAB', 'PVGAG', 'PVGAIS', 'PVGCDS', 'PVGCI', 'PVGCBM', 'PVGCIF', 'PVGCI'];
     this.authorModulesList = [
       {
-        label: 'Connectors',
-        segment: 'GACON',
-        entity: 'GROUP'
-      },
-      {
         label: 'Data Service',
         segment: 'GADS',
         entity: 'GROUP'
@@ -43,19 +38,39 @@ export class GroupAuthorGroupsComponent implements OnInit {
         entity: 'GROUP'
       },
       {
-        label: 'Data Formats',
-        segment: 'GADF',
+        label: 'Functions',
+        segment: 'GAF',
         entity: 'GROUP'
       },
       {
-        label: 'Functions',
-        segment: 'GAF',
+        label: 'Connectors',
+        segment: 'GACON',
+        entity: 'GROUP'
+      },
+      {
+        label: 'Data Pipes',
+        segment: 'GAIF',
+        entity: 'GROUP'
+      },
+      {
+        label: 'Data Formats',
+        segment: 'GADF',
         entity: 'GROUP'
       },
       {
         label: 'Agents',
         segment: 'GAA',
         entity: 'GROUP'
+      },
+      {
+        label: 'Plugins',
+        segment: 'GAPL',
+        entity: 'PLUGIN'
+      },
+      {
+        label: 'Formulas',
+        segment: 'GAFO',
+        entity: 'FORMULA'
       },
       // {
       //   label: 'Bookmarks',
@@ -80,11 +95,6 @@ export class GroupAuthorGroupsComponent implements OnInit {
       {
         label: 'Insights',
         segment: 'GAIS',
-        entity: 'GROUP'
-      },
-      {
-        label: 'Data Pipes',
-        segment: 'GAIF',
         entity: 'GROUP'
       },
     ];

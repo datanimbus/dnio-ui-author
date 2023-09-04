@@ -441,13 +441,22 @@ export class AppsComponent implements OnInit, OnDestroy {
       self.commonService.hasPermissionStartsWith('PVA')
     );
   }
-  get hasNanoServicePermission() {
+  get hasPluginsPermission() {
     const self = this;
     return (
-      self.commonService.hasPermissionStartsWith('PMNS') ||
-      self.commonService.hasPermissionStartsWith('PVNS')
+      self.commonService.hasPermissionStartsWith('PMPL') ||
+      self.commonService.hasPermissionStartsWith('PVPL')
     );
   }
+
+  get hasFormulaPermission() {
+    const self = this;
+    return (
+      self.commonService.hasPermissionStartsWith('PMFO') ||
+      self.commonService.hasPermissionStartsWith('PVFO')
+    );
+  }
+
   get hasInsightsPermission() {
     const self = this;
     return (

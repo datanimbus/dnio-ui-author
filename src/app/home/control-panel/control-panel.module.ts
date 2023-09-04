@@ -78,6 +78,8 @@ import { GroupAuthorConnectorsComponent } from './user-group/user-group-manage/u
 import { GroupAuthorFlowsComponent } from './user-group/user-group-manage/user-group-author/group-author-flows/group-author-flows.component';
 import { GroupAuthorProcessFlowsComponent } from './user-group/user-group-manage/user-group-author/group-author-process-flows/group-author-process-flows.component';
 import { GroupAuthorProcessFlowsNodesComponent } from './user-group/user-group-manage/user-group-author/group-author-process-flows-nodes/group-author-process-flows-nodes.component';
+import { GroupAuthorPluginsComponent } from './user-group/user-group-manage/user-group-author/group-author-plugins/group-author-plugins.component';
+import { GroupAuthorFormulasComponent } from './user-group/user-group-manage/user-group-author/group-author-formulas/group-author-formulas.component';
 
 @NgModule({
   imports: [
@@ -163,7 +165,9 @@ import { GroupAuthorProcessFlowsNodesComponent } from './user-group/user-group-m
     UserGridAppsRendererComponent,
     UserGroupUsersComponent,
     UserGroupMembersSearchComponent,
-    GroupAuthorConnectorsComponent
+    GroupAuthorConnectorsComponent,
+    GroupAuthorPluginsComponent,
+    GroupAuthorFormulasComponent
   ],
   exports: [UserGridAppsRendererComponent, UserToGroupModalComponent]
 })

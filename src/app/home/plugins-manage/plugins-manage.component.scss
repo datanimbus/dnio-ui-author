@@ -1,0 +1,67 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.edit-plugin-window {
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+}
+
+.code-editor-wrapper {
+    max-height: 100px;
+    overflow: hidden;
+
+    &.expanded {
+        overflow: visible;
+        max-height: 100%;
+        width: 100%;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 2;
+        background: $white;
+        transition: 0.2s;
+
+        .code-editor {
+            height: calc(100vh - 40px);
+            // max-height: 100px;
+        }
+    }
+}
+
+.grid {
+    border: 1px solid $gray-80;
+    border-radius: 6px;
+
+    .grid-row {
+
+        &.header {
+            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 12px;
+            color: $secondary;
+            background-color: $light;
+        }
+
+        &:not(:last-child) {
+            border-bottom: 1px solid $gray-80;
+        }
+
+        .grid-cell {
+            min-width: 220px;
+            padding: 6px;
+
+            &.full-width {
+                width: 100%;
+            }
+
+            &:not(:last-child) {
+                border-right: 1px solid $gray-80;
+            }
+
+            &.pull-right {
+                align-self: self-end;
+            }
+        }
+    }
+}

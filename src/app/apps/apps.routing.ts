@@ -144,6 +144,20 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'plugin',
+        loadChildren: () =>
+          import('../home/plugins-listing/plugins-listing.module').then(
+            (m) => m.PluginsListingModule
+          ),
+      },
+      {
+        path: 'plugin/:id',
+        loadChildren: () =>
+          import('../home/plugins-manage/plugins-manage.module').then(
+            (m) => m.PluginsManageModule
+          ),
+      },
+      {
         path: 'con',
         loadChildren: () =>
           import('../home/connectors/connectors.module').then(
