@@ -33,7 +33,7 @@ export class ServiceSelectorComponent implements OnInit {
     this.showLoader = true;
     this.commonService.get('serviceManager', `/${this.commonService.app._id}/service`, {
       sort: '-_metadata.lastUpdated',
-      select: 'name definition attributeCount status',
+      select: 'name definition attributeCount status schemaFree',
       count: 5
     }).subscribe((res) => {
       this.showLoader = false;

@@ -54,6 +54,8 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   processNodeList: any = [];
 
   activeTab: number;
+  data: any;
+  nodeOptions: Array<any> = [];
   constructor(private commonService: CommonService,
     private appService: AppService,
     private route: ActivatedRoute,
@@ -81,9 +83,12 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     this.openDeleteModal = new EventEmitter();
     this.nodeList = [];
     this.activeTab = 0;
+
   }
 
   ngOnInit(): void {
+    this.nodeOptions = this.flowService.getNodeOptions();
+  ;  
     this.flowService.showAddNodeDropdown.pipe(
       tap(() => {
         this.resetSelection();
@@ -154,14 +159,14 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     }
   }
 
-  getProcessNodes(){
+  getProcessNodes() {
     this.nodeList = [];
     return this.commonService.get('config', `/${this.commonService.app._id}/processnode/utils/count`).pipe(switchMap((count: any) => {
       return this.commonService.get('config', `/${this.commonService.app._id}/processnode`, {
         count: count,
       });
     })).subscribe((res: any) => {
-    
+
       // res.forEach(item => {
       //   item.url = 'https://' + this.commonService.userDetails.fqdn + `/b2b/pipes/${this.app}` + item.inputNode.options.path;
       //   // this.flowList.push(item);
@@ -173,7 +178,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       //   }
       // })
     }, err => {
-      
+
       console.log(err);
       this.commonService.errorToast(err);
     });
@@ -279,13 +284,13 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     this.subscriptions['discardDraft'] = call.subscribe(res => {
       this.apiCalls.discardDraft = false;
       this.ts.success('Draft Deleted.');
-      if(isNew){
+      if (isNew) {
         this.router.navigate(['/app', this.commonService.app._id, 'flow']);
       }
-      else{
+      else {
         this.getFlow(this.flowData._id);
       }
-      
+
     }, err => {
       this.apiCalls.discardDraft = false;
       this.commonService.errorToast(err);
@@ -473,6 +478,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   }
 
   addNode(event: any, type: string, anotherInputNode: boolean = false) {
+  if(type){
     this.contextMenuStyle = null;
     const tempNode = this.flowService.getNodeObject(type, this.nodeList, anotherInputNode);
     tempNode.coordinates = {};
@@ -481,6 +487,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     tempNode.coordinates.x = event.pageX - rect.left - 70;
     tempNode.coordinates.y = event.pageY - rect.top - 18;
     this.nodeList.push(tempNode);
+  }
   }
 
   addNodeToCanvas(type: string) {
@@ -584,6 +591,13 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
         this.flowService.reCreatePaths.emit();
       }
     }
+  }
+
+  evaluateCondition(condition: string): boolean {
+    if(!condition){
+      return true
+    }
+    return eval(condition); 
   }
 
   get hasErrorNode() {

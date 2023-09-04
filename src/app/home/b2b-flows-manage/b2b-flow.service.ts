@@ -196,9 +196,10 @@ export class B2bFlowService {
         outgoing: {}
       }
     };
-    if (type == 'DATASERVICE') {
-      temp.options.update = true;
-      temp.options.insert = true;
+    if (type.startsWith('DS_')) {
+      temp.type = 'DATASERVICE';
+      const subType = type.split('_')[1];
+      temp.options[subType.toLowerCase()]=true
     }
 
     if (type == 'FOREACH' || type == 'REDUCE') {
@@ -342,12 +343,15 @@ export class B2bFlowService {
       });
     }
     return list;
+    
   }
 
   getSuggestions(currNode?): Array<{ label: string, value: string }> {
     if (!this.nodeList || this.nodeList.length == 0) {
       return [];
     }
+
+    const availableHeaderKeys = ['authorization', 'content-type', 'token', 'ip', 'custom'];
     const list = currNode ? this.getNodesBefore(currNode) : this.nodeList;
     const temp = list.map(node => {
       let list = [];
@@ -359,10 +363,15 @@ export class B2bFlowService {
       status.label = (node._id || node.type) + '/status'
       status.value = node._id + '.status'
       list.push(status);
-      let headers: any = {};
-      headers.label = (node._id || node.type) + '/headers'
-      headers.value = node._id + '.headers'
-      list.push(headers);
+      availableHeaderKeys.forEach(key => {
+        let headers: any = {};
+        headers.label = (node._id || node.type) + '/headers/' + key;
+        headers.value = node._id + '.headers.' + key;
+        list.push(headers);
+      })
+      // headers.label = (node._id || node.type) + '/headers'
+      // headers.value = node._id + '.headers'
+      // list.push(headers);
       if (!node.dataStructure) {
         node.dataStructure = {};
       }
@@ -395,5 +404,131 @@ export class B2bFlowService {
       return list;
     })
     return _.flatten(temp);
+  }
+  
+  getNodeOptions(){
+    return [{
+      name: 'File',
+          children: [
+              {
+                  name: 'File Agent',
+                  action: 'FILE',
+                  icon: 'dsi dsi-file'   
+              }
+          ],
+       icon: 'dsi dsi-file'   
+  },
+  {
+      name: 'API',
+          children: [
+              {
+                  name: 'Invoke JSON API',
+                  action: 'API',
+                  icon: 'dsi dsi-invoke-api'   
+              },
+              {
+                  name: 'Response',
+                  action: 'RESPONSE',
+                  icon: 'dsi dsi-response'   
+              }
+          ],
+       icon: 'dsi dsi-invoke-api'   
+  },
+  {
+      name: 'Process',
+          children: [
+              {
+                  name: 'Connector',
+                  action: 'CONNECTOR',
+                  icon: 'dsi dsi-connector'   
+              },
+              {
+                  name: 'Data Service',
+                  icon: 'dsi dsi-data-service alt' ,
+                  children: [
+                      {
+                          action: 'DS_GET',
+                          name: 'Data Service Fetch',
+                          icon: 'dsi dsi-data-service alt'   
+                      },
+                      {
+                          action: 'DS_INSERT',
+                          name: 'Data Service Insert',
+                          icon: 'dsi dsi-data-service alt'   
+                      },
+                      {
+                          action: 'DS_UPDATE',
+                          name: 'Data Service Update',
+                          icon: 'dsi dsi-data-service alt'   
+                      },
+                      {
+                          action: 'DS_DELETE',
+                          name: 'Data Service Delete',
+                          icon: 'dsi dsi-data-service alt'   
+                      },
+                      {
+                          action: 'DATASERVICE',
+                          name: 'Workflow Approve',
+                          icon: 'dsi dsi-data-service alt',
+                          disabled: true   
+                      },
+                      {
+                          action: 'DATASERVICE',
+                          name: 'Workflow Reject',
+                          icon: 'dsi dsi-data-service alt',
+                          disabled: true   
+                      },
+                  ]  
+              },
+              {
+                  name: 'Function',
+                  action: 'FUNCTION',
+                  icon: 'dsi dsi-function'   
+              }
+          ],
+       icon: 'dsi dsi-function alt'   
+  },
+  {
+      name: 'Transform',
+          children: [
+              {
+                  name: 'Mapping',
+                  action: 'MAPPING',
+                  icon: 'dsi dsi-mapping'   
+              },
+              {
+                  name: 'Converter',
+                  action: 'CONVERT_JSON_JSON',
+                  icon: 'dsi dsi dsi-refresh text-secondary'   
+              },
+              {
+                  name: 'De-Dupe',
+                  action: 'DEDUPE',
+                  icon: 'dsi dsi dsi-copy'   
+              },
+              {
+                  name: 'Code Block',
+                  action: 'CODEBLOCK',
+                  icon: 'dsi dsi dsi-console text-secondary'   
+              },
+              {
+                  name: 'Change Root',
+                  action: 'UNWIND',
+                  icon: 'dsi dsi-expand'   
+              }
+          ],
+       icon: 'dsi dsi-join'   
+  },
+  {
+      name: 'Plugin',
+       icon: ' dsi dsi-api-doc text-info ',
+       action: 'PLUGIN'   
+  },
+  {
+      name: 'Global Error',
+       condition: '!this.hasErrorNode',
+       action: 'ERROR',  
+       icon: 'dsi dsi-danger-circle text-danger'   
+  }]
   }
 }

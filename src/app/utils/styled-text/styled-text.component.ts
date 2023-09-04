@@ -128,7 +128,7 @@ export class StyledTextComponent implements OnInit, OnChanges {
   }
 
   get valueArray() {
-    return this.value ? this.value.split(this.regex) : [];
+    return this.value ? this.value.toString().split(this.regex) : [];
   }
 
   regexMatch(word) {

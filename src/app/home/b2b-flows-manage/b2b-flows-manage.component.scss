@@ -146,7 +146,6 @@
       position: absolute;
       left: 140px;
       display: none;
-      overflow: hidden;
 
       .node-item {
         min-height: 32px;
@@ -156,15 +155,18 @@
       }
     }
 
+    &:hover > .node-list-item {
+      display: block;
+    }
+    
     &:hover {
       background: $light;
-
-      .node-list-item {
-        display: block;
-      }
+      border-right: 1px solid $border-color;
+      border-radius: $border-radius;
     }
   }
 }
+
 
 .dsi-function.alt {
   color: #A94CFF;
@@ -184,4 +186,12 @@
 
 .spacer-lock {
   min-width: 260px;
+}
+
+
+.disabled{
+    background-color: $gray-95;
+    pointer-events: none;
+    border-right: 1px solid $border-color;
+    cursor: none !important;
 }
