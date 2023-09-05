@@ -85,11 +85,12 @@ export class FieldTypeComponent {
         label = 'Number';
       }
     } else if (field.type === 'Date') {
-      if (field.properties.dateType && field.properties.dateType === 'date') {
-        label = 'Date';
-      } else if (field.properties.dateType && field.properties.dateType === 'datetime-local') {
+     if (field.properties.dateType && field.properties.dateType === 'datetime-local') {
         label = 'Date & Time';
       }
+      else  {
+        label = 'Date';
+      }  
     } else {
       label = temp ? temp.label : 'Text';
     }
