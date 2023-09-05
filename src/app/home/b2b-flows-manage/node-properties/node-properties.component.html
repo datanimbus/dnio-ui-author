@@ -563,14 +563,14 @@
             <div class="d-flex align-items-center">
                 <odp-round-radio [edit]="edit" [checked]="currNode.options.conditionType=='parallel'"
                     (checkedChange)="currNode.options.conditionType='parallel'"></odp-round-radio>
-                <span class="ml-2">Execute Parallel</span>
+                <span class="ml-2">Proceed All True Conditions</span>
             </div>
         </div>
         <div class="form-group">
             <div class="d-flex align-items-center">
                 <odp-round-radio [edit]="edit" [checked]="currNode.options.conditionType=='ifElse'"
                     (checkedChange)="currNode.options.conditionType='ifElse'"></odp-round-radio>
-                <span class="ml-2">Execute If-Else</span>
+                <span class="ml-2">Proceed Only First True Condition</span>
             </div>
         </div>
     </div>
