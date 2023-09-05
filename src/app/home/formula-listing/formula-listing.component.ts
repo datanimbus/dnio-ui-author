@@ -168,7 +168,10 @@ export class FormulaListingComponent {
     this.formulaList = [];
     this.subscriptions['getFormulas'] = this.commonService.get('user', `/${this.commonService.app._id}/formula?countOnly=true`)
       .pipe(switchMap((ev: any) => {
-        return this.commonService.get('user', `/${this.commonService.app._id}/formula`, { count: ev });
+        return this.commonService.get('user', `/${this.commonService.app._id}/formula`, {
+          count: ev,
+          select: 'name returnType forDataType'
+        });
       }))
       .subscribe(res => {
         this.showLazyLoader = false;

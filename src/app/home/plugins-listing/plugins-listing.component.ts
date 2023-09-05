@@ -167,7 +167,10 @@ export class PluginsListingComponent {
     this.pluginList = [];
     this.subscriptions['getPlugins'] = this.commonService.get('partnerManager', `/${this.commonService.app._id}/plugin?countOnly=true`)
       .pipe(switchMap((ev: any) => {
-        return this.commonService.get('partnerManager', `/${this.commonService.app._id}/plugin`, { count: ev });
+        return this.commonService.get('partnerManager', `/${this.commonService.app._id}/plugin`, {
+          count: ev,
+          select: 'name type'
+        });
       }))
       .subscribe(res => {
         this.showLazyLoader = false;
