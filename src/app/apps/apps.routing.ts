@@ -158,6 +158,20 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'formula',
+        loadChildren: () =>
+          import('../home/formula-listing/formula-listing.module').then(
+            (m) => m.FormulaListingModule
+          ),
+      },
+      {
+        path: 'formula/:id',
+        loadChildren: () =>
+          import('../home/formula-manage/formula-manage.module').then(
+            (m) => m.FormulaManageModule
+          ),
+      },
+      {
         path: 'con',
         loadChildren: () =>
           import('../home/connectors/connectors.module').then(

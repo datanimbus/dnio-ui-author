@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import * as _ from 'lodash';
 
 import { AppService } from 'src/app/utils/services/app.service';
 import { CommonService } from 'src/app/utils/services/common.service';
 
 @Component({
-  selector: 'odp-plugins-manage',
-  templateUrl: './plugins-manage.component.html',
-  styleUrls: ['./plugins-manage.component.scss']
+  selector: 'odp-formula-manage',
+  templateUrl: './formula-manage.component.html',
+  styleUrls: ['./formula-manage.component.scss']
 })
-export class PluginsManageComponent {
+export class FormulaManageComponent {
+
   alertModal: {
     statusChange?: boolean;
     title: string;
@@ -22,7 +24,7 @@ export class PluginsManageComponent {
   searchTerm: string;
   toggleExpand: boolean;
   params: Array<any>;
-  selectedPlugin: any;
+  selectedFormula: any;
   edit: any;
   constructor(public commonService: CommonService,
     private appService: AppService,
@@ -51,7 +53,7 @@ export class PluginsManageComponent {
           this.edit.status = true;
           this.edit.id = params.id;
         }
-        this.getPlugin(params.id);
+        this.getFormula(params.id);
       }
     });
     this.commonService.apiCalls.componentLoading = false;
@@ -63,14 +65,15 @@ export class PluginsManageComponent {
     });
   }
 
-  getPlugin(pluginId: string) {
+  getFormula(formulaId: string) {
     this.showLazyLoader = true;
-    if (this.subscriptions['getPlugin']) {
-      this.subscriptions['getPlugin'].unsubscribe();
+    if (this.subscriptions['getFormula']) {
+      this.subscriptions['getFormula'].unsubscribe();
     }
-    this.subscriptions['getPlugin'] = this.commonService.get('partnerManager', `/${this.commonService.app._id}/plugin/${pluginId}`).subscribe((res: any) => {
+    this.subscriptions['getFormula'] = this.commonService.get('user', `/${this.commonService.app._id}/formula/${formulaId}`).subscribe((res: any) => {
       this.showLazyLoader = false;
-      this.selectedPlugin = res;
+      this.selectedFormula = res;
+      this.params = this.selectedFormula.params;
     }, err => {
       this.showLazyLoader = false;
       console.log(err);
@@ -87,31 +90,31 @@ export class PluginsManageComponent {
 
   enableEditing() {
     this.edit.status = true;
-    this.getPlugin(this.selectedPlugin._id);
+    this.getFormula(this.selectedFormula._id);
     this.appService.updateCodeEditorState.emit();
   }
 
   cancel() {
     if (!this.edit.status || this.edit.editClicked || !this.edit.id) {
-      this.router.navigate(['/app', this.commonService.app._id, 'plugin']);
+      this.router.navigate(['/app', this.commonService.app._id, 'formula']);
     } else {
       if (!this.edit.editClicked) {
         this.edit.status = false;
-        this.getPlugin(this.edit.id);
+        this.getFormula(this.edit.id);
       }
     }
   }
 
-  savePlugin() {
-    this.selectedPlugin.params = this.params;
-    const url = `/${this.commonService.app._id}/plugin/` + this.selectedPlugin._id;
+  saveFormula() {
+    this.selectedFormula.params = this.params;
+    const url = `/${this.commonService.app._id}/formula/` + this.selectedFormula._id;
     this.showLazyLoader = true;
     this.commonService
-      .put('partnerManager', url, this.selectedPlugin)
+      .put('user', url, this.selectedFormula)
       .subscribe(
         (d) => {
           this.showLazyLoader = false;
-          this.ts.success('Plugin Saved Successfully');
+          this.ts.success('Formula Saved Successfully');
         },
         (err) => {
           this.showLazyLoader = false;
@@ -124,7 +127,7 @@ export class PluginsManageComponent {
   }
 
   addParam() {
-    this.params.push({ htmlType: 'input', dataType: 'text' });
+    this.params.push({ type: 'String' });
   }
 
   removeParam(index: number) {
@@ -132,7 +135,7 @@ export class PluginsManageComponent {
   }
 
   convertToKey(value: string, item: any) {
-    item.key = this.appService.toCamelCase(value);
+    item.name = this.appService.toCamelCase(value);
   }
 
   get app() {
@@ -140,14 +143,25 @@ export class PluginsManageComponent {
   }
 
   get isInvalid() {
-    if (!this.selectedPlugin) {
+    if (!this.selectedFormula) {
       return true;
     }
-    if (!this.selectedPlugin.name || !this.selectedPlugin.name.trim()) {
+    if (!this.selectedFormula.name || !this.selectedFormula.name.trim()) {
       return true;
     }
-    if (!this.selectedPlugin.type || !this.selectedPlugin.type.trim()) {
+    if (!this.selectedFormula.returnType || !this.selectedFormula.returnType.trim()) {
       return true;
+    }
+    if (this.selectedFormula.params && this.selectedFormula.params.length > 0) {
+      let flag = false;
+      this.selectedFormula.params.forEach((item) => {
+        if (!item.name || !item.type) {
+          flag = true;
+        }
+      });
+      if (flag) {
+        return true;
+      }
     }
     return false;
   }

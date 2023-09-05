@@ -17,7 +17,7 @@
                     <span class="text">Cancel</span>
                 </button>
                 <button type="button" *ngIf="!edit.status" class="btn btn-min-width btn-primary w-100"
-                    id="newPluginModalYes" [disabled]="isInvalid" (click)="enableEditing()">Edit</button>
+                    id="newPluginModalYes" (click)="enableEditing()">Edit</button>
                 <button type="button" *ngIf="edit.status" class="btn btn-min-width btn-primary w-100"
                     id="newPluginModalYes" [disabled]="isInvalid" (click)="savePlugin()">Save</button>
             </div>

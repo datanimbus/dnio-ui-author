@@ -11,14 +11,14 @@ import { AppService } from 'src/app/utils/services/app.service';
 import { CommonService } from 'src/app/utils/services/common.service';
 
 @Component({
-  selector: 'odp-plugins-listing',
-  templateUrl: './plugins-listing.component.html',
-  styleUrls: ['./plugins-listing.component.scss'],
+  selector: 'odp-formula-listing',
+  templateUrl: './formula-listing.component.html',
+  styleUrls: ['./formula-listing.component.scss'],
   providers: [CommonFilterPipe]
 })
-export class PluginsListingComponent {
+export class FormulaListingComponent {
 
-  pluginList: Array<any> = [];
+  formulaList: Array<any> = [];
   alertModal: {
     statusChange?: boolean;
     title: string;
@@ -30,10 +30,10 @@ export class PluginsListingComponent {
   breadcrumbPaths: Array<Breadcrumb>;
   openDeleteModal: EventEmitter<any>;
   form: UntypedFormGroup;
-  showNewPluginWindow: boolean;
+  showNewFormulaWindow: boolean;
   showOptionsDropdown: any;
   selectedItemEvent: any
-  selectedPlugin: any;
+  selectedFormula: any;
   searchTerm: string;
   sortModel: any;
   cloneData: any;
@@ -55,7 +55,7 @@ export class PluginsListingComponent {
     };
     this.breadcrumbPaths = [{
       active: true,
-      label: 'Plugins'
+      label: 'Formulas'
     }];
     this.definition = [];
 
@@ -64,22 +64,23 @@ export class PluginsListingComponent {
     this.form = this.fb.group({
       name: [null, [Validators.required, Validators.maxLength(40), Validators.pattern(/^[a-zA-Z]/)]],
       description: [null, [Validators.maxLength(240), Validators.pattern(/^[a-zA-Z]/)]],
-      type: ['PROCESS', [Validators.required]],
+      returnType: ['String', [Validators.required]],
+      forDataType: ['String', [Validators.required]],
     });
     this.showOptionsDropdown = {};
     this.showLazyLoader = true;
     this.sortModel = {};
-    this.pluginList = this.appService.getFormatTypeList();
+    this.formulaList = this.appService.getFormatTypeList();
   }
 
   ngOnInit() {
     this.showLazyLoader = true;
     this.commonService.apiCalls.componentLoading = false;
-    this.getPlugins();
+    this.getFormulas();
     this.subscriptions['changeApp'] = this.commonService.appChange.subscribe(_app => {
       this.commonService.apiCalls.componentLoading = false;
       this.showLazyLoader = true;
-      this.getPlugins();
+      this.getFormulas();
     });
 
   }
@@ -90,12 +91,12 @@ export class PluginsListingComponent {
     });
   }
 
-  newPlugin() {
-    this.form.reset({ type: 'PROCESS' });
-    this.showNewPluginWindow = true;
+  newFormula() {
+    this.form.reset({ returnType: 'String', forDataType: 'String' });
+    this.showNewFormulaWindow = true;
   }
 
-  triggerPluginCreate() {
+  triggerFormulaCreate() {
     if (this.form.invalid) {
       return;
     }
@@ -106,39 +107,39 @@ export class PluginsListingComponent {
       payload.type = this.dataType;
     }
     this.showLazyLoader = true;
-    this.commonService.post('partnerManager', `/${this.commonService.app._id}/plugin`, payload).subscribe(res => {
-      this.ts.success('Plugin Created.');
+    this.commonService.post('user', `/${this.commonService.app._id}/formula`, payload).subscribe(res => {
+      this.ts.success('Formula Created.');
       this.appService.edit = res._id;
       this.showLazyLoader = false;
-      this.router.navigate(['/app/', this.commonService.app._id, 'plugin', res._id]);
+      this.router.navigate(['/app/', this.commonService.app._id, 'formula', res._id]);
     }, err => {
       this.showLazyLoader = false;
       this.commonService.errorToast(err);
     });
   }
 
-  editPlugin(_index) {
-    this.appService.edit = this.pluginList[_index]._id;
-    this.router.navigate(['/app/', this.app, 'plugin', this.appService.edit]);
+  editFormula(_index) {
+    this.appService.edit = this.formulaList[_index]._id;
+    this.router.navigate(['/app/', this.app, 'formula', this.appService.edit]);
   }
 
-  clonePlugin(_index) {
+  cloneFormula(_index) {
     this.appService.cloneLibraryId = this.records[_index]._id;
     this.cloneData = this.records[_index];
     this.isClone = true;
     this.form.patchValue({
       name: this.cloneData.name + ' Copy',
-      pluginType: this.cloneData.pluginType,
+      formulaType: this.cloneData.formulaType,
       excelType: this.cloneData.excelType
     });
-    this.showNewPluginWindow = true;
+    this.showNewFormulaWindow = true;
   }
 
-  triggerPluginClone() {
+  triggerFormulaClone() {
     this.isClone = false;
     const payload = {
       name: this.form.value.name,
-      pluginType: this.form.value.pluginType,
+      formulaType: this.form.value.formulaType,
       excelType: this.form.value.excelType,
       app: this.cloneData.app,
       attributeCount: this.cloneData.attributeCount,
@@ -148,10 +149,10 @@ export class PluginsListingComponent {
       strictValidation: this.cloneData.strictValidation
     };
     this.showLazyLoader = true;
-    this.commonService.post('partnerManager', `/${this.commonService.app._id}/plugin`, payload).subscribe(res => {
-      this.ts.success('Plugin Cloned.');
+    this.commonService.post('user', `/${this.commonService.app._id}/formula`, payload).subscribe(res => {
+      this.ts.success('Formula Cloned.');
       this.appService.edit = res._id;
-      this.router.navigate(['/app/', this.commonService.app._id, 'plugin', res._id]);
+      this.router.navigate(['/app/', this.commonService.app._id, 'formula', res._id]);
       this.showLazyLoader = false;
     }, err => {
       this.showLazyLoader = false;
@@ -159,21 +160,21 @@ export class PluginsListingComponent {
     });
   }
 
-  getPlugins() {
-    if (this.subscriptions['getPlugins']) {
-      this.subscriptions['getPlugins'].unsubscribe();
+  getFormulas() {
+    if (this.subscriptions['getFormulas']) {
+      this.subscriptions['getFormulas'].unsubscribe();
     }
     this.showLazyLoader = true;
-    this.pluginList = [];
-    this.subscriptions['getPlugins'] = this.commonService.get('partnerManager', `/${this.commonService.app._id}/plugin?countOnly=true`)
+    this.formulaList = [];
+    this.subscriptions['getFormulas'] = this.commonService.get('user', `/${this.commonService.app._id}/formula?countOnly=true`)
       .pipe(switchMap((ev: any) => {
-        return this.commonService.get('partnerManager', `/${this.commonService.app._id}/plugin`, { count: ev });
+        return this.commonService.get('user', `/${this.commonService.app._id}/formula`, { count: ev });
       }))
       .subscribe(res => {
         this.showLazyLoader = false;
         if (res.length > 0) {
           res.forEach(item => {
-            this.pluginList.push(item);
+            this.formulaList.push(item);
           });
         }
       }, err => {
@@ -181,23 +182,23 @@ export class PluginsListingComponent {
       });
   }
 
-  deletePlugin(_index) {
+  deleteFormula(_index) {
     this.alertModal.statusChange = false;
-    this.alertModal.title = 'Delete plugin';
+    this.alertModal.title = 'Delete formula';
     this.alertModal.message = 'Are you sure you want to delete <span class="text-delete font-weight-bold">'
-      + this.pluginList[_index].name + '</span> Plugin?';
+      + this.formulaList[_index].name + '</span> Formula?';
     this.alertModal.index = _index;
     this.openDeleteModal.emit(this.alertModal);
   }
 
   closeDeleteModal(data) {
     if (data) {
-      const url = `/${this.commonService.app._id}/plugin/` + this.pluginList[data.index]._id;
+      const url = `/${this.commonService.app._id}/formula/` + this.formulaList[data.index]._id;
       this.showLazyLoader = true;
-      this.subscriptions['deletePlugin'] = this.commonService.delete('partnerManager', url).subscribe(_d => {
+      this.subscriptions['deleteFormula'] = this.commonService.delete('user', url).subscribe(_d => {
         this.showLazyLoader = false;
-        this.ts.info(_d.message ? _d.message : 'Plugin deleted');
-        this.getPlugins();
+        this.ts.info(_d.message ? _d.message : 'Formula deleted');
+        this.getFormulas();
       }, err => {
         this.showLazyLoader = false;
         this.commonService.errorToast(err, 'Unable to delete, please try again later');
@@ -205,14 +206,14 @@ export class PluginsListingComponent {
     }
   }
 
-  hasPermissionForPlugin(id: string) {
+  hasPermissionForFormula(id: string) {
     if (this.commonService.isAppAdmin || this.commonService.userDetails.isSuperAdmin) {
       return true;
     } else {
-      const list = this.commonService.getEntityPermissions('PLUGIN_' + id);
-      if (list.length > 0 && list.find(e => e.id === 'PNPL')) {
+      const list = this.commonService.getEntityPermissions('FORMULA_' + id);
+      if (list.length > 0 && list.find(e => e.id === 'PNFO')) {
         return false;
-      } else if (list.length === 0 && !this.hasManagePermission('PLUGIN') && !this.hasViewPermission('PLUGIN')) {
+      } else if (list.length === 0 && !this.hasManagePermission('FORMULA') && !this.hasViewPermission('FORMULA')) {
         return false;
       } else {
         return true;
@@ -220,14 +221,14 @@ export class PluginsListingComponent {
     }
   }
 
-  canEditPlugin(id: string) {
+  canEditFormula(id: string) {
     if (this.commonService.isAppAdmin || this.commonService.userDetails.isSuperAdmin) {
       return true;
     } else {
-      const list = this.commonService.getEntityPermissions('PLUGIN_' + id);
-      if (list.length > 0 && list.find(e => e.id === 'PMPL')) {
+      const list = this.commonService.getEntityPermissions('FORMULA_' + id);
+      if (list.length > 0 && list.find(e => e.id === 'PMFO')) {
         return true;
-      } else if (list.length === 0 && this.hasManagePermission('PLUGIN')) {
+      } else if (list.length === 0 && this.hasManagePermission('FORMULA')) {
         return true;
       } else {
         return false;
@@ -236,10 +237,10 @@ export class PluginsListingComponent {
   }
 
   hasManagePermission(entity: string) {
-    return this.commonService.hasPermission('PMPL', entity);
+    return this.commonService.hasPermission('PMFO', entity);
   }
   hasViewPermission(entity: string) {
-    return this.commonService.hasPermission('PVPL', entity);
+    return this.commonService.hasPermission('PVFO', entity);
   }
 
   applySort(field: string) {
@@ -258,28 +259,28 @@ export class PluginsListingComponent {
     Object.keys(this.showOptionsDropdown).forEach(key => {
       this.showOptionsDropdown[key] = false;
     })
-    this.selectedPlugin = this.pluginList[i];
+    this.selectedFormula = this.formulaList[i];
     this.showOptionsDropdown[i] = true;
   }
 
-  selectPlugin(plugin: any) {
-    this.pluginList.forEach(e => {
+  selectFormula(formula: any) {
+    this.formulaList.forEach(e => {
       e.selected = false;
     });
-    plugin.selected = true;
-    this.form.get('pluginType').patchValue(plugin.pluginType);
-    if (plugin.pluginType === 'EXCEL') {
-      this.form.get('excelType').patchValue(plugin.excelType);
+    formula.selected = true;
+    this.form.get('formulaType').patchValue(formula.formulaType);
+    if (formula.formulaType === 'EXCEL') {
+      this.form.get('excelType').patchValue(formula.excelType);
     }
   }
 
-  isPluginSelected(plugin: any) {
-    const pluginType = this.form.get('pluginType').value;
+  isFormulaSelected(formula: any) {
+    const formulaType = this.form.get('formulaType').value;
     const excelType = this.form.get('excelType').value;
     let flag = false;
-    if (plugin.pluginType == pluginType) {
-      if (plugin.pluginType === 'EXCEL') {
-        if (plugin.excelType == excelType) {
+    if (formula.formulaType == formulaType) {
+      if (formula.formulaType === 'EXCEL') {
+        if (formula.excelType == excelType) {
           flag = true;
         }
       } else {
@@ -289,8 +290,8 @@ export class PluginsListingComponent {
     return flag;
   }
 
-  navigate(plugin: any) {
-    this.router.navigate(['/app/', this.app, 'plugin', plugin._id])
+  navigate(formula: any) {
+    this.router.navigate(['/app/', this.app, 'formula', formula._id])
   }
 
   private compare(a: any, b: any) {
@@ -315,7 +316,7 @@ export class PluginsListingComponent {
   }
 
   get records() {
-    let records = this.commonPipe.transform(this.pluginList, 'name', this.searchTerm);
+    let records = this.commonPipe.transform(this.formulaList, 'name', this.searchTerm);
     const field = Object.keys(this.sortModel)[0];
     if (field) {
       records = records.sort((a, b) => {

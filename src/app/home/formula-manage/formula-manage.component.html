@@ -1,0 +1,139 @@
+<div class="default-loader d-flex justify-content-center w-100 h-100" *ngIf="showLazyLoader">
+    <div class="align-self-center text-center">
+        <div class="spinner-border text-dark" role="status">
+            <span class="sr-only">Processing...</span>
+        </div>
+        <div class="text-secondary mt-2">Processing...</div>
+    </div>
+</div>
+<div *ngIf="selectedFormula" class="formula-page w-100 page-padding bg-light">
+    <div class="pt-2 mb-4">
+        <odp-basic-info hideLogo="true" [(name)]="selectedFormula.name" [(description)]="selectedFormula.description"
+            [edit]="edit">
+            <div class="d-flex justify-content-end align-items-center">
+                <button (click)="cancel()" type="button"
+                    class="edit-button btn btn-min-width btn-white border d-flex align-items-center justify-content-center mr-3"
+                    id="cancelNanoServiceBtn">
+                    <span class="text">Cancel</span>
+                </button>
+                <button type="button" *ngIf="!edit.status" class="btn btn-min-width btn-primary w-100"
+                    id="newFormulaModalYes" (click)="enableEditing()">Edit</button>
+                <button type="button" *ngIf="edit.status" class="btn btn-min-width btn-primary w-100"
+                    id="newFormulaModalYes" [disabled]="isInvalid" (click)="saveFormula()">Save</button>
+            </div>
+        </odp-basic-info>
+    </div>
+    <div class="edit-formula-window p-4 bg-white d-flex flex-column border rounded w-100">
+        <ng-container *ngIf="selectedFormula">
+            <div class="d-flex flex-column align-items-start w-100">
+                <div class="row w-100">
+                    <div class="col">
+                        <div class="d-flex flex-column w-100 mr-3">
+                            <label for="name" class="font-13 text-secondary">
+                                <span class="text">Name</span>
+                                <sup class="text-danger font-normal" ngbTooltip="Mandatory field">*</sup>
+                            </label>
+                            <div class="name-wrapper position-relative mb-3">
+                                <input newFormulaName autocomplete="off" type="text" class="form-control" id="name"
+                                    placeholder="Untitled Process Formula" [(ngModel)]="selectedFormula.name"
+                                    odpAutoFocus [disabled]="!edit.status">
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column w-100 mr-3">
+                            <label for="forDataType" class="font-13 text-secondary">
+                                <span class="text">Applicable Type</span>
+                                <sup class="text-danger font-normal" ngbTooltip="Mandatory field">*</sup>
+                            </label>
+                            <div class="type-wrapper position-relative mb-3">
+                                <select class="form-control" name="forDataType" id="forDataType"
+                                    [(ngModel)]="selectedFormula.forDataType" [disabled]="!edit.status">
+                                    <option value="String">String</option>
+                                    <option value="Number">Number</option>
+                                    <option value="Boolean">Boolean</option>
+                                    <option value="Date">Date</option>
+                                    <option value="Object">Object</option>
+                                    <option value="Array">Array</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column w-100 mr-3">
+                            <label for="returnType" class="font-13 text-secondary">
+                                <span class="text">Return Type</span>
+                                <sup class="text-danger font-normal" ngbTooltip="Mandatory field">*</sup>
+                            </label>
+                            <div class="type-wrapper position-relative mb-3">
+                                <select class="form-control" name="returnType" id="returnType"
+                                    [(ngModel)]="selectedFormula.returnType" [disabled]="!edit.status">
+                                    <option value="String">String</option>
+                                    <option value="Number">Number</option>
+                                    <option value="Boolean">Boolean</option>
+                                    <option value="Date">Date</option>
+                                    <option value="Object">Object</option>
+                                    <option value="Array">Array</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group w-100">
+                            <label for="params">Formula Params</label>
+                            <div class="grid">
+                                <div class="grid-row header d-flex align-items-center">
+                                    <div class="grid-cell">Key</div>
+                                    <div class="grid-cell">Type</div>
+                                    <div class="grid-cell text-right">
+                                        <span *ngIf="edit.status" class="dsi dsi-plus-circle text-accent hover"
+                                            (click)="addParam()"></span>
+                                    </div>
+                                </div>
+                                <div class="grid-row d-flex align-items-center" *ngIf="!params || params.length==0">
+                                    <div class="grid-cell full-width">No Params</div>
+                                </div>
+                                <div class="grid-row d-flex align-items-center" *ngFor="let item of params;let i=index">
+                                    <div class="grid-cell">
+                                        <input type="text" class="form-control" [(ngModel)]="item.name"
+                                            (ngModelChange)="convertToKey($event,item)" [disabled]="!edit.status"
+                                            odpAutoFocus>
+                                    </div>
+                                    <div class="grid-cell">
+                                        <select class="form-control" [(ngModel)]="item.type" [disabled]="!edit.status">
+                                            <option value="String">String</option>
+                                            <option value="Number">Number</option>
+                                            <option value="Boolean">Boolean</option>
+                                            <option value="Date">Date</option>
+                                            <option value="Object">Object</option>
+                                            <option value="Array">Array</option>
+                                        </select>
+                                    </div>
+                                    <div class="grid-cell text-right">
+                                        <span *ngIf="edit.status" class="dsi dsi-minus-circle text-danger hover"
+                                            (click)="removeParam(i)"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-light border rounded p-2 d-flex flex-column w-100 text-monospace mb-3">
+                    <div class="d-flex align-items-center justify-content-start text-secondary">
+                        <strong>Note:</strong>
+                        <span class="ml-2">Outer function is <span class="text-info fw-600">async</span> so using <span
+                                class="text-info fw-600">await</span> keyword is allowed.</span>
+                    </div>
+                </div>
+                <div class="code-editor-wrapper d-flex flex-column border rounded w-100"
+                    [class.expanded]="toggleExpand">
+                    <div class="border-bottom d-flex align-items-center justify-content-between w-100 p-2 bg-light">
+                        <span class="text-monospace font-12 fw-600 text-secondary">Write Your Code Here</span>
+                        <span *ngIf="!toggleExpand" ngbTooltip="Expand" class="dsi dsi-expand hover"
+                            (click)="toggleExpand=!toggleExpand"></span>
+                        <span *ngIf="toggleExpand" ngbTooltip="Collapse" class="dsi dsi-collapse hover"
+                            (click)="toggleExpand=!toggleExpand"></span>
+                    </div>
+                    <odp-code-editor class="code-editor py-3 w-100" [edit]="edit"
+                        [(code)]="selectedFormula.code"></odp-code-editor>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
