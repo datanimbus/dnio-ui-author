@@ -394,7 +394,7 @@ export class CommonService {
     }
     return new Promise((resolve, reject) => {
       self.subscriptions['getAppDetails_' + app._id] = self
-        .get('user', '/data/app/' + app._id)
+        .get('user', '/data/app/' + app._id, {noApp: true})
         .subscribe(
           (res: any) => {
             const data = res[0];
