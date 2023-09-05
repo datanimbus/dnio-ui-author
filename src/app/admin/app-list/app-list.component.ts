@@ -282,7 +282,7 @@ export class AppListComponent implements OnInit, OnDestroy {
       const url = '/admin/app/' + data._id;
       self.showLazyLoader = true;
       self.subscriptions['deleteApp'] = self.commonService
-        .delete('user', url)
+        .delete('user', url, {noApp: true})
         .subscribe(
           (d) => {
             self.showLazyLoader = false;
