@@ -169,7 +169,7 @@ export class PluginsListingComponent {
       .pipe(switchMap((ev: any) => {
         return this.commonService.get('partnerManager', `/${this.commonService.app._id}/plugin`, {
           count: ev,
-          select: 'name type'
+          select: 'name type _metadata'
         });
       }))
       .subscribe(res => {
@@ -340,7 +340,9 @@ export class PluginsListingComponent {
       });
     } else {
       records = records.sort((a, b) => {
-        return this.compare(b._metadata.lastUpdated, a._metadata.lastUpdated);
+        if (b._metadata && a._metadata) {
+          return this.compare(b._metadata.lastUpdated, a._metadata.lastUpdated);
+        }
       });
     }
     return records;

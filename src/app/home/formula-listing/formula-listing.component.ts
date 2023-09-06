@@ -170,7 +170,7 @@ export class FormulaListingComponent {
       .pipe(switchMap((ev: any) => {
         return this.commonService.get('user', `/${this.commonService.app._id}/formula`, {
           count: ev,
-          select: 'name returnType forDataType'
+          select: 'name returnType forDataType _metadata'
         });
       }))
       .subscribe(res => {
