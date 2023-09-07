@@ -46,7 +46,7 @@ export class NpmLibrariesComponent implements OnInit, OnDestroy {
     this.showLazyLoader = true;
     this.commonService.put('user', `/data/app/${this.appData._id}`, this.appData).subscribe(res => {
       this.showLazyLoader = false;
-      this.ts.success('NPM Libraries Saved!');
+      this.ts.success('Configuration Details Saved!');
     }, err => {
       this.showLazyLoader = false;
       this.commonService.errorToast(err, 'Unable to Save Variable');
