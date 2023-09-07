@@ -3,6 +3,7 @@ import { AppService } from 'src/app/utils/services/app.service';
 import { CommonService } from 'src/app/utils/services/common.service';
 import * as _ from 'lodash';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'odp-npm-libraries',
@@ -50,5 +51,9 @@ export class NpmLibrariesComponent implements OnInit, OnDestroy {
       this.showLazyLoader = false;
       this.commonService.errorToast(err, 'Unable to Save Variable');
     });
+  }
+
+  get version() {
+    return environment.version;
   }
 }
