@@ -179,7 +179,7 @@ export class NodePropertiesComponent implements OnInit {
     //   this.currNode.options.insert = true;
     // }
 
-    if(type.startsWith('DS')){
+    if(type.startsWith('DS_')){
       this.currNode.type = 'DATASERVICE';
       const options = ['get','insert','update','delete'];
       options.forEach(item => {
