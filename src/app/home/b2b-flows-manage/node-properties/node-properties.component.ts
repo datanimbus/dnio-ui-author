@@ -104,7 +104,7 @@ export class NodePropertiesComponent implements OnInit {
   checkType(){
     if(this.currNode.type === 'DATASERVICE'){
       if(this.currNode.options.get){
-        this.nodeType = 'DS_FETCH'
+        this.nodeType = 'DS_GET'
       }
       if(this.currNode.options.delete){
         this.nodeType = 'DS_DELETE'
