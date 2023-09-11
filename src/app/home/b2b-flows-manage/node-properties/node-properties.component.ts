@@ -34,6 +34,7 @@ export class NodePropertiesComponent implements OnInit {
   path: string;
   @Input() processNodeList: any = [];
   activeTab: number;
+  nodeType: any;
   constructor(private commonService: CommonService,
     private appService: AppService,
     private flowService: B2bFlowService) {
@@ -96,6 +97,28 @@ export class NodePropertiesComponent implements OnInit {
     if (this.flowData?.inputNode?.type === 'FILE') {
       this.flowData.inputNode.options['contentType'] = 'multipart/form-data'
     }
+
+    this.checkType()
+  }
+
+  checkType(){
+    if(this.currNode.type === 'DATASERVICE'){
+      if(this.currNode.options.get){
+        this.nodeType = 'DS_GET'
+      }
+      if(this.currNode.options.delete){
+        this.nodeType = 'DS_DELETE'
+      }
+      if(this.currNode.options.insert){
+        this.nodeType = 'DS_INSERT'
+      }
+      if(this.currNode.options.update){
+        this.nodeType = 'DS_UPDATE'
+      }
+    }
+    else{
+      this.nodeType = this.currNode.type
+    }
   }
 
   enableEditing() {
@@ -151,9 +174,23 @@ export class NodePropertiesComponent implements OnInit {
       contentType: 'application/json'
     };
 
-    if (type == 'DATASERVICE') {
-      this.currNode.options.update = true;
-      this.currNode.options.insert = true;
+    // if (type == 'DATASERVICE') {
+    //   this.currNode.options.update = true;
+    //   this.currNode.options.insert = true;
+    // }
+
+    if(type.startsWith('DS_')){
+      this.currNode.type = 'DATASERVICE';
+      const options = ['get','insert','update','delete'];
+      options.forEach(item => {
+        this.currNode.options[item.toLowerCase()] = false
+      })
+      const subType = type.split('_')[1];
+      this.currNode.options[subType.toLowerCase()]=true;
+      this.currNode.options.retry = {
+        count: '',
+        interval: ''
+      }
     }
 
     if (type == 'FOREACH' || type == 'REDUCE') {

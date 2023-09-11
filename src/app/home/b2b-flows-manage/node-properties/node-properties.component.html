@@ -37,7 +37,7 @@
             </div>
             <div class="form-group" *ngIf="currNode?.type!='ERROR'">
                 <label class="font-14 fw-400 text-dark" for="nodeType">Node Type</label>
-                <select [disabled]="!edit.status" id="nodeType" class="form-control" [(ngModel)]="currNode.type"
+                <select [disabled]="!edit.status" id="nodeType" class="form-control" [(ngModel)]="nodeType"
                     (ngModelChange)="onTypeChange($event); changesDone.emit()">
                     <option *ngIf="isInputNode" value="API">API Receiver</option>
                     <option *ngIf="isInputNode" value="TIMER">Timer</option>
@@ -56,7 +56,10 @@
                     <option *ngIf="!isInputNode" value="CODEBLOCK">Code Block</option>
                     <option *ngIf="!isInputNode" value="CONNECTOR">Connector</option>
                     <option *ngIf="!isInputNode" value="UNWIND">Change Root</option>
-                    <option *ngIf="!isInputNode" value="DATASERVICE">Data Service</option>
+                    <option *ngIf="!isInputNode" value="DS_GET">Data Service Fetch</option>
+                    <option *ngIf="!isInputNode" value="DS_INSERT">Data Service Insert</option>
+                    <option *ngIf="!isInputNode" value="DS_UPDATE">Data Service Update</option>
+                    <option *ngIf="!isInputNode" value="DS_DELETE">Data Service Delete</option>
                     <option *ngIf="!isInputNode" value="FUNCTION">Function</option>
                     <option *ngIf="!isInputNode" value="FLOW">Flow</option>
                     <option *ngIf="!isInputNode" value="RESPONSE">Response</option>
