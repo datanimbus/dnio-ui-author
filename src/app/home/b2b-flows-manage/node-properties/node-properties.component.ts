@@ -186,7 +186,11 @@ export class NodePropertiesComponent implements OnInit {
         this.currNode.options[item.toLowerCase()] = false
       })
       const subType = type.split('_')[1];
-      this.currNode.options[subType.toLowerCase()]=true
+      this.currNode.options[subType.toLowerCase()]=true;
+      this.currNode.options.retry = {
+        count: '',
+        interval: ''
+      }
     }
 
     if (type == 'FOREACH' || type == 'REDUCE') {
