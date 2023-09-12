@@ -101,22 +101,34 @@ export class NodePropertiesComponent implements OnInit {
     this.checkType()
   }
 
-  checkType(){
-    if(this.currNode.type === 'DATASERVICE'){
-      if(this.currNode.options.get){
+  checkType() {
+    if (this.currNode.type === 'DATASERVICE') {
+      if (this.currNode.options.get) {
         this.nodeType = 'DS_GET'
       }
-      if(this.currNode.options.delete){
+      if (this.currNode.options.delete) {
         this.nodeType = 'DS_DELETE'
       }
-      if(this.currNode.options.insert){
+      if (this.currNode.options.insert) {
         this.nodeType = 'DS_INSERT'
       }
-      if(this.currNode.options.update){
+      if (this.currNode.options.update) {
         this.nodeType = 'DS_UPDATE'
       }
-    }
-    else{
+    } else if (this.currNode.type === 'CONNECTOR') {
+      if (this.currNode.options.get) {
+        this.nodeType = 'SFTP_READ'
+      }
+      if (this.currNode.options.delete) {
+        this.nodeType = 'SFTP_WRITE'
+      }
+      if (this.currNode.options.insert) {
+        this.nodeType = 'SFTP_MOVE'
+      }
+      if (this.currNode.options.update) {
+        this.nodeType = 'SFTP_LIST'
+      }
+    } else {
       this.nodeType = this.currNode.type
     }
   }
@@ -129,7 +141,7 @@ export class NodePropertiesComponent implements OnInit {
     this.alertModal.statusChange = false;
     this.alertModal.title = 'Delete Node?';
     this.alertModal.message =
-    `Are you sure you want to delete this node? This action will delete: ${this.currNode.name}`;
+      `Are you sure you want to delete this node? This action will delete: ${this.currNode.name}`;
     this.openDeleteModal.emit(this.alertModal);
   }
 
@@ -155,12 +167,12 @@ export class NodePropertiesComponent implements OnInit {
     this.flowService.selectedNode.emit(null);
   }
 
-  closeDeleteModal(data){
-    if(data != null){
+  closeDeleteModal(data) {
+    if (data != null) {
       this.deleteNode();
     }
   }
-  
+
   onTypeChange(type: string) {
     if (!environment.production) {
       console.log(type);
@@ -179,14 +191,14 @@ export class NodePropertiesComponent implements OnInit {
     //   this.currNode.options.insert = true;
     // }
 
-    if(type.startsWith('DS_')){
+    if (type.startsWith('DS_')) {
       this.currNode.type = 'DATASERVICE';
-      const options = ['get','insert','update','delete'];
+      const options = ['get', 'insert', 'update', 'delete'];
       options.forEach(item => {
         this.currNode.options[item.toLowerCase()] = false
       })
       const subType = type.split('_')[1];
-      this.currNode.options[subType.toLowerCase()]=true;
+      this.currNode.options[subType.toLowerCase()] = true;
       this.currNode.options.retry = {
         count: '',
         interval: ''
