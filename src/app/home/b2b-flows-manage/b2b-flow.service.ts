@@ -29,8 +29,8 @@ export class B2bFlowService {
     this.dataStructureSelected = new EventEmitter();
     this.nodeLabelMap = {
       FILE: 'File Agent',
-      API_XML: 'Invoke API XML',
-      API_MULTIPART: 'API Multipart Upload',
+      API_XML: 'API XML',
+      API_FILE: 'API Multipart Upload',
       TIMER: 'Timer',
       CODEBLOCK: 'Code Block',
       CONNECTOR: 'Connector',
@@ -75,7 +75,35 @@ export class B2bFlowService {
         return 'API JSON Receiver';
       }
     } else if (node.type == 'API' && !isInputNode) {
-      return 'Invoke API';
+      return 'API JSON';
+    } else if (node.type == 'CONNECTOR') {
+      if (node.options.connectorType == 'SFTP') {
+        if (node.options.read) {
+          return 'SFTP Read';
+        } else if (node.options.list) {
+          return 'SFTP List';
+        } else if (node.options.move) {
+          return 'SFTP Move';
+        } else {
+          return 'SFTP Write';
+        }
+      } else {
+        return this.nodeLabelMap[node.type];
+      }
+    } else if (node.type == 'DATASERVICE') {
+      if (node.options.approve) {
+        return 'Data Service Approve';
+      } else if (node.options.reject) {
+        return 'Data Service Reject';
+      } else if (node.options.insert) {
+        return 'Data Service Create';
+      } else if (node.options.delete) {
+        return 'Data Service Delete';
+      } else if (node.options.update) {
+        return 'Data Service Update';
+      } else {
+        return 'Data Service Fetch';
+      }
     } else if (node.type === 'PROCESS') {
       return 'Starter Node';
     } else if (this.nodeLabelMap[node.type]) {
