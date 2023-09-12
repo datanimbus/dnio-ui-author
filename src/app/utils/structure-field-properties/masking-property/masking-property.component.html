@@ -1,17 +1,17 @@
 <div>
     <div class="d-flex align-items-center justify-content-start mt-2">
         <odp-round-radio [edit]="edit" [checked]="maskingType=='no'"
-            (checkedChange)="maskingType='no';onTypeChange($event)"></odp-round-radio>
+            (checkedChange)="maskingType='no';onTypeChange('no')"></odp-round-radio>
         <span class="ml-3">Mask Disable</span>
     </div>
     <div class="d-flex align-items-center justify-content-start mt-2">
         <odp-round-radio [edit]="edit" [checked]="maskingType=='all'"
-            (checkedChange)="maskingType='all';onTypeChange($event)"></odp-round-radio>
+            (checkedChange)="maskingType='all';onTypeChange('all')"></odp-round-radio>
         <span class="ml-3">Mask All</span>
     </div>
     <div class="d-flex align-items-center justify-content-start mt-2">
         <odp-round-radio [edit]="edit" [checked]="maskingType=='some'"
-            (checkedChange)="maskingType='some';onTypeChange($event)"></odp-round-radio>
+            (checkedChange)="maskingType='some';onTypeChange('some')"></odp-round-radio>
         <span class="ml-3">Mask Data</span>
     </div>
     <div class="form-group mt-2" *ngIf="maskingType=='some'">
