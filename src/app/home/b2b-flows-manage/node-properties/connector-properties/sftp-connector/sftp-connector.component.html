@@ -12,6 +12,13 @@
     <odp-autocomplete-on-edit #typeAhead [(ngModel)]="currNode.options.fileName" [currNode]="currNode"
         class="styled-wrapper" [edit]="edit"></odp-autocomplete-on-edit>
 </div>
+<div *ngIf="currNode.options.list" class="form-group position-relative">
+    <label for="filePattern" class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between">
+        File Pattern
+    </label>
+    <odp-autocomplete-on-edit #typeAhead [(ngModel)]="currNode.options.filePattern" [currNode]="currNode"
+        class="styled-wrapper" [edit]="edit"></odp-autocomplete-on-edit>
+</div>
 <div *ngIf="currNode.options.move" class="form-group position-relative">
     <label for="sourceFolderPath" class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between">
         Source Folder Path
