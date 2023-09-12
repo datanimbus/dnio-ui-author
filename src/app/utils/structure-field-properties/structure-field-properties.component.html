@@ -198,6 +198,13 @@
           </div>
         </div>
 
+        <div class="w-100 mb-4 mt-2" *ngIf="isDataFormat && formItem.get('type').value=='String'">
+          <div class="text-secondary">Masking</div>
+          <div>
+            <odp-masking-property [edit]="edit" [form]="formItem"></odp-masking-property>
+          </div>
+        </div>
+
         <odp-relation-property *ngIf="formItem.get('type').value=='Relation'" [form]="formItem" [edit]="edit"
           [isLibrary]="isLibrary" [isDataFormat]="isDataFormat" [type]='type'>
         </odp-relation-property>
