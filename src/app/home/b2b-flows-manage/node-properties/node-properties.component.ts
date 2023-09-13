@@ -116,7 +116,7 @@ export class NodePropertiesComponent implements OnInit {
         this.nodeType = 'DS_UPDATE'
       }
     }
-    if(this.currNode.type === 'CONNECTOR'){
+    else if(this.currNode.type === 'CONNECTOR'){
       const category = this.currNode.options.category;
       if(!category){
         this.getCategory();

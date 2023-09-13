@@ -8,7 +8,7 @@
     <div class="mapping-container my-3 border rounded">
         <div class="mapping-options d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center justify-content-start px-3">
-                <div class="d-flex align-items-center justify-content-start mr-3">
+                <div class="d-flex align-items-center justify-content-start mr-3" *ngIf="checkForDataMapping()">
                     <odp-round-radio class="mr-2" [edit]="edit" [checked]="mappingType=='custom'"
                         (checkedChange)="mappingType='custom';configureMappingData();"></odp-round-radio>
                     <span>Data Mapping</span>

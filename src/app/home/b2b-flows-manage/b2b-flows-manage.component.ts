@@ -21,9 +21,11 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
   @ViewChild('pageChangeModalTemplate', { static: false }) pageChangeModalTemplate: TemplateRef<HTMLElement>;
   @ViewChild('errorModal', { static: false }) errorModal: TemplateRef<HTMLElement>;
+  @ViewChild('warningModal', { static: false }) warningModal: TemplateRef<HTMLElement>;
   @ViewChild('keyValModalTemplate', { static: false }) keyValModalTemplate: TemplateRef<HTMLElement>;
   pageChangeModalTemplateRef: NgbModalRef;
   errorModalRef: NgbModalRef;
+  warningModalRef: NgbModalRef;
   keyValModalTemplateRef: NgbModalRef;
   edit: any;
   subscriptions: any;
@@ -647,27 +649,30 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   }
 
   getNodeError(id) {
-    const errors = this.getErrorsAndWarnings().filter(obj => obj.id === id);
+    const errors = this.getErrors().filter(obj => obj.id === id);
     return errors;
   }
 
-  getErrorsAndWarnings() {
-    const validations = this.flowService.getValidations();
+  getErrors() {
+    const validations = this.flowService.getErrorValidations();
 
     const finalList = this.nodeList.reduce((acc, node) => {
-      const nodeValidations = (validations.find(e => e.node === node.type) || {}).validations || [];
+      const nodeValidations = (validations.find(e => {
+        return e.node === node.type
+      }) || {}).validations || [];
 
       const errors = nodeValidations
         .map(item => {
-          const value = item.fieldPath.split('.').reduce((obj, key) => obj?.[key], node)
-          if (item.type === 'required' && (!value || value.length < 1)) {
-            return {
-              node: node.name,
-              id: node._id,
-              error: item.error
-            };
+          if (item['subType']) {
+            if (item['subType'] === (node.options.category) || node.options[item['subType'].toLowerCase()])
+              return this.checkErrors(item, node);
+            else {
+              return null
+            }
           }
-          return null;
+          else {
+            return this.checkErrors(item, node)
+          }
         })
         .filter(Boolean);
 
@@ -678,16 +683,83 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     return finalList.flat()
   }
 
- openErrors(){
-        const self = this;
-        self.errorModalRef = self.commonService.modal(self.errorModal,  { size: 'm' });
-        self.errorModalRef.result.then(_ => {
-           self.errorModalRef.close()
-            })
-        }
+  getWarnings() {
+    const validations = [{
+      fieldPath: 'dataStructure.incoming',
+      type: 'required',
+      warning: "Input Data Structure should't be generic",
+    },
+    {
+      fieldPath: 'dataStructure.outgoing',
+      type: 'required',
+      warning: "Output Data Structure should't be generic",
+    }]
+
+    const finalList = this.nodeList.reduce((acc, node) => {
+      let warnValidations = _.cloneDeep(validations)
+      if(node._id === this.flowData.inputNode._id){
+        warnValidations = warnValidations.filter(ele => ele.fieldPath === 'dataStructure.outgoing')
+      }
+      if (['RESPONSE', 'MAPPING', 'DEDUPE'].includes(node.type)) {
+        warnValidations = warnValidations.filter(ele => ele.fieldPath === 'dataStructure.incoming')
+      }
+      if(node.type === 'CONVERT_JSON_JSON'){
+        warnValidations = []
+      }
+      const warnings = warnValidations
+        .map(item => {
+          const value = item.fieldPath.split('.').reduce((obj, key) => obj?.[key], node);
+          if (item.type === 'required' && (!value || _.isEmpty( !value))) {
+            return {
+              node: node.name,
+              id: node._id,
+              warning: item.warning
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      if (warnings.length) acc.push(warnings);
+
+      return acc;
+    }, []);
+    return finalList.flat()
+  }
+
+  checkErrors(item, node) {
+    const value = item.fieldPath.split('.').reduce((obj, key) => obj?.[key], node)
+    if (item.type === 'required' && (!value || value.length < 1)) {
+      return {
+        node: node.name,
+        id: node._id,
+        error: item.error
+      };
+    }
+    return null;
+  }
+
+  openErrors() {
+    const self = this;
+    self.errorModalRef = self.commonService.modal(self.errorModal, { size: 'm' });
+    self.errorModalRef.result.then(_ => {
+      self.errorModalRef.close()
+    })
+  }
+  openWarnings() {
+    const self = this;
+    self.warningModalRef = self.commonService.modal(self.warningModal, { size: 'm' });
+    self.warningModalRef.result.then(_ => {
+      self.warningModalRef.close()
+    })
+  }
 
   get totalErrors() {
-    return this.getErrorsAndWarnings().length;
+    return this.getErrors().length;
+  }
+
+  get totalWarnings() {
+    return this.getWarnings().length;
   }
 
 

@@ -212,7 +212,7 @@ export class NodeMappingComponent implements OnInit {
     this.allTargets.filter(e => e.type != 'Object').forEach((def: any) => {
       if (def.type !== 'Array' && def.dataPath?.indexOf('[#]') == -1) {
         const fuse = new Fuse(this.allSources.filter(e => e.type != 'Object'), options);
-        let result = fuse.search(def.dataPath).filter(e => e.score < 0.3 );
+        let result = fuse.search(def.dataPath).filter(e => e.score < 0.3);
         if (!def.source) {
           def.source = [];
         }
@@ -421,8 +421,8 @@ export class NodeMappingComponent implements OnInit {
     if (!def.source) {
       def.source = [];
     }
-    if(def.source.find(ele => ele.dataPath === this.dragItem.dataPath && ele.nodeId === this.dragItem.nodeId)){
-      return ;
+    if (def.source.find(ele => ele.dataPath === this.dragItem.dataPath && ele.nodeId === this.dragItem.nodeId)) {
+      return;
     }
     if (this.dragItem) {
       def.source.push(this.dragItem);
@@ -542,6 +542,14 @@ export class NodeMappingComponent implements OnInit {
     return flag;
   }
 
+  checkForDataMapping() {
+    if (this.currNode.type === 'FILE' || (this.currNode.type === 'CONNECTOR' && ['STORAGE', 'FILE'].includes(this.currNode.options.category))) {
+      this.mappingType = 'preset';
+      return false;
+    }
+    return true;
+  }
+  
   get mappingType() {
     return this.currNode.mappingType;
   }

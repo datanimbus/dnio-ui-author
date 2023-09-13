@@ -62,9 +62,9 @@
                 <!-- <div class="tab-list-item p-2 hover" [class.active]="activeTab==2" (click)="activeTab=2">Volume Mounts</div> -->
             </div>
             <div class="d-flex">
-                <div class="d-flex justify-content-center align-items-center mr-2" ngbTooltip="Total Warnings">
+                <div class="d-flex justify-content-center align-items-center mr-2" ngbTooltip="Total Warnings" (click)="totalWarnings > 0 && openWarnings()">
                     <span class="icons warning"></span> 
-                    <span class="text-secondary">{{totalErrors}}</span>
+                    <span class="text-secondary">{{totalWarnings}}</span>
                 </div>
 
                 <div class="d-flex justify-content-center align-items-center" ngbTooltip="Total Errors" (click)="totalErrors > 0 && openErrors()">
@@ -174,9 +174,28 @@
       </div>
         <!-- <p class="text-secondary text-center">You cannot proceed without fixing the following errors</p> -->
         <div>
-           <div *ngFor="let error of getErrorsAndWarnings()" class="d-flex">
+           <div *ngFor="let error of getErrors()" class="d-flex">
             <span class="fw-600">{{error.node}}: </span>
             <span class="text-danger fw-500">&nbsp;{{error.error}}</span>
+           </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #warningModal>
+    <div class="modal-body p-4">
+        <!-- <div class="circle bg-dark">
+            <span class="fa fa-exclamation-triangle text-white"></span>
+        </div> -->
+      <div class="d-flex">
+        <p class="text-dark font-weight-bold font-16">Warnings</p>
+        <span class="dsi dsi-close ml-auto" (click)="warningModalRef.close()"></span>
+      </div>
+        <!-- <p class="text-secondary text-center">You cannot proceed without fixing the following errors</p> -->
+        <div>
+           <div *ngFor="let warning of getWarnings()" class="d-flex">
+            <span class="fw-600">{{warning.node}}: </span>
+            <span class="text-warning fw-500">&nbsp;{{warning.warning}}</span>
            </div>
         </div>
     </div>

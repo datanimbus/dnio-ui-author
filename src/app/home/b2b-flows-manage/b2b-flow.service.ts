@@ -559,7 +559,7 @@ export class B2bFlowService {
   }
 
 
-  getValidations(){
+  getErrorValidations(){
     const obj = [
       {
         node: 'API',
@@ -567,12 +567,12 @@ export class B2bFlowService {
           {
             type: 'required',
             fieldPath: 'options.contentType',
-            error: 'Content Type required'
+            error: 'Content Type is required'
           },
           {
             type: 'required',
             fieldPath: 'options.method',
-            error: 'HTTP Method required'
+            error: 'HTTP Method is required'
           }
         ]
       },
@@ -582,12 +582,12 @@ export class B2bFlowService {
           {
             type: 'required',
             fieldPath: 'options.inputDirectories',
-            error: 'Input Directory required'
+            error: 'Input Directory is required'
           },
           {
             type: 'required',
             fieldPath: 'options.method',
-            error: 'HTTP Mehtod required'
+            error: 'HTTP Method is required'
           }
         ]
       },
@@ -597,7 +597,48 @@ export class B2bFlowService {
           {
             type: 'required',
             fieldPath: 'mappings',
-            error: 'Mappings required'
+            error: 'Mapping is required'
+          }
+        ]
+      },
+      {
+        node: 'CONVERT_JSON_JSON',
+        validations: [
+          {
+            type: 'required',
+            fieldPath: 'mappings',
+            error: 'Conversion is required'
+          }
+        ]
+      },
+      {
+        node: 'CONNECTOR',
+        validations: [
+          { subType: 'DB',
+            type: 'required',
+            fieldPath: 'options.query',
+            error: 'Query is required'
+          }
+        ]
+      },
+      {
+        node: 'DATASERVICE',
+        validations: [
+          { 
+            type: 'required',
+            fieldPath: 'options.authorization',
+            error: 'Authorization is required'
+          },
+          { 
+            type: 'required',
+            fieldPath: 'options.dataService',
+            error: 'Data Service is required'
+          },
+          { 
+            subType:'DELETE',
+            type: 'required',
+            fieldPath: 'options.documentId',
+            error: 'ID is required'
           }
         ]
       },

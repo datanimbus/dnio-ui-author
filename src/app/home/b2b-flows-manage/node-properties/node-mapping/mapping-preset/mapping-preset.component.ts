@@ -55,6 +55,7 @@ export class MappingPresetComponent implements OnInit {
     this.allSources = [];
     this.allTargets = [];
     this.nodeList = this.flowService.getNodesBefore(this.currNode);
+    this.listAttributes()
     this.configureAttributes();
     if (this.currNode.mappings && this.currNode.mappings.length > 0) {
       this.tempMappings = this.appService.cloneObject(this.currNode.mappings);
@@ -94,6 +95,13 @@ export class MappingPresetComponent implements OnInit {
         }
       });
     });
+  }
+
+  listAttributes() {
+    if (this.currNode.type === 'FILE' || (this.currNode.type === 'CONNECTOR' && ['STORAGE', 'FILE'].includes(this.currNode.options.category))) {
+      this.nodeSourceAttributes = ['headers', 'fileContent'];
+    this.nodeTargetAttributes = ['headers', 'fileContent'];
+    }
   }
 
   configureAttributes() {
