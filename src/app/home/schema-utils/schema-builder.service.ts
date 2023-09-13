@@ -130,6 +130,8 @@ export class SchemaBuilderService {
                 && value.properties.richText ? value.properties.richText : false));
             temp.addControl('fieldLength', new UntypedFormControl(value.properties
                 && value.properties.fieldLength ? value.properties.fieldLength : null));
+            temp.addControl('masking', new UntypedFormControl(value.properties
+                && value.properties.masking ? value.properties.masking : null));
             const arr = [];
             if (value.properties && value.properties.hasTokens) {
                 for (const i of value.properties.hasTokens) {
@@ -341,7 +343,7 @@ export class SchemaBuilderService {
         }
         tempForm.get('properties.name').valueChanges.subscribe(val => {
             // if (!tempForm.get('key').touched) {
-                tempForm.get('key').patchValue(val === '_self' ? '_self' : _.camelCase(val));
+            tempForm.get('key').patchValue(val === '_self' ? '_self' : _.camelCase(val));
             // }
         });
         // tempForm.get('key').valueChanges.subscribe(val => {

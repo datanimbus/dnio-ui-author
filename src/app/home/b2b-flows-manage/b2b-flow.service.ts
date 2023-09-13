@@ -29,8 +29,8 @@ export class B2bFlowService {
     this.dataStructureSelected = new EventEmitter();
     this.nodeLabelMap = {
       FILE: 'File Agent',
-      API_XML: 'Invoke API XML',
-      API_MULTIPART: 'API Multipart Upload',
+      API_XML: 'API XML',
+      API_FILE: 'API Multipart Upload',
       TIMER: 'Timer',
       CODEBLOCK: 'Code Block',
       CONNECTOR: 'Connector',
@@ -75,7 +75,35 @@ export class B2bFlowService {
         return 'API JSON Receiver';
       }
     } else if (node.type == 'API' && !isInputNode) {
-      return 'Invoke API';
+      return 'API JSON';
+    } else if (node.type == 'CONNECTOR') {
+      if (node.options.connectorType == 'SFTP') {
+        if (node.options.read) {
+          return 'SFTP Read';
+        } else if (node.options.list) {
+          return 'SFTP List';
+        } else if (node.options.move) {
+          return 'SFTP Move';
+        } else {
+          return 'SFTP Write';
+        }
+      } else {
+        return this.nodeLabelMap[node.type];
+      }
+    } else if (node.type == 'DATASERVICE') {
+      if (node.options.approve) {
+        return 'Data Service Approve';
+      } else if (node.options.reject) {
+        return 'Data Service Reject';
+      } else if (node.options.insert) {
+        return 'Data Service Create';
+      } else if (node.options.delete) {
+        return 'Data Service Delete';
+      } else if (node.options.update) {
+        return 'Data Service Update';
+      } else {
+        return 'Data Service Fetch';
+      }
     } else if (node.type === 'PROCESS') {
       return 'Starter Node';
     } else if (this.nodeLabelMap[node.type]) {
@@ -199,7 +227,14 @@ export class B2bFlowService {
     if (type.startsWith('DS_')) {
       temp.type = 'DATASERVICE';
       const subType = type.split('_')[1];
-      temp.options[subType.toLowerCase()]=true
+      temp.options[subType.toLowerCase()] = true
+    }
+
+    if (type.startsWith('SFTP_')) {
+      temp.type = 'CONNECTOR';
+      temp.options.connectorType = 'SFTP';
+      const subType = type.split('_')[1];
+      temp.options[subType.toLowerCase()] = true
     }
     if (type.startsWith('CON_')) {
       temp.type = 'CONNECTOR';
@@ -348,7 +383,7 @@ export class B2bFlowService {
       });
     }
     return list;
-    
+
   }
 
   getSuggestions(currNode?): Array<{ label: string, value: string }> {
@@ -410,152 +445,183 @@ export class B2bFlowService {
     })
     return _.flatten(temp);
   }
-  
-  getNodeOptions(){
+
+  getNodeOptions() {
     return [{
       name: 'File',
-          children: [
-              {
-                  name: 'File Agent',
-                  action: 'FILE',
-                  icon: 'dsi dsi-file'   
-              }
-          ],
-       icon: 'dsi dsi-file'   
-  },
-  {
+      children: [
+        {
+          name: 'File Agent',
+          action: 'FILE',
+          icon: 'dsi dsi-file'
+        }
+      ],
+      icon: 'dsi dsi-file'
+    },
+    {
       name: 'API',
-          children: [
-              {
-                  name: 'Invoke JSON API',
-                  action: 'API',
-                  icon: 'dsi dsi-invoke-api'   
-              },
-              {
-                  name: 'Response',
-                  action: 'RESPONSE',
-                  icon: 'dsi dsi-response'   
-              }
-          ],
-       icon: 'dsi dsi-invoke-api'   
-  },
-  {
+      children: [
+        {
+          name: 'Invoke JSON API',
+          action: 'API',
+          icon: 'dsi dsi-invoke-api'
+        },
+        {
+          name: 'Invoke Multipart API',
+          action: 'API_FILE',
+          icon: 'dsi dsi-invoke-api'
+        },
+        {
+          name: 'Response',
+          action: 'RESPONSE',
+          icon: 'dsi dsi-response'
+        }
+      ],
+      icon: 'dsi dsi-invoke-api'
+    },
+    {
+      name: 'SFTP',
+      children: [
+        {
+          action: 'SFTP_READ',
+          name: 'SFTP Read',
+          icon: 'dsi dsi-function'
+        },
+        {
+          action: 'SFTP_WRITE',
+          name: 'SFTP Write',
+          icon: 'dsi dsi-function'
+        },
+        {
+          action: 'SFTP_MOVE',
+          name: 'SFTP Move',
+          icon: 'dsi dsi-function'
+        },
+        {
+          action: 'SFTP_LIST',
+          name: 'SFTP List',
+          icon: 'dsi dsi-function'
+        },
+      ],
+      icon: 'dsi dsi-function'
+    },
+    {
       name: 'Process',
+      children: [
+        {
+          name: 'Connector',
+          icon: 'dsi dsi-connector'  ,
           children: [
-              {
-                  name: 'Connector',
-                  icon: 'dsi dsi-connector'  ,
-                  children: [
-                    {
-                        action: 'CON_DB',
-                        name: 'DB Connector',
-                        icon: 'dsi dsi-connector'   
-                    },
-                    {
-                      action: 'CON_FILE',
-                      name: 'SFTP Connector',
-                      icon: 'dsi dsi-connector'   
-                  },
-                  {
-                    action: 'CON_STORAGE',
-                    name: 'Storage Connector',
-                    icon: 'dsi dsi-connector'   
-                }
-                  ] 
-              },
-              {
-                  name: 'Data Service',
-                  icon: 'dsi dsi-data-service alt' ,
-                  children: [
-                      {
-                          action: 'DS_GET',
-                          name: 'Data Service Fetch',
-                          icon: 'dsi dsi-data-service alt'   
-                      },
-                      {
-                          action: 'DS_INSERT',
-                          name: 'Data Service Insert',
-                          icon: 'dsi dsi-data-service alt'   
-                      },
-                      {
-                          action: 'DS_UPDATE',
-                          name: 'Data Service Update',
-                          icon: 'dsi dsi-data-service alt'   
-                      },
-                      {
-                          action: 'DS_DELETE',
-                          name: 'Data Service Delete',
-                          icon: 'dsi dsi-data-service alt'   
-                      },
-                      {
-                          action: 'DATASERVICE',
-                          name: 'Workflow Approve',
-                          icon: 'dsi dsi-data-service alt',
-                          disabled: true   
-                      },
-                      {
-                          action: 'DATASERVICE',
-                          name: 'Workflow Reject',
-                          icon: 'dsi dsi-data-service alt',
-                          disabled: true   
-                      },
-                  ]  
-              },
-              {
-                  name: 'Function',
-                  action: 'FUNCTION',
-                  icon: 'dsi dsi-function'   
-              },
-              {
-                name: 'Flow',
-                action: 'FLOW',
-                icon: 'dsi dsi-flow'
+            {
+                action: 'CON_DB',
+                name: 'DB Connector',
+                icon: 'dsi dsi-connector'   
             },
-          ],
-       icon: 'dsi dsi-function alt'   
-  },
-  {
-      name: 'Transform',
+            {
+              action: 'CON_FILE',
+              name: 'SFTP Connector',
+              icon: 'dsi dsi-connector'   
+          },
+          {
+            action: 'CON_STORAGE',
+            name: 'Storage Connector',
+            icon: 'dsi dsi-connector'   
+        }
+          ] 
+      },
+        {
+          name: 'Data Service',
+          icon: 'dsi dsi-data-service alt',
           children: [
-              {
-                  name: 'Mapping',
-                  action: 'MAPPING',
-                  icon: 'dsi dsi-mapping'   
-              },
-              {
-                  name: 'Converter',
-                  action: 'CONVERT_JSON_JSON',
-                  icon: 'dsi dsi dsi-refresh text-secondary'   
-              },
-              {
-                  name: 'De-Dupe',
-                  action: 'DEDUPE',
-                  icon: 'dsi dsi dsi-copy'   
-              },
-              {
-                  name: 'Code Block',
-                  action: 'CODEBLOCK',
-                  icon: 'dsi dsi dsi-console text-secondary'   
-              },
-              {
-                  name: 'Change Root',
-                  action: 'UNWIND',
-                  icon: 'dsi dsi-expand'   
-              }
-          ],
-       icon: 'dsi dsi-join'   
-  },
-  {
+            {
+              action: 'DS_GET',
+              name: 'Data Service Fetch',
+              icon: 'dsi dsi-data-service alt'
+            },
+            {
+              action: 'DS_INSERT',
+              name: 'Data Service Insert',
+              icon: 'dsi dsi-data-service alt'
+            },
+            {
+              action: 'DS_UPDATE',
+              name: 'Data Service Update',
+              icon: 'dsi dsi-data-service alt'
+            },
+            {
+              action: 'DS_DELETE',
+              name: 'Data Service Delete',
+              icon: 'dsi dsi-data-service alt'
+            },
+            {
+              action: 'DATASERVICE',
+              name: 'Workflow Approve',
+              icon: 'dsi dsi-data-service alt',
+              disabled: true
+            },
+            {
+              action: 'DATASERVICE',
+              name: 'Workflow Reject',
+              icon: 'dsi dsi-data-service alt',
+              disabled: true
+            },
+          ]
+        },
+        {
+          name: 'Function',
+          action: 'FUNCTION',
+          icon: 'dsi dsi-function'
+        },
+        {
+          name: 'Flow',
+          action: 'FLOW',
+          icon: 'dsi dsi-flow'
+        },
+      ],
+      icon: 'dsi dsi-function alt'
+    },
+    {
+      name: 'Transform',
+      children: [
+        {
+          name: 'Mapping',
+          action: 'MAPPING',
+          icon: 'dsi dsi-mapping'
+        },
+        {
+          name: 'Converter',
+          action: 'CONVERT_JSON_JSON',
+          icon: 'dsi dsi dsi-refresh text-secondary'
+        },
+        {
+          name: 'De-Dupe',
+          action: 'DEDUPE',
+          icon: 'dsi dsi dsi-copy'
+        },
+        {
+          name: 'Code Block',
+          action: 'CODEBLOCK',
+          icon: 'dsi dsi dsi-console text-secondary'
+        },
+        {
+          name: 'Change Root',
+          action: 'UNWIND',
+          icon: 'dsi dsi-expand'
+        }
+      ],
+      icon: 'dsi dsi-join'
+    },
+    {
       name: 'Plugin',
-       icon: ' dsi dsi-api-doc text-info ',
-       action: 'PLUGIN'   
-  },
-  {
+      icon: ' dsi dsi-api-doc text-info ',
+      action: 'PLUGIN'
+    },
+    {
       name: 'Global Error',
-       condition: '!this.hasErrorNode',
-       action: 'ERROR',  
-       icon: 'dsi dsi-danger-circle text-danger'   
-  }]
+      condition: '!this.hasErrorNode',
+      action: 'ERROR',
+      icon: 'dsi dsi-danger-circle text-danger'
+    }]
   }
 
 

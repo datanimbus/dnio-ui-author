@@ -16,19 +16,6 @@ export class SftpConnectorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.currNode.options.put && !this.currNode.options.get) {
-      this.currNode.options.put = true;
-    }
-  }
 
-  setSFTPAction(action: string, flag: boolean) {
-    if (action == 'get') {
-      delete this.currNode.options.put;
-    } else {
-      delete this.currNode.options.get;
-    }
-    if (!this.currNode.options.get && !this.currNode.options.put) {
-      this.currNode.options.get = true;
-    }
   }
 }

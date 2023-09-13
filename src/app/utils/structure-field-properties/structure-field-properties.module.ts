@@ -19,7 +19,9 @@ import { SwitchModule } from '../switch/switch.module';
 import { UserPropertyComponent } from './user-property/user-property.component';
 import { AutoFocusModule } from '../directives/auto-focus/auto-focus.module';
 import { TimezonePickerModule } from '../timezone-picker/timezone-picker.module';
-import { CheckboxModule } from '../checkbox/checkbox.module'
+import { CheckboxModule } from '../checkbox/checkbox.module';
+import { MaskingPropertyComponent } from './masking-property/masking-property.component'
+import { RoundRadioModule } from '../round-radio/round-radio.module';
 @NgModule({
   imports: [
     CommonModule,
@@ -34,7 +36,8 @@ import { CheckboxModule } from '../checkbox/checkbox.module'
     SortablejsModule,
     AutoFocusModule,
     TimezonePickerModule,
-    CheckboxModule
+    CheckboxModule,
+    RoundRadioModule
   ],
   declarations: [
     StructureFieldPropertiesComponent,
@@ -44,7 +47,8 @@ import { CheckboxModule } from '../checkbox/checkbox.module'
     IdPropertyComponent,
     DatePropertyComponent,
     LibraryPropertyComponent,
-    UserPropertyComponent
+    UserPropertyComponent,
+    MaskingPropertyComponent
   ],
   exports: [
     StructureFieldPropertiesComponent,

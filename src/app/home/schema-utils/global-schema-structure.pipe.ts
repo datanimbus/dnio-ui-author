@@ -62,7 +62,8 @@ export class GlobalSchemaStructurePipe implements PipeTransform {
                     || i === 'deleteAction'
                     || i === 'label'
                     || i === 'readonly'
-                    || i === 'errorMessage') {
+                    || i === 'errorMessage'
+                    || i === 'masking') {
                     temp[i] = properties[i];
                 }
             }

@@ -46,6 +46,7 @@
                     <option *ngIf="!isInputNode" value="FILE_READ">File Read</option>
                     <option *ngIf="!isInputNode" value="FILE_WRITE">File Write</option>
                     <option *ngIf="!isInputNode" value="API">Invoke API JSON</option>
+                    <option *ngIf="!isInputNode" value="API_FILE">Invoke API File Upload</option>
                     <!-- <option *ngIf="!isInputNode" value="API_XML">Invoke API XML</option>
                     <option *ngIf="!isInputNode" value="API_MULTIPART">API Multipart Upload</option> -->
                     <option *ngIf="!isInputNode" value="MAPPING">Mapping</option>
@@ -57,6 +58,10 @@
                     <option *ngIf="!isInputNode" value="CON_DB">DB Connector</option>
                     <option *ngIf="!isInputNode" value="CON_FILE">SFTP Connector</option>
                     <option *ngIf="!isInputNode" value="CON_STORAGE">Storage Connector</option>
+                    <option *ngIf="!isInputNode" value="SFTP_READ">SFTP Read</option>
+                    <option *ngIf="!isInputNode" value="SFTP_WRITE">SFTP Write</option>
+                    <option *ngIf="!isInputNode" value="SFTP_MOVE">SFTP Move</option>
+                    <option *ngIf="!isInputNode" value="SFTP_LIST">SFTP List</option>
                     <option *ngIf="!isInputNode" value="UNWIND">Change Root</option>
                     <option *ngIf="!isInputNode" value="DS_GET">Data Service Fetch</option>
                     <option *ngIf="!isInputNode" value="DS_INSERT">Data Service Insert</option>
@@ -168,7 +173,8 @@
         <ng-container *ngIf="currNode?.type=='API' && !isInputNode">
             <div class="p-2 bg-light rounded border mb-3">
                 <div class="form-group position-relative">
-                    <label class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between" for="nodeUrl">
+                    <label class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between"
+                        for="nodeUrl">
                         URL
                     </label>
                     <div class="position-relative z-0">
@@ -197,7 +203,8 @@
                     </odp-add-headers>
                 </div>
             </div>
-            <div class="form-group position-relative d-flex align-items-center justify-content-between p-2 border bg-light rounded">
+            <div
+                class="form-group position-relative d-flex align-items-center justify-content-between p-2 border bg-light rounded">
                 <label class="font-14 fw-400 text-dark mb-0" for="forEachRecord">For Each Record</label>
                 <odp-checkbox [edit]="edit" class="mx-2 pl-1" [(checked)]="currNode.options.multipleRequests">
                 </odp-checkbox>
@@ -469,12 +476,9 @@
                 <label class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between"
                     for="nodeStatusCode">
                     Status Code
-                    <span class="dsi dsi-settings text-primary hover" *ngIf="edit.status"
-                        (click)="toggle['statusCode']=!toggle['statusCode']"></span>
                 </label>
-                <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['statusCode']" [currNode]="currNode"
-                    [(value)]="currNode.options.statusCode">
-                </odp-node-data-selector>
+                <odp-autocomplete-on-edit #typeAhead [(ngModel)]="currNode.options.statusCode" [currNode]="currNode"
+                    class="styled-wrapper" [edit]="edit"></odp-autocomplete-on-edit>
             </div>
             <div class="form-group position-relative">
                 <label class="font-14 fw-400 text-dark" for="nodeContentType">Content-Type</label>
@@ -489,15 +493,6 @@
                 <odp-add-headers [edit]="edit" [nodeList]="nodeList" [currNode]="currNode"
                     [(value)]="currNode.options.headers">
                 </odp-add-headers>
-            </div>
-            <div *ngIf="currNode.options.contentType=='application/json'" class="form-group position-relative">
-                <label class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between"
-                    for="nodeBody">
-                    Body
-                </label>
-                <odp-input-data-selector class="d-flex" [edit]="edit" [(data)]="currNode.options.body"
-                    [currNode]="currNode">
-                </odp-input-data-selector>
             </div>
         </ng-container>
         <ng-container *ngIf="currNode?.type=='PLUGIN'">

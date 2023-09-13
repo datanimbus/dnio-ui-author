@@ -1,20 +1,35 @@
-<div class="form-group position-relative">
+<div *ngIf="!currNode.options.move" class="form-group position-relative">
     <label for="folderPath" class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between">
         Folder Path
-        <span class="dsi dsi-settings text-primary hover" (click)="toggle['folderPath']=!toggle['folderPath']"></span>
     </label>
-    <!-- <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['folderPath']" [currNode]="currNode"
-        [(value)]="currNode.options.folderPath"></odp-node-data-selector> -->
     <odp-autocomplete-on-edit #typeAhead [(ngModel)]="currNode.options.folderPath" [currNode]="currNode"
         class="styled-wrapper" [edit]="edit"></odp-autocomplete-on-edit>
 </div>
-<div class="form-group position-relative">
+<div *ngIf="!currNode.options.list" class="form-group position-relative">
     <label for="fileName" class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between">
-        File Name   
-        <span class="dsi dsi-settings text-primary hover" (click)="toggle['fileName']=!toggle['fileName']"></span>
+        File Name
     </label>
-    <!-- <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['fileName']" [currNode]="currNode"
-        [(value)]="currNode.options.fileName"></odp-node-data-selector> -->
     <odp-autocomplete-on-edit #typeAhead [(ngModel)]="currNode.options.fileName" [currNode]="currNode"
+        class="styled-wrapper" [edit]="edit"></odp-autocomplete-on-edit>
+</div>
+<div *ngIf="currNode.options.list" class="form-group position-relative">
+    <label for="filePattern" class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between">
+        File Pattern
+    </label>
+    <odp-autocomplete-on-edit #typeAhead [(ngModel)]="currNode.options.filePattern" [currNode]="currNode"
+        class="styled-wrapper" [edit]="edit"></odp-autocomplete-on-edit>
+</div>
+<div *ngIf="currNode.options.move" class="form-group position-relative">
+    <label for="sourceFolderPath" class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between">
+        Source Folder Path
+    </label>
+    <odp-autocomplete-on-edit #typeAhead [(ngModel)]="currNode.options.sourceFolderPath" [currNode]="currNode"
+        class="styled-wrapper" [edit]="edit"></odp-autocomplete-on-edit>
+</div>
+<div *ngIf="currNode.options.move" class="form-group position-relative">
+    <label for="targetFolderPath" class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between">
+        Target Folder Path
+    </label>
+    <odp-autocomplete-on-edit #typeAhead [(ngModel)]="currNode.options.targetFolderPath" [currNode]="currNode"
         class="styled-wrapper" [edit]="edit"></odp-autocomplete-on-edit>
 </div>
