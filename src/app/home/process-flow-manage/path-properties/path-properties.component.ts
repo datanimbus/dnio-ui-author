@@ -97,6 +97,7 @@ export class PathPropertiesComponent implements OnInit {
         (this.nodeList[this.nodeIndex].onError || []).splice(errorIndex, 1);
       }
       if (type === 'error') {
+        pathData['color']='F44336'
         this.nodeList[this.nodeIndex].onError.push(pathData);
       } else {
         this.nodeList[this.nodeIndex].onSuccess.push(pathData);
