@@ -57,6 +57,7 @@ export class AppSecretsComponent implements OnInit, OnDestroy {
   saveVariable() {
     if (this.selectedIndex > -1) {
       this.varList.splice(this.selectedIndex, 1, this.formData);
+      this.selectedIndex = -1;
     } else {
       this.varList.push(this.formData);
     }
@@ -65,6 +66,7 @@ export class AppSecretsComponent implements OnInit, OnDestroy {
         item.value = atob(item.value);
       });
       this.varList = res;
+      this.showNewVarWindow = false;
     }, err => {
       this.commonService.errorToast(err, 'Unable to Save Variable');
     });
