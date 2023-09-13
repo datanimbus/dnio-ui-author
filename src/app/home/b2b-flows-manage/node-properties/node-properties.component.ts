@@ -138,7 +138,6 @@ export class NodePropertiesComponent implements OnInit {
         select: 'category'
       }).subscribe(res => {
         this.currNode.options.category = res.category;
-        console.log(this.currNode.options.category);
         this.nodeType = res.category ? `CON_${res.category.toUpperCase()}` : 'CON_DB'
       })
     }

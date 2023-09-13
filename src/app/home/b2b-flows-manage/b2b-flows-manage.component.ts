@@ -243,6 +243,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
           this.nodeList.push(item);
         });
       }
+      this.getCategories()
       if (this.flowData.errorNode) {
         this.nodeList.push(this.flowData.errorNode);
       }
@@ -270,6 +271,29 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       this.apiCalls.getFlow = false;
       this.commonService.errorToast(err);
     });
+  }
+
+  getCategories() {
+    const connectorIds = this.nodeList
+      .filter(node => node.type === 'CONNECTOR' && !node.options.category)
+      .map(node => node.options?.connector?._id || '');
+  
+    if (connectorIds.length > 0) {
+      this.commonService.get('user', `/${this.commonService.app._id}/connector`, {
+        filter: {
+          _id: {
+            $in: connectorIds
+          }
+        },
+        select: 'category'
+      }).subscribe(res => {
+        this.nodeList.forEach(item => {
+          if (item.options && item.options.connector) {
+            item.options.category = res.find(e => e._id === item.options.connector._id)?.category;
+          }
+        })
+      });
+    }
   }
 
   patchDataStructure(format: any, dataStructure: any) {
