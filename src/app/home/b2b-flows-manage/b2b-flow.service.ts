@@ -201,6 +201,11 @@ export class B2bFlowService {
       const subType = type.split('_')[1];
       temp.options[subType.toLowerCase()]=true
     }
+    if (type.startsWith('CON_')) {
+      temp.type = 'CONNECTOR';
+      const category = type.split('_')[1];
+      temp.options['category']=category
+    }
 
     if (type == 'FOREACH' || type == 'REDUCE') {
       temp.options.startNode = null;
@@ -439,8 +444,24 @@ export class B2bFlowService {
           children: [
               {
                   name: 'Connector',
-                  action: 'CONNECTOR',
-                  icon: 'dsi dsi-connector'   
+                  icon: 'dsi dsi-connector'  ,
+                  children: [
+                    {
+                        action: 'CON_DB',
+                        name: 'DB Connector',
+                        icon: 'dsi dsi-connector'   
+                    },
+                    {
+                      action: 'CON_FILE',
+                      name: 'SFTP Connector',
+                      icon: 'dsi dsi-connector'   
+                  },
+                  {
+                    action: 'CON_STORAGE',
+                    name: 'Storage Connector',
+                    icon: 'dsi dsi-connector'   
+                }
+                  ] 
               },
               {
                   name: 'Data Service',
@@ -535,5 +556,53 @@ export class B2bFlowService {
        action: 'ERROR',  
        icon: 'dsi dsi-danger-circle text-danger'   
   }]
+  }
+
+
+  getValidations(){
+    const obj = [
+      {
+        node: 'API',
+        validations: [
+          {
+            type: 'required',
+            fieldPath: 'options.contentType',
+            error: 'Content Type required'
+          },
+          {
+            type: 'required',
+            fieldPath: 'options.method',
+            error: 'HTTP Method required'
+          }
+        ]
+      },
+      {
+        node: 'FILE',
+        validations: [
+          {
+            type: 'required',
+            fieldPath: 'options.inputDirectories',
+            error: 'Input Directory required'
+          },
+          {
+            type: 'required',
+            fieldPath: 'options.method',
+            error: 'HTTP Mehtod required'
+          }
+        ]
+      },
+      {
+        node: 'MAPPING',
+        validations: [
+          {
+            type: 'required',
+            fieldPath: 'mappings',
+            error: 'Mappings required'
+          }
+        ]
+      },
+    ]
+
+    return obj
   }
 }

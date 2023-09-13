@@ -7,6 +7,13 @@ rect {
     stroke-width: 1;
 }
 
+.error {
+    fill: $danger;
+    stroke: $danger;
+    fill-opacity: 0.05;
+    stroke-width: 1;
+}
+
 path {
     fill: none;
     stroke: #666;
@@ -63,9 +70,9 @@ text.path-text {
     .rect {
         fill: rgba($accent, 0.3);
     }
-    .ellipse {
-        fill: rgba($accent, 0.3);
-    }
+    // .ellipse {
+    //     fill: rgba($accent, 0.3);
+    // }
 
     // text:not(.node-name):not(.id-holder) {
     //     stroke-width: 0.75 !important;

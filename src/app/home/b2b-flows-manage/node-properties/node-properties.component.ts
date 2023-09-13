@@ -116,10 +116,34 @@ export class NodePropertiesComponent implements OnInit {
         this.nodeType = 'DS_UPDATE'
       }
     }
+    if(this.currNode.type === 'CONNECTOR'){
+      const category = this.currNode.options.category;
+      if(!category){
+        this.getCategory();
+      }
+      else{
+        this.nodeType = `CON_${category.toUpperCase()}`
+      }
+
+    }
     else{
       this.nodeType = this.currNode.type
     }
   }
+
+  getCategory(){
+    const connector = this.currNode.options?.connector?._id || '';
+    if(connector){
+      this.commonService.get('user', `/${this.commonService.app._id}/connector/${connector}`,{
+        select: 'category'
+      }).subscribe(res => {
+        this.currNode.options.category = res.category;
+        console.log(this.currNode.options.category);
+        this.nodeType = res.category ? `CON_${res.category.toUpperCase()}` : 'CON_DB'
+      })
+    }
+  }
+  
 
   enableEditing() {
     this.edit.status = true;
@@ -191,6 +215,12 @@ export class NodePropertiesComponent implements OnInit {
         count: '',
         interval: ''
       }
+    }
+
+    if(type.startsWith('CON_')){
+      this.currNode.type = 'CONNECTOR';
+      const category = type.split('_')[1];
+      this.currNode.options['category'] = category;
     }
 
     if (type == 'FOREACH' || type == 'REDUCE') {

@@ -46,25 +46,39 @@
     </div>
     <div class="border rounded bg-white">
         <div class="url-info d-flex align-items-center justify-content-between p-3 border-bottom">
+          <div>
             <div class="d-flex align-items-center">
                 <span class="label text-dark font-weight-bold mr-2">API Endpoint&nbsp;:</span>
                 <span class="url text-accent">{{flowData?.inputNode?.options?.path || 'N.A.'}}</span>
             </div>
+            <div class="spacer-lock">
+                <span *ngIf="activeTab==0" class="fw-500 font-10 text-secondary">Right Click on the canvas for Node
+                    Options</span>    
+            </div>
+          </div>
             <div class="tab-list d-flex align-items-center">
                 <div class="tab-list-item p-2 hover" [class.active]="activeTab==0" (click)="activeTab=0">Design</div>
                 <div class="tab-list-item p-2 hover" [class.active]="activeTab==1" (click)="activeTab=1">Options</div>
                 <!-- <div class="tab-list-item p-2 hover" [class.active]="activeTab==2" (click)="activeTab=2">Volume Mounts</div> -->
             </div>
-            <div class="spacer-lock">
-                <span *ngIf="activeTab==0" class="fw-500 font-12 text-secondary">Right Click on the canvas for Node
-                    Options</span>
+            <div class="d-flex">
+                <div class="d-flex justify-content-center align-items-center mr-2" ngbTooltip="Total Warnings">
+                    <span class="icons warning"></span> 
+                    <span class="text-secondary">{{totalErrors}}</span>
+                </div>
+
+                <div class="d-flex justify-content-center align-items-center" ngbTooltip="Total Errors" (click)="totalErrors > 0 && openErrors()">
+                    <span class="icons mapper-warning"></span>
+                    <span class="text-secondary">{{totalErrors}}</span>
+                </div>
             </div>
         </div>
         <div *ngIf="activeTab==0" class="flow-designer d-flex">
             <div class="flow-designer-svg-wrapper" (scroll)="scroll()" tabIndex="0">
                 <svg class="flow-designer-svg bg-light" odpViewBox (contextmenu)="onRightClick($event)">
                     <g *ngFor="let node of nodeList;let i=index">
-                        <g odp-flow-node *ngIf="node.type!='ERROR'" [currNode]="node" [index]="i" [nodeList]="nodeList">
+                        <g odp-flow-node *ngIf="node.type!='ERROR'" [currNode]="node" [index]="i" [nodeList]="nodeList"
+                            [errors]="getNodeError(node._id)">
                         </g>
                         <g odp-error-node *ngIf="node.type=='ERROR'" [node]="node" [nodeList]="nodeList"></g>
                     </g>
@@ -88,7 +102,8 @@
                     <odp-flow-contants [data]="flowData" [nodeList]="nodeList" [edit]="edit"></odp-flow-contants>
                 </div>
                 <div class="col">
-                    <odp-flow-volume-mounts [data]="flowData" [nodeList]="nodeList" [edit]="edit"></odp-flow-volume-mounts>
+                    <odp-flow-volume-mounts [data]="flowData" [nodeList]="nodeList"
+                        [edit]="edit"></odp-flow-volume-mounts>
                 </div>
             </div>
         </div>
@@ -119,31 +134,50 @@
 
 
 <div *ngIf="contextMenuStyle && edit.status" class="available-nodes-dropdown bg-white position-fixed border rounded"
-     [ngStyle]="contextMenuStyle" odpClickOutside (outside)="contextMenuStyle=null">
+    [ngStyle]="contextMenuStyle" odpClickOutside (outside)="contextMenuStyle=null">
 
-  <ng-container *ngFor="let item of nodeOptions; let i = index">
-    <ng-template [ngTemplateOutlet]="recursiveTemplate" 
-                 [ngTemplateOutletContext]="{ item: item, index: i, ctr: 1 }"></ng-template>
-  </ng-container>
+    <ng-container *ngFor="let item of nodeOptions; let i = index">
+        <ng-template [ngTemplateOutlet]="recursiveTemplate"
+            [ngTemplateOutletContext]="{ item: item, index: i, ctr: 1 }"></ng-template>
+    </ng-container>
 
-  <ng-template #recursiveTemplate let-item="item" let-index="index" let-ctr="ctr">
-    <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover" *ngIf="evaluateCondition(item.condition)" [ngClass]="{'disabled': item.disabled}">
-      <div class="d-flex align-items-center" (click)="addNode($event, item.action)">
-        <span class="node-icon font-16 fw-400 mr-2" [ngClass]="item.icon"></span>
-        <span class="font-13 fw-400">{{ item.name }}</span>
-      </div>
-      <span class="node-icon font-16 fw-400 dsi dsi-drop-up fa-rotate-90 text-secondary" *ngIf="item.children"></span>
-      <div *ngIf="item.children" 
-           class="node-list-item bg-white rounded border"
-           [style.left.px]="ctr > 1 ? 200 : 140" 
-           [style.top.px]="index * 32">
-        <ng-container *ngFor="let child of item.children; let i = index">
-          <ng-template [ngTemplateOutlet]="recursiveTemplate" 
-                       [ngTemplateOutletContext]="{ item: child, index: i , ctr: ctr+1}"></ng-template>
-        </ng-container>
-      </div>
-    </div>
-  </ng-template>
+    <ng-template #recursiveTemplate let-item="item" let-index="index" let-ctr="ctr">
+        <div class="node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover"
+            *ngIf="evaluateCondition(item.condition)" [ngClass]="{'disabled': item.disabled}">
+            <div class="d-flex align-items-center" (click)="addNode($event, item.action)">
+                <span class="node-icon font-16 fw-400 mr-2" [ngClass]="item.icon"></span>
+                <span class="font-13 fw-400">{{ item.name }}</span>
+            </div>
+            <span class="node-icon font-16 fw-400 dsi dsi-drop-up fa-rotate-90 text-secondary"
+                *ngIf="item.children"></span>
+            <div *ngIf="item.children" class="node-list-item bg-white rounded border"
+                [style.left.px]="ctr > 1 ? 200 : 140" [style.top.px]="index * 32">
+                <ng-container *ngFor="let child of item.children; let i = index">
+                    <ng-template [ngTemplateOutlet]="recursiveTemplate"
+                        [ngTemplateOutletContext]="{ item: child, index: i , ctr: ctr+1}"></ng-template>
+                </ng-container>
+            </div>
+        </div>
+    </ng-template>
 
 </div>
 
+
+<ng-template #errorModal>
+    <div class="modal-body p-4">
+        <!-- <div class="circle bg-dark">
+            <span class="fa fa-exclamation-triangle text-white"></span>
+        </div> -->
+      <div class="d-flex">
+        <p class="text-dark font-weight-bold font-16">Erros</p>
+        <span class="dsi dsi-close ml-auto" (click)="errorModalRef.close()"></span>
+      </div>
+        <!-- <p class="text-secondary text-center">You cannot proceed without fixing the following errors</p> -->
+        <div>
+           <div *ngFor="let error of getErrorsAndWarnings()" class="d-flex">
+            <span class="fw-600">{{error.node}}: </span>
+            <span class="text-danger fw-500">&nbsp;{{error.error}}</span>
+           </div>
+        </div>
+    </div>
+</ng-template>

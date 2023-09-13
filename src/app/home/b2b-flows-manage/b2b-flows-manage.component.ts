@@ -20,8 +20,10 @@ import { B2bFlowService } from './b2b-flow.service';
 export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
   @ViewChild('pageChangeModalTemplate', { static: false }) pageChangeModalTemplate: TemplateRef<HTMLElement>;
+  @ViewChild('errorModal', { static: false }) errorModal: TemplateRef<HTMLElement>;
   @ViewChild('keyValModalTemplate', { static: false }) keyValModalTemplate: TemplateRef<HTMLElement>;
   pageChangeModalTemplateRef: NgbModalRef;
+  errorModalRef: NgbModalRef;
   keyValModalTemplateRef: NgbModalRef;
   edit: any;
   subscriptions: any;
@@ -83,7 +85,6 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     this.openDeleteModal = new EventEmitter();
     this.nodeList = [];
     this.activeTab = 0;
-
   }
 
   ngOnInit(): void {
@@ -644,5 +645,50 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   get hasManagePermission() {
     return this.commonService.hasPermission('PMIF')
   }
+
+  getNodeError(id) {
+    const errors = this.getErrorsAndWarnings().filter(obj => obj.id === id);
+    return errors;
+  }
+
+  getErrorsAndWarnings() {
+    const validations = this.flowService.getValidations();
+
+    const finalList = this.nodeList.reduce((acc, node) => {
+      const nodeValidations = (validations.find(e => e.node === node.type) || {}).validations || [];
+
+      const errors = nodeValidations
+        .map(item => {
+          const value = item.fieldPath.split('.').reduce((obj, key) => obj?.[key], node)
+          if (item.type === 'required' && (!value || value.length < 1)) {
+            return {
+              node: node.name,
+              id: node._id,
+              error: item.error
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      if (errors.length) acc.push(errors);
+
+      return acc;
+    }, []);
+    return finalList.flat()
+  }
+
+ openErrors(){
+        const self = this;
+        self.errorModalRef = self.commonService.modal(self.errorModal,  { size: 'm' });
+        self.errorModalRef.result.then(_ => {
+           self.errorModalRef.close()
+            })
+        }
+
+  get totalErrors() {
+    return this.getErrorsAndWarnings().length;
+  }
+
 
 }
