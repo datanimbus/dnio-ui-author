@@ -778,6 +778,19 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     })
   }
 
+  getAccumulatedObj(type){
+
+    const groupedArray = Object.values((type === 'error' ? this.getErrors() : this.getWarnings()).reduce((acc, obj) => {
+      const { node, [type]: groupValue } = obj;
+      if (!acc[node]) {
+        acc[node] = { node, [type]: [] };
+      }
+      acc[node][type].push({ [type]: groupValue });
+      return acc;
+    }, {}));
+    return groupedArray;
+  }
+
   get totalErrors() {
     return this.getErrors().length;
   }

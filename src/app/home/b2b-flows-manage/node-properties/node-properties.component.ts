@@ -102,41 +102,43 @@ export class NodePropertiesComponent implements OnInit {
   }
 
   checkType() {
-    if (this.currNode.type === 'DATASERVICE') {
-      if (this.currNode.options.get) {
-        this.nodeType = 'DS_GET'
-      }
-      if (this.currNode.options.delete) {
-        this.nodeType = 'DS_DELETE'
-      }
-      if (this.currNode.options.insert) {
-        this.nodeType = 'DS_INSERT'
-      }
-      if (this.currNode.options.update) {
-        this.nodeType = 'DS_UPDATE'
-      }
-    } else if (this.currNode.type === 'CONNECTOR') {
-      const connectorType = this.currNode.options.connectorType;
-      if(!connectorType){
-        this.getConnectorType();
-      }
-      else{
-        this.nodeType = `CON_${connectorType.toUpperCase()}`
-      }
-      if (this.currNode.options.read) {
-        this.nodeType = 'SFTP_READ'
-      }
-      if (this.currNode.options.write) {
-        this.nodeType = 'SFTP_WRITE'
-      }
-      if (this.currNode.options.move) {
-        this.nodeType = 'SFTP_MOVE'
-      }
-      if (this.currNode.options.list) {
-        this.nodeType = 'SFTP_LIST'
-      }
-    } else {
-      this.nodeType = this.currNode.type
+    switch (this.currNode.type) {
+      case 'DATASERVICE':
+        if (this.currNode.options.get) {
+          this.nodeType = 'DS_GET';
+        }
+        if (this.currNode.options.delete) {
+          this.nodeType = 'DS_DELETE';
+        }
+        if (this.currNode.options.insert) {
+          this.nodeType = 'DS_INSERT';
+        }
+        if (this.currNode.options.update) {
+          this.nodeType = 'DS_UPDATE';
+        }
+        break;
+      case 'CONNECTOR':
+        const connectorType = this.currNode.options.connectorType;
+        if (!connectorType) {
+          this.getConnectorType();
+        } else {
+          this.nodeType = `CON_${connectorType.toUpperCase()}`;
+        }
+        if (this.currNode.options.read) {
+          this.nodeType = 'SFTP_READ';
+        }
+        if (this.currNode.options.write) {
+          this.nodeType = 'SFTP_WRITE';
+        }
+        if (this.currNode.options.move) {
+          this.nodeType = 'SFTP_MOVE';
+        }
+        if (this.currNode.options.list) {
+          this.nodeType = 'SFTP_LIST';
+        }
+        break;
+      default:
+        this.nodeType = this.currNode.type;
     }
   }
 

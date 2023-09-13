@@ -66,50 +66,52 @@ export class B2bFlowService {
   }
 
   getNodeType(node: any, isInputNode?: boolean) {
-    if (node.type == 'API' && isInputNode) {
-      if (node?.options?.contentType == 'multipart/form-data') {
-        return 'API File Receiver';
-      } else if (node?.options?.contentType == 'application/xml') {
-        return 'API XML Receiver';
-      } else {
-        return 'API JSON Receiver';
-      }
-    } else if (node.type == 'API' && !isInputNode) {
-      return 'API JSON';
-    } else if (node.type == 'CONNECTOR') {
-      if (node.options.connectorType == 'SFTP') {
-        if (node.options.read) {
-          return 'SFTP Read';
-        } else if (node.options.list) {
-          return 'SFTP List';
-        } else if (node.options.move) {
-          return 'SFTP Move';
+    switch (node.type) {
+      case 'API':
+        if (isInputNode) {
+          switch (node?.options?.contentType) {
+            case 'multipart/form-data':
+              return 'API File Receiver';
+            case 'application/xml':
+              return 'API XML Receiver';
+            default:
+              return 'API JSON Receiver';
+          }
         } else {
-          return 'SFTP Write';
+          return 'API JSON';
         }
-      } else {
-        return this.nodeLabelMap[node.type];
-      }
-    } else if (node.type == 'DATASERVICE') {
-      if (node.options.approve) {
-        return 'Data Service Approve';
-      } else if (node.options.reject) {
-        return 'Data Service Reject';
-      } else if (node.options.insert) {
-        return 'Data Service Create';
-      } else if (node.options.delete) {
-        return 'Data Service Delete';
-      } else if (node.options.update) {
-        return 'Data Service Update';
-      } else {
-        return 'Data Service Fetch';
-      }
-    } else if (node.type === 'PROCESS') {
-      return 'Starter Node';
-    } else if (this.nodeLabelMap[node.type]) {
-      return this.nodeLabelMap[node.type];
-    } else {
-      return node.type;
+      case 'CONNECTOR':
+        if (node.options.connectorType === 'SFTP') {
+          if (node.options.read) {
+            return 'SFTP Read';
+          } else if (node.options.list) {
+            return 'SFTP List';
+          } else if (node.options.move) {
+            return 'SFTP Move';
+          } else {
+            return 'SFTP Write';
+          }
+        } else {
+          return this.nodeLabelMap[node.type] || node.type;
+        }
+      case 'DATASERVICE':
+        if (node.options.approve) {
+          return 'Data Service Approve';
+        } else if (node.options.reject) {
+          return 'Data Service Reject';
+        } else if (node.options.insert) {
+          return 'Data Service Create';
+        } else if (node.options.delete) {
+          return 'Data Service Delete';
+        } else if (node.options.update) {
+          return 'Data Service Update';
+        } else {
+          return 'Data Service Fetch';
+        }
+      case 'PROCESS':
+        return 'Starter Node';
+      default:
+        return this.nodeLabelMap[node.type] || node.type;
     }
   }
 
