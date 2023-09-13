@@ -275,7 +275,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
   getCategories() {
     const connectorIds = this.nodeList
-      .filter(node => node.type === 'CONNECTOR' && !node.options.category)
+      .filter(node => node.type === 'CONNECTOR' && !node.options.connectorType)
       .map(node => node.options?.connector?._id || '');
   
     if (connectorIds.length > 0) {
@@ -289,7 +289,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       }).subscribe(res => {
         this.nodeList.forEach(item => {
           if (item.options && item.options.connector) {
-            item.options.category = res.find(e => e._id === item.options.connector._id)?.category;
+            item.options.connectorType = res.find(e => e._id === item.options.connector._id)?.category;
           }
         })
       });
@@ -688,7 +688,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       const errors = nodeValidations
         .map(item => {
           if (item['subType']) {
-            if (item['subType'] === (node.options.category) || node.options[item['subType'].toLowerCase()])
+            if (item['subType'] === (node.options.connectorType) || node.options[item['subType'].toLowerCase()])
               return this.checkErrors(item, node);
             else {
               return null

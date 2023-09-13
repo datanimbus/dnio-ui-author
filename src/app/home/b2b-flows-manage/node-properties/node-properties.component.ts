@@ -116,23 +116,23 @@ export class NodePropertiesComponent implements OnInit {
         this.nodeType = 'DS_UPDATE'
       }
     } else if (this.currNode.type === 'CONNECTOR') {
-      const category = this.currNode.options.category;
-      if(!category){
-        this.getCategory();
+      const connectorType = this.currNode.options.connectorType;
+      if(!connectorType){
+        this.getConnectorType();
       }
       else{
-        this.nodeType = `CON_${category.toUpperCase()}`
+        this.nodeType = `CON_${connectorType.toUpperCase()}`
       }
-      if (this.currNode.options.get) {
+      if (this.currNode.options.read) {
         this.nodeType = 'SFTP_READ'
       }
-      if (this.currNode.options.delete) {
+      if (this.currNode.options.write) {
         this.nodeType = 'SFTP_WRITE'
       }
-      if (this.currNode.options.insert) {
+      if (this.currNode.options.move) {
         this.nodeType = 'SFTP_MOVE'
       }
-      if (this.currNode.options.update) {
+      if (this.currNode.options.list) {
         this.nodeType = 'SFTP_LIST'
       }
     } else {
@@ -140,13 +140,13 @@ export class NodePropertiesComponent implements OnInit {
     }
   }
 
-  getCategory(){
+  getConnectorType(){
     const connector = this.currNode.options?.connector?._id || '';
     if(connector){
       this.commonService.get('user', `/${this.commonService.app._id}/connector/${connector}`,{
         select: 'category'
       }).subscribe(res => {
-        this.currNode.options.category = res.category;
+        this.currNode.options.connectorType = res.category;
         this.nodeType = res.category ? `CON_${res.category.toUpperCase()}` : 'CON_DB'
       })
     }
@@ -227,8 +227,8 @@ export class NodePropertiesComponent implements OnInit {
 
     if(type.startsWith('CON_')){
       this.currNode.type = 'CONNECTOR';
-      const category = type.split('_')[1];
-      this.currNode.options['category'] = category;
+      const connectorType = type.split('_')[1];
+      this.currNode.options['connectorType'] = connectorType;
     }
 
     if (type == 'FOREACH' || type == 'REDUCE') {

@@ -18,7 +18,7 @@ export class ConnectorPropertiesComponent implements OnInit, OnChanges {
   showLoader: boolean;
   subscriptions: any;
   typeList: any;
-  category: string;
+  connectorType: string;
   constructor(private commonService: CommonService,
     private appService: AppService) {
     this.edit = {
@@ -30,13 +30,14 @@ export class ConnectorPropertiesComponent implements OnInit, OnChanges {
   }
   ngOnInit(): void {
     // this.getAvailableConnectors();
-    // this.loadInitial();
-    this.category && this.loadInitial()
+    // this.loadInitial();\/
+    this.connectorType = this.currNode.options.connectorType;
+    this.connectorType && this.loadInitial()
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.currNode && changes.currNode.previousValue?.options?.category !== changes.currNode.currentValue?.options?.category) {
-      this.category = this.currNode.options.category;
+    if (changes.currNode && changes.currNode.previousValue?.options?.connectorType !== changes.currNode.currentValue?.options?.connectorType) {
+      this.connectorType = this.currNode.options.connectorType;
       // or do some computation with the new value
       this.loadInitial()
     }
@@ -56,8 +57,8 @@ export class ConnectorPropertiesComponent implements OnInit, OnChanges {
     this.commonService.get('user', `/${this.commonService.app._id}/connector`, {
       sort: '-_metadata.lastUpdated',
       filter: {
-        ...(this.category ? { category: this.category } : {
-        
+        ...(this.connectorType !== 'SFTP' ? { category: this.connectorType } : {
+        ...(this.connectorType === 'SFTP' && {type: 'SFTP'})
         })
       },
     }).subscribe((res) => {
@@ -74,7 +75,7 @@ export class ConnectorPropertiesComponent implements OnInit, OnChanges {
     const options: GetOptions = {
       sort: '-_metadata.lastUpdated',
       filter: {
-        ...(this.category ? { category: this.category } : {
+        ...(this.connectorType ? { connectorType: this.connectorType } : {
           type: {
             $in: this.typeList
           }
