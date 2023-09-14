@@ -713,6 +713,26 @@ export class B2bFlowService {
           }
         ]
       },
+      {
+        node: 'DATASERVICE_APPROVE',
+        validations: [
+          { 
+            type: 'required',
+            fieldPath: 'options.filter',
+            error: 'Filter is required'
+          }
+        ]
+      },
+      {
+        node: 'DATASERVICE_REJECT',
+        validations: [
+          { 
+            type: 'required',
+            fieldPath: 'options.filter',
+            error: 'Filter is required'
+          }
+        ]
+      },
     ]
 
     return obj

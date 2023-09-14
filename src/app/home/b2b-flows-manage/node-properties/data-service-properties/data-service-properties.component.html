@@ -52,7 +52,7 @@
         <div class="form-group position-relative ">
             <label for="select" class="d-flex align-items-center justify-content-between">
                 Select
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['select']=!toggle['select']" *ngIf="edit.status"></span>
+                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['select']=!toggle['select']" *ngIf="edit.status"></span> -->
             </label>
             <!-- <input id="select" type="text" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.select"> -->
@@ -68,7 +68,7 @@
         <div class="form-group position-relative ">
             <label for="count" class="d-flex align-items-center justify-content-between">
                 Count
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['count']=!toggle['count']" *ngIf="edit.status"></span>
+                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['count']=!toggle['count']" *ngIf="edit.status"></span> -->
             </label>
             <!-- <input id="count" type="number" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.count"> -->
@@ -82,7 +82,7 @@
         <div class="form-group position-relative ">
             <label for="page" class="d-flex align-items-center justify-content-between">
                 Page
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['page']=!toggle['page']" *ngIf="edit.status"></span>
+                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['page']=!toggle['page']" *ngIf="edit.status"></span> -->
             </label>
             <!-- <input id="page" type="number" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.page"> -->
@@ -97,7 +97,7 @@
         <div class="form-group position-relative ">
             <label for="sort" class="d-flex align-items-center justify-content-between">
                 Sort
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['sort']=!toggle['sort']" *ngIf="edit.status"></span>
+                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['sort']=!toggle['sort']" *ngIf="edit.status"></span> -->
             </label>
             <!-- <input id="sort" type="text" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.sort"> -->
@@ -116,7 +116,7 @@
         <div class="form-group position-relative ">
             <label for="filter" class="d-flex align-items-center justify-content-between">
                 Filter
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['filter']=!toggle['filter']" *ngIf="edit.status && !currNode?.options?.dataService?.schemaFree"></span>
+                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['filter']=!toggle['filter']" *ngIf="edit.status && !currNode?.options?.dataService?.schemaFree"></span> -->
             </label>
             <textarea placeholder="{}" id="filter" class="form-control" [(ngModel)]="currNode.options.filter" (keydown.delete)="$event.stopPropagation()" *ngIf="currNode?.options?.dataService?.schemaFree"></textarea>
             <odp-node-advanced-filter [edit]="edit" [(toggle)]="toggle['filter']" [textarea]="true" [currNode]="currNode"
@@ -128,26 +128,34 @@
         <div class="form-group position-relative ">
             <label for="docId" class="d-flex align-items-center justify-content-between">
                 ID
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['id']=!toggle['id']" *ngIf="edit.status"></span>
+                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['id']=!toggle['id']" *ngIf="edit.status"></span> -->
             </label>
             <!-- <input id="docId" type="text" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.documentId"> -->
-            <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['id']" [currNode]="currNode"
+            <!-- <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['id']" [currNode]="currNode"
                 [(value)]="currNode.options.documentId">
-            </odp-node-data-selector>
+            </odp-node-data-selector> -->
+
+            <odp-styled-text (finalValue)="onValueChange($event, 'documentId')" [value]="currNode.options.documentId" #typeAhead
+            [ngbTypeahead]="search" [resultFormatter]="formatter" [inputFormatter]="formatter"
+            [searchTerm]="searchTerm" [disabled]="!edit.status"></odp-styled-text>
         </div>
     </ng-container>
     <ng-container *ngIf="currNode.options.update">
         <div class="form-group position-relative ">
             <label for="fields" class="d-flex align-items-center justify-content-between">
                 Update Based on Fields
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['fields']=!toggle['fields']" *ngIf="edit.status"></span>
+                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['fields']=!toggle['fields']" *ngIf="edit.status"></span> -->
             </label>
             <!-- <input id="fields" type="text" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.fields"> -->
-            <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['fields']" [currNode]="currNode"
+            <!-- <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['fields']" [currNode]="currNode"
                 [(value)]="currNode.options.fields">
-            </odp-node-data-selector>
+            </odp-node-data-selector> -->
+
+            <odp-styled-text (finalValue)="onValueChange($event, 'fields')" [value]="currNode.options.fields" #typeAhead
+            [ngbTypeahead]="search" [resultFormatter]="formatter" [inputFormatter]="formatter"
+            [searchTerm]="searchTerm" [disabled]="!edit.status"></odp-styled-text>
         </div>
     </ng-container>
 

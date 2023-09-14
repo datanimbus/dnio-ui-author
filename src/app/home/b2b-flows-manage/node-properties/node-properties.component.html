@@ -428,7 +428,7 @@
             </odp-connector-properties>
         </ng-container>
         <ng-container *ngIf="currNode?.type.startsWith('DATASERVICE')">
-            <odp-data-service-properties [edit]="edit" [nodeList]="nodeList" [currNode]="currNode">
+            <odp-data-service-properties [edit]="edit" [nodeList]="nodeList" [currNode]="currNode" >
             </odp-data-service-properties>
         </ng-container>
         <ng-container *ngIf="currNode?.type=='FLOW'">

@@ -116,8 +116,6 @@ export class DataServicePropertiesComponent implements OnInit {
         const regex = /{{(?!.*}})(.*)/g;
         const matches = term.match(regex) || [];
         this.searchTerm = matches.length > 0 ? _.cloneDeep(matches).pop() : '';
-        // term = term.split(' ').filter((ele) => ele.startsWith("{{") && !ele.endsWith("}")).pop() || '';
-        // this.searchTerm = term;
         if (this.searchTerm) {
           term = this.searchTerm.replace('{{', '');
         }
@@ -127,7 +125,7 @@ export class DataServicePropertiesComponent implements OnInit {
 
   onValueChange(value: any, type: any) {
     if (type) {
-      this.currNode.options[type] = type === 'count' || type === 'page' ? parseInt(value) : value;
+      this.currNode.options[type] = (type === 'count' || type === 'page') && value && !isNaN(value) ? parseInt(value) : value;
     }
   }
 
