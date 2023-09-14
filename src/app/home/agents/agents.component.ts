@@ -186,6 +186,17 @@ export class AgentsComponent implements OnInit, OnDestroy {
         this.openDeleteModal.emit(this.alertModal);
     }
 
+    disableAgent(agent){
+        this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/${agent._id}/disable`,{}).subscribe(_ =>{
+            this.getAgentList();
+        })
+    }
+    stopAgent(agent){
+        this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/${agent._id}/stop`,{}).subscribe(_ =>{
+            this.getAgentList();
+        })
+    }
+
     closeDeleteModal(data) {
         if (data) {
             this.subscriptions['deleteAgent'] = this.commonService.delete('partnerManager', `/${this.commonService.app._id}/agent/` + this.records[data.index]._id, this.records[data.index]).subscribe(res => {
