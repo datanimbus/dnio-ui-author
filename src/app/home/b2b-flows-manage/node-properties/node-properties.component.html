@@ -67,6 +67,8 @@
                     <option *ngIf="!isInputNode" value="DS_INSERT">Data Service Insert</option>
                     <option *ngIf="!isInputNode" value="DS_UPDATE">Data Service Update</option>
                     <option *ngIf="!isInputNode" value="DS_DELETE">Data Service Delete</option>
+                    <option *ngIf="!isInputNode" value="DATASERVICE_APPROVE">Workflow Approve</option>
+                    <option *ngIf="!isInputNode" value="DATASERVICE_REJECT">Workflow Reject</option>
                     <option *ngIf="!isInputNode" value="FUNCTION">Function</option>
                     <option *ngIf="!isInputNode" value="FLOW">Flow</option>
                     <option *ngIf="!isInputNode" value="RESPONSE">Response</option>
@@ -425,7 +427,7 @@
             <odp-connector-properties [edit]="edit" [nodeList]="nodeList" [currNode]="currNode">
             </odp-connector-properties>
         </ng-container>
-        <ng-container *ngIf="currNode?.type=='DATASERVICE'">
+        <ng-container *ngIf="currNode?.type.startsWith('DATASERVICE')">
             <odp-data-service-properties [edit]="edit" [nodeList]="nodeList" [currNode]="currNode">
             </odp-data-service-properties>
         </ng-container>

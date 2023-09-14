@@ -48,7 +48,7 @@
             <span class="ml-2 text-secondary">Delete</span>
         </div> -->
     </div>
-    <ng-container *ngIf="currNode.options.get">
+    <ng-container *ngIf="currNode.options.get || ['DATASERVICE_APPROVE', 'DATASERVICE_REJECT'].includes(currNode.type)">
         <div class="form-group position-relative ">
             <label for="select" class="d-flex align-items-center justify-content-between">
                 Select

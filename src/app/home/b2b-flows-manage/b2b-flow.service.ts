@@ -232,6 +232,11 @@ export class B2bFlowService {
       temp.options[subType.toLowerCase()] = true
     }
 
+    if (type.startsWith('WF_')) {
+      const subType = type.split('_')[1];
+      temp.type = 'DATASERVICE_'+subType
+    }
+
     if (type.startsWith('SFTP_')) {
       temp.type = 'CONNECTOR';
       temp.options.connectorType = 'SFTP';
@@ -556,16 +561,14 @@ export class B2bFlowService {
               icon: 'dsi dsi-data-service alt'
             },
             {
-              action: 'DATASERVICE',
+              action: 'WF_APPROVE',
               name: 'Workflow Approve',
               icon: 'dsi dsi-data-service alt',
-              disabled: true
             },
             {
-              action: 'DATASERVICE',
+              action: 'WF_REJECT',
               name: 'Workflow Reject',
               icon: 'dsi dsi-data-service alt',
-              disabled: true
             },
           ]
         },
