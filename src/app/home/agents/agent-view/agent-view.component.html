@@ -52,11 +52,11 @@
                             (click)="changePassword()">
                             Change Password
                         </div>
-                        <div id="agent-change-password" *ngIf="agentDetails.status === 'RUNNING'"
+                        <div id="agent-stop" *ngIf="agentDetails.status === 'RUNNING'"
                             class="list-group-item list-group-item-action py-2 border-0 hover" (click)="stopAgent()">
                             Stop
                         </div>
-                        <div id="agent-change-password"
+                        <div id="agent-disable"
                             class="list-group-item list-group-item-action py-2 border-0 hover" (click)="disableAgent()">
                             Disable
                         </div>
