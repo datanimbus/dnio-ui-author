@@ -367,7 +367,8 @@ export class B2bFlowService {
     let list = [];
     if (definition && definition.length > 0) {
       definition.forEach((def: any) => {
-        let key = parentKey ? parentKey + '.' + def.key : def.key;
+        // let key = parentKey ? parentKey + '.' + def.key : def.key;
+        let key = def.properties.dataPathSegs.join('.');
         if (def.type == 'Object') {
           list = list.concat(this.getNestedSuggestions(node, def.definition, key));
         } else {
@@ -375,7 +376,7 @@ export class B2bFlowService {
           item.label = (node._id || node.type) + '/body/' + key;
           item.value = node._id + '.body.' + key;
           list.push(item);
-          if (node.type == "DATASERVICE") {
+          if (node.type == "DATASERVICE") { 
             item = {};
             item.label = (node._id || node.type) + '/responseBody[0]/' + key;
             item.value = node._id + '.responseBody[0].' + key;

@@ -116,10 +116,7 @@ export class StyledTextComponent implements OnInit, OnChanges {
       this.getLeft();
       this.getTop();
       this.oldData = this.styledDivText.nativeElement.innerHTML || '';
-
-
     }
-
     this.finalValue.emit(this.value);
   };
 
@@ -224,7 +221,21 @@ export class StyledTextComponent implements OnInit, OnChanges {
         if (this.searchTerm) {
           term = this.searchTerm.replace('{{', '').trim();
         }
-        return matches.length === 0 && this.searchTerm === '' ? [] : this.suggestions.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 15);
+        let segments = term.split('/');
+        console.log('segments', segments);
+        if (segments.length > 1) {
+          this.suggestions.filter((v) => {
+            let match = false;
+            segments.forEach(seg => {
+              if (v.label.toLowerCase().indexOf(seg.toLowerCase()) > -1) {
+                match = true;
+              }
+            });
+            return match;
+          }).slice(0, 15)
+        } else {
+          return matches.length === 0 && this.searchTerm === '' ? [] : this.suggestions.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 15);
+        }
       }),
     );
 
