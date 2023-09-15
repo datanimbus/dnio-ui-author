@@ -262,6 +262,7 @@ export class StyledTextComponent implements OnInit, OnChanges {
           const labelSegments = v.label.split('/');
           return searchSegments.every((segment, index) => labelSegments[index].toLowerCase().indexOf(segment.toLowerCase()) > -1 );
         }).slice(0, 15);
+
       }),
     );
 
