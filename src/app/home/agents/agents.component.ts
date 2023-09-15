@@ -187,12 +187,12 @@ export class AgentsComponent implements OnInit, OnDestroy {
     }
 
     disableAgent(agent){
-        this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/${agent._id}/disable`,{}).subscribe(_ =>{
+        this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/utils/${agent._id}/disable`,{}).subscribe(_ =>{
             this.getAgentList();
         })
     }
     stopAgent(agent){
-        this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/${agent._id}/stop`,{}).subscribe(_ =>{
+        this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/utils/${agent._id}/stop`,{}).subscribe(_ =>{
             this.getAgentList();
         })
     }
