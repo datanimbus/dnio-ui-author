@@ -21,7 +21,7 @@
             <div class="d-flex align-items-center justify-content-end position-relative">
                 <span class="mr-3 fw-500 text-dark">{{data.status}}</span>
                 <odp-switch [checked]="data.status=='Enabled'" (checkedChange)="toggleStatus($event)"
-                    [edit]="{status:hasPermission('PMAPI')}"></odp-switch>
+                    [edit]="{status:hasPermission('PMAK')}"></odp-switch>
             </div>
         </div>
         <code class="mt-3 text-muted text-uppercase">#{{data.tokenHash}}</code>

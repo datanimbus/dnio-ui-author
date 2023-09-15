@@ -10,7 +10,7 @@
     <div class="list-group-item d-flex align-items-center justify-content-between"
         *ngFor="let item of dataList">
         <div class="fw-600 text-secondary">{{item.name}}</div>
-        <odp-switch [checked]="isRoleSelected(item)" (checkedChange)="toggleRole($event,item)" [edit]="{status:hasPermission('PMAPI')}"></odp-switch>
+        <odp-switch [checked]="isRoleSelected(item)" (checkedChange)="toggleRole($event,item)" [edit]="{status:hasPermission('PMAK')}"></odp-switch>
     </div>
     <div class="list-group-item text-secondary" *ngIf="dataList.length==0">No Records Found</div>
 </div>
