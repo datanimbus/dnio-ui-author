@@ -382,24 +382,26 @@ export class NodePropertiesComponent implements OnInit {
   }
 
   onPathAdd() {
-    const inputDirectories = this.currNode.options?.inputDirectories ? _.cloneDeep(this.currNode.options.inputDirectories) : [];
+    const type = this.isInputNode ? 'inputDirectories' : 'outputDirectories'
+    const directories = this.currNode.options?.[type] ? _.cloneDeep(this.currNode.options[type]) : [];
     const pathObj = {
       path: this.path,
-      watchSubDirecties: false
+      watchSubDirectories: false
     }
-    inputDirectories.push(pathObj);
+    directories.push(pathObj);
 
     this.path = '';
-    this.currNode.options['inputDirectories'] = inputDirectories;
+    this.currNode.options[type] = directories;
     this.changesDone.emit();
   }
 
   removePath(index) {
-    this.currNode.options['inputDirectories'].splice(index, 1);
+    this.currNode.options[this.isInputNode ? 'inputDirectories' : 'outputDirectories'].splice(index, 1);
   }
 
   toggleWatch(i) {
-    this.currNode.options['inputDirectories'][i].watchSubDirecties = !this.currNode.options['inputDirectories'][i].watchSubDirecties;
+    const type = this.isInputNode ? 'inputDirectories' : 'outputDirectories'
+    this.currNode.options[type][i].watchSubDirectories = !this.currNode.options[type][i].watchSubDirectories;
   }
 
   get variableSuggestions() {

@@ -652,8 +652,19 @@ export class B2bFlowService {
         validations: [
           {
             type: 'required',
+            condition: {
+              inputNode: true
+            },
             fieldPath: 'options.inputDirectories',
             error: 'Input Directory is required'
+          },
+          {
+            type: 'required',
+            condition: {
+              inputNode: false
+            },
+            fieldPath: 'options.outputDirectories',
+            error: 'Output Directory is required'
           },
           {
             type: 'required',

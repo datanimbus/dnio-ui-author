@@ -727,7 +727,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       if (['RESPONSE', 'MAPPING', 'DEDUPE'].includes(node.type)) {
         warnValidations = warnValidations.filter(ele => ele.fieldPath === 'dataStructure.incoming')
       }
-      if(node.type === 'CONVERT_JSON_JSON'){
+      if(['CONVERT_JSON_JSON', 'FILE'].includes(node.type)) {
         warnValidations = []
       }
       const warnings = warnValidations
@@ -752,6 +752,12 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   }
 
   checkErrors(item, node) {
+    if(item.condition && Object.getOwnPropertyNames(item.condition).includes('inputNode')){
+      const isInputNode = this.isInputNode(node);
+      if(item.condition.inputNode !== isInputNode){
+        return null;
+      }
+    }
     const value = item.fieldPath.split('.').reduce((obj, key) => obj?.[key], node)
     if (item.type === 'required' && (!value || value.length < 1)) {
       return {
@@ -789,6 +795,14 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       return acc;
     }, {}));
     return groupedArray;
+  }
+
+  isInputNode(node) {
+    if (this.flowData && node) {
+      return this.flowData.inputNode._id == node._id;
+    }
+    return true;
+    // return this.nodeList[0]._id == this.currNode._id;
   }
 
   get totalErrors() {

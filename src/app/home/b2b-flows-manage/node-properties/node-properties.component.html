@@ -289,7 +289,7 @@
             </div>
             <div class="form-group">
                 <div class="d-flex align-items-center justify-content-between">
-                    <label class="font-14 fw-400 text-dark" for="agentSelector">Input Directory(s)</label>
+                    <label class="font-14 fw-400 text-dark" for="agentSelector">{{isInputNode ? 'Input' : 'Output'}} Directory(s)</label>
                 </div>
 
                 <div class="form-group">
@@ -301,9 +301,9 @@
                             (click)="onPathAdd()"></span>
                     </div>
                 </div>
-                <div *ngIf="currNode.options.inputDirectories && currNode.options.inputDirectories.length > 0"
+                <div *ngIf="currNode.options[isInputNode ? 'inputDirectories' : 'outputDirectories'] && currNode.options[isInputNode ? 'inputDirectories' : 'outputDirectories'].length > 0"
                     class="list-group">
-                    <div *ngFor="let directory of currNode.options.inputDirectories; let i = index"
+                    <div *ngFor="let directory of currNode.options[isInputNode ? 'inputDirectories' : 'outputDirectories']; let i = index"
                         class="list-group-item d-flex align-items-center justify-content-between">
                         <odp-round-radio [edit]="edit" [(checked)]="directory.watchSubDirectories"
                             (checkedChange)="toggleWatch(i)"></odp-round-radio>
@@ -311,10 +311,23 @@
                         <span class="dsi dsi-remove text-danger hover" (click)="removePath(i)"></span>
                     </div>
                 </div>
-                <div *ngIf="!currNode.options.inputDirectories || currNode.options.inputDirectories.length == 0"
+                <div *ngIf="!currNode.options[isInputNode ? 'inputDirectories' : 'outputDirectories'] || currNode.options[isInputNode ? 'inputDirectories' : 'outputDirectories'].length == 0"
                     class="list-group">
                     <div class="list-group-item p-2 text-muted">No Directories Added</div>
                 </div>
+            </div>
+
+            <div class="form-group position-relative d-flex align-items-center justify-content-between p-2 border bg-light rounded" *ngIf="!isInputNode">
+                <label class="font-14 fw-400 text-dark mb-0" for="upsert">Mirror Input Directories</label>
+                <odp-checkbox [edit]="edit" class="mx-2 pl-1" [(checked)]="currNode.options.mirrorInputDirectories">
+                </odp-checkbox>
+            </div>
+
+
+            <div class="form-group position-relative d-flex align-items-center justify-content-between p-2 border bg-light rounded" *ngIf="!isInputNode">
+                <label class="font-14 fw-400 text-dark mb-0" for="upsert">Generate Headers</label>
+                <odp-checkbox [edit]="edit" class="mx-2 pl-1" [(checked)]="currNode.options.generateHeaders">
+                </odp-checkbox>
             </div>
         </ng-container>
         <ng-container *ngIf="checkForFileOptions">
