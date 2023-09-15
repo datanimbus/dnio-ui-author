@@ -93,6 +93,7 @@
                         <!-- <div class="item-release">{{agent.release}}</div>
                         <div class="item-pending-files">{{agent.pendingFiles}}</div> -->
                         <div class="item-actions d-flex align-items-center justify-content-end">
+                            <span id="agent-start" class="fw-600 font-13 hover mr-3" *ngIf="agent.status === 'RUNNING'" (click)="stopAgent(agent)">Stop</span>
                             <span id="agent-view" class="fw-600 font-13 hover mr-3"
                                 [routerLink]="['/app/',app,'agent',agent._id]">View</span>
                             <span id="agent-more" class="dsi dsi-more-vertical hover mr-3 ignore-outside"
@@ -114,6 +115,11 @@
                                     class="list-group-item list-group-item-action py-2 border-0 hover"
                                     (click)="showPasswordSide = true; agentData=agent">
                                     Change Password
+                                </div>
+                                <div id="agent-disabke"
+                                    class="list-group-item list-group-item-action py-2 border-0 hover"
+                                    *ngIf="canEditAgent(agent._id)" (click)="disableAgent(agent)">
+                                    Disable
                                 </div>
                                 <div id="agent-clone" class="list-group-item list-group-item-action py-2 border-0 hover"
                                     *ngIf="hasCreatePermission('AGENT')" (click)="cloneAgent(agent)">
