@@ -413,10 +413,8 @@ export class AppsComponent implements OnInit, OnDestroy {
   get hasAPIKeyPermission() {
     const self = this;
     return (
-      self.commonService.hasPermissionStartsWith('PMU') ||
-      self.commonService.hasPermissionStartsWith('PVU') ||
-      self.commonService.hasPermissionStartsWith('PMB') ||
-      self.commonService.hasPermissionStartsWith('PVB')
+      self.commonService.hasPermissionStartsWith('PMAK') ||
+      self.commonService.hasPermissionStartsWith('PVAK')
     );
   }
 

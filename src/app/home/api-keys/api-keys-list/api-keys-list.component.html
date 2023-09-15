@@ -16,7 +16,7 @@
         <div class="d-flex align-items-center">
             <odp-search-box (enteredText)="enterToSelect($event)" (reset)="enterToSelect('reset')" (enteredPressed)="enterToSelect($event)" [edit]="{status:true}"></odp-search-box>
             <button type="button" id="addNewDS" class="add-new btn btn-primary ml-3 d-flex align-items-center"
-                (click)="newKeyForm()" *ngIf="hasPermission('PMUBC')">
+                (click)="newKeyForm()" *ngIf="hasPermission('PMAK')">
                 <span class="dsi dsi-plus mr-2"></span>
                 <span class="text">New</span>
             </button>

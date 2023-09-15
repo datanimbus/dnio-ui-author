@@ -114,13 +114,13 @@
                     (click)="selectedTab=0">Logs</div>
                 <div class="tab-list-item py-3 text-center" [ngClass]="{'active fw-500':selectedTab==1}"
                     (click)="selectedTab=1">Sessions</div>
-                <div class="tab-list-item py-3 text-center" [ngClass]="{'active fw-500':selectedTab==2}"
-                    (click)="selectedTab=2">Permissions</div>
+                <!-- <div class="tab-list-item py-3 text-center" [ngClass]="{'active fw-500':selectedTab==2}"
+                    (click)="selectedTab=2">Permissions</div> -->
             </div>
             <div class="tab-container">
                 <odp-agent-logs *ngIf="selectedTab==0" [agentDetails]="agentDetails"></odp-agent-logs>
                 <odp-agent-sessions *ngIf="selectedTab==1" [agentDetails]="agentDetails"></odp-agent-sessions>
-                <odp-agent-permissions *ngIf="selectedTab==2" [agentDetails]="agentDetails"></odp-agent-permissions>
+                <!-- <odp-agent-permissions *ngIf="selectedTab==2" [agentDetails]="agentDetails"></odp-agent-permissions> -->
             </div>
         </div>
     </div>

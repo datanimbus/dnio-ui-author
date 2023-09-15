@@ -53,6 +53,10 @@
         [ngClass]="{'text-dark font-weight-bold': activeSubTab==12}" (click)="activeSubTab=12">
         <span class="">Bots</span>
       </div>
+      <div *ngIf="(hasPermission('PVGAAK') || hasPermission('PMGAAK'))" class="px-3 py-2 hover"
+        [ngClass]="{'text-dark font-weight-bold': activeSubTab==15}" (click)="activeSubTab=15">
+        <span class="">API Keys</span>
+      </div>
       <div *ngIf="hasPermission('PVGAG') || hasPermission('PMGAG')" class="px-3 py-2 hover"
         [ngClass]="{'text-dark font-weight-bold': activeSubTab==13}" (click)="activeSubTab=13">
         <span class="">Groups</span>
@@ -98,6 +102,8 @@
     </odp-group-author-users>
     <odp-group-author-bots *ngIf="activeSubTab==12" [(roles)]="roles" (rolesChange)="onChange($event)" class="w-100">
     </odp-group-author-bots>
+    <odp-group-author-api-keys *ngIf="activeSubTab==15" [(roles)]="roles" (rolesChange)="onChange($event)" class="w-100">
+    </odp-group-author-api-keys>
     <odp-group-author-groups *ngIf="activeSubTab==13" [(roles)]="roles" (rolesChange)="onChange($event)" class="w-100">
     </odp-group-author-groups>
     <odp-group-author-insights *ngIf="activeSubTab==14" [(roles)]="roles" (rolesChange)="onChange($event)"
