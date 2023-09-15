@@ -18,9 +18,7 @@
                 (ngModelChange)="onValueChange($event)" (paste)="onPaste($event)" (keyup.enter)="addField()"> -->
 
 
-            <odp-styled-text (finalValue)="onValueChange($event)" [value]="field.value" #typeAhead
-                [ngbTypeahead]="search" [resultFormatter]="formatter" [inputFormatter]="formatter"
-                [searchTerm]="searchTerm" class="styled-wrapper" (onPaste)="onPaste($event)" (onEnter)="addField()"
+            <odp-styled-text [currNode]="currNode" (finalValue)="onValueChange($event)" [value]="field.value" #typeAhead class="styled-wrapper" (onPaste)="onPaste($event)" (onEnter)="addField()"
                 [disabled]="field.type=='object'" [uid]="index"></odp-styled-text>
 
         </div>

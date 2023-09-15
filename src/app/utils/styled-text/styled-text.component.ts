@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import { Observable, OperatorFunction, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { MappingService } from '../../home/b2b-flows-manage/node-properties/node-mapping/mapping.service';
+import { B2bFlowService } from 'src/app/home/b2b-flows-manage/b2b-flow.service';
 
 
 
@@ -29,7 +30,8 @@ export class StyledTextComponent implements OnInit, OnChanges {
   @Input() placeholder: string = ''
   @Input() useEditableDiv: boolean = false;
   @Input() insertText: EventEmitter<string>;
-  @Input() pattern: RegExp = /.*/g
+  @Input() pattern: RegExp = /.*/g;
+  @Input() currNode: any;
   @Output() onPaste: EventEmitter<any> = new EventEmitter();
   @Output() onEnter: EventEmitter<any> = new EventEmitter();
   @ViewChild('renderer') renderer: any;
@@ -46,10 +48,13 @@ export class StyledTextComponent implements OnInit, OnChanges {
   top: any;
   selectedObj: Selection;
   rangeObj: Range;
+  term: any;
 
 
-  constructor(private mappingService: MappingService) {
-
+  constructor(private mappingService: MappingService,
+    private flowService: B2bFlowService
+    ) {
+    
   }
 
 
@@ -95,6 +100,8 @@ export class StyledTextComponent implements OnInit, OnChanges {
       }
     }
 
+    this.term = this.searchTerm || '';
+    this.suggestions = this.suggestions.length > 0 ? this.suggestions : this.variableSuggestions;
 
   }
 
@@ -141,19 +148,19 @@ export class StyledTextComponent implements OnInit, OnChanges {
   selectOption(event, isFn = false) {
     // this.insertText.emit(event.value + '}}');
     this.replaceValue(event.value, isFn)
-    this.searchTerm = '';
+    this.term = '';
   }
 
   replaceValue(value, isFn = false) {
 
     const regex1 = /{{(?!.*}})(.*)/g;
     const matches = this.value.match(regex1) || [];
-    this.searchTerm = matches.length > 0 ? _.cloneDeep(matches).pop() : '';
-    const regex = `${this.searchTerm}(?!.*}})(.*)`;
+    this.term = matches.length > 0 ? _.cloneDeep(matches).pop() : '';
+    const regex = `${this.term}(?!.*}})(.*)`;
     const mainReg = new RegExp(regex, 'gm')
     let index = this.value.search(mainReg);
     if (index >= 0) {
-      const removedSearch = this.removeFromString(this.value, index, this.searchTerm.length);
+      const removedSearch = this.removeFromString(this.value, index, this.term.length);
       const final = removedSearch.substring(0, index) + isFn ? `${value}` : `{{${value}}}` + removedSearch.substring(index);
       this.styledDivText.nativeElement.innerText = final;
       this.value = final;
@@ -187,7 +194,7 @@ export class StyledTextComponent implements OnInit, OnChanges {
   patchValue(selectedValue) {
     let currentValue = this.value;
     let cursor = this.useEditableDiv ? this.getCursorOnDiv() : this.getCursor();
-    let patchedValue = currentValue.substring(0, cursor[0] - this.searchTerm.length) + selectedValue + currentValue.substring(cursor[1]);
+    let patchedValue = currentValue.substring(0, cursor[0] - this.term.length) + selectedValue + currentValue.substring(cursor[1]);
     this.value = patchedValue;
     this.finalValue.emit(this.value);
   }
@@ -208,6 +215,37 @@ export class StyledTextComponent implements OnInit, OnChanges {
   //   return {}
   // }
 
+  // search: OperatorFunction<string, readonly { label: string, value: string }[]> = (text$: Observable<string>) =>
+  //   text$.pipe(
+  //     debounceTime(200),
+  //     distinctUntilChanged(),
+  //     map((term) => {
+  //       const regex = /{{(?!.*}})(.*)/g;
+  //       const matches = term.match(regex) || [];
+  //       this.searchTerm = matches.length > 0 ? _.cloneDeep(matches).pop() : '';
+  //       // term = term.split(' ').filter((ele) => ele.startsWith("{{") && !ele.endsWith("}")).pop() || '';
+  //       // this.searchTerm = term;
+  //       if (this.searchTerm) {
+  //         term = this.searchTerm.replace('{{', '').trim();
+  //       }
+  //       let segments = term.split('/');
+  //       console.log('segments', segments);
+  //       if (segments.length > 1) {
+  //        return this.suggestions.filter((v) => {
+  //           let match = false;
+  //           segments.forEach(seg => {
+  //             if (v.label.toLowerCase().indexOf(seg.toLowerCase()) > -1) {
+  //               match = true;
+  //             }
+  //           });
+  //           return match;
+  //         }).slice(0, 15)
+  //       } else {
+  //         return matches.length === 0 && this.searchTerm === '' ? [] : this.suggestions.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 15);
+  //       }
+  //     }),
+  //   );
+
   search: OperatorFunction<string, readonly { label: string, value: string }[]> = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
@@ -215,29 +253,24 @@ export class StyledTextComponent implements OnInit, OnChanges {
       map((term) => {
         const regex = /{{(?!.*}})(.*)/g;
         const matches = term.match(regex) || [];
-        this.searchTerm = matches.length > 0 ? _.cloneDeep(matches).pop() : '';
-        // term = term.split(' ').filter((ele) => ele.startsWith("{{") && !ele.endsWith("}")).pop() || '';
-        // this.searchTerm = term;
-        if (this.searchTerm) {
-          term = this.searchTerm.replace('{{', '').trim();
+        this.term = matches.length > 0 ? _.cloneDeep(matches).pop() : '';
+        if (this.term) {
+          term = this.term.replace('{{', '');
         }
-        let segments = term.split('/');
-        console.log('segments', segments);
-        if (segments.length > 1) {
-          this.suggestions.filter((v) => {
-            let match = false;
-            segments.forEach(seg => {
-              if (v.label.toLowerCase().indexOf(seg.toLowerCase()) > -1) {
-                match = true;
-              }
-            });
-            return match;
-          }).slice(0, 15)
-        } else {
-          return matches.length === 0 && this.searchTerm === '' ? [] : this.suggestions.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 15);
-        }
+        return matches.length === 0 && this.term === '' ? [] : this.suggestions.filter((v) => {
+          const searchSegments = term.split('/');
+          const labelSegments = v.label.split('/');
+          return searchSegments.every((segment, index) => labelSegments[index].toLowerCase().indexOf(segment.toLowerCase()) > -1 );
+        }).slice(0, 15);
       }),
     );
+
+    localFormatter(result: any) {
+      if (result && typeof result == 'object') {
+        return result.label;
+      }
+      return result;
+    };
 
   get suggestionStyle() {
     let left = this.left;
@@ -287,6 +320,10 @@ export class StyledTextComponent implements OnInit, OnChanges {
       return len;
     }
     return -1;
+  }
+
+  get variableSuggestions() {
+    return this.flowService.getSuggestions(this.currNode)
   }
 
 

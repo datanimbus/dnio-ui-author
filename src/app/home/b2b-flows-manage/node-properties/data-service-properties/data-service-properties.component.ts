@@ -17,7 +17,6 @@ export class DataServicePropertiesComponent implements OnInit {
   @Input() nodeList: Array<any>;
   prevNode: any;
   toggle: any;
-  searchTerm: any;
   constructor(private appService: AppService, private flowService: B2bFlowService) {
     this.edit = { status: false };
     this.toggle = {};
@@ -100,38 +99,12 @@ export class DataServicePropertiesComponent implements OnInit {
     this.setDefaultData();
   }
 
-
-  formatter(result: any) {
-    if (result && typeof result == 'object') {
-      return result.label;
-    }
-    return result;
-  };
-
-  search: OperatorFunction<string, readonly { label: string, value: string }[]> = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map((term) => {
-        const regex = /{{(?!.*}})(.*)/g;
-        const matches = term.match(regex) || [];
-        this.searchTerm = matches.length > 0 ? _.cloneDeep(matches).pop() : '';
-        if (this.searchTerm) {
-          term = this.searchTerm.replace('{{', '');
-        }
-        return matches.length === 0 && this.searchTerm === '' ? [] : this.variableSuggestions.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 15);
-      }),
-    );
-
   onValueChange(value: any, type: any) {
     if (type) {
       this.currNode.options[type] = (type === 'count' || type === 'page') && value && !isNaN(value) ? parseInt(value) : value;
     }
   }
 
-  get variableSuggestions() {
-    return this.flowService.getSuggestions(this.currNode)
-  }
 
 
   get isDataServiceSelected() {
