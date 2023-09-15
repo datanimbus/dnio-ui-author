@@ -34,7 +34,7 @@ export class GroupAuthorPluginsComponent {
     return {
       id: type,
       app: this.commonService.app._id,
-      entity: 'FORMULA',
+      entity: 'PLUGIN',
       type: 'author'
     };
   }
@@ -44,15 +44,15 @@ export class GroupAuthorPluginsComponent {
   }
 
   set permissionType(val: any) {
-    const blockedIndex = this.roles.findIndex(r => r.id === 'PNFO' && r.entity === 'FORMULA');
+    const blockedIndex = this.roles.findIndex(r => r.id === 'PNPL' && r.entity === 'PLUGIN');
     if (blockedIndex > -1) {
       this.roles.splice(blockedIndex, 1);
     }
-    const manageIndex = this.roles.findIndex(r => r.id === 'PMFO' && r.entity === 'FORMULA');
+    const manageIndex = this.roles.findIndex(r => r.id === 'PMPL' && r.entity === 'PLUGIN');
     if (manageIndex > -1) {
       this.roles.splice(manageIndex, 1);
     }
-    const viewIndex = this.roles.findIndex(r => r.id === 'PVFO' && r.entity === 'FORMULA');
+    const viewIndex = this.roles.findIndex(r => r.id === 'PVPL' && r.entity === 'PLUGIN');
     if (viewIndex > -1) {
       this.roles.splice(viewIndex, 1);
     }
@@ -60,9 +60,9 @@ export class GroupAuthorPluginsComponent {
   }
 
   get permissionType() {
-    if (this.roles.find(r => r.id === 'PMFO' && r.entity === 'FORMULA')) {
+    if (this.roles.find(r => r.id === 'PMPL' && r.entity === 'PLUGIN')) {
       return 'manage';
-    } else if (this.roles.find(r => r.id === 'PVFO' && r.entity === 'FORMULA')) {
+    } else if (this.roles.find(r => r.id === 'PVPL' && r.entity === 'PLUGIN')) {
       return 'view';
     } else {
       return 'blocked';
