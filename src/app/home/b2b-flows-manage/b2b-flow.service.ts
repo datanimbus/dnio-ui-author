@@ -562,12 +562,12 @@ export class B2bFlowService {
               icon: 'dsi dsi-data-service alt'
             },
             {
-              action: 'WF_APPROVE',
+              action: 'DATASERVICE_APPROVE',
               name: 'Workflow Approve',
               icon: 'dsi dsi-data-service alt',
             },
             {
-              action: 'WF_REJECT',
+              action: 'DATASERVICE_REJECT',
               name: 'Workflow Reject',
               icon: 'dsi dsi-data-service alt',
             },
