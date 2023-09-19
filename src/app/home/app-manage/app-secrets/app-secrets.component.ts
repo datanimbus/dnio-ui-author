@@ -55,21 +55,33 @@ export class AppSecretsComponent implements OnInit, OnDestroy {
   }
 
   saveVariable() {
-    if (this.selectedIndex > -1) {
-      this.varList.splice(this.selectedIndex, 1, this.formData);
-      this.selectedIndex = -1;
+    // Check if the variable with the same name already exists in the varList.
+    const isVariablePresent = this.varList.some(variable => variable['key'] === this.formData['key']);
+
+    if(!isVariablePresent){
+      // Variable is not present, either update or add it.
+      if (this.selectedIndex > -1) {
+        this.varList.splice(this.selectedIndex, 1, this.formData);
+        this.selectedIndex = -1;
+      } else {
+        this.varList.push(this.formData);
+      }
+
+      this.commonService.put('user', `/${this.commonService.app._id}/secrets`, this.varList).subscribe(
+        res => {
+          res.forEach(item => {
+            item.value = atob(item.value);
+          });
+          this.varList = res;
+          this.showNewVarWindow = false;
+        }, 
+        err => {
+          this.commonService.errorToast(err, 'Unable to Save Variable');
+        }
+      );
     } else {
-      this.varList.push(this.formData);
+      this.commonService.errorToast({},'Variable with same name already exists. Please use a different name');
     }
-    this.commonService.put('user', `/${this.commonService.app._id}/secrets`, this.varList).subscribe(res => {
-      res.forEach(item => {
-        item.value = atob(item.value);
-      });
-      this.varList = res;
-      this.showNewVarWindow = false;
-    }, err => {
-      this.commonService.errorToast(err, 'Unable to Save Variable');
-    });
   }
 
   deleteVariable(index: number) {
