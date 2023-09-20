@@ -125,10 +125,23 @@
                     [class.expanded]="toggleExpand">
                     <div class="border-bottom d-flex align-items-center justify-content-between w-100 p-2 bg-light">
                         <span class="text-monospace font-12 fw-600 text-secondary">Write Your Code Here</span>
-                        <span *ngIf="!toggleExpand" ngbTooltip="Expand" class="dsi dsi-expand hover"
-                            (click)="toggleExpand=!toggleExpand"></span>
-                        <span *ngIf="toggleExpand" ngbTooltip="Collapse" class="dsi dsi-collapse hover"
-                            (click)="toggleExpand=!toggleExpand"></span>
+                        <div class="d-flex align-items-center justify-content-end">
+                            <div *ngIf="toggleExpand" class="d-flex justify-content-end align-items-center mr-4">
+                                <button (click)="cancel()" type="button"
+                                    class="edit-button btn btn-sm btn-white border d-flex align-items-center justify-content-center mr-3"
+                                    id="cancelNanoServiceBtn">
+                                    <span class="text">Cancel</span>
+                                </button>
+                                <button type="button" *ngIf="!edit.status" class="btn btn-sm btn-primary w-100"
+                                    id="newFormulaModalYes" (click)="enableEditing()">Edit</button>
+                                <button type="button" *ngIf="edit.status" class="btn btn-sm btn-primary w-100"
+                                    id="newFormulaModalYes" [disabled]="isInvalid" (click)="saveFormula()">Save</button>
+                            </div>
+                            <span *ngIf="!toggleExpand" ngbTooltip="Expand" class="dsi dsi-expand hover"
+                                (click)="toggleExpand=!toggleExpand"></span>
+                            <span *ngIf="toggleExpand" ngbTooltip="Collapse" class="dsi dsi-collapse hover"
+                                (click)="toggleExpand=!toggleExpand"></span>
+                        </div>
                     </div>
                     <odp-code-editor class="code-editor py-3 w-100" [edit]="edit"
                         [(code)]="selectedFormula.code"></odp-code-editor>

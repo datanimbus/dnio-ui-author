@@ -115,6 +115,11 @@ export class FormulaManageComponent {
         (d) => {
           this.showLazyLoader = false;
           this.ts.success('Formula Saved Successfully');
+          if (!this.edit.editClicked) {
+            this.edit.status = false;
+          } else {
+            this.router.navigate(['/app', this.commonService.app._id, 'formula']);
+          }
         },
         (err) => {
           this.showLazyLoader = false;
