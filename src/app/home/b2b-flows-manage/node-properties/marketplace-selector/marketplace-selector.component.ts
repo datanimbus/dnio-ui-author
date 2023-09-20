@@ -131,6 +131,10 @@ export class PluginSelectorComponent implements OnInit {
     this.currNode.name = nodeName;
   }
 
+  onValueChange(value: any, key: string) {
+    this.currNode.options[key] = value;
+  }
+
   get isNodeSelected() {
     return this.pluginList.some(e => e._selected);
   }

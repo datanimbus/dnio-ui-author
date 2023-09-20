@@ -40,7 +40,7 @@
     </div>
 </div>
 
-<div *ngIf="currNode.options.plugin">
+<div class="p-2 border rounded bg-light" *ngIf="currNode.options.plugin">
     <div class="form-group position-relative">
         <label class="font-14 fw-400 text-dark" for="nodeName">Name</label>
         <div class="input-wrapper position-relative">
@@ -59,11 +59,13 @@
         <div class="pl-2">
             <ng-container *ngFor="let item of currNode.options.plugin.params">
                 <div class="form-group">
-                    <label [attr.for]="item.key">{{item.label}}</label>
-                    <input class="form-control" *ngIf="item.htmlType=='input'" [type]="item.dataType"
+                    <label class="text-secondary font-12 fw-600" [attr.for]="item.key">{{item.label}}</label>
+                    <odp-styled-text [currNode]="currNode" (finalValue)="onValueChange($event, item.key)"
+                        [value]="currNode.options[item.key]" [disabled]="!edit.status"></odp-styled-text>
+                    <!-- <input class="form-control" *ngIf="item.htmlType=='input'" [type]="item.dataType"
                         [(ngModel)]="currNode.options[item.key]">
                     <textarea class="form-control" *ngIf="item.htmlType=='textarea'" rows="5" cols="30"
-                        [(ngModel)]="currNode.options[item.key]"></textarea>
+                        [(ngModel)]="currNode.options[item.key]"></textarea> -->
                 </div>
             </ng-container>
         </div>
