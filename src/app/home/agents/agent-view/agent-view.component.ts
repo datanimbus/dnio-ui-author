@@ -349,12 +349,12 @@ export class AgentViewComponent implements OnInit {
   }
 
   disableAgent(){
-    this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/${this.agentDetails._id}/disable`,{}).subscribe(_ =>{
+    this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/utils/${this.agentDetails._id}/disable`,{}).subscribe(_ =>{
         this.getAgentDetails();
     })
 }
 stopAgent(){
-    this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/${this.agentDetails._id}/stop`,{}).subscribe(_ =>{
+    this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/utils/${this.agentDetails._id}/stop`,{}).subscribe(_ =>{
         this.getAgentDetails();
     })
 }

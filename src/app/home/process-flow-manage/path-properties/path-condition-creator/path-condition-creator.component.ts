@@ -24,7 +24,6 @@ export class PathConditionCreatorComponent implements OnInit {
   logicalConditions: Array<string>;
   selectedSegmentIndex: number;
   textValue: string;
-  searchTerm: string = '';
   constructor(private flowService: B2bFlowService) {
     this.nodeList = [];
     this.segments = [];
@@ -33,7 +32,7 @@ export class PathConditionCreatorComponent implements OnInit {
     this.edit = {
       status: true
     }
-  }
+  } 
 
   ngOnInit(): void {
     if (this.value) {
@@ -65,30 +64,6 @@ export class PathConditionCreatorComponent implements OnInit {
     this.valueChange.emit(this.value);
     this.cancel();
   }
-
-  formatter(result: any) {
-    if (result && typeof result == 'object') {
-      return result.label;
-    }
-    return result;
-  };
-
-  search: OperatorFunction<string, readonly { label: string, value: string }[]> = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map((term) => {
-        term = term.split(' ').filter((ele) => ele.startsWith("{{") && !ele.endsWith("}")).pop() || '';
-        this.searchTerm = term;
-        term = term.replace('{{', '');
-        if (this.logicalConditions.indexOf(term) > -1) {
-          this.segments.push({ label: term, value: term });
-          this.typeAhead.writeValue(null);
-          return [];
-        }
-        return term === '' && this.searchTerm === '' ? [] : this.variableSuggestions.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 15);
-      }),
-    );
 
 
   selectItem(event: any) {
@@ -124,41 +99,9 @@ export class PathConditionCreatorComponent implements OnInit {
     return this.flowService.getSuggestions(this.prevNode)
   }
 
-  // getNestedSuggestions(node: any, definition: Array<any>, parentKey?: any) {
-  //   let list = [];
-  //   if (definition && definition.length > 0) {
-  //     definition.forEach((def: any) => {
-  //       let key = parentKey ? parentKey + '.' + def.key : def.key;
-  //       if (def.type == 'Object') {
-  //         list = list.concat(this.getNestedSuggestions(node, def.definition, key));
-  //       } else {
-  //         let item: any = {};
-  //         item.label = (node._id || node.type) + '/body/' + key;
-  //         item.value = node._id + '.body.' + key;
-  //         list.push(item);
-  //         item = {};
-  //         item.label = (node._id || node.type) + '/responseBody/' + key;
-  //         item.value = node._id + '.responseBody.' + key;
-  //         list.push(item);
-  //       }
-  //     });
-  //   }
-  //   return list;
-  // }
-
   changeLabel(event) {
     this.textValue = event;
-    // const regex = /{{\S+}}/g;
-    // const matches = this.textValue.match(regex) || [];
-    // if (matches.length > 0) {
-    //   matches.forEach((match) => {
-    //     const label = match.replace('{{', '').replace('}}', '');
-    //     const suggestion = this.variableSuggestions.find(item => item.label === label);
-    //     if (suggestion) {
-    //       this.textValue = this.textValue.replace(match, suggestion.value);
-    //     }
-    //   });
-    // }
+
     this.value = this.textValue;
   }
 

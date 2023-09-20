@@ -66,50 +66,52 @@ export class B2bFlowService {
   }
 
   getNodeType(node: any, isInputNode?: boolean) {
-    if (node.type == 'API' && isInputNode) {
-      if (node?.options?.contentType == 'multipart/form-data') {
-        return 'API File Receiver';
-      } else if (node?.options?.contentType == 'application/xml') {
-        return 'API XML Receiver';
-      } else {
-        return 'API JSON Receiver';
-      }
-    } else if (node.type == 'API' && !isInputNode) {
-      return 'API JSON';
-    } else if (node.type == 'CONNECTOR') {
-      if (node.options.connectorType == 'SFTP') {
-        if (node.options.read) {
-          return 'SFTP Read';
-        } else if (node.options.list) {
-          return 'SFTP List';
-        } else if (node.options.move) {
-          return 'SFTP Move';
+    switch (node.type) {
+      case 'API':
+        if (isInputNode) {
+          switch (node?.options?.contentType) {
+            case 'multipart/form-data':
+              return 'API File Receiver';
+            case 'application/xml':
+              return 'API XML Receiver';
+            default:
+              return 'API JSON Receiver';
+          }
         } else {
-          return 'SFTP Write';
+          return 'API JSON';
         }
-      } else {
-        return this.nodeLabelMap[node.type];
-      }
-    } else if (node.type == 'DATASERVICE') {
-      if (node.options.approve) {
-        return 'Data Service Approve';
-      } else if (node.options.reject) {
-        return 'Data Service Reject';
-      } else if (node.options.insert) {
-        return 'Data Service Create';
-      } else if (node.options.delete) {
-        return 'Data Service Delete';
-      } else if (node.options.update) {
-        return 'Data Service Update';
-      } else {
-        return 'Data Service Fetch';
-      }
-    } else if (node.type === 'PROCESS') {
-      return 'Starter Node';
-    } else if (this.nodeLabelMap[node.type]) {
-      return this.nodeLabelMap[node.type];
-    } else {
-      return node.type;
+      case 'CONNECTOR':
+        if (node.options.connectorType === 'SFTP') {
+          if (node.options.read) {
+            return 'SFTP Read';
+          } else if (node.options.list) {
+            return 'SFTP List';
+          } else if (node.options.move) {
+            return 'SFTP Move';
+          } else {
+            return 'SFTP Write';
+          }
+        } else {
+          return this.nodeLabelMap[node.type] || node.type;
+        }
+      case 'DATASERVICE':
+        if (node.options.approve) {
+          return 'Data Service Approve';
+        } else if (node.options.reject) {
+          return 'Data Service Reject';
+        } else if (node.options.insert) {
+          return 'Data Service Create';
+        } else if (node.options.delete) {
+          return 'Data Service Delete';
+        } else if (node.options.update) {
+          return 'Data Service Update';
+        } else {
+          return 'Data Service Fetch';
+        }
+      case 'PROCESS':
+        return 'Starter Node';
+      default:
+        return this.nodeLabelMap[node.type] || node.type;
     }
   }
 
@@ -230,11 +232,21 @@ export class B2bFlowService {
       temp.options[subType.toLowerCase()] = true
     }
 
+    if (type.startsWith('WF_')) {
+      const subType = type.split('_')[1];
+      temp.type = 'DATASERVICE_'+subType
+    }
+
     if (type.startsWith('SFTP_')) {
       temp.type = 'CONNECTOR';
       temp.options.connectorType = 'SFTP';
       const subType = type.split('_')[1];
       temp.options[subType.toLowerCase()] = true
+    }
+    if (type.startsWith('CON_')) {
+      temp.type = 'CONNECTOR';
+      const category = type.split('_')[1];
+      temp.options['category']=category
     }
 
     if (type == 'FOREACH' || type == 'REDUCE') {
@@ -506,9 +518,25 @@ export class B2bFlowService {
       children: [
         {
           name: 'Connector',
-          action: 'CONNECTOR',
-          icon: 'dsi dsi-connector'
-        },
+          icon: 'dsi dsi-connector'  ,
+          children: [
+            {
+                action: 'CON_DB',
+                name: 'DB Connector',
+                icon: 'dsi dsi-connector'   
+            },
+            {
+              action: 'CON_FILE',
+              name: 'SFTP Connector',
+              icon: 'dsi dsi-connector'   
+          },
+          {
+            action: 'CON_STORAGE',
+            name: 'Storage Connector',
+            icon: 'dsi dsi-connector'   
+        }
+          ] 
+      },
         {
           name: 'Data Service',
           icon: 'dsi dsi-data-service alt',
@@ -534,16 +562,14 @@ export class B2bFlowService {
               icon: 'dsi dsi-data-service alt'
             },
             {
-              action: 'DATASERVICE',
+              action: 'DATASERVICE_APPROVE',
               name: 'Workflow Approve',
               icon: 'dsi dsi-data-service alt',
-              disabled: true
             },
             {
-              action: 'DATASERVICE',
+              action: 'DATASERVICE_REJECT',
               name: 'Workflow Reject',
               icon: 'dsi dsi-data-service alt',
-              disabled: true
             },
           ]
         },
@@ -602,5 +628,125 @@ export class B2bFlowService {
       action: 'ERROR',
       icon: 'dsi dsi-danger-circle text-danger'
     }]
+  }
+
+
+  getErrorValidations(){
+    const obj = [
+      {
+        node: 'API',
+        validations: [
+          {
+            type: 'required',
+            fieldPath: 'options.contentType',
+            error: 'Content Type is required'
+          },
+          {
+            type: 'required',
+            fieldPath: 'options.method',
+            error: 'HTTP Method is required'
+          }
+        ]
+      },
+      {
+        node: 'FILE',
+        validations: [
+          {
+            type: 'required',
+            condition: {
+              inputNode: true
+            },
+            fieldPath: 'options.inputDirectories',
+            error: 'Input Directory is required'
+          },
+          {
+            type: 'required',
+            condition: {
+              inputNode: false
+            },
+            fieldPath: 'options.outputDirectories',
+            error: 'Output Directory is required'
+          },
+          {
+            type: 'required',
+            fieldPath: 'options.method',
+            error: 'HTTP Method is required'
+          }
+        ]
+      },
+      {
+        node: 'MAPPING',
+        validations: [
+          {
+            type: 'required',
+            fieldPath: 'mappings',
+            error: 'Mapping is required'
+          }
+        ]
+      },
+      {
+        node: 'CONVERT_JSON_JSON',
+        validations: [
+          {
+            type: 'required',
+            fieldPath: 'mappings',
+            error: 'Conversion is required'
+          }
+        ]
+      },
+      {
+        node: 'CONNECTOR',
+        validations: [
+          { subType: 'DB',
+            type: 'required',
+            fieldPath: 'options.query',
+            error: 'Query is required'
+          }
+        ]
+      },
+      {
+        node: 'DATASERVICE',
+        validations: [
+          { 
+            type: 'required',
+            fieldPath: 'options.authorization',
+            error: 'Authorization is required'
+          },
+          { 
+            type: 'required',
+            fieldPath: 'options.dataService',
+            error: 'Data Service is required'
+          },
+          { 
+            subType:'DELETE',
+            type: 'required',
+            fieldPath: 'options.documentId',
+            error: 'ID is required'
+          }
+        ]
+      },
+      {
+        node: 'DATASERVICE_APPROVE',
+        validations: [
+          { 
+            type: 'required',
+            fieldPath: 'options.filter',
+            error: 'Filter is required'
+          }
+        ]
+      },
+      {
+        node: 'DATASERVICE_REJECT',
+        validations: [
+          { 
+            type: 'required',
+            fieldPath: 'options.filter',
+            error: 'Filter is required'
+          }
+        ]
+      },
+    ]
+
+    return obj
   }
 }

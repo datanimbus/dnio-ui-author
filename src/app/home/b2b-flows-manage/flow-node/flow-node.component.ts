@@ -14,6 +14,7 @@ export class FlowNodeComponent implements OnInit {
   @Input() nodeList: any;
   @Output() nodeListChange: EventEmitter<any>;
   @Input() branchIndex: number;
+  @Input() errors: any;
 
   nextNode: any;
   successPaths: Array<any>;

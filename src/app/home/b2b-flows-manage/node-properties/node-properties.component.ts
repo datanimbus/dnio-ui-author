@@ -102,36 +102,58 @@ export class NodePropertiesComponent implements OnInit {
   }
 
   checkType() {
-    if (this.currNode.type === 'DATASERVICE') {
-      if (this.currNode.options.get) {
-        this.nodeType = 'DS_GET'
-      }
-      if (this.currNode.options.delete) {
-        this.nodeType = 'DS_DELETE'
-      }
-      if (this.currNode.options.insert) {
-        this.nodeType = 'DS_INSERT'
-      }
-      if (this.currNode.options.update) {
-        this.nodeType = 'DS_UPDATE'
-      }
-    } else if (this.currNode.type === 'CONNECTOR') {
-      if (this.currNode.options.get) {
-        this.nodeType = 'SFTP_READ'
-      }
-      if (this.currNode.options.delete) {
-        this.nodeType = 'SFTP_WRITE'
-      }
-      if (this.currNode.options.insert) {
-        this.nodeType = 'SFTP_MOVE'
-      }
-      if (this.currNode.options.update) {
-        this.nodeType = 'SFTP_LIST'
-      }
-    } else {
-      this.nodeType = this.currNode.type
+    switch (this.currNode.type) {
+      case 'DATASERVICE':
+        if (this.currNode.options.get) {
+          this.nodeType = 'DS_GET';
+        }
+        if (this.currNode.options.delete) {
+          this.nodeType = 'DS_DELETE';
+        }
+        if (this.currNode.options.insert) {
+          this.nodeType = 'DS_INSERT';
+        }
+        if (this.currNode.options.update) {
+          this.nodeType = 'DS_UPDATE';
+        }
+        break;
+      case 'CONNECTOR':
+        const connectorType = this.currNode.options.connectorType;
+        if (!connectorType) {
+          this.getConnectorType();
+        } else {
+          this.nodeType = `CON_${connectorType.toUpperCase()}`;
+        }
+        if (this.currNode.options.read) {
+          this.nodeType = 'SFTP_READ';
+        }
+        if (this.currNode.options.write) {
+          this.nodeType = 'SFTP_WRITE';
+        }
+        if (this.currNode.options.move) {
+          this.nodeType = 'SFTP_MOVE';
+        }
+        if (this.currNode.options.list) {
+          this.nodeType = 'SFTP_LIST';
+        }
+        break;
+      default:
+        this.nodeType = this.currNode.type;
     }
   }
+
+  getConnectorType(){
+    const connector = this.currNode.options?.connector?._id || '';
+    if(connector){
+      this.commonService.get('user', `/${this.commonService.app._id}/connector/${connector}`,{
+        select: 'category'
+      }).subscribe(res => {
+        this.currNode.options.connectorType = res.category;
+        this.nodeType = res.category ? `CON_${res.category.toUpperCase()}` : 'CON_DB'
+      })
+    }
+  }
+  
 
   enableEditing() {
     this.edit.status = true;
@@ -203,6 +225,12 @@ export class NodePropertiesComponent implements OnInit {
         count: '',
         interval: ''
       }
+    }
+
+    if(type.startsWith('CON_')){
+      this.currNode.type = 'CONNECTOR';
+      const connectorType = type.split('_')[1];
+      this.currNode.options['connectorType'] = connectorType;
     }
 
     if (type == 'FOREACH' || type == 'REDUCE') {
@@ -354,24 +382,26 @@ export class NodePropertiesComponent implements OnInit {
   }
 
   onPathAdd() {
-    const inputDirectories = this.currNode.options?.inputDirectories ? _.cloneDeep(this.currNode.options.inputDirectories) : [];
+    const type = this.isInputNode ? 'inputDirectories' : 'outputDirectories'
+    const directories = this.currNode.options?.[type] ? _.cloneDeep(this.currNode.options[type]) : [];
     const pathObj = {
       path: this.path,
-      watchSubDirecties: false
+      watchSubDirectories: false
     }
-    inputDirectories.push(pathObj);
+    directories.push(pathObj);
 
     this.path = '';
-    this.currNode.options['inputDirectories'] = inputDirectories;
+    this.currNode.options[type] = directories;
     this.changesDone.emit();
   }
 
   removePath(index) {
-    this.currNode.options['inputDirectories'].splice(index, 1);
+    this.currNode.options[this.isInputNode ? 'inputDirectories' : 'outputDirectories'].splice(index, 1);
   }
 
   toggleWatch(i) {
-    this.currNode.options['inputDirectories'][i].watchSubDirecties = !this.currNode.options['inputDirectories'][i].watchSubDirecties;
+    const type = this.isInputNode ? 'inputDirectories' : 'outputDirectories'
+    this.currNode.options[type][i].watchSubDirectories = !this.currNode.options[type][i].watchSubDirectories;
   }
 
   get variableSuggestions() {
@@ -448,7 +478,8 @@ export class NodePropertiesComponent implements OnInit {
       && this.currNode.type != 'CONVERT_JSON_XML'
       && this.currNode.type != 'CONVERT_XML_JSON'
       && this.currNode.type != 'CONVERT_JSON_CSV'
-      && this.currNode.type != 'CONVERT_CSV_JSON';
+      && this.currNode.type != 'CONVERT_CSV_JSON'
+      && (this.currNode.type === 'FILE' && this.isInputNode);
   }
 
   get processFlowNode() {

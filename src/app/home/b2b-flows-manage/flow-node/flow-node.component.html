@@ -7,9 +7,11 @@
             <text x="10" y="-5" text-anchor="start" (click)="openProperties($event)" [attr.data-id]="currNode._id"
                 class="id-holder">{{nodeType}}</text>
             <rect x="0" y="0" width="140" height="36" rx="6" (click)="openProperties($event)"
-                [attr.data-id]="currNode._id" />
+                [attr.data-id]="currNode._id" class="rect"/>
             <rect x="0" y="0" width="140" height="36" rx="6" (click)="openProperties($event)"
-                [attr.data-id]="currNode._id" class="rect" />
+                [attr.data-id]="currNode._id" [ngClass]="{error : errors.length> 0}"/>
+            <rect x="0" y="0" width="140" height="36" rx="6" (click)="openProperties($event)"
+                [attr.data-id]="currNode._id" class="rect" [ngClass]="{error : errors.length> 0}"/>
             <foreignObject width="100" height="32" x="30" y="2" [attr.data-id]="currNode._id"
                 (click)="openProperties($event)">
                 <div xmlns="http://www.w3.org/1999/xhtml" [attr.data-id]="currNode._id"
@@ -22,9 +24,9 @@
             </foreignObject>
         </g>
         <rect *ngIf="index>0" class="node-anchor start" [class.active]="isActive('start')" [attr.data-id]="currNode._id"
-            x="-6" y="12" width="12" height="12" rx="6" (click)="onAnchorClick($event)" />
+            x="-6" y="12" width="12" height="12" rx="6" (click)="onAnchorClick($event)" [ngClass]="{error : errors.length> 0}"/>
         <rect class="node-anchor end" [class.active]="isActive('end')" [attr.data-id]="currNode._id" x="134" y="12"
-            width="12" height="12" rx="6" (click)="onAnchorClick($event)" />
+            width="12" height="12" rx="6" (click)="onAnchorClick($event)" [ngClass]="{error : errors.length> 0}"/>
         <foreignObject width="18" height="18" x="10" y="9" [attr.data-id]="currNode._id">
             <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='API' && isInputNode"
                 class="node-icon font-18 fw-500 dsi dsi-api-reciever" [attr.data-id]="currNode._id"></span>

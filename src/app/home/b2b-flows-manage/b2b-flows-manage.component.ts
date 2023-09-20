@@ -20,8 +20,12 @@ import { B2bFlowService } from './b2b-flow.service';
 export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
   @ViewChild('pageChangeModalTemplate', { static: false }) pageChangeModalTemplate: TemplateRef<HTMLElement>;
+  @ViewChild('errorModal', { static: false }) errorModal: TemplateRef<HTMLElement>;
+  @ViewChild('warningModal', { static: false }) warningModal: TemplateRef<HTMLElement>;
   @ViewChild('keyValModalTemplate', { static: false }) keyValModalTemplate: TemplateRef<HTMLElement>;
   pageChangeModalTemplateRef: NgbModalRef;
+  errorModalRef: NgbModalRef;
+  warningModalRef: NgbModalRef;
   keyValModalTemplateRef: NgbModalRef;
   edit: any;
   subscriptions: any;
@@ -83,7 +87,6 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     this.openDeleteModal = new EventEmitter();
     this.nodeList = [];
     this.activeTab = 0;
-
   }
 
   ngOnInit(): void {
@@ -240,6 +243,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
           this.nodeList.push(item);
         });
       }
+      this.getCategories()
       if (this.flowData.errorNode) {
         this.nodeList.push(this.flowData.errorNode);
       }
@@ -267,6 +271,29 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       this.apiCalls.getFlow = false;
       this.commonService.errorToast(err);
     });
+  }
+
+  getCategories() {
+    const connectorIds = this.nodeList
+      .filter(node => node.type === 'CONNECTOR' && !node.options.connectorType)
+      .map(node => node.options?.connector?._id || '');
+  
+    if (connectorIds.length > 0) {
+      this.commonService.get('user', `/${this.commonService.app._id}/connector`, {
+        filter: {
+          _id: {
+            $in: connectorIds
+          }
+        },
+        select: 'category'
+      }).subscribe(res => {
+        this.nodeList.forEach(item => {
+          if (item.options && item.options.connector) {
+            item.options.connectorType = res.find(e => e._id === item.options.connector._id)?.category;
+          }
+        })
+      });
+    }
   }
 
   patchDataStructure(format: any, dataStructure: any) {
@@ -644,5 +671,147 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   get hasManagePermission() {
     return this.commonService.hasPermission('PMIF')
   }
+
+  getNodeError(id) {
+    const errors = this.getErrors().filter(obj => obj.id === id);
+    return errors;
+  }
+
+  getErrors() {
+    const validations = this.flowService.getErrorValidations();
+
+    const finalList = this.nodeList.reduce((acc, node) => {
+      const nodeValidations = (validations.find(e => {
+        return e.node === node.type
+      }) || {}).validations || [];
+
+      const errors = nodeValidations
+        .map(item => {
+          if (item['subType']) {
+            if (item['subType'] === (node.options.connectorType) || node.options[item['subType'].toLowerCase()])
+              return this.checkErrors(item, node);
+            else {
+              return null
+            }
+          }
+          else {
+            return this.checkErrors(item, node)
+          }
+        })
+        .filter(Boolean);
+
+      if (errors.length) acc.push(errors);
+
+      return acc;
+    }, []);
+    return finalList.flat()
+  }
+
+  getWarnings() {
+    const validations = [{
+      fieldPath: 'dataStructure.incoming',
+      type: 'required',
+      warning: "Input Data Structure should't be generic",
+    },
+    {
+      fieldPath: 'dataStructure.outgoing',
+      type: 'required',
+      warning: "Output Data Structure should't be generic",
+    }]
+
+    const finalList = this.nodeList.reduce((acc, node) => {
+      let warnValidations = _.cloneDeep(validations)
+      if(node._id === this.flowData.inputNode._id){
+        warnValidations = warnValidations.filter(ele => ele.fieldPath === 'dataStructure.outgoing')
+      }
+      if (['RESPONSE', 'MAPPING', 'DEDUPE'].includes(node.type)) {
+        warnValidations = warnValidations.filter(ele => ele.fieldPath === 'dataStructure.incoming')
+      }
+      if(['CONVERT_JSON_JSON', 'FILE'].includes(node.type)) {
+        warnValidations = []
+      }
+      const warnings = warnValidations
+        .map(item => {
+          const value = item.fieldPath.split('.').reduce((obj, key) => obj?.[key], node);
+          if (item.type === 'required' && (!value || _.isEmpty( !value))) {
+            return {
+              node: node.name,
+              id: node._id,
+              warning: item.warning
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      if (warnings.length) acc.push(warnings);
+
+      return acc;
+    }, []);
+    return finalList.flat()
+  }
+
+  checkErrors(item, node) {
+    if(item.condition && Object.getOwnPropertyNames(item.condition).includes('inputNode')){
+      const isInputNode = this.isInputNode(node);
+      if(item.condition.inputNode !== isInputNode){
+        return null;
+      }
+    }
+    const value = item.fieldPath.split('.').reduce((obj, key) => obj?.[key], node)
+    if (item.type === 'required' && (!value || value.length < 1)) {
+      return {
+        node: node.name,
+        id: node._id,
+        error: item.error
+      };
+    }
+    return null;
+  }
+
+  openErrors() {
+    const self = this;
+    self.errorModalRef = self.commonService.modal(self.errorModal, { size: 'm' });
+    self.errorModalRef.result.then(_ => {
+      self.errorModalRef.close()
+    })
+  }
+  openWarnings() {
+    const self = this;
+    self.warningModalRef = self.commonService.modal(self.warningModal, { size: 'm' });
+    self.warningModalRef.result.then(_ => {
+      self.warningModalRef.close()
+    })
+  }
+
+  getAccumulatedObj(type){
+
+    const groupedArray = Object.values((type === 'error' ? this.getErrors() : this.getWarnings()).reduce((acc, obj) => {
+      const { node, [type]: groupValue } = obj;
+      if (!acc[node]) {
+        acc[node] = { node, [type]: [] };
+      }
+      acc[node][type].push({ [type]: groupValue });
+      return acc;
+    }, {}));
+    return groupedArray;
+  }
+
+  isInputNode(node) {
+    if (this.flowData && node) {
+      return this.flowData.inputNode._id == node._id;
+    }
+    return true;
+    // return this.nodeList[0]._id == this.currNode._id;
+  }
+
+  get totalErrors() {
+    return this.getErrors().length;
+  }
+
+  get totalWarnings() {
+    return this.getWarnings().length;
+  }
+
 
 }

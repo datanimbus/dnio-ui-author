@@ -18,9 +18,8 @@
                 <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['token']=!toggle['token']" *ngIf="edit.status"></span> -->
             </label>
 
-            <odp-styled-text (finalValue)="onValueChange($event, 'authorization')" [value]="currNode.options.authorization" #typeAhead
-            [ngbTypeahead]="search" [resultFormatter]="formatter" [inputFormatter]="formatter"
-            [searchTerm]="searchTerm" [disabled]="!edit.status"></odp-styled-text>
+            <odp-styled-text [currNode]="currNode" (finalValue)="onValueChange($event, 'authorization')" [value]="currNode.options.authorization" #typeAhead
+          [disabled]="!edit.status"></odp-styled-text>
             <!-- <input id="authorization" type="text" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.authorization"> -->
             <!-- <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['token']" [currNode]="currNode"
@@ -48,18 +47,17 @@
             <span class="ml-2 text-secondary">Delete</span>
         </div> -->
     </div>
-    <ng-container *ngIf="currNode.options.get">
+    <ng-container *ngIf="currNode.options.get || ['DATASERVICE_APPROVE', 'DATASERVICE_REJECT'].includes(currNode.type)">
         <div class="form-group position-relative ">
             <label for="select" class="d-flex align-items-center justify-content-between">
                 Select
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['select']=!toggle['select']" *ngIf="edit.status"></span>
+                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['select']=!toggle['select']" *ngIf="edit.status"></span> -->
             </label>
             <!-- <input id="select" type="text" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.select"> -->
 
-                <odp-styled-text (finalValue)="onValueChange($event, 'select')" [value]="currNode.options.select" #typeAhead
-                [ngbTypeahead]="search" [resultFormatter]="formatter" [inputFormatter]="formatter"
-                [searchTerm]="searchTerm" [disabled]="!edit.status"></odp-styled-text>
+                <odp-styled-text [currNode]="currNode" (finalValue)="onValueChange($event, 'select')" [value]="currNode.options.select" #typeAhead
+              [disabled]="!edit.status"></odp-styled-text>
             <!-- <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['select']" [currNode]="currNode"
                 [(value)]="currNode.options.select">
             </odp-node-data-selector> -->
@@ -68,21 +66,20 @@
         <div class="form-group position-relative ">
             <label for="count" class="d-flex align-items-center justify-content-between">
                 Count
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['count']=!toggle['count']" *ngIf="edit.status"></span>
+                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['count']=!toggle['count']" *ngIf="edit.status"></span> -->
             </label>
             <!-- <input id="count" type="number" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.count"> -->
             <!-- <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['count']" [currNode]="currNode" [number]="true"
                 [(value)]="currNode.options.count">
             </odp-node-data-selector> -->
-            <odp-styled-text (finalValue)="onValueChange($event, 'count')" [value]="currNode.options.count" #typeAhead
-            [ngbTypeahead]="search" [resultFormatter]="formatter" [inputFormatter]="formatter"
-            [searchTerm]="searchTerm" [disabled]="!edit.status"></odp-styled-text>
+            <odp-styled-text [currNode]="currNode" (finalValue)="onValueChange($event, 'count')" [value]="currNode.options.count" #typeAhead
+          [disabled]="!edit.status"></odp-styled-text>
         </div>
         <div class="form-group position-relative ">
             <label for="page" class="d-flex align-items-center justify-content-between">
                 Page
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['page']=!toggle['page']" *ngIf="edit.status"></span>
+                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['page']=!toggle['page']" *ngIf="edit.status"></span> -->
             </label>
             <!-- <input id="page" type="number" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.page"> -->
@@ -90,14 +87,13 @@
                 [(value)]="currNode.options.page">
             </odp-node-data-selector> -->
 
-            <odp-styled-text (finalValue)="onValueChange($event,  'page')" [value]="currNode.options.page" #typeAhead
-            [ngbTypeahead]="search" [resultFormatter]="formatter" [inputFormatter]="formatter"
-            [searchTerm]="searchTerm" [disabled]="!edit.status"></odp-styled-text>
+            <odp-styled-text [currNode]="currNode" (finalValue)="onValueChange($event,  'page')" [value]="currNode.options.page" #typeAhead
+          [disabled]="!edit.status"></odp-styled-text>
         </div>
         <div class="form-group position-relative ">
             <label for="sort" class="d-flex align-items-center justify-content-between">
                 Sort
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['sort']=!toggle['sort']" *ngIf="edit.status"></span>
+                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['sort']=!toggle['sort']" *ngIf="edit.status"></span> -->
             </label>
             <!-- <input id="sort" type="text" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.sort"> -->
@@ -105,9 +101,8 @@
                 [(value)]="currNode.options.sort">
             </odp-node-data-selector> -->
 
-            <odp-styled-text (finalValue)="onValueChange($event, 'sort')" [value]="currNode.options.sort" #typeAhead
-            [ngbTypeahead]="search" [resultFormatter]="formatter" [inputFormatter]="formatter"
-            [searchTerm]="searchTerm" [disabled]="!edit.status"></odp-styled-text>
+            <odp-styled-text [currNode]="currNode" (finalValue)="onValueChange($event, 'sort')" [value]="currNode.options.sort" #typeAhead
+          [disabled]="!edit.status"></odp-styled-text>
             <small class="form-text text-muted">Provide Comma Separated Fields<br>
                 <i>(prefix: "-" for descending order)</i>
             </small>
@@ -128,26 +123,32 @@
         <div class="form-group position-relative ">
             <label for="docId" class="d-flex align-items-center justify-content-between">
                 ID
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['id']=!toggle['id']" *ngIf="edit.status"></span>
+                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['id']=!toggle['id']" *ngIf="edit.status"></span> -->
             </label>
             <!-- <input id="docId" type="text" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.documentId"> -->
-            <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['id']" [currNode]="currNode"
+            <!-- <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['id']" [currNode]="currNode"
                 [(value)]="currNode.options.documentId">
-            </odp-node-data-selector>
+            </odp-node-data-selector> -->
+
+            <odp-styled-text [currNode]="currNode" (finalValue)="onValueChange($event, 'documentId')" [value]="currNode.options.documentId" #typeAhead
+          [disabled]="!edit.status"></odp-styled-text>
         </div>
     </ng-container>
     <ng-container *ngIf="currNode.options.update">
         <div class="form-group position-relative ">
             <label for="fields" class="d-flex align-items-center justify-content-between">
                 Update Based on Fields
-                <span class="dsi dsi-settings text-primary hover" (click)="toggle['fields']=!toggle['fields']" *ngIf="edit.status"></span>
+                <!-- <span class="dsi dsi-settings text-primary hover" (click)="toggle['fields']=!toggle['fields']" *ngIf="edit.status"></span> -->
             </label>
             <!-- <input id="fields" type="text" class="form-control dynamic-variable-addon"
                 [(ngModel)]="currNode.options.fields"> -->
-            <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['fields']" [currNode]="currNode"
+            <!-- <odp-node-data-selector [edit]="edit" [(toggle)]="toggle['fields']" [currNode]="currNode"
                 [(value)]="currNode.options.fields">
-            </odp-node-data-selector>
+            </odp-node-data-selector> -->
+
+            <odp-styled-text [currNode]="currNode" (finalValue)="onValueChange($event, 'fields')" [value]="currNode.options.fields" #typeAhead
+          [disabled]="!edit.status"></odp-styled-text>
         </div>
     </ng-container>
 

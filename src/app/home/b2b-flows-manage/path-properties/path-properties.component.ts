@@ -98,8 +98,10 @@ export class PathPropertiesComponent implements OnInit {
       }
       if (type === 'error') {
         this.nodeList[this.nodeIndex].onError.push(pathData);
+        this.color = "F44336";
       } else {
         this.nodeList[this.nodeIndex].onSuccess.push(pathData);
+        this.color = "666";
       }
       this.onChange();
     }
@@ -173,7 +175,7 @@ export class PathPropertiesComponent implements OnInit {
   set color(color: string) {
     if (this.pathType == 'error') {
       if (this.nodeList[this.nodeIndex] && this.nodeList[this.nodeIndex].onError && this.nodeList[this.nodeIndex].onError[this.path.index]) {
-        this.nodeList[this.nodeIndex].onError[this.path.index].color = color;
+        this.nodeList[this.nodeIndex].onError[this.path.index].color = color || "F44336";
       }
     } else {
       if (this.nodeList[this.nodeIndex] && this.nodeList[this.nodeIndex].onSuccess && this.nodeList[this.nodeIndex].onSuccess[this.path.index]) {

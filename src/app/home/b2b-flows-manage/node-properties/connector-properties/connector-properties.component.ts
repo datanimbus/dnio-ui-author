@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AppService } from 'src/app/utils/services/app.service';
 import { CommonService, GetOptions } from 'src/app/utils/services/common.service';
 import * as _ from 'lodash';
@@ -8,7 +8,7 @@ import * as _ from 'lodash';
   templateUrl: './connector-properties.component.html',
   styleUrls: ['./connector-properties.component.scss']
 })
-export class ConnectorPropertiesComponent implements OnInit {
+export class ConnectorPropertiesComponent implements OnInit, OnChanges {
 
   @Input() edit: any;
   @Input() currNode: any;
@@ -18,6 +18,7 @@ export class ConnectorPropertiesComponent implements OnInit {
   showLoader: boolean;
   subscriptions: any;
   typeList: any;
+  connectorType: string;
   constructor(private commonService: CommonService,
     private appService: AppService) {
     this.edit = {
@@ -25,14 +26,20 @@ export class ConnectorPropertiesComponent implements OnInit {
     };
     this.connectorList = [];
     this.subscriptions = {};
-    // this.typeList = ['SFTP', 'MSSQL'];
+    // this.conType = ['SFTP', 'MSSQL'];
   }
   ngOnInit(): void {
-    if(this.currNode.options.connectorType){
-      this.typeList = [this.currNode.options.connectorType];
+    // this.getAvailableConnectors();
+    // this.loadInitial();\/
+    this.connectorType = this.currNode.options.connectorType;
+    this.connectorType && this.loadInitial()
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.currNode && changes.currNode.previousValue?.options?.connectorType !== changes.currNode.currentValue?.options?.connectorType) {
+      this.connectorType = this.currNode.options.connectorType;
+      // or do some computation with the new value
       this.loadInitial()
-    } else {
-      this.getAvailableConnectors();
     }
   }
 
@@ -50,12 +57,10 @@ export class ConnectorPropertiesComponent implements OnInit {
     this.commonService.get('user', `/${this.commonService.app._id}/connector`, {
       sort: '-_metadata.lastUpdated',
       filter: {
-        type: {
-          $in: this.typeList
-        },
+        ...(this.connectorType !== 'SFTP' ? { category: this.connectorType } : {
+        ...(this.connectorType === 'SFTP' && {type: 'SFTP'})
+        })
       },
-      count: 5
-      
     }).subscribe((res) => {
       this.showLoader = false;
       this.connectorList = res;
@@ -70,14 +75,15 @@ export class ConnectorPropertiesComponent implements OnInit {
     const options: GetOptions = {
       sort: '-_metadata.lastUpdated',
       filter: {
-        type: {
-          $in: this.typeList
-        },
+        ...(this.connectorType ? { connectorType: this.connectorType } : {
+          type: {
+            $in: this.typeList
+          }
+        }),
         name: '/' + searchTerm + '/',
         app: this.commonService.app._id
       },
       select: 'name type category',
-      count: 5
     };
     this.searchTerm = searchTerm;
     this.showLoader = true;
@@ -138,4 +144,5 @@ export class ConnectorPropertiesComponent implements OnInit {
     }
     return null;
   }
+
 }
