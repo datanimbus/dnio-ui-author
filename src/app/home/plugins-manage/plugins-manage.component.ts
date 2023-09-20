@@ -71,6 +71,7 @@ export class PluginsManageComponent {
     this.subscriptions['getPlugin'] = this.commonService.get('partnerManager', `/${this.commonService.app._id}/plugin/${pluginId}`).subscribe((res: any) => {
       this.showLazyLoader = false;
       this.selectedPlugin = res;
+      this.params = this.selectedPlugin.params || [];
     }, err => {
       this.showLazyLoader = false;
       console.log(err);
@@ -112,6 +113,11 @@ export class PluginsManageComponent {
         (d) => {
           this.showLazyLoader = false;
           this.ts.success('Plugin Saved Successfully');
+          if (!this.edit.editClicked) {
+            this.edit.status = false;
+          } else {
+            this.router.navigate(['/app', this.commonService.app._id, 'plugin']);
+          }
         },
         (err) => {
           this.showLazyLoader = false;
