@@ -435,6 +435,9 @@ export class NodePropertiesComponent implements OnInit {
     if (this.currNode.type == 'DATASERVICE') {
       return false;
     }
+    if (this.currNode.type == 'CONDITION') {
+      return false;
+    }
     if (this.currNode.type == 'CONVERT_JSON_JSON'
       || this.currNode.type == 'CONVERT_JSON_XML'
       || this.currNode.type == 'CONVERT_XML_JSON'
@@ -474,6 +477,7 @@ export class NodePropertiesComponent implements OnInit {
       && this.currNode?.type != 'FILE_WRITE'
       && this.currNode?.type != 'TIMER'
       && this.currNode?.type != 'RESPONSE'
+      && this.currNode?.type != 'CONDITION'
       && this.currNode.type != 'CONVERT_JSON_JSON'
       && this.currNode.type != 'CONVERT_JSON_XML'
       && this.currNode.type != 'CONVERT_XML_JSON'

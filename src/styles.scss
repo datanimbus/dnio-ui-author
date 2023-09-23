@@ -950,6 +950,10 @@ $weights: 200,
     color: #009BFF;
   }
 
+  .dsi-branch {
+    color: #FF4C82;
+  }
+
   .dsi-logs {
     color: #FF7D4C;
   }
@@ -1002,7 +1006,8 @@ $weights: 200,
     color: #2FC48F;
   }
 
-  &.dsi-file.write {
+  &.dsi-file.write,
+  &.dsi-branch {
     color: #FF4C82;
   }
 

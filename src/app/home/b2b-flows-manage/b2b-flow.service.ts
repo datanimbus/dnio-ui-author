@@ -56,10 +56,11 @@ export class B2bFlowService {
       CONVERT_XML_JSON: "Converter",
       CONVERT_JSON_CSV: "Converter",
       CONVERT_CSV_JSON: "Converter",
+      CONDITION: 'Condition',
       SYSTEM: 'System Task',
       USER: 'User Task',
       EVENT: 'Event Trigger',
-      DECISION: 'Decision'
+      DECISION: 'Decision',
     };
     this.nodeList = [];
     this.nodeIDCounter = 0;
@@ -110,6 +111,8 @@ export class B2bFlowService {
         }
       case 'PROCESS':
         return 'Starter Node';
+      case 'CONDITION':
+        return 'Condition';
       default:
         return this.nodeLabelMap[node.type] || node.type;
     }
@@ -234,7 +237,7 @@ export class B2bFlowService {
 
     if (type.startsWith('WF_')) {
       const subType = type.split('_')[1];
-      temp.type = 'DATASERVICE_'+subType
+      temp.type = 'DATASERVICE_' + subType
     }
 
     if (type.startsWith('SFTP_')) {
@@ -246,7 +249,7 @@ export class B2bFlowService {
     if (type.startsWith('CON_')) {
       temp.type = 'CONNECTOR';
       const category = type.split('_')[1];
-      temp.options['category']=category
+      temp.options['category'] = category
     }
 
     if (type == 'FOREACH' || type == 'REDUCE') {
@@ -376,7 +379,7 @@ export class B2bFlowService {
           item.label = (node._id || node.type) + '/body/' + key;
           item.value = node._id + '.body.' + key;
           list.push(item);
-          if (node.type == "DATASERVICE") { 
+          if (node.type == "DATASERVICE") {
             item = {};
             item.label = (node._id || node.type) + '/responseBody[0]/' + key;
             item.value = node._id + '.responseBody[0].' + key;
@@ -518,25 +521,25 @@ export class B2bFlowService {
       children: [
         {
           name: 'Connector',
-          icon: 'dsi dsi-connector'  ,
+          icon: 'dsi dsi-connector',
           children: [
             {
-                action: 'CON_DB',
-                name: 'DB Connector',
-                icon: 'dsi dsi-connector'   
+              action: 'CON_DB',
+              name: 'DB Connector',
+              icon: 'dsi dsi-connector'
             },
             {
               action: 'CON_FILE',
               name: 'SFTP Connector',
-              icon: 'dsi dsi-connector'   
-          },
-          {
-            action: 'CON_STORAGE',
-            name: 'Storage Connector',
-            icon: 'dsi dsi-connector'   
-        }
-          ] 
-      },
+              icon: 'dsi dsi-connector'
+            },
+            {
+              action: 'CON_STORAGE',
+              name: 'Storage Connector',
+              icon: 'dsi dsi-connector'
+            }
+          ]
+        },
         {
           name: 'Data Service',
           icon: 'dsi dsi-data-service alt',
@@ -618,6 +621,11 @@ export class B2bFlowService {
       icon: 'dsi dsi-join'
     },
     {
+      name: 'Condition',
+      icon: ' dsi dsi-branch ',
+      action: 'CONDITION'
+    },
+    {
       name: 'Plugin',
       icon: ' dsi dsi-api-doc text-info ',
       action: 'PLUGIN'
@@ -631,7 +639,7 @@ export class B2bFlowService {
   }
 
 
-  getErrorValidations(){
+  getErrorValidations() {
     const obj = [
       {
         node: 'API',
@@ -697,7 +705,8 @@ export class B2bFlowService {
       {
         node: 'CONNECTOR',
         validations: [
-          { subType: 'DB',
+          {
+            subType: 'DB',
             type: 'required',
             fieldPath: 'options.query',
             error: 'Query is required'
@@ -707,18 +716,18 @@ export class B2bFlowService {
       {
         node: 'DATASERVICE',
         validations: [
-          { 
+          {
             type: 'required',
             fieldPath: 'options.authorization',
             error: 'Authorization is required'
           },
-          { 
+          {
             type: 'required',
             fieldPath: 'options.dataService',
             error: 'Data Service is required'
           },
-          { 
-            subType:'DELETE',
+          {
+            subType: 'DELETE',
             type: 'required',
             fieldPath: 'options.documentId',
             error: 'ID is required'
@@ -728,7 +737,7 @@ export class B2bFlowService {
       {
         node: 'DATASERVICE_APPROVE',
         validations: [
-          { 
+          {
             type: 'required',
             fieldPath: 'options.filter',
             error: 'Filter is required'
@@ -738,7 +747,7 @@ export class B2bFlowService {
       {
         node: 'DATASERVICE_REJECT',
         validations: [
-          { 
+          {
             type: 'required',
             fieldPath: 'options.filter',
             error: 'Filter is required'

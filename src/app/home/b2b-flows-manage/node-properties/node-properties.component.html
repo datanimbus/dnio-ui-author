@@ -17,14 +17,14 @@
         </div>
     </div>
 </div>
-<div class="tab-list d-flex align-items-start">
+<!-- <div class="tab-list d-flex align-items-start">
     <div class="tab-item w-50 d-flex align-items-start justify-content-center font-12 text-uppercase fw-500 hover border-right"
         [ngClass]="{'text-secondary border-bottom bg-light':activeTab!=0,'text-accent':activeTab==0}"
         (click)="activeTab=0">Config</div>
     <div class="tab-item w-50 d-flex align-items-start justify-content-center font-12 text-uppercase fw-500 hover"
         [ngClass]="{'text-secondary border-bottom bg-light':activeTab!=1,'text-accent':activeTab==1}"
         (click)="activeTab=1">Branch</div>
-</div>
+</div> -->
 <div>
     <div *ngIf="activeTab==0" class="p-3">
         <div class="border rounded p-2 bg-light mb-3">
@@ -73,6 +73,7 @@
                     <option *ngIf="!isInputNode" value="FLOW">Flow</option>
                     <option *ngIf="!isInputNode" value="RESPONSE">Response</option>
                     <option *ngIf="!isInputNode" value="CONVERT_JSON_JSON">Converter</option>
+                    <option *ngIf="!isInputNode" value="CONDITION">Condition</option>
                     <!-- <option *ngIf="!isInputNode" value="CONVERT_JSON_XML">Convert JSON to XML</option>
                     <option *ngIf="!isInputNode" value="CONVERT_XML_JSON">Convert XML to JSON</option>
                     <option *ngIf="!isInputNode" value="CONVERT_JSON_CSV">Convert JSON to CSV</option>
@@ -435,6 +436,10 @@
                     [(value)]="currNode.options.unwindPath">
                 </odp-node-data-selector>
             </div>
+        </ng-container>
+        <ng-container *ngIf="currNode?.type=='CONDITION'">
+            <odp-condition-properties [edit]="edit" [nodeList]="nodeList" [currNode]="currNode">
+            </odp-condition-properties>
         </ng-container>
         <ng-container *ngIf="currNode?.type=='CONNECTOR'">
             <odp-connector-properties [edit]="edit" [nodeList]="nodeList" [currNode]="currNode">
