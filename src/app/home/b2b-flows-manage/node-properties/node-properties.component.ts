@@ -483,7 +483,7 @@ export class NodePropertiesComponent implements OnInit {
       && this.currNode.type != 'CONVERT_XML_JSON'
       && this.currNode.type != 'CONVERT_JSON_CSV'
       && this.currNode.type != 'CONVERT_CSV_JSON'
-      && (this.currNode.type === 'FILE' && this.isInputNode);
+      && (this.currNode.type !== 'FILE' || this.isInputNode)
   }
 
   get processFlowNode() {
