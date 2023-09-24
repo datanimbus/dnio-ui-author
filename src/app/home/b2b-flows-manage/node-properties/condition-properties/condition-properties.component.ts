@@ -15,10 +15,31 @@ export class ConditionPropertiesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
+    if (this.currNode && !this.currNode.conditions) {
+      this.currNode.conditions = [];
+    }
+    if (this.currNode.conditions.length == 0) {
+      this.currNode.conditions.push({});
+    }
   }
 
   ngOnDestroy(): void {
 
+  }
+
+  onValueChange(value: string, item: any, key: string) {
+    item[key] = value;
+  }
+
+  addCondition(event: any) {
+    this.currNode.conditions.push({});
+  }
+
+  removeCondition(event: any, index: number) {
+    this.currNode.conditions.splice(index, 1);
+  }
+
+  get conditionList() {
+    return this.currNode.conditions;
   }
 }

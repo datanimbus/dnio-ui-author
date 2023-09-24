@@ -57,11 +57,13 @@ export class FlowNodeComponent implements OnInit {
       this.currNode.onSuccess.forEach((item: any) => {
         const nextNode = this.nodeList.find((e: any) => e._id == item._id);
         if (nextNode) {
-          const path = this.flowService.generateLinkPath(this.currNode.coordinates.x + 146, this.currNode.coordinates.y + 18, nextNode.coordinates.x - 6, nextNode.coordinates.y + 18, 1.5);
+          let tempX = ((item.index || 0) * 36) + 18;
+          const path = this.flowService.generateLinkPath(this.currNode.coordinates.x + 146, this.currNode.coordinates.y + tempX, nextNode.coordinates.x - 6, nextNode.coordinates.y + 18, 1.5);
           this.successPaths.push({
             _id: nextNode._id,
             name: item.name,
             color: item.color,
+            index: item.index,
             prevNode: this.currNode._id,
             path
           });
@@ -88,6 +90,10 @@ export class FlowNodeComponent implements OnInit {
   createPaths(source: any, target: any) {
     const sourceId = source.dataset.id;
     const targetId = target.dataset.id;
+    let sourceSegs = source.dataset.anchorId.split('-');
+    // let targetSegs = target.dataset.anchorId.split('-');
+    // console.log(sourceSegs, targetSegs);
+    let sourceIndex = parseInt(sourceSegs[2]);
     const sourceNode = this.nodeList.find((e: any) => e._id == sourceId);
     const targetNode = this.nodeList.find((e: any) => e._id == targetId);
     if (sourceNode && targetNode) {
@@ -95,7 +101,8 @@ export class FlowNodeComponent implements OnInit {
         sourceNode.onSuccess = [];
       }
       sourceNode.onSuccess.push({
-        _id: targetNode._id
+        _id: targetNode._id,
+        index: sourceIndex
       });
     }
   }
@@ -110,14 +117,23 @@ export class FlowNodeComponent implements OnInit {
     this.flowService.selectedPath.emit({ index, path });
   }
 
-  isActive(place: string) {
-    if (this.flowService.anchorSelected && this.flowService.anchorSelected.dataset.id == this.currNode._id) {
-      if (place == 'start' && this.flowService.anchorSelected.classList.contains('start')) {
-        return true;
-      } else if (place == 'end' && this.flowService.anchorSelected.classList.contains('end')) {
-        return true;
+  isActive(place: string, index: number) {
+    if (this.flowService.anchorSelected) {
+      let dataset = this.flowService.anchorSelected.dataset;
+      let segs = dataset.anchorId.split('-');
+      if (place == segs[1]) {
+        if (dataset.id == this.currNode._id && segs[0] == this.currNode._id && segs[2] == index) {
+          return true;
+        }
       }
     }
+    // if (this.flowService.anchorSelected && this.flowService.anchorSelected.dataset.id == this.currNode._id) {
+    //   if (place == 'start' && this.flowService.anchorSelected.classList.contains('start')) {
+    //     return true;
+    //   } else if (place == 'end' && this.flowService.anchorSelected.classList.contains('end')) {
+    //     return true;
+    //   }
+    // }
     return false;
   }
 
@@ -154,7 +170,7 @@ export class FlowNodeComponent implements OnInit {
     this.flowService.reCreatePaths.emit(null);
   }
 
-  onAnchorClick(event: any) {
+  onAnchorClick(event: any, index?: number) {
     // event.stopPropagation();
     // event.preventDefault();
     this.isMouseDown = null;
@@ -182,13 +198,17 @@ export class FlowNodeComponent implements OnInit {
     if (!nextNode) {
       return '';
     }
-    let sourceNodeX = (this.currNode.coordinates.x +  140);
-    let sourceNodeY = (this.currNode.coordinates.y +  36);
+    let sourceNodeX = (this.currNode.coordinates.x + 140);
+    let sourceNodeY = (this.currNode.coordinates.y + 36);
     let x = (nextNode.coordinates.x - sourceNodeX) / 2 + sourceNodeX;
     let y = (nextNode.coordinates.y - sourceNodeY) / 2 + sourceNodeY;
     return {
       transform: `translate(${x}px,${y}px)`,
     }
+  }
+
+  getAnchorY(index: number) {
+    return (index * 36) + 12
   }
 
   get isSelected() {
@@ -211,5 +231,16 @@ export class FlowNodeComponent implements OnInit {
 
   get nodeType() {
     return this.flowService.getNodeType(this.currNode, this.isInputNode);
+  }
+
+  get nodeHeight() {
+    if (this.currNode.conditions) {
+      return this.currNode.conditions.length * 36;
+    }
+    return 36;
+  }
+
+  get conditionList() {
+    return this.currNode.conditions;
   }
 }
