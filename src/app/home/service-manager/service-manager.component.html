@@ -249,7 +249,7 @@
           autocomplete="off" [value]="form.get('connectors')?.get('data')?.value?.options?.tableName || ''"
           (blur)="selectTables($event?.target?.value)">
         <i class="dsi dsi-drop-down"></i>
-        <div class="popover" *ngIf="showDropdownOptions">
+        <div class="popover" *ngIf="showDropdownOptions && tables.length > 0">
           <span class="popover-options" *ngFor="let table of tables"
             (click)="selectTables(table.name);showDropdownOptions=false ">{{table.name}}</span>
         </div>
