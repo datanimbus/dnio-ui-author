@@ -115,9 +115,9 @@ export class PluginsManageComponent {
           this.ts.success('Plugin Saved Successfully');
           if (!this.edit.editClicked) {
             this.edit.status = false;
-          } else {
+          } 
             this.router.navigate(['/app', this.commonService.app._id, 'plugin']);
-          }
+        
         },
         (err) => {
           this.showLazyLoader = false;
