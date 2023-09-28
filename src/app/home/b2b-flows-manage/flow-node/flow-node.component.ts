@@ -58,7 +58,7 @@ export class FlowNodeComponent implements OnInit {
         const nextNode = this.nodeList.find((e: any) => e._id == item._id);
         if (nextNode) {
           let tempX = ((item.index || 0) * 36) + 10;
-          const path = this.flowService.generateLinkPath(this.currNode.coordinates.x + 146, this.currNode.coordinates.y + tempX, nextNode.coordinates.x - 6, nextNode.coordinates.y + 18, 1.5);
+          const path = this.flowService.generateLinkPath(this.currNode.coordinates.x + 146, this.currNode.coordinates.y + tempX, nextNode.coordinates.x - 6, nextNode.coordinates.y + 10, 1.5);
           this.successPaths.push({
             _id: nextNode._id,
             name: item.name,
@@ -74,7 +74,7 @@ export class FlowNodeComponent implements OnInit {
       this.currNode.onError.forEach((item: any) => {
         const nextNode = this.nodeList.find((e: any) => e._id == item._id);
         if (nextNode) {
-          const path = this.flowService.generateLinkPath(this.currNode.coordinates.x + 146, this.currNode.coordinates.y + 26, nextNode.coordinates.x - 6, nextNode.coordinates.y + 18, 1.5);
+          const path = this.flowService.generateLinkPath(this.currNode.coordinates.x + 146, this.currNode.coordinates.y + 26, nextNode.coordinates.x - 6, nextNode.coordinates.y + 10, 1.5);
           this.errorPaths.push({
             _id: nextNode._id,
             name: item.name,

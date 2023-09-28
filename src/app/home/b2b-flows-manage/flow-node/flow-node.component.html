@@ -24,7 +24,7 @@
             </foreignObject>
         </g>
         <rect *ngIf="index>0" class="node-anchor start" [class.active]="isActive('start',0)"
-            [attr.data-id]="currNode._id" [attr.data-anchor-id]="currNode._id+'-start-0'" x="-6" y="12" width="12"
+            [attr.data-id]="currNode._id" [attr.data-anchor-id]="currNode._id+'-start-0'" x="-6" y="4" width="12"
             height="12" rx="4" (click)="onAnchorClick($event,0)" [ngClass]="{error : errors.length> 0}" />
 
         <rect class="node-anchor end error" [class.active]="isActive('end',0,'error')" [attr.data-id]="currNode._id"
