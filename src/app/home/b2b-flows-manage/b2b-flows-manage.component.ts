@@ -612,14 +612,11 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
         const tempX = event.clientX - this.isMouseDown.clientX;
         const tempY = event.clientY - this.isMouseDown.clientY;
         // console.log(tempX, tempY);
-        if (Math.abs(tempX) > 10 || Math.abs(tempY) > 10) {
+        if (Math.abs(tempX) > 20 || Math.abs(tempY) > 20) {
           this.isMouseDown = event;
-          currNode.coordinates.x += Math.floor(tempX / 10) * 10;
-          currNode.coordinates.y += Math.floor(tempY / 10) * 10;
+          currNode.coordinates.x += tempX;
+          currNode.coordinates.y += tempY;
         }
-        // this.isMouseDown = event;
-        // currNode.coordinates.x += tempX;
-        // currNode.coordinates.y += tempY;
         this.flowService.reCreatePaths.emit();
       }
     }
