@@ -116,6 +116,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
             count: -1,
             filter: {},
             select: 'name users roles.id',
+            sort: '-_metadata.lastUpdated',
             noApp: true
         };
         this.groupList = [];

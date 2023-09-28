@@ -1,6 +1,6 @@
 {
-  "/": {
-    "target": "https://dev.datanimbus.io",
+  "/api": {
+    "target": "http://localhost:9080",
     "secure": false,
     "changeOrigin": true
   }
