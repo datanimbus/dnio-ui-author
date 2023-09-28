@@ -277,7 +277,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     const connectorIds = this.nodeList
       .filter(node => node.type === 'CONNECTOR' && !node.options.connectorType)
       .map(node => node.options?.connector?._id || '');
-  
+
     if (connectorIds.length > 0) {
       this.commonService.get('user', `/${this.commonService.app._id}/connector`, {
         filter: {
@@ -611,9 +611,15 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       if (currNode) {
         const tempX = event.clientX - this.isMouseDown.clientX;
         const tempY = event.clientY - this.isMouseDown.clientY;
-        this.isMouseDown = event;
-        currNode.coordinates.x += tempX;
-        currNode.coordinates.y += tempY;
+        // console.log(tempX, tempY);
+        if (Math.abs(tempX) > 10 || Math.abs(tempY) > 10) {
+          this.isMouseDown = event;
+          currNode.coordinates.x += Math.floor(tempX / 10) * 10;
+          currNode.coordinates.y += Math.floor(tempY / 10) * 10;
+        }
+        // this.isMouseDown = event;
+        // currNode.coordinates.x += tempX;
+        // currNode.coordinates.y += tempY;
         this.flowService.reCreatePaths.emit();
       }
     }
@@ -721,19 +727,19 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
     const finalList = this.nodeList.reduce((acc, node) => {
       let warnValidations = _.cloneDeep(validations)
-      if(node._id === this.flowData.inputNode._id){
+      if (node._id === this.flowData.inputNode._id) {
         warnValidations = warnValidations.filter(ele => ele.fieldPath === 'dataStructure.outgoing')
       }
       if (['RESPONSE', 'MAPPING', 'DEDUPE'].includes(node.type)) {
         warnValidations = warnValidations.filter(ele => ele.fieldPath === 'dataStructure.incoming')
       }
-      if(['CONVERT_JSON_JSON', 'FILE'].includes(node.type)) {
+      if (['CONVERT_JSON_JSON', 'FILE'].includes(node.type)) {
         warnValidations = []
       }
       const warnings = warnValidations
         .map(item => {
           const value = item.fieldPath.split('.').reduce((obj, key) => obj?.[key], node);
-          if (item.type === 'required' && (!value || _.isEmpty( !value))) {
+          if (item.type === 'required' && (!value || _.isEmpty(!value))) {
             return {
               node: node.name,
               id: node._id,
@@ -752,9 +758,9 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   }
 
   checkErrors(item, node) {
-    if(item.condition && Object.getOwnPropertyNames(item.condition).includes('inputNode')){
+    if (item.condition && Object.getOwnPropertyNames(item.condition).includes('inputNode')) {
       const isInputNode = this.isInputNode(node);
-      if(item.condition.inputNode !== isInputNode){
+      if (item.condition.inputNode !== isInputNode) {
         return null;
       }
     }
@@ -784,7 +790,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     })
   }
 
-  getAccumulatedObj(type){
+  getAccumulatedObj(type) {
 
     const groupedArray = Object.values((type === 'error' ? this.getErrors() : this.getWarnings()).reduce((acc, obj) => {
       const { node, [type]: groupValue } = obj;
