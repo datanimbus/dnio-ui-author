@@ -7,13 +7,6 @@ rect {
     stroke-width: 1;
 }
 
-.error {
-    fill: $danger;
-    stroke: $danger;
-    fill-opacity: 0.05;
-    stroke-width: 1;
-}
-
 path {
     fill: none;
     stroke: #666;
@@ -70,6 +63,7 @@ text.path-text {
     .rect {
         fill: rgba($accent, 0.3);
     }
+
     // .ellipse {
     //     fill: rgba($accent, 0.3);
     // }
@@ -82,22 +76,48 @@ text.path-text {
 
 
 .node-anchor {
-    fill: #fff;
+    &.start{
+        fill: $white;
+        stroke: #666;
+        &:hover {
+            fill: $lightgrey;
+        }
 
-    &:hover {
-        fill: $secondary;
+        &.active {
+            fill: $accent;
+        }
+    }
+    &.error {
+        fill: lighten($danger, 40%);
+        stroke: $danger;
+        stroke-width: 1;
+
+        &:hover {
+            fill: lighten($danger, 20%);
+        }
+
+        &.active {
+            fill: $danger;
+        }
     }
 
-    &.active {
-        fill: $accent;
+    &.success {
+        fill: lighten($success, 40%);
+        stroke: $success;
+        stroke-width: 1;
+
+        &:hover {
+            fill: lighten($success, 20%);
+        }
+
+        &.active {
+            fill: $success;
+        }
     }
-}
 
-.delete-icon {
-    fill: #cfcfcf;
-    stroke: #cccc;
-    stroke-width: 1;
-
+    // &.active {
+    //     fill: $accent;
+    // }
 }
 
 
