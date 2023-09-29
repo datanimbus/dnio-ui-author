@@ -516,78 +516,90 @@ export class B2bFlowService {
       ],
       icon: 'dsi dsi-function'
     },
+    // {
+    //   name: 'Process',
+    //   children: [
+    //     {
+    //       name: 'Connector',
+    //       icon: 'dsi dsi-connector',
+    //       children: [
+    //         {
+    //           action: 'CON_DB',
+    //           name: 'DB Connector',
+    //           icon: 'dsi dsi-connector'
+    //         },
+    //         {
+    //           action: 'CON_FILE',
+    //           name: 'SFTP Connector',
+    //           icon: 'dsi dsi-connector'
+    //         },
+    //         {
+    //           action: 'CON_STORAGE',
+    //           name: 'Storage Connector',
+    //           icon: 'dsi dsi-connector'
+    //         }
+    //       ]
+    //     },
+    //   ],
+    //   icon: 'dsi dsi-function alt'
+    // },
+
     {
-      name: 'Process',
+      action: 'CON_DB',
+      name: 'DB',
+      icon: 'dsi dsi-connector'
+    },
+    {
+      action: 'CON_STORAGE',
+      name: 'Storage',
+      icon: 'dsi dsi-connector'
+    },
+    {
+      name: 'Data Service',
+      icon: 'dsi dsi-data-service alt',
       children: [
         {
-          name: 'Connector',
-          icon: 'dsi dsi-connector',
-          children: [
-            {
-              action: 'CON_DB',
-              name: 'DB Connector',
-              icon: 'dsi dsi-connector'
-            },
-            {
-              action: 'CON_FILE',
-              name: 'SFTP Connector',
-              icon: 'dsi dsi-connector'
-            },
-            {
-              action: 'CON_STORAGE',
-              name: 'Storage Connector',
-              icon: 'dsi dsi-connector'
-            }
-          ]
+          action: 'DS_GET',
+          name: 'Data Service Fetch',
+          icon: 'dsi dsi-data-service alt'
         },
         {
-          name: 'Data Service',
+          action: 'DS_INSERT',
+          name: 'Data Service Insert',
+          icon: 'dsi dsi-data-service alt'
+        },
+        {
+          action: 'DS_UPDATE',
+          name: 'Data Service Update',
+          icon: 'dsi dsi-data-service alt'
+        },
+        {
+          action: 'DS_DELETE',
+          name: 'Data Service Delete',
+          icon: 'dsi dsi-data-service alt'
+        },
+        {
+          action: 'DATASERVICE_APPROVE',
+          name: 'Workflow Approve',
           icon: 'dsi dsi-data-service alt',
-          children: [
-            {
-              action: 'DS_GET',
-              name: 'Data Service Fetch',
-              icon: 'dsi dsi-data-service alt'
-            },
-            {
-              action: 'DS_INSERT',
-              name: 'Data Service Insert',
-              icon: 'dsi dsi-data-service alt'
-            },
-            {
-              action: 'DS_UPDATE',
-              name: 'Data Service Update',
-              icon: 'dsi dsi-data-service alt'
-            },
-            {
-              action: 'DS_DELETE',
-              name: 'Data Service Delete',
-              icon: 'dsi dsi-data-service alt'
-            },
-            {
-              action: 'DATASERVICE_APPROVE',
-              name: 'Workflow Approve',
-              icon: 'dsi dsi-data-service alt',
-            },
-            {
-              action: 'DATASERVICE_REJECT',
-              name: 'Workflow Reject',
-              icon: 'dsi dsi-data-service alt',
-            },
-          ]
         },
         {
-          name: 'Function',
-          action: 'FUNCTION',
-          icon: 'dsi dsi-function'
+          action: 'DATASERVICE_REJECT',
+          name: 'Workflow Reject',
+          icon: 'dsi dsi-data-service alt',
         },
-        {
-          name: 'Flow',
-          action: 'FLOW',
-          icon: 'dsi dsi-flow'
-        },
-      ],
-      icon: 'dsi dsi-function alt'
+      ]
+    },
+ 
+    // {
+    //   name: 'Function',
+    //   action: 'FUNCTION',
+    //   icon: 'dsi dsi-function'
+    // },
+    {
+      name: 'Flow',
+      action: 'FLOW',
+      icon: 'dsi dsi-flow'
     },
     {
       name: 'Transform',

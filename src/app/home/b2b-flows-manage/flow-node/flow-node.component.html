@@ -25,10 +25,10 @@
         </g>
         <rect *ngIf="index>0" class="node-anchor start" [class.active]="isActive('start',0)" [attr.data-id]="currNode._id"
             [attr.data-anchor-id]="currNode._id+'-start-0'" x="-6" y="12" width="12" height="12" rx="6"
-            (click)="onAnchorClick($event,0)" [ngClass]="{error : errors.length> 0}" />
+            (click)="onAnchorClick($event,0)"/>
         <rect *ngIf="!conditionList || conditionList.length==0" class="node-anchor end" [class.active]="isActive('end',0)"
             [attr.data-id]="currNode._id" [attr.data-anchor-id]="currNode._id+'-end-0'" x="134" y="12" width="12" height="12" rx="6" (click)="onAnchorClick($event,0)"
-            [ngClass]="{error : errors.length> 0}" />
+        />
 
         <g *ngIf="conditionList && conditionList.length>0">
             <g *ngFor="let c of conditionList;let ci=index">
