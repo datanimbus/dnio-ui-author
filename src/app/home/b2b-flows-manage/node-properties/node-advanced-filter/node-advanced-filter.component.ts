@@ -24,16 +24,17 @@ export class NodeAdvancedFilterComponent implements OnInit {
   dateTo: Date = new Date();
   initialValue: any = [];
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     this.definition = this.createDefinition(this.currNode?.options?.dataService?.definition || []);
+    console.log(this.definition);
+
     this.definition.forEach(ele => {
       ele['filterOptions'] = this.setFilterTypeOptions(ele)
     });
     this.filterArray = this.convertToFilters(_.cloneDeep(this.currNode?.options?.filter?.$and || []))
     this.initialValue = _.cloneDeep(this.filterArray)
-    console.log(this.definition);
   }
 
   createDefinition(definition){
