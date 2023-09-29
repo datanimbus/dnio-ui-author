@@ -505,13 +505,14 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
   addNode(event: any, type: string, anotherInputNode: boolean = false) {
     if (type) {
-      this.contextMenuStyle = null;
+      
       const tempNode = this.flowService.getNodeObject(type, this.nodeList, anotherInputNode);
       tempNode.coordinates = {};
       const ele: HTMLElement = document.querySelectorAll('.flow-designer-svg')[0] as HTMLElement;
       const rect = ele.getBoundingClientRect();
-      tempNode.coordinates.x = event.pageX - rect.left - 70;
-      tempNode.coordinates.y = event.pageY - rect.top - 18;
+      tempNode.coordinates.x = Number(this.contextMenuStyle.left.replace('px', '')) - rect.left - 70;
+      tempNode.coordinates.y = Number(this.contextMenuStyle.top.replace('px', '') )- rect.top - 18;
+      this.contextMenuStyle = null;
       this.nodeList.push(tempNode);
     }
   }

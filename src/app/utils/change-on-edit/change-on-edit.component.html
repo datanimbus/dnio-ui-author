@@ -2,7 +2,7 @@
     [ngStyle]="{'background-color': isDisabled || !editEnabled ? '#efefef' : 'white'}">
     <input #inputField type="text" class="form-control" [disabled]="isDisabled || !editEnabled" [ngModel]="value"
         (ngModelChange)="onValueChange($event)" [class.is-invalid]="errorMessage"
-        (keydown.delete)="$event.stopPropagation();">
+        (keydown.delete)="$event.stopPropagation();" (keydown.enter)="save()">
     <div class="d-flex" *ngIf="edit.status">
         <span *ngIf="editEnabled && !errorMessage" class="position-absolute hover dsi dsi-check text-success"
             (click)="save()"></span>
