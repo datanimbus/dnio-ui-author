@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { AppService } from 'src/app/utils/services/app.service';
 import { CommonService } from 'src/app/utils/services/common.service';
+import { ToastrService } from 'ngx-toastr';
 import * as _ from 'lodash';
 
 @Component({
@@ -16,7 +17,8 @@ export class AppSecretsComponent implements OnInit, OnDestroy {
   selectedIndex: number;
   openDeleteModal: EventEmitter<any>;
   constructor(private appService: AppService,
-    private commonService: CommonService) {
+    private commonService: CommonService,
+    private ts: ToastrService) {
     this.showNewVarWindow = false;
     this.varList = [];
     this.formData = {};
@@ -74,6 +76,7 @@ export class AppSecretsComponent implements OnInit, OnDestroy {
           });
           this.varList = res;
           this.showNewVarWindow = false;
+          this.ts.success('App Variable Created');
         }, 
         err => {
           this.commonService.errorToast(err, 'Unable to Save Variable');
@@ -100,6 +103,7 @@ export class AppSecretsComponent implements OnInit, OnDestroy {
           item.value = atob(item.value);
         });
         this.varList = res;
+        this.ts.info('App Variable Deleted');
       }, err => {
         this.commonService.errorToast(err, 'Unable to Save Variable');
       });
