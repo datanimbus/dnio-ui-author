@@ -85,6 +85,24 @@ export class FlowNodeComponent implements OnInit {
         }
       });
     }
+
+    if (this.currNode.type == 'CONDITION') {
+      this.currNode.conditions.forEach((item: any, index: number) => {
+        const nextNode = this.nodeList.find((e: any) => e._id == item._id);
+        if (nextNode) {
+          let tempX = ((index || 0) * 36) + 10;
+          const path = this.flowService.generateLinkPath(this.currNode.coordinates.x + 146, this.currNode.coordinates.y + tempX, nextNode.coordinates.x - 6, nextNode.coordinates.y + 10, 1.5);
+          this.successPaths.push({
+            _id: nextNode._id,
+            name: item.name,
+            color: item.color,
+            index: index,
+            prevNode: this.currNode._id,
+            path
+          });
+        }
+      });
+    }
   }
 
   createPaths(source: any, target: any) {
@@ -108,14 +126,19 @@ export class FlowNodeComponent implements OnInit {
           });
         }
       } else {
-        if (!sourceNode.onSuccess) {
-          sourceNode.onSuccess = [];
-        }
-        if (sourceNode.onSuccess.length == 0) {
-          sourceNode.onSuccess.push({
-            _id: targetNode._id,
-            index: sourceIndex
-          });
+        if (sourceNode.type == 'CONDITION') {
+          const tempCondition = sourceNode.conditions[sourceIndex];
+          tempCondition._id = targetNode._id;
+        } else {
+          if (!sourceNode.onSuccess) {
+            sourceNode.onSuccess = [];
+          }
+          if (sourceNode.onSuccess.length == 0) {
+            sourceNode.onSuccess.push({
+              _id: targetNode._id,
+              index: sourceIndex
+            });
+          }
         }
       }
     }

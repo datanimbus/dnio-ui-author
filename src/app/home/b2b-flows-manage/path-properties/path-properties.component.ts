@@ -61,6 +61,11 @@ export class PathPropertiesComponent implements OnInit {
       } else {
         (this.nodeList[this.nodeIndex].onError || []).splice(findIndex, 1);
       }
+    } else {
+      findIndex = (this.nodeList[this.nodeIndex].conditions || []).findIndex(e => e._id == this.path.path._id);
+      if (findIndex > -1) {
+        (this.nodeList[this.nodeIndex].conditions || [])[findIndex]._id = null;
+      }
     }
     this.cancel();
     this.flowService.selectedPath.emit(null);
