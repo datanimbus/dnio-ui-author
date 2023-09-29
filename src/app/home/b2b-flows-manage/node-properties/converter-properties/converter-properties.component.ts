@@ -48,10 +48,12 @@ export class ConverterPropertiesComponent implements OnInit {
       this.data.dataStructure.outgoing = null;
     }
     if (this.data.dataStructure.incoming && this.data.dataStructure.incoming.definition) {
-      this.allSources = this.flatten(this.appService.cloneObject(this.data.dataStructure.incoming.definition));
+      let isDataFormat = this.data.dataStructure.incoming._id.startsWith('SRVC') ? false : true;
+      this.allSources = this.flatten(this.appService.cloneObject(this.data.dataStructure.incoming.definition), isDataFormat, true);
     }
     if (this.data.dataStructure.outgoing && this.data.dataStructure.outgoing.definition) {
-      this.allTargets = this.flatten(this.appService.cloneObject(this.data.dataStructure.outgoing.definition));
+      let isDataFormat = this.data.dataStructure.outgoing._id.startsWith('SRVC') ? false : true;
+      this.allTargets = this.flatten(this.appService.cloneObject(this.data.dataStructure.outgoing.definition), isDataFormat, false);
     }
     let temp = this.appService.cloneObject(this.flowData.constants);
     temp.map((item) => {
@@ -142,7 +144,7 @@ export class ConverterPropertiesComponent implements OnInit {
       _id: item._id,
       type: item.type,
       dataPath: item.dataPath,
-      dataPathSegs: item.properties.dataPathSegs,
+      dataPathSegs: item.dataPathSegs,
       isConstant: item.isConstant
     };
     temp.source = (item.source || []).map((s) => {
@@ -152,7 +154,7 @@ export class ConverterPropertiesComponent implements OnInit {
       temp.dataPath = s.dataPath;
       temp.nodeId = s.nodeId;
       temp.isConstant = s.isConstant;
-      temp.dataPathSegs = s.properties.dataPathSegs;
+      temp.dataPathSegs = s.dataPathSegs;
       return temp;
     });
     temp.formula = item.formula;
@@ -210,7 +212,7 @@ export class ConverterPropertiesComponent implements OnInit {
     }
   }
 
-  flatten(definition: Array<any>, parentDef?: any) {
+  flatten(definition: Array<any>, isDataFormat: boolean, isSource: boolean, parentDef?: any) {
     let list = [];
     try {
       if (definition && definition.length > 0) {
@@ -219,18 +221,37 @@ export class ConverterPropertiesComponent implements OnInit {
           if (def.key == 'true') {
             def.key = '_self';
           }
-          def._id = `${def.properties.dataPath}`;
-          def.dataPath = def.properties.dataPath;
-          def.dataPathSegs = def.properties.dataPathSegs;
+
           def.name = def.properties.name;
           def.depth = parentDef ? parentDef.depth + 1 : 0;
+          if (def.properties.password) {
+            def.type = 'String';
+            def._id = `${def.properties.dataPath}`;
+            def.dataPath = def.properties.dataPath + '.value';
+            def.dataPathSegs = [].concat(def.properties.dataPathSegs, ['value']);
+          } else if ((def.type == 'Date' || def.properties.dateType) && !isDataFormat) {
+            if (isSource) {
+              def.dataPath = def.properties.dataPath + '.utc';
+              def.dataPathSegs = [].concat(def.properties.dataPathSegs, ['utc']);
+            } else {
+              def.dataPath = def.properties.dataPath + '.rawData';
+              def.dataPathSegs = [].concat(def.properties.dataPathSegs, ['rawData']);
+            }
+          } else {
+            def._id = `${def.properties.dataPath}`;
+            def.dataPath = def.properties.dataPath;
+            def.dataPathSegs = def.properties.dataPathSegs;
+          }
+          // def.dataPath = def.properties.dataPath;
+          // def.dataPathSegs = def.properties.dataPathSegs;
           list.push(def);
+          console.log(def);
           if (def.type == 'Array') {
             if (def.definition[0].type == 'Object') {
-              list = list.concat(this.flatten(def.definition[0].definition, def));
+              list = list.concat(this.flatten(def.definition[0].definition, isDataFormat, isSource, def));
             }
           } else if (def.type == 'Object') {
-            list = list.concat(this.flatten(def.definition, def));
+            list = list.concat(this.flatten(def.definition, isDataFormat, isSource, def));
           }
         });
       };
@@ -287,8 +308,8 @@ export class ConverterPropertiesComponent implements OnInit {
     if (!def.source) {
       def.source = [];
     }
-    if(def.source.find(ele => ele.dataPath === this.dragItem.dataPath && ele.nodeId === this.dragItem.nodeId)){
-      return ;
+    if (def.source.find(ele => ele.dataPath === this.dragItem.dataPath && ele.nodeId === this.dragItem.nodeId)) {
+      return;
     }
     if (this.dragItem) {
       def.source.push(this.dragItem);
@@ -417,7 +438,8 @@ export class ConverterPropertiesComponent implements OnInit {
   set sourceFormat(val: any) {
     this.data.dataStructure.incoming = val;
     if (this.data.dataStructure.incoming && this.data.dataStructure.incoming.definition) {
-      this.allSources = this.flatten(this.appService.cloneObject(this.data.dataStructure.incoming.definition));
+      let isDataFormat = val._id.startsWith('SRVC') ? false : true;
+      this.allSources = this.flatten(this.appService.cloneObject(this.data.dataStructure.incoming.definition), isDataFormat, true);
     }
   }
 
@@ -428,7 +450,8 @@ export class ConverterPropertiesComponent implements OnInit {
   set targetFormat(val: any) {
     this.data.dataStructure.outgoing = val;
     if (this.data.dataStructure.outgoing && this.data.dataStructure.outgoing.definition) {
-      this.allTargets = this.flatten(this.appService.cloneObject(this.data.dataStructure.outgoing.definition));
+      let isDataFormat = val._id.startsWith('SRVC') ? false : true;
+      this.allTargets = this.flatten(this.appService.cloneObject(this.data.dataStructure.outgoing.definition), isDataFormat, false);
     }
   }
 }

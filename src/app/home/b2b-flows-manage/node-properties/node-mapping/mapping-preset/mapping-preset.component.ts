@@ -100,13 +100,13 @@ export class MappingPresetComponent implements OnInit {
   listAttributes() {
     if (this.currNode.type === 'FILE' || (this.currNode.type === 'CONNECTOR' && ['STORAGE', 'FILE'].includes(this.currNode.options.category))) {
       this.nodeSourceAttributes = ['headers', 'fileContent'];
-    this.nodeTargetAttributes = ['headers', 'fileContent'];
+      this.nodeTargetAttributes = ['headers', 'fileContent'];
     }
   }
 
   configureAttributes() {
     let commonTargetDefinitions = this.getStringArrayAsDefinition(this.nodeTargetAttributes);
-    this.allTargets = this.mappingService.flatten('JSON', this.appService.cloneObject(commonTargetDefinitions));
+    this.allTargets = this.mappingService.flatten('JSON', this.appService.cloneObject(commonTargetDefinitions), true);
 
     let commonSourceDefinitions = this.getStringArrayAsDefinition(this.nodeSourceAttributes);
     this.nodeList.forEach((node: any) => {
@@ -168,7 +168,7 @@ export class MappingPresetComponent implements OnInit {
       _id: item._id,
       type: item.type,
       dataPath: item.dataPath,
-      dataPathSegs: item.properties.dataPathSegs
+      dataPathSegs: item.dataPathSegs
     };
     temp.source = (item.source || []).map((s) => {
       let temp: any = {};
@@ -176,7 +176,7 @@ export class MappingPresetComponent implements OnInit {
       temp.type = s.type;
       temp.dataPath = s.dataPath;
       temp.nodeId = s.nodeId;
-      temp.dataPathSegs = s.properties.dataPathSegs;
+      temp.dataPathSegs = s.dataPathSegs;
       return temp;
     });
     temp.formula = item.formula;
@@ -407,8 +407,8 @@ export class MappingPresetComponent implements OnInit {
       def.source = [];
     }
 
-    if(def.source.find(ele => ele.dataPath === this.dragItem.dataPath && ele.nodeId === this.dragItem.nodeId)){
-      return ;
+    if (def.source.find(ele => ele.dataPath === this.dragItem.dataPath && ele.nodeId === this.dragItem.nodeId)) {
+      return;
     }
     if (this.dragItem) {
       def.source.push(this.dragItem);

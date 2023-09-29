@@ -115,7 +115,8 @@ export class NodeMappingComponent implements OnInit {
     if (this.currNode.dataStructure && this.currNode.dataStructure[this.source] && this.currNode.dataStructure[this.source].definition) {
       temp = this.appService.cloneObject(this.currNode.dataStructure[this.source].definition) || [];
     }
-    this.allTargets = this.mappingService.flatten((this.currNode.dataStructure?.[this.source]?.formatType || 'JSON'), temp);
+    let isDataFormat = this.currNode.dataStructure?.[this.source]?._id.startsWith('SRVC') ? false : true;
+    this.allTargets = this.mappingService.flatten((this.currNode.dataStructure?.[this.source]?.formatType || 'JSON'), temp,isDataFormat);
     this.allTargets.forEach(item => {
       if (item.type == 'Object') {
         this.targetExpandCollapseObjects[item.dataPath] = false;
@@ -175,15 +176,15 @@ export class NodeMappingComponent implements OnInit {
       _id: item._id,
       type: item.type,
       dataPath: item.dataPath,
-      dataPathSegs: item.properties.dataPathSegs
+      dataPathSegs: item.dataPathSegs
     };
     temp.source = (item.source || []).map((s) => {
       let temp: any = {};
+      temp.nodeId = s.nodeId;
       temp._id = s._id;
       temp.type = s.type;
       temp.dataPath = s.dataPath;
-      temp.nodeId = s.nodeId;
-      temp.dataPathSegs = s.properties.dataPathSegs;
+      temp.dataPathSegs = s.dataPathSegs;
       return temp;
     });
     temp.formula = item.formula;
@@ -299,24 +300,38 @@ export class NodeMappingComponent implements OnInit {
             def.key = '_self';
           }
           def.nodeId = node._id;
-          def._id = `${node._id}.${bodyKey}.${def.properties.dataPath}`;
-          def.dataPath = def.properties.dataPath
-          def.dataPathSegs = def.properties.dataPathSegs;
           def.name = def.properties.name
           def.depth = parentDef ? parentDef.depth + 1 : 0;
+          if (def.properties.password) {
+            def.type = 'String';
+            def._id = `${node._id}.${bodyKey}.${def.properties.dataPath}`;
+            def.dataPath = def.properties.dataPath + '.value';
+            def.dataPathSegs = [].concat(def.properties.dataPathSegs, ['value']);
+          } else if (def.type == 'Date' || def.properties.dateType) {
+            def._id = `${node._id}.${bodyKey}.${def.properties.dataPath}`;
+            def.dataPath = def.properties.dataPath + '.utc';
+            def.dataPathSegs = [].concat(def.properties.dataPathSegs, ['utc']);
+          } else {
+            def._id = `${node._id}.${bodyKey}.${def.properties.dataPath}`;
+            def.dataPath = def.properties.dataPath;
+            def.dataPathSegs = def.properties.dataPathSegs;
+          }
           list.push(def);
+          console.log(def);
           if (def.type == 'Array') {
             if (def.definition[0].type == 'Object') {
               list = list.concat(this.flattenSource(node, def.definition[0].definition, bodyKey, def));
             }
           } else if (def.type == 'Object') {
-            if (def.properties._typeChanged === 'Relation') {
-              const idDef = def.definition.filter(d => d.key === '_id')[0];
-              idDef.properties['dataPath'] = def.dataPath + '._id';
-              idDef.properties['dataPathSegs'] = [def.dataPath, '_id'];
-              list = list.concat(this.flattenSource(node, [idDef], bodyKey, def))
-            }
-            else {
+            if (def.properties.relatedTo) {
+              def.type == 'String';
+              def.dataPath = def.dataPath + '._id';
+              def.dataPathSegs = [].concat(def.dataPathSegs, ['_id']);
+              // const idDef = def.definition.filter(d => d.key === '_id')[0];
+              // idDef.properties['dataPath'] = def.dataPath + '._id';
+              // idDef.properties['dataPathSegs'] = [def.dataPath, '_id'];
+              // list = list.concat(this.flattenSource(node, [idDef], bodyKey, def))
+            } else {
               list = list.concat(this.flattenSource(node, def.definition, bodyKey, def));
             }
           }
@@ -549,7 +564,7 @@ export class NodeMappingComponent implements OnInit {
     }
     return true;
   }
-  
+
   get mappingType() {
     return this.currNode.mappingType;
   }

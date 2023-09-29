@@ -44,7 +44,7 @@ export class MappingService {
     }
   }
 
-  flatten(type: string, definition: Array<any>, parentDef?: any) {
+  flatten(type: string, definition: Array<any>, isDataFormat: boolean, parentDef?: any) {
     let list = [];
     try {
       if (definition && definition.length > 0) {
@@ -56,22 +56,36 @@ export class MappingService {
           item.depth = parentDef ? parentDef.depth + 1 : 0;
           item._id = item.properties.dataPath;
           item.name = item.properties.name;
-          item.dataPath = item.properties.dataPath;
-          item.dataPathSegs = item.properties.dataPathSegs;
+          if (item.properties.password) {
+            item.type = 'String';
+            item.dataPath = item.properties.dataPath + '.value';
+            item.dataPathSegs = [].concat(item.properties.dataPathSegs, ['value']);
+          } else if ((item.type == 'Date' || item.properties.dateType) && !isDataFormat) {
+            item.dataPath = item.properties.dataPath + '.rawData';
+            item.dataPathSegs = [].concat(item.properties.dataPathSegs, ['rawData']);
+          } else {
+            item.dataPath = item.properties.dataPath;
+            item.dataPathSegs = item.properties.dataPathSegs;
+          }
+          // item.dataPath = item.properties.dataPath;
+          // item.dataPathSegs = item.properties.dataPathSegs;
           list.push(item);
+          console.log(item);
           if (item.type == 'Array') {
             if (item.definition[0].type == 'Object') {
-              list = list.concat(this.flatten(type, item.definition[0].definition, item));
+              list = list.concat(this.flatten(type, item.definition[0].definition, isDataFormat, item));
             }
           } else if (item.type == 'Object') {
-            if(item.properties._typeChanged === 'Relation'){
-              const idDef = item.definition.filter(d => d.key === '_id')[0];
-              idDef.properties['dataPath'] = item.dataPath+'._id';
-              idDef.properties['dataPathSegs'] = [item.dataPath,'_id'];
-              list = list.concat(this.flatten(type, [idDef], item))
-            }
-            else{
-              list = list.concat(this.flatten(type, item.definition, item));
+            if (item.properties.relatedTo) {
+              item.type == 'String';
+              item.dataPath = item.dataPath + '._id';
+              item.dataPathSegs = [].concat(item.dataPathSegs, ['_id']);
+              // const idDef = item.definition.filter(d => d.key === '_id')[0];
+              // idDef.properties['dataPath'] = item.dataPath + '._id';
+              // idDef.properties['dataPathSegs'] = [item.dataPath, '_id'];
+              // list = list.concat(this.flatten(type, [idDef], item))
+            } else {
+              list = list.concat(this.flatten(type, item.definition, isDataFormat, item,));
             }
           }
         });
