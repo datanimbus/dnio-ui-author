@@ -57,8 +57,8 @@ export class FlowNodeComponent implements OnInit {
       this.currNode.onSuccess.forEach((item: any) => {
         const nextNode = this.nodeList.find((e: any) => e._id == item._id);
         if (nextNode) {
-          let tempX = ((item.index || 0) * 36) + 18;
-          const path = this.flowService.generateLinkPath(this.currNode.coordinates.x + 146, this.currNode.coordinates.y + tempX, nextNode.coordinates.x - 6, nextNode.coordinates.y + 18, 1.5);
+          let tempX = ((item.index || 0) * 36) + 10;
+          const path = this.flowService.generateLinkPath(this.currNode.coordinates.x + 146, this.currNode.coordinates.y + tempX, nextNode.coordinates.x - 6, nextNode.coordinates.y + 10, 1.5);
           this.successPaths.push({
             _id: nextNode._id,
             name: item.name,
@@ -74,11 +74,11 @@ export class FlowNodeComponent implements OnInit {
       this.currNode.onError.forEach((item: any) => {
         const nextNode = this.nodeList.find((e: any) => e._id == item._id);
         if (nextNode) {
-          const path = this.flowService.generateLinkPath(this.currNode.coordinates.x + 146, this.currNode.coordinates.y + 18, nextNode.coordinates.x - 6, nextNode.coordinates.y + 18, 1.5);
+          const path = this.flowService.generateLinkPath(this.currNode.coordinates.x + 146, this.currNode.coordinates.y + 26, nextNode.coordinates.x - 6, nextNode.coordinates.y + 10, 1.5);
           this.errorPaths.push({
             _id: nextNode._id,
             name: item.name,
-            color: item.color,
+            color: 'F44336',
             prevNode: this.currNode._id,
             path
           });
@@ -97,13 +97,27 @@ export class FlowNodeComponent implements OnInit {
     const sourceNode = this.nodeList.find((e: any) => e._id == sourceId);
     const targetNode = this.nodeList.find((e: any) => e._id == targetId);
     if (sourceNode && targetNode) {
-      if (!sourceNode.onSuccess) {
-        sourceNode.onSuccess = [];
+      if (source.dataset.anchorType && source.dataset.anchorType == 'error') {
+        if (!sourceNode.onError) {
+          sourceNode.onError = [];
+        }
+        if (sourceNode.onError.length == 0) {
+          sourceNode.onError.push({
+            _id: targetNode._id,
+            index: sourceIndex
+          });
+        }
+      } else {
+        if (!sourceNode.onSuccess) {
+          sourceNode.onSuccess = [];
+        }
+        if (sourceNode.onSuccess.length == 0) {
+          sourceNode.onSuccess.push({
+            _id: targetNode._id,
+            index: sourceIndex
+          });
+        }
       }
-      sourceNode.onSuccess.push({
-        _id: targetNode._id,
-        index: sourceIndex
-      });
     }
   }
 
@@ -117,13 +131,21 @@ export class FlowNodeComponent implements OnInit {
     this.flowService.selectedPath.emit({ index, path });
   }
 
-  isActive(place: string, index: number) {
+  isActive(place: string, index: number, type?: string) {
     if (this.flowService.anchorSelected) {
       let dataset = this.flowService.anchorSelected.dataset;
       let segs = dataset.anchorId.split('-');
-      if (place == segs[1]) {
-        if (dataset.id == this.currNode._id && segs[0] == this.currNode._id && segs[2] == index) {
-          return true;
+      if (type) {
+        if (place == segs[1] && type == dataset.anchorType) {
+          if (dataset.id == this.currNode._id && segs[0] == this.currNode._id && segs[2] == index) {
+            return true;
+          }
+        }
+      } else {
+        if (place == segs[1]) {
+          if (dataset.id == this.currNode._id && segs[0] == this.currNode._id && segs[2] == index) {
+            return true;
+          }
         }
       }
     }
@@ -235,9 +257,9 @@ export class FlowNodeComponent implements OnInit {
 
   get nodeHeight() {
     if (this.currNode.conditions) {
-      return this.currNode.conditions.length * 36;
+      return (this.currNode.conditions.length * 36) + 12;
     }
-    return 36;
+    return 48;
   }
 
   get conditionList() {
