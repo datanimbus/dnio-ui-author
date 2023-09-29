@@ -7,6 +7,12 @@ rect {
     stroke-width: 1;
 }
 
+.error-node{
+    fill: $danger;
+    stroke: $danger;
+    fill-opacity: 0.05;
+    stroke-width: 1;
+}
 path {
     fill: none;
     stroke: #666;
