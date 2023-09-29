@@ -1219,7 +1219,7 @@ export class CommonService {
     const self = this;
     if (type == 'flow' && !this.timeInterval[_id]) {
       this.timeInterval[_id] = setInterval(() => {
-        this.get('partnerManager', `/${this.app._id}/flow`, { filter: { "_id": _id }, select: "status" }).subscribe(res => {
+        this.get('partnerManager', `/${this.app?._id}/flow`, { filter: { "_id": _id }, select: "status" }).subscribe(res => {
           if (res[0]?.status != 'Pending') {
             self.flow.status.emit(res)
             clearInterval(this.timeInterval[_id])
