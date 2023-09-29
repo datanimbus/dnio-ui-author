@@ -229,8 +229,15 @@ export class FlowNodeComponent implements OnInit {
     }
   }
 
-  getAnchorY(index: number) {
-    return (index * 36) + 12
+  getSuccessAnchorY(index: number) {
+    return (index * 36) + 4;
+  }
+
+  getErrorAnchorY() {
+    if (this.conditionList && this.conditionList.length > 0) {
+      return ((this.conditionList.length - 1) * 36) + 20;
+    }
+    return 20;
   }
 
   get isSelected() {

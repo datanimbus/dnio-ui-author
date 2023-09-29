@@ -5,14 +5,14 @@ rect {
     fill: #fff;
     stroke: #666;
     stroke-width: 1;
+
+    &.error {
+        fill: lighten($danger, 40%);
+        stroke: $danger;
+        stroke-width: 1;
+    }
 }
 
-.error-node{
-    fill: $danger;
-    stroke: $danger;
-    fill-opacity: 0.05;
-    stroke-width: 1;
-}
 path {
     fill: none;
     stroke: #666;
@@ -69,22 +69,14 @@ text.path-text {
     .rect {
         fill: rgba($accent, 0.3);
     }
-
-    // .ellipse {
-    //     fill: rgba($accent, 0.3);
-    // }
-
-    // text:not(.node-name):not(.id-holder) {
-    //     stroke-width: 0.75 !important;
-    //     stroke: #333;
-    // }
 }
 
 
 .node-anchor {
-    &.start{
+    &.start {
         fill: $white;
         stroke: #666;
+
         &:hover {
             fill: $lightgrey;
         }
@@ -93,6 +85,7 @@ text.path-text {
             fill: $accent;
         }
     }
+
     &.error {
         fill: lighten($danger, 40%);
         stroke: $danger;
