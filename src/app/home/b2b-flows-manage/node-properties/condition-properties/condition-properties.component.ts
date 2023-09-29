@@ -39,7 +39,17 @@ export class ConditionPropertiesComponent implements OnInit, OnDestroy {
     this.currNode.conditions.splice(index, 1);
   }
 
+  onConditionTypeChange(event: any, type: string) {
+    if (event) {
+      this.currNode.options.conditionType = type;
+    }
+  }
+
   get conditionList() {
     return this.currNode.conditions;
+  }
+
+  get conditionType() {
+    return this.currNode.options.conditionType || 'ifElse';
   }
 }

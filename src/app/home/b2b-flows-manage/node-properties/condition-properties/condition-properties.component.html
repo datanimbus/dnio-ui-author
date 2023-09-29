@@ -3,6 +3,23 @@
         <span class="font-16 fw-500">Conditions</span>
         <span *ngIf="edit.status" class="hover dsi dsi-plus-circle text-primary" (click)="addCondition($event)"></span>
     </div>
+    <div class="form-group mt-3">
+        <!-- <label for="conditionType">Condition Type</label> -->
+        <div class="form-group d-flex flex-column">
+            <div class="d-flex align-items-center justify-content-start mr-4">
+                <odp-round-radio [edit]="edit" [checked]="conditionType=='ifElse'"
+                    (checkedChange)="onConditionTypeChange($event,'ifElse')">
+                </odp-round-radio>
+                <span class="ml-3">First matching condition</span>
+            </div>
+            <div class="d-flex align-items-center justify-content-start">
+                <odp-round-radio [edit]="edit" [checked]="conditionType=='ifif'"
+                    (checkedChange)="onConditionTypeChange($event,'ifif')">
+                </odp-round-radio>
+                <span class="ml-3">All matching condition</span>
+            </div>
+        </div>
+    </div>
     <div class="text-muted" *ngIf="!conditionList || conditionList.length==0">
         No Conditions Added
     </div>
@@ -14,7 +31,8 @@
             </div>
             <div class="d-flex align-items-center">
                 <span>#{{ci+1}}</span>
-                <span *ngIf="edit.status && conditionList.length>1" class="dsi dsi-minus-circle text-danger hover ml-3" (click)="removeCondition($event,ci)"></span>
+                <span *ngIf="edit.status && conditionList.length>1" class="dsi dsi-minus-circle text-danger hover ml-3"
+                    (click)="removeCondition($event,ci)"></span>
             </div>
         </div>
         <div class=" p-2">
