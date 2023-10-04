@@ -922,111 +922,118 @@ $weights: 200,
   overflow-y: hidden;
 }
 
-.node-options-item,
-.node-block,
-.node-item {
-  .dsi-api-reciever {
-    color: #6C7584;
-  }
+// .node-options-item,
+// .node-block,
+// .node-item {
+//   .dsi-api-reciever {
+//     color: #6C7584;
+//   }
 
-  .dsi-invoke-api {
-    color: #00CCCB;
-  }
+//   .dsi-invoke-api {
+//     color: #00CCCB;
+//   }
 
-  .dsi-clock {
-    color: #2FC48F;
-  }
+//   .dsi-clock {
+//     color: #2FC48F;
+//   }
 
-  .dsi-data-service {
-    color: #A94CFF;
-  }
+//   .dsi-data-service {
+//     color: #A94CFF;
+//   }
 
-  .dsi-function {
-    color: #FFBB1A;
-  }
+//   .dsi-function {
+//     color: #FFBB1A;
+//   }
 
-  .dsi-connector,
-  .dsi-file {
-    color: #009BFF;
-  }
+//   .dsi-connector,
+//   .dsi-file {
+//     color: #009BFF;
+//   }
 
-  .dsi-branch {
-    color: #FF4C82;
-  }
+//   .dsi-branch {
+//     color: #FF4C82;
+//   }
 
-  .dsi-logs {
-    color: #FF7D4C;
-  }
+//   .dsi-logs {
+//     color: #FF7D4C;
+//   }
 
-  .dsi-mapping,
-  .dsi-object,
-  .dsi-insight,
-  .dsi-expand {
-    color: #FF4C82;
-  }
+//   .dsi-mapping,
+//   .dsi-object,
+//   .dsi-insight,
+//   .dsi-expand {
+//     color: #FF4C82;
+//   }
 
-  .dsi-response {
-    color: #2FC48F;
-  }
-}
+//   .dsi-response {
+//     color: #2FC48F;
+//   }
+// }
+
+// .node-icon {
+
+//   &.dsi-api-reciever,
+//   &.dsi-copy {
+//     color: #6C7584;
+//   }
+
+//   &.dsi-invoke-api {
+//     color: #00CCCB;
+//   }
+
+//   &.dsi-clock,
+//   &.dsi-relation {
+//     color: #2FC48F;
+//   }
+
+//   &.dsi-data-service,
+//   &.dsi-refresh {
+//     color: #A94CFF;
+//   }
+
+//   &.dsi-function,
+//   &.dsi-nano-service,
+//   &.dsi-undo {
+//     color: #FFBB1A;
+//   }
+
+//   &.dsi-connector,
+//   &.dsi-file {
+//     color: #009BFF;
+//   }
+
+//   &.dsi-file.read {
+//     color: #2FC48F;
+//   }
+
+//   &.dsi-file.write,
+//   &.dsi-branch {
+//     color: #FF4C82;
+//   }
+
+//   &.dsi-logs {
+//     color: #FF7D4C;
+//   }
+
+//   &.dsi-mapping,
+//   &.dsi-object,
+//   &.dsi-insight {
+//     color: #FF4C82;
+//   }
+
+//   &.dsi-expand {
+//     color: #FF4C82;
+//   }
+
+//   &.dsi-response {
+//     color: #2FC48F;
+//   }
+// }
 
 .node-icon {
 
-  &.dsi-api-reciever,
-  &.dsi-copy {
-    color: #6C7584;
-  }
-
-  &.dsi-invoke-api {
-    color: #00CCCB;
-  }
-
-  &.dsi-clock,
-  &.dsi-relation {
-    color: #2FC48F;
-  }
-
-  &.dsi-data-service,
-  &.dsi-refresh {
-    color: #A94CFF;
-  }
-
-  &.dsi-function,
-  &.dsi-nano-service,
-  &.dsi-undo {
-    color: #FFBB1A;
-  }
-
-  &.dsi-connector,
-  &.dsi-file {
-    color: #009BFF;
-  }
-
-  &.dsi-file.read {
-    color: #2FC48F;
-  }
-
-  &.dsi-file.write,
-  &.dsi-branch {
-    color: #FF4C82;
-  }
-
-  &.dsi-logs {
-    color: #FF7D4C;
-  }
-
-  &.dsi-mapping,
-  &.dsi-object,
-  &.dsi-insight {
-    color: #FF4C82;
-  }
-
-  &.dsi-expand {
-    color: #FF4C82;
-  }
-
-  &.dsi-response {
-    color: #2FC48F;
+  &.dsi {
+    color: $secondary;
   }
 }
 
