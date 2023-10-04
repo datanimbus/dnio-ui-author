@@ -86,7 +86,7 @@ export class FlowNodeComponent implements OnInit {
       });
     }
 
-    if (this.currNode.type == 'CONDITION') {
+    if (this.currNode.type == 'CONDITION' && this.currNode.conditions) {
       this.currNode.conditions.forEach((item: any, index: number) => {
         const nextNode = this.nodeList.find((e: any) => e._id == item._id);
         if (nextNode) {
