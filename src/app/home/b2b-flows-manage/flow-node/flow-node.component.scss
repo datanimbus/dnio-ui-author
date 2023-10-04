@@ -7,9 +7,9 @@ rect {
     stroke-width: 1;
 
     &.error {
-        fill: lighten($danger, 40%);
+        // fill: lighten($danger, 40%);
         stroke: $danger;
-        stroke-width: 1;
+        stroke-width: 2;
     }
 }
 
@@ -59,6 +59,10 @@ text.path-text {
     }
 }
 
+.box-shadow {
+    filter: drop-shadow(2px 2px 2px rgb(0 0 0 / 0.5));
+}
+
 // text.node-name {
 //     stroke-width: 0;
 //     fill: $secondary;
@@ -67,7 +71,9 @@ text.path-text {
 
 .active {
     .rect {
-        fill: rgba($accent, 0.3);
+        // fill: rgba($accent, 0.3);
+        stroke: rgba($accent, 1);
+        stroke-width: 2;
     }
 }
 

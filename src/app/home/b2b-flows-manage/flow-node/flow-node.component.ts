@@ -258,9 +258,9 @@ export class FlowNodeComponent implements OnInit {
 
   getErrorAnchorY() {
     if (this.conditionList && this.conditionList.length > 0) {
-      return ((this.conditionList.length - 1) * 36) + 20;
+      return ((this.conditionList.length - 1) * 36) + 32;
     }
-    return 20;
+    return 32;
   }
 
   get isSelected() {

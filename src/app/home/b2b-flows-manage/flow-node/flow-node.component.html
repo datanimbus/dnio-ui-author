@@ -11,7 +11,7 @@
             <rect x="0" y="0" width="140" [attr.height]="nodeHeight" rx="4" (click)="openProperties($event)"
                 [attr.data-id]="currNode._id" [ngClass]="{'error' : errors.length> 0}" />
             <rect x="0" y="0" width="140" [attr.height]="nodeHeight" rx="4" (click)="openProperties($event)"
-                [attr.data-id]="currNode._id" class="rect" [ngClass]="{'error' : errors.length> 0}" />
+                [attr.data-id]="currNode._id" class="rect box-shadow" [ngClass]="{'error' : errors.length> 0}" />
             <foreignObject width="100" height="32" x="30" y="2" [attr.data-id]="currNode._id"
                 (click)="openProperties($event)">
                 <div xmlns="http://www.w3.org/1999/xhtml" [attr.data-id]="currNode._id"
