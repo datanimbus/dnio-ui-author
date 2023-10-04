@@ -185,7 +185,7 @@ export class AppManageComponent implements OnInit, OnDestroy {
         this.showLazyLoader = true;
         this.commonService.get('user', '/data/app/' + id, { noApp: true }).subscribe(res => {
             this.showLazyLoader = false;
-            this.tempList = res.users;
+            this.tempList = res[0].users;
             this.appData = Object.assign(this.appData, res[0]);
             this.oldData = this.appService.cloneObject(this.appData);
             this.getUserDetail();
