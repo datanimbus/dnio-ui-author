@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { B2bFlowService } from '../../b2b-flow.service';
 
 @Component({
   selector: 'odp-condition-properties',
@@ -10,7 +11,7 @@ export class ConditionPropertiesComponent implements OnInit, OnDestroy {
   @Input() edit: any;
   @Input() currNode: any;
   @Input() nodeList: Array<any>;
-  constructor() {
+  constructor(private flowService: B2bFlowService) {
 
   }
 
@@ -37,6 +38,7 @@ export class ConditionPropertiesComponent implements OnInit, OnDestroy {
 
   removeCondition(event: any, index: number) {
     this.currNode.conditions.splice(index, 1);
+    this.flowService.reCreatePaths.emit();
   }
 
   onConditionTypeChange(event: any, type: string) {
