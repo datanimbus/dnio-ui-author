@@ -114,6 +114,8 @@
 
   width: 200vw;
   height: 200vh;
+  // background: rgba($light, 0.4);
+  background: lighten($light, 1%);
 
   rect {
     fill: #efefef;

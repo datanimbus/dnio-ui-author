@@ -65,14 +65,14 @@ export class ViewBoxDirective implements AfterViewInit {
   }
 
   drawGrid(windowWidth: number, windowHeight: number) {
-    const colCount = (windowWidth * 3) / 20 + 1;
-    const rowCount = (windowHeight * 3) / 20 + 1;
+    const colCount = (windowWidth * 3) / 10 + 1;
+    const rowCount = (windowHeight * 3) / 10 + 1;
     const group: SVGElement = document.createElementNS('http://www.w3.org/2000/svg', 'g') as SVGElement;
     group.setAttribute('id', 'grid');
     for (let i = 0; i < rowCount; i++) {
       for (let j = 0; j < colCount; j++) {
-        const distX = 20 * (j) - windowWidth;
-        const distY = 20 * (i + 1);
+        const distX = 10 * (j) - windowWidth;
+        const distY = 10 * (i + 1);
         const ele: SVGElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle') as SVGElement;
         ele.setAttribute('cx', `${distX}`);
         ele.setAttribute('cy', `${distY}`);
