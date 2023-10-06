@@ -19,61 +19,103 @@ export class B2bSettingsComponent implements OnInit {
   serviceStatus: any = {};
   appData: App;
   oldData: App;
-
+  showLazyLoader: boolean;
   constructor(
     private commonService: CommonService,
     private ts: ToastrService,
     private appService: AppService
   ) {
-    const self = this;
-    // self.appData = {};
-    // self.oldData = {};
-    self.startStopServiceModal = {};
+    this.startStopServiceModal = {};
   }
 
   ngOnInit(): void {
-    const self = this;
-    self.getManagementDetails();
+    this.getManagementDetails();
+    this.fetchApp();
   }
 
   getManagementDetails() {
-    const self = this;
-    self.commonService.get('partnerManager', `/${this.commonService.app._id}/flow/utils/status/count`, { filter: { app: this.commonService.app._id } }).subscribe(res => {
-      self.serviceStatus = res;
+    this.commonService.get('partnerManager', `/${this.commonService.app._id}/flow/utils/status/count`, { filter: { app: this.commonService.app._id } }).subscribe(res => {
+      this.serviceStatus = res;
     }, (err) => {
-      self.ts.warning(err.error.message);
+      this.ts.warning(err.error.message);
     });
   }
 
   startStopServiceModel(value) {
-    const self = this;
-    self.startStopServiceModal.title = `${value} all Services`
-    self.startStopServiceModal.message = `Do you want to ${value} all services ?`
-    self.startStopServiceModalRef = self.commonService.modal(self.startStopServiceModalTemplate);
-    self.startStopServiceModalRef.result.then((close) => {
+    this.startStopServiceModal.title = `${value} all Services`
+    this.startStopServiceModal.message = `Do you want to ${value} all services ?`
+    this.startStopServiceModalRef = this.commonService.modal(this.startStopServiceModalTemplate);
+    this.startStopServiceModalRef.result.then((close) => {
       if (close) {
-        self.updateServicesState(value)
+        this.updateServicesState(value)
       }
     }, dismiss => { });
 
   }
 
   updateServicesState(value) {
-    const self = this;
     let endpoint = value == 'Start' ? 'startAll' : 'stopAll'
-    self.commonService.put('partnerManager', `/${this.commonService.app._id}/flow/utils/${endpoint}`, { app: this.commonService.app._id }).subscribe(res => {
-      self.ts.info(`${value} all process initiated !`)
-      self.getManagementDetails();
-    })
+    this.commonService.put('partnerManager', `/${this.commonService.app._id}/flow/utils/${endpoint}`, { app: this.commonService.app._id }).subscribe(res => {
+      this.ts.info(`${value} all process initiated !`)
+      this.getManagementDetails();
+    });
+  }
 
+
+  addMasking() {
+    this.appData.maskingPaths.push({ maskType: 'all' });
+  }
+
+  removeMasking(index: number) {
+    this.appData.maskingPaths.splice(index, 1);
+  }
+
+  fetchApp() {
+    this.showLazyLoader = true;
+    this.commonService.get('user', '/data/app/' + this.commonService.app._id, { noApp: true }).subscribe(res => {
+      this.showLazyLoader = false;
+      this.appData = res[0];
+      if (!this.appData.maskingPaths) {
+        this.appData.maskingPaths = [];
+      }
+      this.oldData = this.appService.cloneObject(this.appData);
+
+      this.maskingPaths = (this.appData.maskingPaths || []);
+    }, err => {
+      this.showLazyLoader = false;
+    });
+  }
+
+  saveApp() {
+    this.appData.maskingPaths = this.maskingPaths;
+    this.commonService.put('user', '/data/app/' + this.appData._id, this.appData).subscribe(res => {
+      this.oldData = this.appService.cloneObject(this.appData);
+      this.ts.success('Configuration saved successfully');
+      this.commonService.appUpdates.emit(this.appData);
+      this.commonService.app = res;
+    }, err => {
+      this.commonService.errorToast(err);
+    });
   }
 
   get changesDone() {
-    const self = this;
-    if (JSON.stringify(self.appData) === JSON.stringify(self.oldData)) {
+    if (JSON.stringify(this.appData) === JSON.stringify(this.oldData)) {
       return false;
     } else {
       return true;
+    }
+  }
+
+  get maskingPaths() {
+    if (this.appData && this.appData.maskingPaths) {
+      return this.appData.maskingPaths;
+    }
+    return [];
+  }
+
+  set maskingPaths(val: any) {
+    if (this.appData) {
+      this.appData.maskingPaths = val;
     }
   }
 }
