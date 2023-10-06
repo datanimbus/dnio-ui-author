@@ -1,15 +1,18 @@
 <div class="">
     <div class="list-group list-group-flush">
-        <div class="list-group-item list-group-item-action d-flex align-items-center justify-content-between hover"
-            *ngFor="let item of sourceList" (click)="toggleItem(!item._selected,item)">
-            <div class="list-item-source-name d-flex align-items-center flex-fill">
-                <odp-round-radio [edit]="{status:true}" [checked]="item._selected">
-                </odp-round-radio>
-                <span class="ml-3">{{item.name}}</span>
+        <ng-container *ngFor="let item of sourceList">
+            <div *ngIf="item.type!=='CONDITION'"
+                class="list-group-item list-group-item-action d-flex align-items-center justify-content-between hover"
+                (click)="toggleItem(!item._selected,item)">
+                <div class="list-item-source-name d-flex align-items-center flex-fill">
+                    <odp-round-radio [edit]="{status:true}" [checked]="item._selected">
+                    </odp-round-radio>
+                    <span class="ml-3">{{item.name}}</span>
+                </div>
+                <!-- <span class="list-item-attribute-count text-right">{{item.attributeCount}}</span> -->
+                <span class="list-item-source-type text-right">{{item.sourceType}}</span>
             </div>
-            <!-- <span class="list-item-attribute-count text-right">{{item.attributeCount}}</span> -->
-            <span class="list-item-source-type text-right">{{item.sourceType}}</span>
-        </div>
+        </ng-container>
         <div *ngIf="!sourceList || sourceList.length == 0"
             class="list-group-item d-flex align-items-center justify-content-between text-secondary">
             No source attached

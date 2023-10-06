@@ -24,7 +24,8 @@
                     <span class="dsi dsi-mapping mr-2"></span>
                     <span>Fuzzy Mappings</span>
                 </button>
-                <button type="button" class="btn btn-link d-flex align-items-center" (click)="doClearMapping()" *ngIf="edit.status">
+                <button type="button" class="btn btn-link d-flex align-items-center" (click)="doClearMapping()"
+                    *ngIf="edit.status">
                     <span class="dsi dsi-ban mr-2"></span>
                     <span>Clear Mappings</span>
                 </button>
@@ -40,7 +41,8 @@
                         <div class="source-list font-12">
                             <ng-container *ngFor="let def of allConstants">
                                 <div class="data-field d-flex align-items-center justify-content-start pl-2"
-                                    [draggable]="edit.status" (dragstart)="onDragStart($event,def)" [attr.data-id]="def._id">
+                                    [draggable]="edit.status" (dragstart)="onDragStart($event,def)"
+                                    [attr.data-id]="def._id">
                                     <div class="spacer" [ngStyle]="{'width':(def.depth*10)+'px'}"></div>
                                     <div class="field-type mr-2">
                                         <odp-field-type [field]="def" [onMapper]="true"></odp-field-type>
@@ -68,31 +70,34 @@
                 <div class="source-list ml-3 border-right">
                     <div class="source-list-item mb-3">
                         <ng-container *ngFor="let node of nodeList">
-                            <div class="d-flex align-items-center">
-                                <span class="dsi hover text-muted" (click)="toggleSource(node)"
-                                    [ngClass]="{'dsi-plus':sourceExpandCollapseObjects[node._id],'dsi-minus':!sourceExpandCollapseObjects[node._id]}"></span>
-                                <div class="py-2 fw-600 text-primary">{{node.name}}</div>
-                            </div>
-                            <div *ngIf="!sourceExpandCollapseObjects[node._id]">
-                                <ng-container *ngFor="let def of allSources">
-                                    <div *ngIf="!isSourceItemCollapsed(def) && def.nodeId == node._id"
-                                        class="data-field d-flex align-items-center justify-content-start"
-                                        [draggable]="edit.status" (dragstart)="onDragStart($event,def)" [attr.data-id]="def._id">
-                                        <div class="spacer" [ngStyle]="{'width':(def.depth*10)+'px'}"></div>
-                                        <div class="toggle-btn d-flex align-items-center justify-content-center">
-                                            <span *ngIf="showToggleBtn(def)" class="dsi hover text-muted"
-                                                (click)="toggleSource(def)"
-                                                [ngClass]="{'dsi-plus':sourceExpandCollapseObjects[def._id],'dsi-minus':!sourceExpandCollapseObjects[def._id]}"></span>
+                            <ng-container *ngIf="node.type!='CONDITION'">
+                                <div class="d-flex align-items-center">
+                                    <span class="dsi hover text-muted" (click)="toggleSource(node)"
+                                        [ngClass]="{'dsi-plus':sourceExpandCollapseObjects[node._id],'dsi-minus':!sourceExpandCollapseObjects[node._id]}"></span>
+                                    <div class="py-2 fw-600 text-primary">{{node.name}}</div>
+                                </div>
+                                <div *ngIf="!sourceExpandCollapseObjects[node._id]">
+                                    <ng-container *ngFor="let def of allSources">
+                                        <div *ngIf="!isSourceItemCollapsed(def) && def.nodeId == node._id"
+                                            class="data-field d-flex align-items-center justify-content-start"
+                                            [draggable]="edit.status" (dragstart)="onDragStart($event,def)"
+                                            [attr.data-id]="def._id">
+                                            <div class="spacer" [ngStyle]="{'width':(def.depth*10)+'px'}"></div>
+                                            <div class="toggle-btn d-flex align-items-center justify-content-center">
+                                                <span *ngIf="showToggleBtn(def)" class="dsi hover text-muted"
+                                                    (click)="toggleSource(def)"
+                                                    [ngClass]="{'dsi-plus':sourceExpandCollapseObjects[def._id],'dsi-minus':!sourceExpandCollapseObjects[def._id]}"></span>
+                                            </div>
+                                            <div class="field-type mr-2">
+                                                <odp-field-type [field]="def" [onMapper]="true"></odp-field-type>
+                                            </div>
+                                            <div class="field-key">{{def.name}}</div>
+                                            <div class="mapping-line flex-fill"
+                                                [ngClass]="{'border-accent border-top':isSourceMapped(def)}"></div>
                                         </div>
-                                        <div class="field-type mr-2">
-                                            <odp-field-type [field]="def" [onMapper]="true"></odp-field-type>
-                                        </div>
-                                        <div class="field-key">{{def.name}}</div>
-                                        <div class="mapping-line flex-fill"
-                                            [ngClass]="{'border-accent border-top':isSourceMapped(def)}"></div>
-                                    </div>
-                                </ng-container>
-                            </div>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
                         </ng-container>
                     </div>
                 </div>

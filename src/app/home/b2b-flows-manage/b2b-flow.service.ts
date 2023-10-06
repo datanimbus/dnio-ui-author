@@ -284,14 +284,16 @@ export class B2bFlowService {
       nodeId = currNode._id;
     }
     let prevNode = this.nodeList.find(e => {
-      let nexItems = _.concat((e.onSuccess || []), (e.onError || []));
+      let nexItems = _.concat((e.onSuccess || []), (e.onError || []), (e.conditions || []));
       if (nexItems.find((es) => es._id == nodeId)) {
         return true;
       }
       return false;
     });
     if (prevNode) {
-      temp.push(prevNode);
+      if (prevNode.type != 'CONDITION') {
+        temp.push(prevNode);
+      }
       temp = temp.concat(this.getNodesBefore(prevNode));
     }
     return temp;
@@ -590,7 +592,7 @@ export class B2bFlowService {
         },
       ]
     },
- 
+
     // {
     //   name: 'Function',
     //   action: 'FUNCTION',

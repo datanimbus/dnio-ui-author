@@ -2,24 +2,26 @@
     <div class="source-list ml-3 border-right">
         <div class="source-list-item mb-3">
             <ng-container *ngFor="let node of nodeList">
-                <div class="d-flex align-items-center">
-                    <div class="py-2 fw-600 text-primary">{{node.name}}</div>
-                </div>
-                <div>
-                    <ng-container *ngFor="let def of allSources">
-                        <div *ngIf="def.nodeId == node._id"
-                            class="data-field d-flex align-items-center justify-content-start" draggable="true"
-                            (dragstart)="onDragStart($event,def)" [attr.data-id]="def._id">
-                            <div class="spacer" [ngStyle]="{'width':(def.depth*10)+'px'}"></div>
-                            <div class="field-type mr-2">
-                                <odp-field-type [field]="def" [onMapper]="true"></odp-field-type>
+                <ng-container *ngIf="node.type!='CONDITION'">
+                    <div class="d-flex align-items-center">
+                        <div class="py-2 fw-600 text-primary">{{node.name}}</div>
+                    </div>
+                    <div>
+                        <ng-container *ngFor="let def of allSources">
+                            <div *ngIf="def.nodeId == node._id"
+                                class="data-field d-flex align-items-center justify-content-start" draggable="true"
+                                (dragstart)="onDragStart($event,def)" [attr.data-id]="def._id">
+                                <div class="spacer" [ngStyle]="{'width':(def.depth*10)+'px'}"></div>
+                                <div class="field-type mr-2">
+                                    <odp-field-type [field]="def" [onMapper]="true"></odp-field-type>
+                                </div>
+                                <div class="field-key">{{def.key}}</div>
+                                <div class="mapping-line flex-fill"
+                                    [ngClass]="{'border-accent border-top':isSourceMapped(def)}"></div>
                             </div>
-                            <div class="field-key">{{def.key}}</div>
-                            <div class="mapping-line flex-fill"
-                                [ngClass]="{'border-accent border-top':isSourceMapped(def)}"></div>
-                        </div>
-                    </ng-container>
-                </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
             </ng-container>
         </div>
     </div>
