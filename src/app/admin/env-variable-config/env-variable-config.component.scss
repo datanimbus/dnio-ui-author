@@ -1,0 +1,37 @@
+/* Global Styles */
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Container Styles */
+.content {
+    height: calc(100vh - 225px);
+    overflow-y: auto;
+}
+
+/* Form Element Styles */
+.form-label, .form-value {
+    min-width: 300px;
+    max-width: 300px;
+}
+
+/* Form Info Styles */
+.form-info {
+    word-break: break-all;
+}
+
+/* Info Icon Styles */
+.info-icon-container, .info-icon {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.info-icon-container {
+    position: relative;
+}
+
+.info-icon {
+    color: #007bff; 
+    font-size: 18px;
+    margin-left: 5px;
+}

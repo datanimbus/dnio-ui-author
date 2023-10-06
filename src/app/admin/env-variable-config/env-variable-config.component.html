@@ -1,0 +1,38 @@
+<div class="d-flex align-items-start flex-column p-3">
+    <!-- Informational Text -->
+    <div class="text-muted font-14 mb-2 p-2 ml-2 pl-1">
+      <span>Please hover over the info icon to see which components need to be restarted.</span>
+    </div>
+  
+    <div class="content w-100 rounded">
+      <div class="card">
+        <div class="card-body bg-light rounded">
+          <!-- Environment Variable List -->
+          <ng-container *ngFor="let variable of envVariableList">
+            <div class="d-flex align-items-center mb-3">
+              <code class="form-label m-0 me-3 font-13 fw-500" [attr.for]="variable.label">{{ variable._id }}</code>
+  
+              <!-- Variable Input Fields -->
+              <input *ngIf="variable.type === 'string'" class="form-value form-control form-control-sm me-3"
+                [id]="variable._id" type="text" [(ngModel)]="variable.value">
+              <input *ngIf="variable.type === 'number'" class="form-value form-control form-control-sm me-3"
+                [id]="variable._id" type="number" [(ngModel)]="variable.value">
+              <input *ngIf="variable.type === 'boolean'" class="form-value form-control form-control-sm me-3" 
+                [id]="variable._id" type="text" [(ngModel)]="variable.value">
+  
+              <!-- Info Icon -->
+              <span class="dsi dsi-info-circle info-icon" data-toggle="tooltip" data-placement="top" 
+                ngbTooltip="{{ variable.usedIn }}"></span>
+  
+              <!-- Variable Description -->
+              <span class="form-info text-secondary flex-fill font-12 pl-3">
+                <label class="form-key me-2 font-13">{{ variable.description }}</label>
+              </span>
+            </div>
+          </ng-container>
+  
+          <button type="button" class="btn btn-primary" (click)="saveConfig()">Save Config</button>
+        </div>
+      </div>
+    </div>
+  </div>
