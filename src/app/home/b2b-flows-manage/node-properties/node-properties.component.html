@@ -35,7 +35,7 @@
                     [errorMessage]="nodeNameErrorMessage" (keydown.delete)="$event.stopPropagation();"
                     [edit]="edit"></odp-change-on-edit>
             </div>
-            <div class="form-group" *ngIf="currNode?.type!='ERROR'">
+            <!-- <div class="form-group" *ngIf="currNode?.type!='ERROR'">
                 <label class="font-14 fw-400 text-dark" for="nodeType">Node Type</label>
                 <select [disabled]="!edit.status" id="nodeType" class="form-control" [(ngModel)]="nodeType"
                     (ngModelChange)="onTypeChange($event); changesDone.emit()">
@@ -47,13 +47,10 @@
                     <option *ngIf="!isInputNode" value="FILE_WRITE">File Write</option>
                     <option *ngIf="!isInputNode" value="API">Invoke API JSON</option>
                     <option *ngIf="!isInputNode" value="API_FILE">Invoke API File Upload</option>
-                    <!-- <option *ngIf="!isInputNode" value="API_XML">Invoke API XML</option>
-                    <option *ngIf="!isInputNode" value="API_MULTIPART">API Multipart Upload</option> -->
+                   
                     <option *ngIf="!isInputNode" value="MAPPING">Mapping</option>
                     <option *ngIf="!isInputNode" value="DEDUPE">De-Dupe</option>
-                    <!-- <option *ngIf="!isInputNode" value="CONFLICT">Conflict</option> -->
-                    <!-- <option *ngIf="!isInputNode" value="FOREACH">For Each</option>
-                    <option *ngIf="!isInputNode" value="REDUCE">Reduce</option> -->
+     
                     <option *ngIf="!isInputNode" value="CODEBLOCK">Code Block</option>
                     <option *ngIf="!isInputNode" value="CON_DB">DB Connector</option>
                     <option *ngIf="!isInputNode" value="CON_FILE">SFTP Connector</option>
@@ -74,12 +71,9 @@
                     <option *ngIf="!isInputNode" value="RESPONSE">Response</option>
                     <option *ngIf="!isInputNode" value="CONVERT_JSON_JSON">Converter</option>
                     <option *ngIf="!isInputNode" value="CONDITION">Condition</option>
-                    <!-- <option *ngIf="!isInputNode" value="CONVERT_JSON_XML">Convert JSON to XML</option>
-                    <option *ngIf="!isInputNode" value="CONVERT_XML_JSON">Convert XML to JSON</option>
-                    <option *ngIf="!isInputNode" value="CONVERT_JSON_CSV">Convert JSON to CSV</option>
-                    <option *ngIf="!isInputNode" value="CONVERT_CSV_JSON">Convert CSV to JSON</option> -->
+                   
                 </select>
-            </div>
+            </div> -->
         </div>
         <!-- <div *ngIf="!isInputNode && (currNode?.type=='DATASERVICE' || currNode?.type=='API')" class="form-group">
             <label class="font-14 fw-400 text-dark mb-0" for="inputDataStructure">Body</label>

@@ -248,8 +248,8 @@ export class B2bFlowService {
     }
     if (type.startsWith('CON_')) {
       temp.type = 'CONNECTOR';
-      const category = type.split('_')[1];
-      temp.options['category'] = category
+      let category = type.split('_')[1];
+      temp.options['connectorType'] = category
     }
 
     if (type == 'FOREACH' || type == 'REDUCE') {
@@ -555,6 +555,23 @@ export class B2bFlowService {
       action: 'CON_STORAGE',
       name: 'Storage',
       icon: 'dsi dsi-connector'
+    },
+    {
+      name: 'KAFKA',
+      icon: 'dsi dsi-connector',
+      children: [
+        {
+          action: 'CON_PRODUCER',
+          name: 'Producer',
+          icon: 'dsi dsi-connector'
+        },
+        {
+          action: 'CON_CONSUMER',
+          name: 'Consumer',
+          icon: 'dsi dsi-connector'
+        },
+      
+      ]
     },
     {
       name: 'Data Service',

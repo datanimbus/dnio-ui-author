@@ -1,1 +1,24 @@
-<p>kafka-connector works!</p>
+<ng-container >
+    <div class="form-group position-relative ">
+        <label for="fields" class="d-flex align-items-center justify-content-between">
+          Topic Name
+        </label>
+        <odp-styled-text [currNode]="currNode" (finalValue)="onValueChange($event, 'topicName')" [value]="currNode.options.topicName" #typeAhead
+      [disabled]="!edit.status"></odp-styled-text>
+    </div>
+    <div class="form-group position-relative" *ngIf="type === 'PRODUCER'">
+        <label for="fields" class="d-flex align-items-center justify-content-between">
+          Offset
+        </label>
+        <odp-styled-text [currNode]="currNode" (finalValue)="onValueChange($event, 'offset')" [value]="currNode.options.offset" #typeAhead
+      [disabled]="!edit.status"></odp-styled-text>
+    </div>
+    <div class="form-group position-relative" *ngIf="type === 'CONSUMER'">
+        <label for="fields" class="d-flex align-items-center justify-content-between">
+          Partition Key
+        </label>
+        <odp-styled-text [currNode]="currNode" (finalValue)="onValueChange($event, 'partitionKey')" [value]="currNode.options.partitionKey" #typeAhead
+      [disabled]="!edit.status"></odp-styled-text>
+    </div>
+</ng-container>
+

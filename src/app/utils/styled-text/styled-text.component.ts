@@ -101,7 +101,7 @@ export class StyledTextComponent implements OnInit, OnChanges {
     }
 
     this.term = this.searchTerm || '';
-    this.suggestions = this.suggestions.length > 0 ? this.suggestions : this.variableSuggestions;
+    // this.suggestions = this.suggestions.length > 0 ? this.suggestions : this.variableSuggestions;
 
   }
 
@@ -257,7 +257,7 @@ export class StyledTextComponent implements OnInit, OnChanges {
         if (this.term) {
           term = this.term.replace('{{', '');
         }
-        return matches.length === 0 && this.term === '' ? [] : this.suggestions.filter((v) => {
+        return matches.length === 0 && this.term === '' ? [] : this.suggestionList.filter((v) => {
           const searchSegments = term.split('/');
           const labelSegments = v.label.split('/');
           return searchSegments.every((segment, index) => labelSegments[index].toLowerCase().indexOf(segment.toLowerCase()) > -1 );
@@ -325,6 +325,11 @@ export class StyledTextComponent implements OnInit, OnChanges {
 
   get variableSuggestions() {
     return this.flowService.getSuggestions(this.currNode)
+  }
+
+  get suggestionList() {
+    this.suggestions = this.suggestions.length > 0 ? this.suggestions : this.variableSuggestions;
+    return this.suggestions
   }
 
 
