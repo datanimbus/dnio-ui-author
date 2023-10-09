@@ -32,6 +32,9 @@ export class ConnectorPropertiesComponent implements OnInit, OnChanges {
     // this.getAvailableConnectors();
     // this.loadInitial();\/
     this.connectorType = this.currNode.options.connectorType;
+    if(this.connectorType && ['PRODUCER','CONSUMER'].includes(this.connectorType)){
+      this.connectorType = 'MESSAGING'
+    }
     this.connectorType && this.loadInitial()
   }
 
