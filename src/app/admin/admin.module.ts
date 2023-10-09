@@ -46,7 +46,7 @@ import { MapperFormulasComponent } from './metadata/mapper-formulas/mapper-formu
 import { CodeEditorModule } from '../utils/code-editor/code-editor.module';
 import { CustomNodeComponent } from './metadata/custom-node/custom-node.component';
 import { NpmLibrariesComponent } from './metadata/npm-libraries/npm-libraries.component';
-
+import { EnvVariableConfigComponent } from './env-variable-config/env-variable-config.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -101,7 +101,8 @@ import { NpmLibrariesComponent } from './metadata/npm-libraries/npm-libraries.co
     MetadataComponent,
     MapperFormulasComponent,
     CustomNodeComponent,
-    NpmLibrariesComponent
+    NpmLibrariesComponent,
+    EnvVariableConfigComponent
   ],
 })
 export class AdminModule { }
