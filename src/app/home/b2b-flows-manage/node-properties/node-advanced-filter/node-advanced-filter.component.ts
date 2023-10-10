@@ -107,7 +107,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
   }
 
   done() {
-
+   const prefix =  ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new' : ''
     this.currNode.options.filterString = this.showFilterString();
     const filterPayload = this.filterArray.map(filter => {
       if (filter['operator'].toLowerCase().includes('equal')) {
@@ -116,7 +116,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
         const query = {};
         query[operator] = filter['value']['val'] || filter['value']['from'];
         let final = {};
-        final[path.toString()] = query;
+        final[prefix + path.toString()] = query;
         return final;
       }
 
@@ -125,7 +125,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
         const operation = filter['operator'] === 'contains' ? regex : { $not: regex };
         const path = filter['path'];
         let final = {};
-        final[path.toString()] = operation;
+        final[prefix + path.toString()] = operation;
         return final;
       }
 
@@ -135,7 +135,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
         const query = {};
         query[operator] = filter['value']['val'] || filter['value']['from'];
         let final = {};
-        final[path.toString()] = query;
+        final[prefix + path.toString()] = query;
         return final;
       }
 
@@ -145,7 +145,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
         const to = filter['value']['to'];
         const query = { $gte: from, $lte: to };
         let final = {};
-        final[path.toString()] = query;
+        final[prefix + path.toString()] = query;
         return final;
       }
 

@@ -252,6 +252,9 @@ export class ConnectorsManageComponent implements OnInit, OnDestroy {
       return true;
     }
     return Object.keys(condition).every(key => {
+      if(Array.isArray(condition[key])){
+        return condition[key].includes(this.connector.values[key]);
+      }
       return this.connector.values[key] == condition[key];
     });
   }
