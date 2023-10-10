@@ -165,7 +165,7 @@ export class AgentViewComponent implements OnInit {
     this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/` + this.agentDetails._id, this.agentDetails).subscribe(res => {
       this.showLazyLoader = false;
       if (res) {
-        this.ts.success('Agent Saved Sucessfully');
+        this.ts.success('Agent Saved Successfully');
         this.showEditAgentWindow = false;
       }
     }, err => {
@@ -293,7 +293,7 @@ export class AgentViewComponent implements OnInit {
     this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/`+this.agentDetails._id, this.agentDetails).subscribe(res => {
       this.showLazyLoader = false;
       if(res){
-        this.ts.success('Agent Saved Sucessfully');
+        this.ts.success('Agent Saved Successfully');
       }
       // this.getAgentList();
     }, err => {
@@ -350,11 +350,19 @@ export class AgentViewComponent implements OnInit {
 
   disableAgent(){
     this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/utils/${this.agentDetails._id}/disable`,{}).subscribe(_ =>{
+      this.ts.success('Agent Disabled Successfully');
+        this.getAgentDetails();
+    })
+}
+ enableAgent(){
+    this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/utils/${this.agentDetails._id}/enable`,{}).subscribe(_ =>{
+      this.ts.success('Agent Enabled Successfully');
         this.getAgentDetails();
     })
 }
 stopAgent(){
     this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/utils/${this.agentDetails._id}/stop`,{}).subscribe(_ =>{
+      this.ts.success('Agent Stopped Successfully');
         this.getAgentDetails();
     })
 }

@@ -118,8 +118,13 @@
                                 </div>
                                 <div id="agent-disabke"
                                     class="list-group-item list-group-item-action py-2 border-0 hover"
-                                    *ngIf="canEditAgent(agent._id)" (click)="disableAgent(agent)">
+                                    *ngIf="canEditAgent(agent._id) && agent.active" (click)="disableAgent(agent)">
                                     Disable
+                                </div>
+                                <div id="agent-disabke"
+                                    class="list-group-item list-group-item-action py-2 border-0 hover"
+                                    *ngIf="canEditAgent(agent._id) && !agent.active" (click)="enableAgent(agent)">
+                                    Enable
                                 </div>
                                 <div id="agent-clone" class="list-group-item list-group-item-action py-2 border-0 hover"
                                     *ngIf="hasCreatePermission('AGENT')" (click)="cloneAgent(agent)">
