@@ -107,7 +107,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
   }
 
   done() {
-   const prefix =  ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new' : ''
+   const prefix =  ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : ''
     this.currNode.options.filterString = this.showFilterString();
     const filterPayload = this.filterArray.map(filter => {
       if (filter['operator'].toLowerCase().includes('equal')) {
@@ -167,11 +167,13 @@ export class NodeAdvancedFilterComponent implements OnInit {
 
 
   convertToFilters(queryArray) {
+    const prefix =  ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : ''
     const filters = [];
   
     queryArray.forEach(queryObject => {
-      const path = Object.keys(queryObject)[0];
+      let path = Object.keys(queryObject)[0];
       const value = queryObject[path];
+      path = path.replace(prefix, '');
   
       if (value.hasOwnProperty('$eq') || value.hasOwnProperty('$ne')) {
         const operator = value.hasOwnProperty('$eq') ? 'equals' : 'notEquals';
