@@ -11,7 +11,7 @@
         <!-- <span class="text-dark" *ngIf="value">Re-Configure</span> -->
         <span class="text-break mr-1 fw-600 hover">{{value}}</span>
         <div class="d-flex align-items-center justify-content-end">
-            <span *ngIf="value"
+            <span *ngIf="value && edit.status"
                 class="icon dsi dsi-minus-circle text-danger hover d-flex align-items-center justify-content-center"
                 (click)="unsetValue()"></span>
             <span class="icon dsi dsi-settings text-accent hover d-flex align-items-center justify-content-center" *ngIf="edit.status"

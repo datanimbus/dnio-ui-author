@@ -30,16 +30,16 @@
     <div class="form-group">
         <label class="font-14 fw-400 text-dark" for="pathName">Path Name</label>
         <input id="pathName" type="text" class="form-control" [(ngModel)]="name"
-            (ngModelChange)="changesDone.emit();onChange()">
+            (ngModelChange)="changesDone.emit();onChange()" [disabled]="!edit.status">
     </div>
     <ng-container *ngIf="pathType=='success'">
         <div class="form-group">
             <label class="font-14 fw-400 text-dark" for="pathColor">Path Color</label>
             <div class="d-flex align-items-center justify-content-start">
                 <div *ngIf="color" class="selected-color hover rounded" [style]="'background:#'+color"
-                    (click)="toggle['colorPicker']=!toggle['colorPicker']"></div>
+                    (click)="edit.status ? toggle['colorPicker']=!toggle['colorPicker'] : null"></div>
                 <div *ngIf="!color" class="selected-color hover rounded bg-secondary"
-                    (click)="toggle['colorPicker']=!toggle['colorPicker']"></div>
+                    (click)="edit.status ? toggle['colorPicker']=!toggle['colorPicker'] : null"></div>
             </div>
         </div>
         <div *ngIf="toggle['colorPicker']" class="form-group">
