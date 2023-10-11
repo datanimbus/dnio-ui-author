@@ -188,11 +188,19 @@ export class AgentsComponent implements OnInit, OnDestroy {
 
     disableAgent(agent){
         this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/utils/${agent._id}/disable`,{}).subscribe(_ =>{
+            this.ts.success('Agent Disabled Successfully');
+            this.getAgentList();
+        })
+    }
+    enableAgent(agent){
+        this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/utils/${agent._id}/enable`,{}).subscribe(_ =>{
+            this.ts.success('Agent Enabled Successfully');
             this.getAgentList();
         })
     }
     stopAgent(agent){
         this.commonService.put('partnerManager', `/${this.commonService.app._id}/agent/utils/${agent._id}/stop`,{}).subscribe(_ =>{
+            this.ts.success('Agent Stopped Successfully');
             this.getAgentList();
         })
     }
@@ -201,7 +209,7 @@ export class AgentsComponent implements OnInit, OnDestroy {
         if (data) {
             this.subscriptions['deleteAgent'] = this.commonService.delete('partnerManager', `/${this.commonService.app._id}/agent/` + this.records[data.index]._id, this.records[data.index]).subscribe(res => {
                 if (res) {
-                    this.ts.success('Agent Deleted Sucessfully');
+                    this.ts.success('Agent Deleted Successfully');
                     this.getAgentList();
                 }
 
