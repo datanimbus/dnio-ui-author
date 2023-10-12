@@ -505,13 +505,13 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
   addNode(event: any, type: string, anotherInputNode: boolean = false) {
     if (type) {
-      
+
       const tempNode = this.flowService.getNodeObject(type, this.nodeList, anotherInputNode);
       tempNode.coordinates = {};
       const ele: HTMLElement = document.querySelectorAll('.flow-designer-svg')[0] as HTMLElement;
       const rect = ele.getBoundingClientRect();
       tempNode.coordinates.x = Number(this.contextMenuStyle.left.replace('px', '')) - rect.left - 70;
-      tempNode.coordinates.y = Number(this.contextMenuStyle.top.replace('px', '') )- rect.top - 18;
+      tempNode.coordinates.y = Number(this.contextMenuStyle.top.replace('px', '')) - rect.top - 18;
       this.contextMenuStyle = null;
       this.nodeList.push(tempNode);
     }
@@ -581,7 +581,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   // }
 
 
-  @HostListener('mousedown', ['$event'])
+  @HostListener('document:mousedown', ['$event'])
   onMouseDown(event: any) {
     this.isMouseDown = event;
     event.stopPropagation();
@@ -595,6 +595,8 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       if (currNode) {
         currNode.coordinates.x = Math.floor(currNode.coordinates.x / 20) * 20;
         currNode.coordinates.y = Math.floor(currNode.coordinates.y / 20) * 20;
+        delete currNode.coordinates.clientX;
+        delete currNode.coordinates.clientY;
         this.flowService.reCreatePaths.emit();
       }
     }
@@ -603,18 +605,23 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     // this.flowService.anchorSelected = null;
   }
 
-  @HostListener('mousemove', ['$event'])
+  @HostListener('document:mousemove', ['$event'])
   onMouseMove(event: any) {
-    event.stopPropagation();
+    // event.stopPropagation();
     if (this.isMouseDown) {
       let targetEle = (this.isMouseDown.target as HTMLElement);
+      // console.log(targetEle);
       let currNode = this.nodeList.find(e => e._id == targetEle.dataset.id);
       if (currNode) {
-        const tempX = event.clientX - this.isMouseDown.clientX;
-        const tempY = event.clientY - this.isMouseDown.clientY;
+        let clientX = parseInt(currNode.coordinates.clientX || this.isMouseDown.clientX + '');
+        let clientY = parseInt(currNode.coordinates.clientY || this.isMouseDown.clientY + '');
+        const tempX = event.clientX - clientX;
+        const tempY = event.clientY - clientY;
         // console.log(tempX, tempY);
         if (Math.abs(tempX) > 20 || Math.abs(tempY) > 20) {
-          this.isMouseDown = event;
+          // this.isMouseDown = event;
+          currNode.coordinates.clientX = event.clientX;
+          currNode.coordinates.clientY = event.clientY;
           currNode.coordinates.x += tempX;
           currNode.coordinates.y += tempY;
         }
