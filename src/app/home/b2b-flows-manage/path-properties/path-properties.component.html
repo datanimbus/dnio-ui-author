@@ -47,11 +47,11 @@
             </odp-color-picker>
         </div>
     </ng-container>
-    <!-- <div class="form-group">
+    <div *ngIf="pathType=='success'" class="form-group">
         <label class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between" for="nodeName">
             <span>Path Condition</span>
         </label>
         <odp-path-condition-creator [nodeList]="nodeList" [(value)]="condition"
             [prevNode]="path.path._id" [edit]="edit"></odp-path-condition-creator>
-    </div> -->
+    </div>
 </div>

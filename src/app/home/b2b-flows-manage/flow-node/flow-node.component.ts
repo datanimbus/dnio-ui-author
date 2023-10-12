@@ -133,12 +133,10 @@ export class FlowNodeComponent implements OnInit {
           if (!sourceNode.onSuccess) {
             sourceNode.onSuccess = [];
           }
-          if (sourceNode.onSuccess.length == 0) {
-            sourceNode.onSuccess.push({
-              _id: targetNode._id,
-              index: sourceIndex
-            });
-          }
+          sourceNode.onSuccess.push({
+            _id: targetNode._id,
+            index: sourceIndex
+          });
         }
       }
     }
