@@ -16,6 +16,5 @@ export class SftpConnectorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
   }
 }

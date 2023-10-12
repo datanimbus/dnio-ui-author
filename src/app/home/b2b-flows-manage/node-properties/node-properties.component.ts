@@ -125,16 +125,19 @@ export class NodePropertiesComponent implements OnInit {
           this.nodeType = `CON_${connectorType.toUpperCase()}`;
         }
         if (this.currNode.options.read) {
-          this.nodeType = 'SFTP_READ';
+          this.nodeType = 'SFTP_GET';
         }
         if (this.currNode.options.write) {
-          this.nodeType = 'SFTP_WRITE';
+          this.nodeType = 'SFTP_PUT';
         }
         if (this.currNode.options.move) {
-          this.nodeType = 'SFTP_MOVE';
+          this.nodeType = 'SFTP_RENAME';
         }
         if (this.currNode.options.list) {
-          this.nodeType = 'SFTP_LIST';
+          this.nodeType = 'SFTP_LS';
+        }
+        if (this.currNode.options.delete) {
+          this.nodeType = 'SFTP_DELETE';
         }
         break;
       default:
@@ -445,6 +448,9 @@ export class NodePropertiesComponent implements OnInit {
       || this.currNode.type == 'CONVERT_CSV_JSON') {
       return false;
     }
+    if(this.currNode.options.connectorType === 'SFTP' && (this.currNode.options.read || this.currNode.options.list)) {
+      return false;
+    }
     return true;
   }
 
@@ -469,6 +475,9 @@ export class NodePropertiesComponent implements OnInit {
   }
 
   get showOutputSelector() {
+    if(this.currNode.options.connectorType === 'SFTP' && this.currNode.options.list){
+      return false
+    }
     return this.currNode.type != 'ERROR'
       && this.currNode?.type != 'DATASERVICE'
       && this.currNode?.type != 'MAPPING'
