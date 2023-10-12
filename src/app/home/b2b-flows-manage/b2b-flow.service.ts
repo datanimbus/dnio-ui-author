@@ -84,13 +84,15 @@ export class B2bFlowService {
       case 'CONNECTOR':
         if (node.options.connectorType === 'SFTP') {
           if (node.options.read) {
-            return 'SFTP Read';
+            return 'SFTP Get';
           } else if (node.options.list) {
-            return 'SFTP List';
+            return 'SFTP LS';
           } else if (node.options.move) {
-            return 'SFTP Move';
-          } else {
-            return 'SFTP Write';
+            return 'SFTP Rename';
+          } else if (node.options.delete) {
+            return 'SFTP Delete';
+          }else {
+            return 'SFTP Put';
           }
         } else {
           return this.nodeLabelMap[node.type] || node.type;
@@ -241,10 +243,18 @@ export class B2bFlowService {
     }
 
     if (type.startsWith('SFTP_')) {
+      const changeObj = {
+        'GET': 'read',
+        'PUT': 'write',
+        'RENAME': 'move',
+        'LS': 'list',
+        'DELETE': 'delete'
+      }
       temp.type = 'CONNECTOR';
       temp.options.connectorType = 'SFTP';
-      const subType = type.split('_')[1];
+      const subType = changeObj[type.split('_')[1]];
       temp.options[subType.toLowerCase()] = true
+      temp.dataStructure['outgoing'] = this.getSftpListODS()
     }
     if (type.startsWith('CON_')) {
       temp.type = 'CONNECTOR';
@@ -496,23 +506,28 @@ export class B2bFlowService {
       name: 'SFTP',
       children: [
         {
-          action: 'SFTP_READ',
-          name: 'SFTP Read',
+          action: 'SFTP_GET',
+          name: 'SFTP Get',
           icon: 'dsi dsi-function'
         },
         {
-          action: 'SFTP_WRITE',
-          name: 'SFTP Write',
+          action: 'SFTP_PUT',
+          name: 'SFTP Put',
           icon: 'dsi dsi-function'
         },
         {
-          action: 'SFTP_MOVE',
-          name: 'SFTP Move',
+          action: 'SFTP_REMOVE',
+          name: 'SFTP Rename',
           icon: 'dsi dsi-function'
         },
         {
-          action: 'SFTP_LIST',
-          name: 'SFTP List',
+          action: 'SFTP_LS',
+          name: 'SFTP LS',
+          icon: 'dsi dsi-function'
+        },
+        {
+          action: 'SFTP_DELETE',
+          name: 'SFTP Delete',
           icon: 'dsi dsi-function'
         },
       ],
@@ -789,4 +804,162 @@ export class B2bFlowService {
 
     return obj
   }
+
+   getSftpListODS (){
+    return {
+      "_id": "SFTP_LIST",
+      "name": "SFTP_LIST",
+      "type": "Object",
+      "definition": [
+          {
+              "key": "type",
+              "type": "String",
+              "properties": {
+                  "name": "type",
+                  "dataPath": "type",
+                  "dataPathSegs": [
+                      "type"
+                  ]
+              }
+          },
+          {
+              "key": "name",
+              "type": "String",
+              "properties": {
+                  "name": "name",
+                  "dataPath": "name",
+                  "dataPathSegs": [
+                      "name"
+                  ]
+              }
+          },
+          {
+              "key": "size",
+              "type": "Number",
+              "properties": {
+                  "name": "size",
+                  "fieldLength": 10,
+                  "_typeChanged": "Number",
+                  "precision": 2,
+                  "dataPath": "size",
+                  "dataPathSegs": [
+                      "size"
+                  ]
+              }
+          },
+          {
+              "key": "modifyTime",
+              "type": "Number",
+              "properties": {
+                  "name": "modifyTime",
+                  "precision": 2,
+                  "dataPath": "modifyTime",
+                  "dataPathSegs": [
+                      "modifyTime"
+                  ]
+              }
+          },
+          {
+              "key": "accessTime",
+              "type": "Number",
+              "properties": {
+                  "name": "accessTime",
+                  "precision": 2,
+                  "dataPath": "accessTime",
+                  "dataPathSegs": [
+                      "accessTime"
+                  ]
+              }
+          },
+          {
+              "key": "rights",
+              "type": "Object",
+              "definition": [
+                  {
+                      "_fieldId": "c40cc464-68e3-11ee-b3ec-2104bf6094ec",
+                      "type": "String",
+                      "key": "user",
+                      "properties": {
+                          "name": "user",
+                          "dataPathSegs": [
+                              "rights",
+                              "user"
+                          ],
+                          "dataPath": "rights.user"
+                      }
+                  },
+                  {
+                      "_fieldId": "c40ceb70-68e3-11ee-b3ec-2104bf6094ec",
+                      "type": "String",
+                      "key": "group",
+                      "properties": {
+                          "name": "group",
+                          "dataPathSegs": [
+                              "rights",
+                              "group"
+                          ],
+                          "dataPath": "rights.group"
+                      }
+                  },
+                  {
+                      "_fieldId": "c40ceb71-68e3-11ee-b3ec-2104bf6094ec",
+                      "type": "String",
+                      "key": "other",
+                      "properties": {
+                          "name": "other",
+                          "dataPathSegs": [
+                              "rights",
+                              "other"
+                          ],
+                          "dataPath": "rights.other"
+                      }
+                  }
+              ],
+              "properties": {
+                  "name": "rights",
+                  "dataPath": "rights",
+                  "dataPathSegs": [
+                      "rights"
+                  ]
+              }
+          },
+          {
+              "key": "owner",
+              "type": "Number",
+              "properties": {
+                  "name": "owner",
+                  "precision": 2,
+                  "dataPath": "owner",
+                  "dataPathSegs": [
+                      "owner"
+                  ]
+              }
+          },
+          {
+              "key": "group",
+              "type": "Number",
+              "properties": {
+                  "name": "group",
+                  "precision": 2,
+                  "dataPath": "group",
+                  "dataPathSegs": [
+                      "group"
+                  ]
+              }
+          },
+          {
+              "key": "longname",
+              "type": "String",
+              "properties": {
+                  "name": "longname",
+                  "dataPath": "longname",
+                  "dataPathSegs": [
+                      "longname"
+                  ]
+              }
+          }
+      ],
+  }
+   }
+
 }
