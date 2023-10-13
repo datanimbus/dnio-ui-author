@@ -53,6 +53,10 @@ export class NodePropertiesComponent implements OnInit {
 
   ngOnInit(): void {
     this.prevNode = this.nodeList.find(e => (e.onSuccess || []).findIndex(es => es._id == this.currNode._id) > -1);
+    if(!this.prevNode){
+      this.prevNode = this.nodeList.find(e => (e.onError || []).findIndex(es => es._id == this.currNode._id) > -1);
+
+    }
     if (this.prevNode && !this.prevNode.dataStructure) {
       this.prevNode.dataStructure = {};
     }

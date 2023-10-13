@@ -142,6 +142,7 @@ export class NodeMappingComponent implements OnInit {
       item.depth = 0;
       this.allConstants.push(item);
     });
+    this.flowData.errorNode && this.dealWithErroNode(this.nodeList);
     this.nodeList.forEach((node: any) => {
       let outgoing;
       if (node.dataStructure.outgoing && node.dataStructure.outgoing.definition) {
@@ -154,6 +155,17 @@ export class NodeMappingComponent implements OnInit {
         }
       }
     });
+  }
+
+  dealWithErroNode(completeList: Array<any>) {
+    if(this.flowData.errorNode?.dataStructure?.outgoing?.definition){
+      completeList.push(this.flowData.errorNode)
+    }
+    else if(this.flowData.errorNode?.dataStructure?.outgoing?._id){
+      const id = this.flowData.errorNode.dataStructure.outgoing._id || '';
+      this.flowData.errorNode.dataStructure['outgoing'] = this.flowData.dataStructures[id]
+      completeList.push(this.flowData.errorNode)
+    }
   }
 
   cancel() {

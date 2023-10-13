@@ -90,7 +90,7 @@ export class B2bFlowService {
             return 'SFTP Rename';
           } else if (node.options.delete) {
             return 'SFTP Delete';
-          }else {
+          } else {
             return 'SFTP Put';
           }
         } else {
@@ -279,6 +279,10 @@ export class B2bFlowService {
       tempCode.push('\t}');
       tempCode.push('}');
       temp.options.code = tempCode.join('\n');
+    }
+
+    if (type === 'ERROR') {
+      temp.dataStructure['outgoing'] = this.getErrorODS()
     }
     return temp;
   }
@@ -515,7 +519,7 @@ export class B2bFlowService {
           icon: 'dsi dsi-function'
         },
         {
-          action: 'SFTP_REMOVE',
+          action: 'SFTP_RENAME',
           name: 'SFTP Rename',
           icon: 'dsi dsi-function'
         },
@@ -584,7 +588,7 @@ export class B2bFlowService {
           name: 'Consumer',
           icon: 'dsi dsi-connector'
         },
-      
+
       ]
     },
     {
@@ -814,161 +818,203 @@ export class B2bFlowService {
     return obj
   }
 
-   getSftpListODS (){
+  getSftpListODS() {
     return {
       "_id": "SFTP_LIST",
       "name": "SFTP_LIST",
       "type": "Object",
       "definition": [
-          {
-              "key": "type",
-              "type": "String",
-              "properties": {
-                  "name": "type",
-                  "dataPath": "type",
-                  "dataPathSegs": [
-                      "type"
-                  ]
-              }
-          },
-          {
-              "key": "name",
-              "type": "String",
-              "properties": {
-                  "name": "name",
-                  "dataPath": "name",
-                  "dataPathSegs": [
-                      "name"
-                  ]
-              }
-          },
-          {
-              "key": "size",
-              "type": "Number",
-              "properties": {
-                  "name": "size",
-                  "fieldLength": 10,
-                  "_typeChanged": "Number",
-                  "precision": 2,
-                  "dataPath": "size",
-                  "dataPathSegs": [
-                      "size"
-                  ]
-              }
-          },
-          {
-              "key": "modifyTime",
-              "type": "Number",
-              "properties": {
-                  "name": "modifyTime",
-                  "precision": 2,
-                  "dataPath": "modifyTime",
-                  "dataPathSegs": [
-                      "modifyTime"
-                  ]
-              }
-          },
-          {
-              "key": "accessTime",
-              "type": "Number",
-              "properties": {
-                  "name": "accessTime",
-                  "precision": 2,
-                  "dataPath": "accessTime",
-                  "dataPathSegs": [
-                      "accessTime"
-                  ]
-              }
-          },
-          {
-              "key": "rights",
-              "type": "Object",
-              "definition": [
-                  {
-                      "_fieldId": "c40cc464-68e3-11ee-b3ec-2104bf6094ec",
-                      "type": "String",
-                      "key": "user",
-                      "properties": {
-                          "name": "user",
-                          "dataPathSegs": [
-                              "rights",
-                              "user"
-                          ],
-                          "dataPath": "rights.user"
-                      }
-                  },
-                  {
-                      "_fieldId": "c40ceb70-68e3-11ee-b3ec-2104bf6094ec",
-                      "type": "String",
-                      "key": "group",
-                      "properties": {
-                          "name": "group",
-                          "dataPathSegs": [
-                              "rights",
-                              "group"
-                          ],
-                          "dataPath": "rights.group"
-                      }
-                  },
-                  {
-                      "_fieldId": "c40ceb71-68e3-11ee-b3ec-2104bf6094ec",
-                      "type": "String",
-                      "key": "other",
-                      "properties": {
-                          "name": "other",
-                          "dataPathSegs": [
-                              "rights",
-                              "other"
-                          ],
-                          "dataPath": "rights.other"
-                      }
-                  }
-              ],
-              "properties": {
-                  "name": "rights",
-                  "dataPath": "rights",
-                  "dataPathSegs": [
-                      "rights"
-                  ]
-              }
-          },
-          {
-              "key": "owner",
-              "type": "Number",
-              "properties": {
-                  "name": "owner",
-                  "precision": 2,
-                  "dataPath": "owner",
-                  "dataPathSegs": [
-                      "owner"
-                  ]
-              }
-          },
-          {
-              "key": "group",
-              "type": "Number",
-              "properties": {
-                  "name": "group",
-                  "precision": 2,
-                  "dataPath": "group",
-                  "dataPathSegs": [
-                      "group"
-                  ]
-              }
-          },
-          {
-              "key": "longname",
-              "type": "String",
-              "properties": {
-                  "name": "longname",
-                  "dataPath": "longname",
-                  "dataPathSegs": [
-                      "longname"
-                  ]
-              }
+        {
+          "key": "type",
+          "type": "String",
+          "properties": {
+            "name": "type",
+            "dataPath": "type",
+            "dataPathSegs": [
+              "type"
+            ]
           }
+        },
+        {
+          "key": "name",
+          "type": "String",
+          "properties": {
+            "name": "name",
+            "dataPath": "name",
+            "dataPathSegs": [
+              "name"
+            ]
+          }
+        },
+        {
+          "key": "size",
+          "type": "Number",
+          "properties": {
+            "name": "size",
+            "fieldLength": 10,
+            "_typeChanged": "Number",
+            "precision": 2,
+            "dataPath": "size",
+            "dataPathSegs": [
+              "size"
+            ]
+          }
+        },
+        {
+          "key": "modifyTime",
+          "type": "Number",
+          "properties": {
+            "name": "modifyTime",
+            "precision": 2,
+            "dataPath": "modifyTime",
+            "dataPathSegs": [
+              "modifyTime"
+            ]
+          }
+        },
+        {
+          "key": "accessTime",
+          "type": "Number",
+          "properties": {
+            "name": "accessTime",
+            "precision": 2,
+            "dataPath": "accessTime",
+            "dataPathSegs": [
+              "accessTime"
+            ]
+          }
+        },
+        {
+          "key": "rights",
+          "type": "Object",
+          "definition": [
+            {
+              "type": "String",
+              "key": "user",
+              "properties": {
+                "name": "user",
+                "dataPathSegs": [
+                  "rights",
+                  "user"
+                ],
+                "dataPath": "rights.user"
+              }
+            },
+            {
+              "type": "String",
+              "key": "group",
+              "properties": {
+                "name": "group",
+                "dataPathSegs": [
+                  "rights",
+                  "group"
+                ],
+                "dataPath": "rights.group"
+              }
+            },
+            {
+              "type": "String",
+              "key": "other",
+              "properties": {
+                "name": "other",
+                "dataPathSegs": [
+                  "rights",
+                  "other"
+                ],
+                "dataPath": "rights.other"
+              }
+            }
+          ],
+          "properties": {
+            "name": "rights",
+            "dataPath": "rights",
+            "dataPathSegs": [
+              "rights"
+            ]
+          }
+        },
+        {
+          "key": "owner",
+          "type": "Number",
+          "properties": {
+            "name": "owner",
+            "precision": 2,
+            "dataPath": "owner",
+            "dataPathSegs": [
+              "owner"
+            ]
+          }
+        },
+        {
+          "key": "group",
+          "type": "Number",
+          "properties": {
+            "name": "group",
+            "precision": 2,
+            "dataPath": "group",
+            "dataPathSegs": [
+              "group"
+            ]
+          }
+        },
+        {
+          "key": "longname",
+          "type": "String",
+          "properties": {
+            "name": "longname",
+            "dataPath": "longname",
+            "dataPathSegs": [
+              "longname"
+            ]
+          }
+        }
       ],
+    }
   }
-   }
+
+  getErrorODS() {
+    return {
+      "_id": "ERROR",
+      "name": "ERROR",
+      "type": "Object",
+      "definition": [
+        {
+          "key": "statusCode",
+          "type": "Number",
+          "properties": {
+            "name": "statusCode",
+            "precision": 2,
+            "dataPath": "statusCode",
+            "dataPathSegs": [
+              "statusCode"
+            ]
+          }
+        },
+        {
+          "key": "message",
+          "type": "String",
+          "properties": {
+            "name": "message",
+            "dataPath": "message",
+            "dataPathSegs": [
+              "message"
+            ]
+          }
+        },
+        {
+          "key": "stackTrack",
+          "type": "String",
+          "properties": {
+            "name": "stackTrack",
+            "dataPath": "stackTrack",
+            "dataPathSegs": [
+              "stackTrack"
+            ]
+          }
+        }
+
+      ]
+    }
+  }
 
 }
