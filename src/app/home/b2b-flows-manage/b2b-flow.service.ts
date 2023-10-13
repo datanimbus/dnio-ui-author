@@ -880,7 +880,6 @@ export class B2bFlowService {
           "type": "Object",
           "definition": [
             {
-              "_fieldId": "c40cc464-68e3-11ee-b3ec-2104bf6094ec",
               "type": "String",
               "key": "user",
               "properties": {
@@ -893,7 +892,6 @@ export class B2bFlowService {
               }
             },
             {
-              "_fieldId": "c40ceb70-68e3-11ee-b3ec-2104bf6094ec",
               "type": "String",
               "key": "group",
               "properties": {
@@ -906,7 +904,6 @@ export class B2bFlowService {
               }
             },
             {
-              "_fieldId": "c40ceb71-68e3-11ee-b3ec-2104bf6094ec",
               "type": "String",
               "key": "other",
               "properties": {
