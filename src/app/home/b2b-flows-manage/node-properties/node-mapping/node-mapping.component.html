@@ -74,7 +74,13 @@
                                 <div class="d-flex align-items-center">
                                     <span class="dsi hover text-muted" (click)="toggleSource(node)"
                                         [ngClass]="{'dsi-plus':sourceExpandCollapseObjects[node._id],'dsi-minus':!sourceExpandCollapseObjects[node._id]}"></span>
-                                    <div class="py-2 fw-600 text-primary">{{node.name}}</div>
+                                    <div class="py-2">
+                                        <span class="fw-600 text-primary">{{node.name}}</span>
+                                        <span *ngIf="getNodeDataType(node)=='Object'"
+                                            class="fw-600 text-dark font-12 ml-3 dsi dsi-object"></span>
+                                        <span *ngIf="getNodeDataType(node)=='Array'"
+                                            class="fw-600 text-dark font-12 ml-3 dsi dsi-array"></span>
+                                    </div>
                                 </div>
                                 <div *ngIf="!sourceExpandCollapseObjects[node._id]">
                                     <ng-container *ngFor="let def of allSources">
@@ -111,7 +117,13 @@
             </svg>
             <div class="target-list border-left">
                 <div class="target-list-item mb-3">
-                    <span class="fw-600 text-primary font-14 p-2">{{currNode.name}}</span>
+                    <span class="font-14 p-2">
+                        <span class="fw-600 text-primary">{{currNode.name}}</span>
+                        <span *ngIf="getNodeDataType(currNode)=='Object'"
+                            class="fw-600 text-dark font-12 ml-3 dsi dsi-object"></span>
+                        <span *ngIf="getNodeDataType(currNode)=='Array'"
+                            class="fw-600 text-dark font-12 ml-3 dsi dsi-array"></span>
+                    </span>
                     <div class="target-field-list">
                         <div *ngFor="let def of allTargets" class="target-field-list-item position-relative">
                             <div *ngIf="!def.hide && !isTargetItemCollapsed(def)"

@@ -24,6 +24,9 @@ export class FormulaEditorComponent implements OnInit {
   selectedSource: any;
   selectedFormula: any;
   selectedParam: any;
+  advanceFormula: string;
+  insertText: EventEmitter<any>;
+  formulaType: string;
   constructor(private flowService: B2bFlowService,
     private mappingService: MappingService,
     private commonService: CommonService) {
@@ -33,12 +36,21 @@ export class FormulaEditorComponent implements OnInit {
     this.usedFormulas = [];
     this.edit = {
       status: false
-    }
+    };
+    this.formulaType = 'basic';
+    this.insertText = new EventEmitter();
   }
 
   ngOnInit(): void {
     this.tempData = JSON.parse(JSON.stringify(this.data));
     this.usedFormulas = this.data.formulaConfig;
+    this.advanceFormula = this.data.advanceFormula;
+    this.formulaType = this.data.formulaType || 'basic';
+    if (this.advanceFormula) {
+      this.formulaType = 'advance';
+    } else {
+      this.formulaType = 'basic';
+    }
     this.fetchAllFormulas();
   }
 
@@ -85,7 +97,15 @@ export class FormulaEditorComponent implements OnInit {
     } else {
       this.data.formulaConfig = null;
     }
+    this.data.advanceFormula = this.advanceFormula;
+    this.data.formulaType == this.formulaType;
     this.dataChange.emit(this.data);
+  }
+
+  changeFormulaType(type: string) {
+    this.formulaType = type;
+    this.usedFormulas = [];
+    this.advanceFormula = null;
   }
 
   getDataTypeStyleClass(type: string) {
@@ -124,7 +144,7 @@ export class FormulaEditorComponent implements OnInit {
     this.selectedFormula = fn;
   }
 
-  onDrop(event: any) {
+  onBasicDrop(event: any) {
     if (!this.usedFormulas) {
       this.usedFormulas = [];
     }
@@ -147,12 +167,25 @@ export class FormulaEditorComponent implements OnInit {
 
   onParamDrop(event: any, formula: any, param: any) {
     param.over = false;
-    console.log(formula, param);
     if (this.selectedSource) {
       param.substituteVal = JSON.parse(JSON.stringify(this.selectedSource));
     } else if (this.selectedFormula) {
       param.substituteFn = JSON.parse(JSON.stringify(this.selectedFormula));
     }
+  }
+
+  onAdvanceDrop(event: any) {
+    if (!this.usedFormulas) {
+      this.usedFormulas = [];
+    }
+    if (this.selectedSource) {
+      this.insertText.emit(`{{${this.selectedSource._id}}}`);
+    } else if (this.selectedFormula) {
+      let tempFormula = this.selectedFormula.name + '(' + this.selectedFormula.params.map(e => e.name).join(', ') + ')';
+      this.insertText.emit(tempFormula);
+    }
+    this.selectedFormula = null;
+    this.selectedSource = null;
   }
 
   removeUsedFn(item: any, index: number) {
