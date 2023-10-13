@@ -48,9 +48,8 @@ export class B2bFlowService {
       ERROR: 'Global Error',
       FILE_READ: 'File Reader',
       FILE_WRITE: 'File Writer',
-      PARSE_JSON: "Parse JSON",
-      PARSE_XML: "Parse XML",
-      PARSE_CSV: "Parse CSV",
+      PARSER: "Parser",
+      RENDERER: "Renderer",
       CONVERT_JSON_JSON: "Converter",
       CONVERT_JSON_XML: "Converter",
       CONVERT_XML_JSON: "Converter",
@@ -652,29 +651,39 @@ export class B2bFlowService {
           action: 'CONVERT_JSON_JSON',
           icon: 'dsi dsi dsi-refresh text-secondary'
         },
-        {
-          name: 'De-Dupe',
-          action: 'DEDUPE',
-          icon: 'dsi dsi dsi-copy'
-        },
+        // {
+        //   name: 'De-Dupe',
+        //   action: 'DEDUPE',
+        //   icon: 'dsi dsi dsi-copy'
+        // },
         {
           name: 'Code Block',
           action: 'CODEBLOCK',
           icon: 'dsi dsi dsi-console text-secondary'
         },
         {
-          name: 'Change Root',
-          action: 'UNWIND',
-          icon: 'dsi dsi-expand'
-        }
+          name: 'Parser',
+          action: 'PARSER',
+          icon: 'dsi dsi dsi-console text-secondary'
+        },
+        {
+          name: 'Renderer',
+          action: 'RENDERER',
+          icon: 'dsi dsi dsi-console text-secondary'
+        },
+        // {
+        //   name: 'Change Root',
+        //   action: 'UNWIND',
+        //   icon: 'dsi dsi-expand'
+        // }
       ],
       icon: 'dsi dsi-join'
     },
-    {
-      name: 'Condition',
-      icon: ' dsi dsi-branch ',
-      action: 'CONDITION'
-    },
+    // {
+    //   name: 'Condition',
+    //   icon: ' dsi dsi-branch ',
+    //   action: 'CONDITION'
+    // },
     {
       name: 'Plugin',
       icon: ' dsi dsi-api-doc text-info ',

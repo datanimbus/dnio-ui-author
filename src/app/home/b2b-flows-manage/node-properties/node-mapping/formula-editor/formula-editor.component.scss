@@ -4,13 +4,15 @@
 .suggestion-list-wrapper {
     width: 200px;
     overflow-y: auto;
+
     .suggestion-list {
         overflow-y: auto;
         max-height: 120px;
     }
 }
 
-.source-list-wrapper {
+.source-list-wrapper,
+.title {
     width: 140px;
 }
 

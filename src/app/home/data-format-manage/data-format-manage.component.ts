@@ -207,10 +207,23 @@ export class DataFormatManageComponent implements
                         name: res.name,
                         description: res.description,
                         strictValidation: res.strictValidation,
-                        excelType: res.excelType
                     };
                     this.form.patchValue(temp);
-                    this.form.get('type').patchValue('Object');
+                    if (res.type) {
+                        this.form.get('type').patchValue(res.type);
+                    }
+                    if (res.formatType) {
+                        this.form.get('formatType').patchValue(res.formatType);
+                    }
+                    if (res.excelType) {
+                        this.form.get('excelType').patchValue(res.excelType);
+                    }
+                    if (res.character) {
+                        this.form.get('character').patchValue(res.character);
+                    }
+                    if (res.lineSeparator) {
+                        this.form.get('lineSeparator').patchValue(res.lineSeparator);
+                    }
                     temp.definition = this.schemaService.generateStructure(res.definition);
                     (this.form.get('definition') as UntypedFormArray).controls.splice(0);
                     temp.definition.forEach((element, i) => {

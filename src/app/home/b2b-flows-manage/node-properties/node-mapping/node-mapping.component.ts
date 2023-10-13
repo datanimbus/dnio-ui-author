@@ -116,7 +116,7 @@ export class NodeMappingComponent implements OnInit {
       temp = this.appService.cloneObject(this.currNode.dataStructure[this.source].definition) || [];
     }
     let isDataFormat = this.currNode.dataStructure?.[this.source]?._id.startsWith('SRVC') ? false : true;
-    this.allTargets = this.mappingService.flatten((this.currNode.dataStructure?.[this.source]?.formatType || 'JSON'), temp,isDataFormat);
+    this.allTargets = this.mappingService.flatten((this.currNode.dataStructure?.[this.source]?.formatType || 'JSON'), temp, isDataFormat);
     this.allTargets.forEach(item => {
       if (item.type == 'Object') {
         this.targetExpandCollapseObjects[item.dataPath] = false;
@@ -201,6 +201,7 @@ export class NodeMappingComponent implements OnInit {
     });
     temp.formula = item.formula;
     temp.formulaConfig = item.formulaConfig;
+    temp.advanceFormula = item.advanceFormula;
     return temp;
   }
 
@@ -329,7 +330,6 @@ export class NodeMappingComponent implements OnInit {
             def.dataPathSegs = def.properties.dataPathSegs;
           }
           list.push(def);
-          console.log(def);
           if (def.type == 'Array') {
             if (def.definition[0].type == 'Object') {
               list = list.concat(this.flattenSource(node, def.definition[0].definition, bodyKey, def));
@@ -476,7 +476,7 @@ export class NodeMappingComponent implements OnInit {
   }
 
   isValidFunction(def: any) {
-    if (def.source && def.source.length > 1 && !def.formula && !def.formulaConfig) {
+    if (def.source && def.source.length > 1 && !def.formula && !def.formulaConfig && !def.advanceFormula) {
       return false;
     }
     return true;
@@ -575,6 +575,17 @@ export class NodeMappingComponent implements OnInit {
       return false;
     }
     return true;
+  }
+
+  getNodeDataType(node: any) {
+    if (node.dataStructure && node.dataStructure.outgoing && node.dataStructure.outgoing._id) {
+      if (node.dataStructure.outgoing._id.startsWith('SRVC')) {
+        return 'Array';
+      } else {
+        return node.dataStructure.outgoing.type || 'Object';
+      }
+    }
+    return 'Object';
   }
 
   get mappingType() {
