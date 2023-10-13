@@ -519,7 +519,7 @@ export class B2bFlowService {
           icon: 'dsi dsi-function'
         },
         {
-          action: 'SFTP_REMOVE',
+          action: 'SFTP_RENAME',
           name: 'SFTP Rename',
           icon: 'dsi dsi-function'
         },
