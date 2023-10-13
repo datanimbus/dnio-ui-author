@@ -34,7 +34,7 @@ export class EnvVariableConfigComponent implements OnInit, OnDestroy {
   }
 
   fetchAllEnvVariables(): void {
-    const selectFields = 'value,type,_id,usedIn,description';
+    const selectFields = 'value,type,_id,usedIn,description,classification';
     const requestParams = { noApp: true, count: 100, select: selectFields };
 
     const subscription = this.commonService.get('user', '/admin/environmentVariable', requestParams)
