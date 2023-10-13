@@ -317,7 +317,6 @@ export class NodeMappingComponent implements OnInit {
             def.dataPathSegs = def.properties.dataPathSegs;
           }
           list.push(def);
-          console.log(def);
           if (def.type == 'Array') {
             if (def.definition[0].type == 'Object') {
               list = list.concat(this.flattenSource(node, def.definition[0].definition, bodyKey, def));
