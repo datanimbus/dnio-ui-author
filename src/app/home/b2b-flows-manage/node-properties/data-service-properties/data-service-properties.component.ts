@@ -95,6 +95,7 @@ export class DataServicePropertiesComponent implements OnInit {
       !this.currNode.options.insert &&
       !this.currNode.options.delete) {
       this.currNode.options.insert = true;
+      this.currNode.options.update = false;
     }
     this.setDefaultData();
   }
@@ -114,7 +115,7 @@ export class DataServicePropertiesComponent implements OnInit {
     return false;
   }
 
-  get isSchemaFree(){
+  get isSchemaFree() {
     return this.currNode.options?.dataService?.schemaFree || false
   }
 }

@@ -818,7 +818,7 @@ export class B2bFlowService {
     return {
       "_id": "SFTP_LIST",
       "name": "SFTP_LIST",
-      "type": "Object",
+      "type": "Array",
       "definition": [
           {
               "key": "type",
