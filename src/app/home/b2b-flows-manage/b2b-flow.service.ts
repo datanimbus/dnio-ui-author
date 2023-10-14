@@ -574,23 +574,23 @@ export class B2bFlowService {
       name: 'Storage',
       icon: 'dsi dsi-connector'
     },
-    {
-      name: 'KAFKA',
-      icon: 'dsi dsi-connector',
-      children: [
-        {
-          action: 'CON_PRODUCER',
-          name: 'Producer',
-          icon: 'dsi dsi-connector'
-        },
-        {
-          action: 'CON_CONSUMER',
-          name: 'Consumer',
-          icon: 'dsi dsi-connector'
-        },
+    // {
+    //   name: 'KAFKA',
+    //   icon: 'dsi dsi-connector',
+    //   children: [
+    //     {
+    //       action: 'CON_PRODUCER',
+    //       name: 'Producer',
+    //       icon: 'dsi dsi-connector'
+    //     },
+    //     {
+    //       action: 'CON_CONSUMER',
+    //       name: 'Consumer',
+    //       icon: 'dsi dsi-connector'
+    //     },
 
-      ]
-    },
+    //   ]
+    // },
     {
       name: 'Data Service',
       icon: 'dsi dsi-data-service alt',
@@ -661,16 +661,16 @@ export class B2bFlowService {
           action: 'CODEBLOCK',
           icon: 'dsi dsi dsi-console text-secondary'
         },
-        {
-          name: 'Parser',
-          action: 'PARSER',
-          icon: 'dsi dsi dsi-console text-secondary'
-        },
-        {
-          name: 'Renderer',
-          action: 'RENDERER',
-          icon: 'dsi dsi dsi-console text-secondary'
-        },
+        // {
+        //   name: 'Parser',
+        //   action: 'PARSER',
+        //   icon: 'dsi dsi dsi-console text-secondary'
+        // },
+        // {
+        //   name: 'Renderer',
+        //   action: 'RENDERER',
+        //   icon: 'dsi dsi dsi-console text-secondary'
+        // },
         // {
         //   name: 'Change Root',
         //   action: 'UNWIND',
