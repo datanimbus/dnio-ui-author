@@ -67,7 +67,7 @@
                 class="node-icon font-18 fw-500 dsi dsi-console text-secondary" [attr.data-id]="currNode._id"></span>
             <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='CONNECTOR'"
                 class="node-icon font-18 fw-500 dsi dsi-connector" [attr.data-id]="currNode._id"></span>
-            <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='DATASERVICE'"
+            <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='DATASERVICE' || currNode.type.startsWith('DATASERVICE')"
                 class="node-icon font-18 fw-500 dsi dsi-data-service" [attr.data-id]="currNode._id"></span>
             <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='FUNCTION'"
                 class="node-icon font-18 fw-500 dsi dsi-function" [attr.data-id]="currNode._id"></span>
