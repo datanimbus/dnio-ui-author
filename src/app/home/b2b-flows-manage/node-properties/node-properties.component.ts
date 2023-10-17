@@ -175,6 +175,9 @@ export class NodePropertiesComponent implements OnInit {
   }
 
   deleteNode() {
+    if(this.currNode.type === 'ERROR'){
+      this.flowData.errorNode = ''
+    }
     if (this.prevNode) {
       const prevIndex = this.nodeList.findIndex(e => e._id == this.prevNode._id);
       if (prevIndex > -1) {
