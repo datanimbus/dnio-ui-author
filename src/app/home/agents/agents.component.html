@@ -116,12 +116,12 @@
                                     (click)="showPasswordSide = true; agentData=agent">
                                     Change Password
                                 </div>
-                                <div id="agent-disabke"
+                                <div id="agent-disable"
                                     class="list-group-item list-group-item-action py-2 border-0 hover"
                                     *ngIf="canEditAgent(agent._id) && agent.active" (click)="disableAgent(agent)">
                                     Disable
                                 </div>
-                                <div id="agent-disabke"
+                                <div id="agent-enable"
                                     class="list-group-item list-group-item-action py-2 border-0 hover"
                                     *ngIf="canEditAgent(agent._id) && !agent.active" (click)="enableAgent(agent)">
                                     Enable
