@@ -27,15 +27,15 @@
             width="12" height="12" rx="6" (click)="onAnchorClick($event)" />
         <foreignObject width="18" height="18" x="10" y="9" [attr.data-id]="currNode._id">
             <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='API' && isInputNode"
-                class="node-icon font-18 fw-500 dsi dsi-api-reciever" [attr.data-id]="currNode._id"></span>
+                class="node-icon font-18 fw-500 dsi dsi-api-receiver" [attr.data-id]="currNode._id"></span>
                 <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='SYSTEM' && isInputNode"
-                class="node-icon font-18 fw-500 dsi dsi-api-reciever" [attr.data-id]="currNode._id"></span>
+                class="node-icon font-18 fw-500 dsi dsi-api-receiver" [attr.data-id]="currNode._id"></span>
                 <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='USER' && isInputNode"
-                class="node-icon font-18 fw-500 dsi dsi-api-reciever" [attr.data-id]="currNode._id"></span>
+                class="node-icon font-18 fw-500 dsi dsi-api-receiver" [attr.data-id]="currNode._id"></span>
                 <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='EVENT' && isInputNode"
-                class="node-icon font-18 fw-500 dsi dsi-api-reciever" [attr.data-id]="currNode._id"></span>
+                class="node-icon font-18 fw-500 dsi dsi-api-receiver" [attr.data-id]="currNode._id"></span>
                 <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='DECISION' && isInputNode"
-                class="node-icon font-18 fw-500 dsi dsi-api-reciever" [attr.data-id]="currNode._id"></span>
+                class="node-icon font-18 fw-500 dsi dsi-api-receiver" [attr.data-id]="currNode._id"></span>
             
         </foreignObject>
     </g>
