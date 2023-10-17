@@ -433,29 +433,7 @@ export class NodePropertiesComponent implements OnInit {
   }
 
   get showInputSelector() {
-    if (this.isInputNode) {
-      return false;
-    }
-    if (this.currNode.type == 'ERROR') {
-      return false;
-    }
-    if (this.currNode.type == 'DATASERVICE') {
-      return false;
-    }
-    if (this.currNode.type == 'CONDITION') {
-      return false;
-    }
-    if (this.currNode.type == 'CONVERT_JSON_JSON'
-      || this.currNode.type == 'CONVERT_JSON_XML'
-      || this.currNode.type == 'CONVERT_XML_JSON'
-      || this.currNode.type == 'CONVERT_JSON_CSV'
-      || this.currNode.type == 'CONVERT_CSV_JSON') {
-      return false;
-    }
-    if(this.currNode.options.connectorType === 'SFTP' && (this.currNode.options.read || this.currNode.options.list)) {
-      return false;
-    }
-    return true;
+    return this.flowService.showInputSelector(this.currNode, this.isInputNode);
   }
 
   get checkForFileOptions() {
@@ -479,24 +457,7 @@ export class NodePropertiesComponent implements OnInit {
   }
 
   get showOutputSelector() {
-    if(this.currNode.options.connectorType === 'SFTP' && this.currNode.options.list){
-      return false
-    }
-    return this.currNode.type != 'ERROR'
-      && this.currNode?.type != 'DATASERVICE'
-      && this.currNode?.type != 'MAPPING'
-      && this.currNode?.type != 'DEDUPE'
-      && this.currNode?.type != 'CONFLICT'
-      && this.currNode?.type != 'FILE_WRITE'
-      && this.currNode?.type != 'TIMER'
-      && this.currNode?.type != 'RESPONSE'
-      && this.currNode?.type != 'CONDITION'
-      && this.currNode.type != 'CONVERT_JSON_JSON'
-      && this.currNode.type != 'CONVERT_JSON_XML'
-      && this.currNode.type != 'CONVERT_XML_JSON'
-      && this.currNode.type != 'CONVERT_JSON_CSV'
-      && this.currNode.type != 'CONVERT_CSV_JSON'
-      && (this.currNode.type !== 'FILE' || this.isInputNode)
+    return this.flowService.showOutputSelector(this.currNode, this.isInputNode);
   }
 
   get processFlowNode() {

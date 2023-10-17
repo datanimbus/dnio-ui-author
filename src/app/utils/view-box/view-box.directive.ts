@@ -77,7 +77,7 @@ export class ViewBoxDirective implements AfterViewInit {
         ele.setAttribute('cx', `${distX}`);
         ele.setAttribute('cy', `${distY}`);
         ele.setAttribute('r', `1`);
-        ele.setAttribute('fill', `rgba(0,0,0,0.2)`);
+        ele.setAttribute('fill', `rgba(0,0,0,0.1)`);
         group.appendChild(ele);
       }
     }

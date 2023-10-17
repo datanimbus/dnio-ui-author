@@ -20,12 +20,8 @@ import { B2bFlowService } from './b2b-flow.service';
 export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
   @ViewChild('pageChangeModalTemplate', { static: false }) pageChangeModalTemplate: TemplateRef<HTMLElement>;
-  @ViewChild('errorModal', { static: false }) errorModal: TemplateRef<HTMLElement>;
-  @ViewChild('warningModal', { static: false }) warningModal: TemplateRef<HTMLElement>;
   @ViewChild('keyValModalTemplate', { static: false }) keyValModalTemplate: TemplateRef<HTMLElement>;
   pageChangeModalTemplateRef: NgbModalRef;
-  errorModalRef: NgbModalRef;
-  warningModalRef: NgbModalRef;
   keyValModalTemplateRef: NgbModalRef;
   edit: any;
   subscriptions: any;
@@ -58,8 +54,10 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   processNodeList: any = [];
 
   activeTab: number;
+  innerTab: number = 0;
   data: any;
   nodeOptions: Array<any> = [];
+  openIssues: boolean = false;
   constructor(private commonService: CommonService,
     private appService: AppService,
     private route: ActivatedRoute,
@@ -109,6 +107,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     ).subscribe((data: any) => {
       this.selectedNode = data;
       if (data) {
+        this.openIssues = false
         this.showNodeProperties = true;
       } else {
         this.showNodeProperties = false;
@@ -122,6 +121,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     ).subscribe((data: any) => {
       this.selectedPath = data;
       if (data) {
+        this.openIssues = false
         this.showPathProperties = true;
       } else {
         this.showPathProperties = false;
@@ -732,19 +732,19 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
     const finalList = this.nodeList.reduce((acc, node) => {
       let warnValidations = _.cloneDeep(validations)
-      if (node._id === this.flowData.inputNode._id) {
+      if (this.flowService.showOutputSelector(node, this.isInputNode(node))) {
         warnValidations = warnValidations.filter(ele => ele.fieldPath === 'dataStructure.outgoing')
       }
-      if (['RESPONSE', 'MAPPING', 'DEDUPE'].includes(node.type)) {
+      if (this.flowService.showInputSelector(node, this.isInputNode(node))) {
         warnValidations = warnValidations.filter(ele => ele.fieldPath === 'dataStructure.incoming')
       }
-      if (['CONVERT_JSON_JSON', 'FILE'].includes(node.type)) {
+      if (!this.flowService.showOutputSelector(node, this.isInputNode(node)) && !this.flowService.showInputSelector(node, this.isInputNode(node))) {
         warnValidations = []
       }
       const warnings = warnValidations
         .map(item => {
           const value = item.fieldPath.split('.').reduce((obj, key) => obj?.[key], node);
-          if (item.type === 'required' && (!value || _.isEmpty(!value))) {
+          if (item.type === 'required' && (!value || _.isEmpty(value))) {
             return {
               node: node.name,
               id: node._id,
@@ -780,34 +780,23 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  openErrors() {
-    const self = this;
-    self.errorModalRef = self.commonService.modal(self.errorModal, { size: 'm' });
-    self.errorModalRef.result.then(_ => {
-      self.errorModalRef.close()
-    })
-  }
-  openWarnings() {
-    const self = this;
-    self.warningModalRef = self.commonService.modal(self.warningModal, { size: 'm' });
-    self.warningModalRef.result.then(_ => {
-      self.warningModalRef.close()
-    })
-  }
-
   getAccumulatedObj(type) {
-
-    const groupedArray = Object.values((type === 'error' ? this.getErrors() : this.getWarnings()).reduce((acc, obj) => {
+    const result = [];
+    const data = type === 'error' ? this.getErrors() : this.getWarnings();
+    
+    data.forEach(obj => {
       const { node, [type]: groupValue } = obj;
-      if (!acc[node]) {
-        acc[node] = { node, [type]: [] };
+      const existingNode = result.find(item => item.node === node);
+      
+      if (existingNode) {
+        existingNode[type].push({ [type]: groupValue });
+      } else {
+        result.push({ node, [type]: [{ [type]: groupValue }] });
       }
-      acc[node][type].push({ [type]: groupValue });
-      return acc;
-    }, {}));
-    return groupedArray;
+    });
+    
+    return result;
   }
-
   isInputNode(node) {
     if (this.flowData && node) {
       return this.flowData.inputNode._id == node._id;

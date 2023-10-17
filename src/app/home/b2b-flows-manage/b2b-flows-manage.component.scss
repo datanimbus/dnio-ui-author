@@ -85,12 +85,12 @@
 
 .node-properties {
   // top: 142px;
-  top: 88px;
+  top: 92px;
   right: -360px;
   z-index: 2;
   width: 360px;
   // height: calc(100vh - 142px);
-  height: calc(100vh - 88px);
+  height: calc(100vh - 92px);
   overflow-y: auto;
   transition: 0.2s;
 
@@ -208,4 +208,20 @@
 .modal-style{
   max-height: 300px;
   overflow-y: auto;
+}
+
+.issues{
+  width: 400px;
+  top: 149px;
+  right: 0px;
+  max-height: calc(100vh - 149px);
+  overflow-y: auto;
+  transition: 0.2s;
+}
+
+.active-warn{
+  color: $warning;
+}
+.active-error{
+  color: $danger;
 }

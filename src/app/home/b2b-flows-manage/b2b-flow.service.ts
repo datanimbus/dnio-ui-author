@@ -94,21 +94,25 @@ export class B2bFlowService {
             return 'SFTP Put';
           }
         } else {
-          return this.nodeLabelMap[node.type] || node.type;
+          return node.options.connectorType || this.nodeLabelMap[node.type] || node.type;
         }
       case 'DATASERVICE':
-        if (node.options.approve) {
-          return 'Data Service Approve';
-        } else if (node.options.reject) {
-          return 'Data Service Reject';
-        } else if (node.options.insert) {
-          return 'Data Service Create';
+       if (node.options.insert) {
+          return 'Data Service Insert';
         } else if (node.options.delete) {
           return 'Data Service Delete';
         } else if (node.options.update) {
           return 'Data Service Update';
         } else {
           return 'Data Service Fetch';
+        }
+      case 'DATASERVICE_APPROVE':
+        if (node.options.approve) {
+          return 'Workflow Approve';
+        }
+      case 'DATASERVICE_REJECT':
+        if (node.options.reject) {
+          return 'Workflow Reject';
         }
       case 'PROCESS':
         return 'Starter Node';
@@ -217,7 +221,7 @@ export class B2bFlowService {
     const temp: any = {
       // _id: this.appService.getNodeID(allIds),
       _id: _.snakeCase(defaultName),
-      name: defaultName,
+      name: defaultName.replace('_', ' '),
       type: type,
       onSuccess: [],
       onError: [],
@@ -232,13 +236,14 @@ export class B2bFlowService {
     };
     if (type.startsWith('DS_')) {
       temp.type = 'DATASERVICE';
-      const subType = type.split('_')[1];
+      const subType = type.split('_')[1] === 'FETCH' ? 'GET' : type.split('_')[1];
       temp.options[subType.toLowerCase()] = true
     }
 
     if (type.startsWith('WF_')) {
       const subType = type.split('_')[1];
-      temp.type = 'DATASERVICE_' + subType
+      temp.type = 'DATASERVICE_' + subType;
+      temp.options[subType.toLowerCase()] = true
     }
 
     if (type.startsWith('SFTP_')) {
@@ -255,9 +260,9 @@ export class B2bFlowService {
       temp.options[subType.toLowerCase()] = true
       temp.dataStructure['outgoing'] = this.getSftpListODS()
     }
-    if (type.startsWith('CON_')) {
+    if (['DB','STORAGE','PRODUCER','CONSUMER'].includes(type)) {
       temp.type = 'CONNECTOR';
-      let category = type.split('_')[1];
+      let category = type;
       temp.options['connectorType'] = category
     }
 
@@ -472,6 +477,53 @@ export class B2bFlowService {
     return _.flatten(temp);
   }
 
+  showInputSelector(node, isInputNode) {
+    if (isInputNode) {
+      return false;
+    }
+    if (node.type == 'ERROR') {
+      return false;
+    }
+    if (node.type == 'DATASERVICE') {
+      return false;
+    }
+    if (node.type == 'CONDITION') {
+      return false;
+    }
+    if (node.type == 'CONVERT_JSON_JSON'
+      || node.type == 'CONVERT_JSON_XML'
+      || node.type == 'CONVERT_XML_JSON'
+      || node.type == 'CONVERT_JSON_CSV'
+      || node.type == 'CONVERT_CSV_JSON') {
+      return false;
+    }
+    if(node.options.connectorType === 'SFTP' && (node.options.read || node.options.list)) {
+      return false;
+    }
+    return true;
+  }
+
+  showOutputSelector(node, isInputNode) {
+    if(node.options.connectorType === 'SFTP' && node.options.list){
+      return false
+    }
+    return node.type != 'ERROR'
+      && node?.type != 'DATASERVICE'
+      && node?.type != 'MAPPING'
+      && node?.type != 'DEDUPE'
+      && node?.type != 'CONFLICT'
+      && node?.type != 'FILE_WRITE'
+      && node?.type != 'TIMER'
+      && node?.type != 'RESPONSE'
+      && node?.type != 'CONDITION'
+      && node.type != 'CONVERT_JSON_JSON'
+      && node.type != 'CONVERT_JSON_XML'
+      && node.type != 'CONVERT_XML_JSON'
+      && node.type != 'CONVERT_JSON_CSV'
+      && node.type != 'CONVERT_CSV_JSON'
+      && (node.type !== 'FILE' || isInputNode)
+  }
+
   getNodeOptions() {
     return [{
       name: 'File',
@@ -536,67 +588,39 @@ export class B2bFlowService {
       ],
       icon: 'dsi dsi-function'
     },
-    // {
-    //   name: 'Process',
-    //   children: [
-    //     {
-    //       name: 'Connector',
-    //       icon: 'dsi dsi-connector',
-    //       children: [
-    //         {
-    //           action: 'CON_DB',
-    //           name: 'DB Connector',
-    //           icon: 'dsi dsi-connector'
-    //         },
-    //         {
-    //           action: 'CON_FILE',
-    //           name: 'SFTP Connector',
-    //           icon: 'dsi dsi-connector'
-    //         },
-    //         {
-    //           action: 'CON_STORAGE',
-    //           name: 'Storage Connector',
-    //           icon: 'dsi dsi-connector'
-    //         }
-    //       ]
-    //     },
-    //   ],
-    //   icon: 'dsi dsi-function alt'
-    // },
-
     {
-      action: 'CON_DB',
+      action: 'DB',
       name: 'DB',
       icon: 'dsi dsi-connector'
     },
     {
-      action: 'CON_STORAGE',
+      action: 'STORAGE',
       name: 'Storage',
       icon: 'dsi dsi-connector'
     },
-    // {
-    //   name: 'KAFKA',
-    //   icon: 'dsi dsi-connector',
-    //   children: [
-    //     {
-    //       action: 'CON_PRODUCER',
-    //       name: 'Producer',
-    //       icon: 'dsi dsi-connector'
-    //     },
-    //     {
-    //       action: 'CON_CONSUMER',
-    //       name: 'Consumer',
-    //       icon: 'dsi dsi-connector'
-    //     },
+    {
+      name: 'KAFKA',
+      icon: 'dsi dsi-connector',
+      children: [
+        {
+          action: 'PRODUCER',
+          name: 'Producer',
+          icon: 'dsi dsi-connector'
+        },
+        {
+          action: 'CONSUMER',
+          name: 'Consumer',
+          icon: 'dsi dsi-connector'
+        },
 
-    //   ]
-    // },
+      ]
+    },
     {
       name: 'Data Service',
       icon: 'dsi dsi-data-service alt',
       children: [
         {
-          action: 'DS_GET',
+          action: 'DS_FETCH',
           name: 'Data Service Fetch',
           icon: 'dsi dsi-data-service alt'
         },
@@ -616,23 +640,17 @@ export class B2bFlowService {
           icon: 'dsi dsi-data-service alt'
         },
         {
-          action: 'DATASERVICE_APPROVE',
+          action: 'WF_APPROVE',
           name: 'Workflow Approve',
           icon: 'dsi dsi-data-service alt',
         },
         {
-          action: 'DATASERVICE_REJECT',
+          action: 'WF_REJECT',
           name: 'Workflow Reject',
           icon: 'dsi dsi-data-service alt',
         },
       ]
     },
-
-    // {
-    //   name: 'Function',
-    //   action: 'FUNCTION',
-    //   icon: 'dsi dsi-function'
-    // },
     {
       name: 'Flow',
       action: 'FLOW',
@@ -651,11 +669,6 @@ export class B2bFlowService {
           action: 'CONVERT_JSON_JSON',
           icon: 'dsi dsi dsi-refresh text-secondary'
         },
-        // {
-        //   name: 'De-Dupe',
-        //   action: 'DEDUPE',
-        //   icon: 'dsi dsi dsi-copy'
-        // },
         {
           name: 'Code Block',
           action: 'CODEBLOCK',
@@ -679,11 +692,6 @@ export class B2bFlowService {
       ],
       icon: 'dsi dsi-join'
     },
-    // {
-    //   name: 'Condition',
-    //   icon: ' dsi dsi-branch ',
-    //   action: 'CONDITION'
-    // },
     {
       name: 'Plugin',
       icon: ' dsi dsi-api-doc text-info ',
