@@ -57,9 +57,15 @@
                             Stop
                         </div>
                         <div id="agent-disable"
-                            class="list-group-item list-group-item-action py-2 border-0 hover" (click)="disableAgent()">
-                            Disable
-                        </div>
+                        class="list-group-item list-group-item-action py-2 border-0 hover"
+                        *ngIf="agentDetails.active" (click)="disableAgent()">
+                        Disable
+                    </div>
+                    <div id="agent-enable"
+                        class="list-group-item list-group-item-action py-2 border-0 hover"
+                        *ngIf="!agentDetails.active" (click)="enableAgent()">
+                        Enable
+                    </div>
                         <div id="agent-edit" class="list-group-item list-group-item-action py-2 border-0 hover"
                             *ngIf="canEditAgent()" (click)="showEditAgentWindow = true">
                             Edit
