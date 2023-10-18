@@ -1085,7 +1085,7 @@ export class UserComponent implements OnInit, OnDestroy {
     if (this.details._id !== user._id) {
       this.details = user;
       if (this.hasPermission('PMUG')) {
-        this.fetchGroups();
+        this.fetchUserGroups();
       }
     } else {
       this.details = user;
@@ -1335,7 +1335,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((res) => {
       if (res && this.hasPermission('PMUG')) {
-          this.fetchUserGroups();
+          this.fetchUserGroups()
       }
     });
   }
