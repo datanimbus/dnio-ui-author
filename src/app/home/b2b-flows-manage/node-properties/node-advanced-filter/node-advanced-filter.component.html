@@ -48,6 +48,6 @@
         <span>Add Condition</span>
     </div>
 
-    <button type="button" class="btn btn-primary mt-4 w-100" (click)="done()">Done</button>
+    <button type="button" class="btn btn-primary mt-4 w-100" [disabled]="!isValid()" (click)="done()">Done</button>
 
 </div>
