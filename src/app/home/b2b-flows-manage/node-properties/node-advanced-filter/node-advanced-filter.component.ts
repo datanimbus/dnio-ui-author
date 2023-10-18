@@ -24,7 +24,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
   dateTo: Date = new Date();
   initialValue: any = [];
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     this.definition = this.createDefinition(this.currNode?.options?.dataService?.definition || []);
@@ -37,8 +37,8 @@ export class NodeAdvancedFilterComponent implements OnInit {
     this.initialValue = _.cloneDeep(this.filterArray)
   }
 
-  createDefinition(definition){
-   const currentDefinition =  _.cloneDeep(definition|| []);
+  createDefinition(definition) {
+    const currentDefinition = _.cloneDeep(definition || []);
     const text = [].concat(...currentDefinition.map(ele => {
       if (ele.definition) {
         const moreDef = this.createDefinition(ele.definition);
@@ -107,7 +107,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
   }
 
   done() {
-   const prefix =  ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : ''
+    const prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : ''
     this.currNode.options.filterString = this.showFilterString();
     const filterPayload = this.filterArray.map(filter => {
       if (filter['operator'].toLowerCase().includes('equal')) {
@@ -167,14 +167,14 @@ export class NodeAdvancedFilterComponent implements OnInit {
 
 
   convertToFilters(queryArray) {
-    const prefix =  ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : ''
+    const prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : ''
     const filters = [];
-  
+
     queryArray.forEach(queryObject => {
       let path = Object.keys(queryObject)[0];
       const value = queryObject[path];
       path = path.replace(prefix, '');
-  
+
       if (value.hasOwnProperty('$eq') || value.hasOwnProperty('$ne')) {
         const operator = value.hasOwnProperty('$eq') ? 'equals' : 'notEquals';
         const query = {
@@ -194,7 +194,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
       } else if (value.hasOwnProperty('$gt') || value.hasOwnProperty('$lt')) {
         const operator = value.hasOwnProperty('$gt') ? 'greaterThan' : 'lessThan';
         const queryVal = value['$gt'] || value['$lt'];
-        const finalQueryVal = typeof queryVal === 'number' ? {val : queryVal} : {from: queryVal, to: queryVal};
+        const finalQueryVal = typeof queryVal === 'number' ? { val: queryVal } : { from: queryVal, to: queryVal };
         const query = {
           path: path,
           operator: operator,
@@ -212,16 +212,16 @@ export class NodeAdvancedFilterComponent implements OnInit {
         // const operator = value ? 'Yes' : 'No';
         const query = {
           path: path,
-          operator: value? 'Yes' : 'No',
-          value: {val: value? 'Yes' : 'No'}
+          operator: value ? 'Yes' : 'No',
+          value: { val: value ? 'Yes' : 'No' }
         };
         filters.push(query);
       }
     });
-  
+
     return filters;
   }
-  
+
 
   showFilterString() {
     const opObj = {
@@ -250,13 +250,13 @@ export class NodeAdvancedFilterComponent implements OnInit {
     this.filterArray[i].operator = this.getFilterOptions(i)[0].value;
     this.assignValue(i);
   }
-  
+
   assignValue(i) {
-   if(this.definition.find(ele => ele.properties.dataPath === this.filterArray[i].path).type === 'Boolean'){
-    this.filterArray[i].value = {
-      val: this.filterArray[i].operator
+    if (this.definition.find(ele => ele.properties.dataPath === this.filterArray[i].path).type === 'Boolean') {
+      this.filterArray[i].value = {
+        val: this.filterArray[i].operator
+      }
     }
-   }
   }
 
   toggleDatePicker(i, type) {
@@ -285,5 +285,24 @@ export class NodeAdvancedFilterComponent implements OnInit {
 
   show(value) {
     return typeof value === 'string' ? value : JSON.stringify(value)
+  }
+
+  isValid() {
+    const check = this.filterArray.map(ele => {
+      if (['greaterThan', 'lesserThan'].includes(ele.operator) && (ele.value.from || ele.value.val)) {
+        return true
+      }
+      if (ele.operator === 'inRange' && ele.value.from && ele.value.to) {
+        return true
+      }
+      if (ele.value.val) {
+        return true
+      }
+      return false
+    })
+    if (check.filter(ele => !ele).length > 0) {
+      return false
+    }
+    return true
   }
 }
