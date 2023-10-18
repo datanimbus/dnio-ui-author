@@ -103,7 +103,10 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
         nodeId = 'file_agent_receiver';
       } else if (val == 'TIMER') {
         nodeId = 'init_timer';
-      } else {
+      } 
+      else if (val == 'KAFKA_CONSUMER') {
+        nodeId = 'Kakfa Consumer';
+      }else {
         nodeId = 'init_plugin';
       }
       this.form.get('inputNode').patchValue({

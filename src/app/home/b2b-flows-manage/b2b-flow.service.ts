@@ -60,6 +60,7 @@ export class B2bFlowService {
       USER: 'User Task',
       EVENT: 'Event Trigger',
       DECISION: 'Decision',
+      KAFKA_CONSUMER: 'Kafka Consumer'
     };
     this.nodeList = [];
     this.nodeIDCounter = 0;
@@ -260,7 +261,7 @@ export class B2bFlowService {
       temp.options[subType.toLowerCase()] = true
       temp.dataStructure['outgoing'] = this.getSftpListODS()
     }
-    if (['DB','STORAGE','PRODUCER','CONSUMER'].includes(type)) {
+    if (['DB','STORAGE'].includes(type)) {
       temp.type = 'CONNECTOR';
       let category = type;
       temp.options['connectorType'] = category
@@ -599,21 +600,9 @@ export class B2bFlowService {
       icon: 'dsi dsi-connector'
     },
     {
-      name: 'KAFKA',
+      name: 'Kafka Producer',
       icon: 'dsi dsi-connector',
-      children: [
-        {
-          action: 'PRODUCER',
-          name: 'Producer',
-          icon: 'dsi dsi-connector'
-        },
-        {
-          action: 'CONSUMER',
-          name: 'Consumer',
-          icon: 'dsi dsi-connector'
-        },
-
-      ]
+      action: 'KAFKA_PRODUCER'    
     },
     {
       name: 'Data Service',
