@@ -15,13 +15,11 @@ export class KafkaConnectorComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.type = this.currNode?.options?.connectorType || '';
+    this.type = this.currNode.type.split('_')[1];
   }
 
   onValueChange(value: any, type: any) {
-    if (type) {
-      this.currNode.options[type] = (type === 'count' || type === 'page') && value && !isNaN(value) ? parseInt(value) : value;
-    }
+      this.currNode.options[type] = value;
   }
 
 

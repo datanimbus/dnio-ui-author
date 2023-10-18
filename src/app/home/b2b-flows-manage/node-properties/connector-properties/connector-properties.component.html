@@ -27,7 +27,7 @@
         [currNode]="currNode"></odp-mysql-connector>
     <odp-postgre-connector *ngIf="selectedConnector.type=='PG'" [edit]="edit" [nodeList]="nodeList"
         [currNode]="currNode"></odp-postgre-connector>
-    <odp-kafka-connector *ngIf="selectedConnector.type=='KAFKA'" [edit]="edit" [nodeList]="nodeList"
+    <odp-kafka-connector *ngIf="currNode.type.startsWith('KAFKA_')" [edit]="edit" [nodeList]="nodeList"
         [currNode]="currNode"></odp-kafka-connector>
     <odp-mongodb-connector *ngIf="selectedConnector.type=='MONGODB'" [edit]="edit" [nodeList]="nodeList"
         [currNode]="currNode"></odp-mongodb-connector>

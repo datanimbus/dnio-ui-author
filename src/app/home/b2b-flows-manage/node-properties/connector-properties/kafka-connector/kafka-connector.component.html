@@ -6,7 +6,7 @@
         <odp-styled-text [currNode]="currNode" (finalValue)="onValueChange($event, 'topicName')" [value]="currNode.options.topicName" #typeAhead
       [disabled]="!edit.status"></odp-styled-text>
     </div>
-    <div class="form-group position-relative" *ngIf="currNode.type === 'CONSUMER'">
+    <div class="form-group position-relative" *ngIf="type === 'CONSUMER'">
         <label for="fields" class="d-flex align-items-center justify-content-between">
           Throttling value
         </label>

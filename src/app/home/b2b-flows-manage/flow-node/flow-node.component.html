@@ -65,7 +65,7 @@
                 class="node-icon font-18 fw-500 dsi dsi-clock" [attr.data-id]="currNode._id"></span>
             <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='CODEBLOCK'"
                 class="node-icon font-18 fw-500 dsi dsi-console text-secondary" [attr.data-id]="currNode._id"></span>
-            <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='CONNECTOR'"
+            <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='CONNECTOR' || currNode.type.startsWith('KAFKA_')"
                 class="node-icon font-18 fw-500 dsi dsi-connector" [attr.data-id]="currNode._id"></span>
             <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='DATASERVICE' || currNode.type.startsWith('DATASERVICE')"
                 class="node-icon font-18 fw-500 dsi dsi-data-service" [attr.data-id]="currNode._id"></span>
@@ -101,8 +101,6 @@
                 class="node-icon font-18 fw-500 dsi dsi-refresh" [attr.data-id]="currNode._id"></span>
             <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='RENDERER'"
                 class="node-icon font-18 fw-500 dsi dsi-refresh" [attr.data-id]="currNode._id"></span>
-            <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='CONSUMER'"
-                class="node-icon font-18 fw-500 dsi dsi-connector" [attr.data-id]="currNode._id"></span>    
             <!-- <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='CONVERT_JSON_XML'"
                 class="node-icon font-18 fw-500 dsi dsi-refresh text-accent" [attr.data-id]="currNode._id"></span>
             <span xmlns="http://www.w3.org/1999/xhtml" *ngIf="currNode.type=='CONVERT_XML_JSON'"
