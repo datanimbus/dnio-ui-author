@@ -300,7 +300,7 @@
                     class="list-group">
                     <div *ngFor="let directory of currNode.options[isInputNode ? 'inputDirectories' : 'outputDirectories']; let i = index"
                         class="list-group-item d-flex align-items-center justify-content-between">
-                        <odp-round-radio [edit]="edit" [(checked)]="directory.watchSubDirectories"
+                        <odp-round-radio [edit]="edit" [checked]="directory.watchSubDirectories"
                             (checkedChange)="toggleWatch(i)"></odp-round-radio>
                         <span class="ml-2 text-truncate">{{directory.path}}</span>
                         <span class="dsi dsi-remove text-danger hover" (click)="removePath(i)"></span>
