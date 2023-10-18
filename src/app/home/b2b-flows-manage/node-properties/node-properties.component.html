@@ -8,7 +8,7 @@
             <button *ngIf="!edit.status" type="button" class="btn btn-link" (click)="enableEditing()">
                 <span class="dsi dsi-edit text-info"></span>
             </button>
-            <button *ngIf="!isInputNode" type="button" class="btn btn-link" (click)="confirmNodeDeletion()">
+            <button *ngIf="!isInputNode && edit.status" type="button" class="btn btn-link" (click)="confirmNodeDeletion()">
                 <span class="dsi dsi-trash text-danger"></span>
             </button>
             <button type="button" class="btn btn-link" (click)="cancel()">
