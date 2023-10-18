@@ -100,7 +100,7 @@ export class B2bFlowsComponent implements OnInit, OnDestroy {
       if (val == 'API') {
         nodeId = 'api_json_receiver';
       } else if (val == 'FILE') {
-        nodeId = 'file_agent_reciever';
+        nodeId = 'file_agent_receiver';
       } else if (val == 'TIMER') {
         nodeId = 'init_timer';
       } else {
