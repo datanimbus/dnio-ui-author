@@ -435,7 +435,7 @@
             <odp-condition-properties [edit]="edit" [nodeList]="nodeList" [currNode]="currNode">
             </odp-condition-properties>
         </ng-container>
-        <ng-container *ngIf="currNode?.type=='CONNECTOR'">
+        <ng-container *ngIf="currNode?.type=='CONNECTOR' || currNode?.type === 'CONSUMER'" >
             <odp-connector-properties [edit]="edit" [nodeList]="nodeList" [currNode]="currNode">
             </odp-connector-properties>
         </ng-container>

@@ -213,6 +213,11 @@
                         [checked]="form.get('type').value === 'PLUGIN'">
                     <span>Plugin</span>
                 </label>
+                <label>
+                    <input class="mr-3" type="radio" value="CONSUMER" formControlName="type"
+                        [checked]="form.get('type').value === 'CONSUMER'">
+                    <span>Kafka Consumer</span>
+                </label>
             </div>
             <div *ngIf="form.get('type').value === 'PLUGIN'" class="form-group">
                 <odp-search-box open="true" (enteredText)="searchPlugin($event)" [edit]="{status:true}"></odp-search-box>

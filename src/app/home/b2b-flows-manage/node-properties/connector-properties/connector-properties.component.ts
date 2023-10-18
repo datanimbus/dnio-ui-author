@@ -31,8 +31,11 @@ export class ConnectorPropertiesComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     // this.getAvailableConnectors();
     // this.loadInitial();\/
+    if(this.currNode.type === 'CONSUMER'){
+      this.currNode.options.connectorType ='MESSAGING'
+    }
     this.connectorType = this.currNode.options.connectorType;
-    if(this.connectorType && ['PRODUCER','CONSUMER'].includes(this.connectorType)){
+    if(this.connectorType && this.connectorType === 'PRODUCER'){
       this.connectorType = 'MESSAGING'
     }
     this.connectorType && this.loadInitial()

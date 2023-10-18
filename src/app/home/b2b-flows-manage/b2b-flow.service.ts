@@ -60,6 +60,7 @@ export class B2bFlowService {
       USER: 'User Task',
       EVENT: 'Event Trigger',
       DECISION: 'Decision',
+      CONSUMER: 'Kafka Consumer'
     };
     this.nodeList = [];
     this.nodeIDCounter = 0;
@@ -599,21 +600,9 @@ export class B2bFlowService {
       icon: 'dsi dsi-connector'
     },
     {
-      name: 'KAFKA',
+      name: 'Kafka Producer',
       icon: 'dsi dsi-connector',
-      children: [
-        {
-          action: 'PRODUCER',
-          name: 'Producer',
-          icon: 'dsi dsi-connector'
-        },
-        {
-          action: 'CONSUMER',
-          name: 'Consumer',
-          icon: 'dsi dsi-connector'
-        },
-
-      ]
+      action: 'PRODUCER'    
     },
     {
       name: 'Data Service',
