@@ -78,6 +78,9 @@ export class NodePropertiesComponent implements OnInit {
     if (this.currNode && !this.currNode.options.conditionType) {
       this.currNode.options.conditionType = 'ifElse';
     }
+    if (this.currNode && !this.currNode.options.uniqueRemoteTransactionOptions) {
+      this.currNode.options.uniqueRemoteTransactionOptions = {};
+    }
     const options: GetOptions = {
       filter: {
         app: this.commonService.app._id
