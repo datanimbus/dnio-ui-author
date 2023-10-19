@@ -157,9 +157,21 @@
                 </div>
             </ng-container>
             <div *ngIf="currNode?.type!='TIMER' && currNode?.type!='PLUGIN'"
-                class="form-group d-flex align-items-center">
-                <odp-switch [edit]="edit" [(checked)]="currNode.options.uniqueTxnId"></odp-switch>
+                class="form-group">
+               <div class="d-flex align-items-center">
+                <odp-switch [edit]="edit" [(checked)]="currNode.options.uniqueRemoteTransaction"></odp-switch>
                 <span class="ml-2">Unique Remote Txn ID</span>
+               </div>
+               <div class="ml-2 mt-2" *ngIf="currNode.options.uniqueRemoteTransaction">
+                <div class="d-flex align-items-center">
+                    <odp-switch [edit]="edit" [(checked)]="currNode.options.uniqueRemoteTransactionOptions.filename"></odp-switch>
+                    <span class="ml-4" [ngClass]="{'text-danger': !(currNode.options.uniqueRemoteTransactionOptions.filename || currNode.options.uniqueRemoteTransactionOptions.checksum)}">Filename</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <odp-switch [edit]="edit" [(checked)]="currNode.options.uniqueRemoteTransactionOptions.checksum"></odp-switch>
+                    <span class="ml-4" [ngClass]="{'text-danger': !(currNode.options.uniqueRemoteTransactionOptions.filename || currNode.options.uniqueRemoteTransactionOptions.checksum)}">Checksum</span>
+                </div>
+               </div>
             </div>
             <div class="form-group d-flex align-items-center" *ngIf="currNode?.type!='TIMER'">
                 <odp-switch [edit]=" edit" type="warning" [(checked)]="flowData.skipAuth"></odp-switch>
