@@ -18,7 +18,9 @@ export class RoundRadioComponent {
     self.checkedChange = new EventEmitter();
     self.size = 16;
     self.id = uuid();
-    self.edit = {};
+    self.edit = {
+      status: true
+    };
   }
 
   toggle(val) {

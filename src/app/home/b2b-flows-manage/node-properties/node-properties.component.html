@@ -279,7 +279,7 @@
             <div class="form-group">
                 <div class="d-flex align-items-center justify-content-between">
                     <label class="font-14 fw-400 text-dark" for="agentSelector">Agents</label>
-                    <button type="button" class="btn btn-link btn-sm py-0" (click)="toggle['agentSelector']=true">
+                    <button type="button" class="btn btn-link btn-sm py-0" (click)="toggle['agentSelector']=true" *ngIf="edit.status">
                         Select Agent
                     </button>
                 </div>
@@ -287,7 +287,7 @@
                     <div *ngFor="let agent of currNode.options.agents"
                         class="list-group-item d-flex align-items-center justify-content-between">
                         <span>{{agent.name}}</span>
-                        <span class="dsi dsi-remove text-danger hover" (click)="removeAgent(agent)"></span>
+                        <span class="dsi dsi-remove text-danger hover" *ngIf="edit.status" (click)="removeAgent(agent)"></span>
                     </div>
                 </div>
                 <div *ngIf="!currNode.options.agents || currNode.options.agents.length == 0" class="list-group">
@@ -522,7 +522,7 @@
             </div>
         </ng-container>
         <ng-container *ngIf="currNode?.type=='PLUGIN'">
-            <odp-marketplace-selector [isInputNode]="isInputNode" [edit]="edit" [nodeList]="nodeList"
+            <odp-marketplace-selector [isInputNode]="isInputNode" [edit]="edit" [nodeList]="nodeList" 
                 [currNode]="currNode">
             </odp-marketplace-selector>
         </ng-container>
@@ -546,7 +546,7 @@
             </div>
         </ng-container>
 
-        <div *ngIf="showOutputSelector" class="border rounded p-2 bg-light mb-3">
+        <div *ngIf="showOutputSelector" class="border rounded p-2 bg-light mb-3 mt-3">
             <div class="form-group">
                 <label class="font-14 fw-400 text-dark mb-0" for="outputDataStructure">Output Data Structure</label>
                 <small class="form-text text-muted mb-3">Set the data structure that this node will return</small>

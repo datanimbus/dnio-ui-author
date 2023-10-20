@@ -25,7 +25,7 @@
         </div>
     </div>
     <div class="d-flex align-items-center justify-content-end">
-        <button type="button" class="btn btn-primary w-100" [disabled]="!isAgentSelected"
+        <button type="button" class="btn btn-primary w-100" [disabled]="!isAgentSelected" *ngIf="edit.status"
             (click)="selectAgent()">Select Agent</button>
     </div>
 </div>
