@@ -1,11 +1,11 @@
 <div class="">
-    <odp-search-box [fullWidth]="true" [open]="true" (reset)="clearSearch()" [edit]="edit"
+    <odp-search-box [fullWidth]="true" [open]="true" (reset)="clearSearch()" *ngIf="edit.status"
         (enteredText)="searchFormat($event)" [edit]="{status:true}"></odp-search-box>
     <div class="list-group list-group-flush">
         <div class="list-group-item list-group-item-action d-flex align-items-center justify-content-between hover" 
             *ngFor="let item of formatList" (click)="toggleItem(!item._selected,item)">
             <div class="list-item-format-name d-flex align-items-center flex-fill">
-                <odp-round-radio [edit]="edit" [checked]="item._selected">
+                <odp-round-radio [edit]="edit" [checked]="item._selected" *ngIf="edit.status">
                 </odp-round-radio>
                 <span class="ml-3">{{item.name}}</span>
             </div>

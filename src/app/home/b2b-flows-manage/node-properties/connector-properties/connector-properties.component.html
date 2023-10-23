@@ -43,7 +43,7 @@
         <div class="list-group-item list-group-item-action d-flex align-items-center justify-content-between hover"
             *ngFor="let item of connectorList.slice(0,5)" (click)="toggleItem(!item._selected,item)">
             <div class="d-flex align-items-center">
-                <odp-round-radio [edit]="edit" [checked]="item._selected">
+                <odp-round-radio [edit]="edit" [checked]="item._selected" *ngIf="edit.status">
                 </odp-round-radio>
                 <span class="ml-3">{{item.name}}</span>
             </div>
@@ -55,7 +55,7 @@
         </div>
     </div>
     <div class="d-flex align-items-center justify-content-end mb-3">
-        <button type="button" class="btn btn-primary w-100" [disabled]="!isConnectorSelected"
+        <button type="button" class="btn btn-primary w-100" [disabled]="!isConnectorSelected" *ngIf="edit.status"
             (click)="selectConnector()">Select Connector</button>
     </div>
 </div>
