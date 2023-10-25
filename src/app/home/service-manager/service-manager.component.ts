@@ -234,7 +234,7 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
     this.form.get('connectors').get('data').setValue({
       _id: this.defaultDC
     })
-    this.connectorList.find(ele => ele._id === this.defaultDC).type !== 'MONGODB' && this.fetchTables(this.defaultDC)
+    this.fetchTables(this.defaultDC)
 
     this.form.get('connectors').get('file').setValue({
       _id: this.defaultFC
@@ -1050,5 +1050,11 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
   checkDefault(id) {
     const defaultIds = [this.commonService.appData['connectors']?.data?._id, this.commonService.appData['connectors']?.file?._id];
     return defaultIds.indexOf(id) > -1
+  }
+
+  get defaultConnector(){
+    const id = this.form.get('connectors')?.get('data')?.value?.id || '';
+    const connector = this.connectorList.find(ele => ele._id === id);
+    return connector?.name?.startsWith('Default');
   }
 }
