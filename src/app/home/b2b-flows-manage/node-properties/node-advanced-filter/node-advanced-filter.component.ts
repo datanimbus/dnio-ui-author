@@ -28,6 +28,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.definition = this.createDefinition(this.currNode?.options?.dataService?.definition || []);
+    this.definition = this.definition.concat(this.addAdditionalDef())
     console.log(this.definition);
 
     this.definition.forEach(ele => {
@@ -35,6 +36,26 @@ export class NodeAdvancedFilterComponent implements OnInit {
     });
     this.filterArray = this.convertToFilters(_.cloneDeep(this.currNode?.options?.filter?.$and || []))
     this.initialValue = _.cloneDeep(this.filterArray)
+  }
+
+  addAdditionalDef(){
+    return [{
+      key: 'lastUpdated',
+      type: 'Date',
+      properties: {
+        name: 'Last Updated At',
+        dataPath: 'lastUpdated',
+        dataPathSegs: ['lastUpdated']
+      }
+    },{
+      key: 'createdAt',
+      type: 'Date',
+      properties: {
+        name: 'Created At',
+        dataPath: 'createdAt',
+        dataPathSegs: ['createdAt']
+      }
+    }]
   }
 
   createDefinition(definition) {
@@ -107,9 +128,12 @@ export class NodeAdvancedFilterComponent implements OnInit {
   }
 
   done() {
-    const prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : ''
+    let prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : ''
     this.currNode.options.filterString = this.showFilterString();
     const filterPayload = this.filterArray.map(filter => {
+      if(['lastUpdated','createdAt'].includes(filter['path'])){
+        prefix = '_metadata.'
+      }
       if (filter['operator'].toLowerCase().includes('equal')) {
         const operator = filter['operator'] === 'equals' ? '$eq' : '$ne';
         const path = filter['path'];
@@ -167,20 +191,24 @@ export class NodeAdvancedFilterComponent implements OnInit {
 
 
   convertToFilters(queryArray) {
-    const prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : ''
+    let prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : ''
     const filters = [];
 
     queryArray.forEach(queryObject => {
       let path = Object.keys(queryObject)[0];
+      if(path.startsWith('_metadata')){
+        prefix = '_metadata.'
+      }
       const value = queryObject[path];
       path = path.replace(prefix, '');
 
       if (value.hasOwnProperty('$eq') || value.hasOwnProperty('$ne')) {
+        const type = this.definition.find(ele => ele.properties.dataPath === path).type;
         const operator = value.hasOwnProperty('$eq') ? 'equals' : 'notEquals';
         const query = {
           path: path,
           operator: operator,
-          value: { val: value['$eq'] || value['$ne'] }
+          value: type === 'Date' ? { from: value['$eq'] || value['$ne'] } : { val: value['$eq'] || value['$ne'] }
         };
         filters.push(query);
       } else if (value.hasOwnProperty('$regex') || value.hasOwnProperty('$not')) {
@@ -218,7 +246,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
         filters.push(query);
       }
     });
-
+    console.log(filters);
     return filters;
   }
 
@@ -295,7 +323,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
       if (ele.operator === 'inRange' && ele.value.from && ele.value.to) {
         return true
       }
-      if (ele.value.val) {
+      if (ele.value.val || ele.value.from) {
         return true
       }
       return false
