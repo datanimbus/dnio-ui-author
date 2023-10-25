@@ -646,6 +646,9 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   }
 
   get isValidSchema() {
+    if(this.totalErrors > 0){
+      return false
+    }
     const fileNodes = this.nodeList.filter(node => node.type == 'FILE');
     const checkAgent = (node) => {
       return node?.options?.agents?.length > 0

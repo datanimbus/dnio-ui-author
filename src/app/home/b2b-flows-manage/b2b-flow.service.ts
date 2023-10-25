@@ -733,8 +733,8 @@ export class B2bFlowService {
           },
           {
             type: 'required',
-            fieldPath: 'options.method',
-            error: 'HTTP Method is required'
+            fieldPath: 'options.agents',
+            error: 'Agent is required'
           }
         ]
       },
