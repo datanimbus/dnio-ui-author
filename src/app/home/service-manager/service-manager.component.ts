@@ -234,7 +234,7 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
     this.form.get('connectors').get('data').setValue({
       _id: this.defaultDC
     })
-    this.connectorList.find(ele => ele._id === this.defaultDC).type !== 'MONGODB' && this.fetchTables(this.defaultDC)
+    this.fetchTables(this.defaultDC)
 
     this.form.get('connectors').get('file').setValue({
       _id: this.defaultFC
