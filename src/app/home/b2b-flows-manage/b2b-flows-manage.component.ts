@@ -646,18 +646,21 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   }
 
   get isValidSchema() {
-    const fileNodes = this.nodeList.filter(node => node.type == 'FILE');
-    const checkAgent = (node) => {
-      return node?.options?.agents?.length > 0
-    }
-    const checkUniqTxnId = (node) => {
-      if(node?.options?.uniqueRemoteTransaction){
-        return node?.options?.uniqueRemoteTransactionOptions?.filename || node?.options?.uniqueRemoteTransactionOptions?.checksum
-      }
-      return true
-    }
-    if (fileNodes.length > 0) {
-      return fileNodes.every(checkAgent) && fileNodes.every(checkUniqTxnId)
+    // const fileNodes = this.nodeList.filter(node => node.type == 'FILE');
+    // const checkAgent = (node) => {
+    //   return node?.options?.agents?.length > 0
+    // }
+    // const checkUniqTxnId = (node) => {
+    //   if(node?.options?.uniqueRemoteTransaction){
+    //     return node?.options?.uniqueRemoteTransactionOptions?.filename || node?.options?.uniqueRemoteTransactionOptions?.checksum
+    //   }
+    //   return true
+    // }
+    // if (fileNodes.length > 0) {
+    //   return fileNodes.every(checkAgent) && fileNodes.every(checkUniqTxnId)
+    // }
+    if(this.totalErrors > 0){
+      return false
     }
     return true
   }

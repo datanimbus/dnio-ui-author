@@ -278,7 +278,9 @@
         <ng-container *ngIf="currNode?.type=='FILE'">
             <div class="form-group">
                 <div class="d-flex align-items-center justify-content-between">
-                    <label class="font-14 fw-400 text-dark" for="agentSelector">Agents</label>
+                    <label class="font-14 fw-400 text-dark" for="agentSelector">Agents
+                        <sup class="text-danger font-14" ngbTooltip="Mandatory field">*</sup>
+                    </label>
                     <button type="button" class="btn btn-link btn-sm py-0" (click)="toggle['agentSelector']=true" *ngIf="edit.status">
                         Select Agent
                     </button>
@@ -296,7 +298,10 @@
             </div>
             <div class="form-group">
                 <div class="d-flex align-items-center justify-content-between">
-                    <label class="font-14 fw-400 text-dark" for="agentSelector">{{isInputNode ? 'Input' : 'Output'}} Directory(s)</label>
+                    <label class="font-14 fw-400 text-dark" for="directories">
+                        <span>{{isInputNode ? 'Input' : 'Output'}} Directory(s)</span>
+                        <sup class="text-danger font-14" ngbTooltip="Mandatory field">*</sup>
+                    </label>
                 </div>
 
                 <div class="form-group">
@@ -315,7 +320,7 @@
                         <odp-round-radio [edit]="edit" [checked]="directory.watchSubDirectories"
                             (checkedChange)="toggleWatch(i)"></odp-round-radio>
                         <span class="ml-2 text-truncate">{{directory.path}}</span>
-                        <span class="dsi dsi-remove text-danger hover" (click)="removePath(i)"></span>
+                        <span class="dsi dsi-remove text-danger hover" *ngIf="edit.status" (click)="removePath(i)"></span>
                     </div>
                 </div>
                 <div *ngIf="!currNode.options[isInputNode ? 'inputDirectories' : 'outputDirectories'] || currNode.options[isInputNode ? 'inputDirectories' : 'outputDirectories'].length == 0"
