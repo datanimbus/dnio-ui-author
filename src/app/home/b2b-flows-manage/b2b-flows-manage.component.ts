@@ -593,8 +593,8 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       let targetEle = (this.isMouseDown.target as HTMLElement);
       let currNode = this.nodeList.find(e => e._id == targetEle.dataset.id);
       if (currNode) {
-        currNode.coordinates.x = Math.floor(currNode.coordinates.x / 20) * 20;
-        currNode.coordinates.y = Math.floor(currNode.coordinates.y / 20) * 20;
+        currNode.coordinates.x =  Math.max(Math.floor(currNode.coordinates.x / 20) * 20, 0);
+        currNode.coordinates.y =  Math.max(Math.floor(currNode.coordinates.y / 20) * 20, 0);
         delete currNode.coordinates.clientX;
         delete currNode.coordinates.clientY;
         this.flowService.reCreatePaths.emit();
