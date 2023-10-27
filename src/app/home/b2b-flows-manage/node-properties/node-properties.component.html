@@ -25,6 +25,19 @@
         [ngClass]="{'text-secondary border-bottom bg-light':activeTab!=1,'text-accent':activeTab==1}"
         (click)="activeTab=1">Branch</div>
 </div> -->
+
+<div class="nav nav-tabs mt-1 ml-1">
+    <div class="nav-item">
+      <div class="nav-link" [class.active]="activeTab==0" (click)="activeTab=0">Properties</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-link" [class.active]="activeTab==1" (click)="activeTab=1">Conditions</div>
+    </div>
+</div>
+<!-- <div class="p-2 tab-list d-flex align-items-center">
+    <div class="tab-list-item p-2 hover" [class.active]="activeTab==0" (click)="activeTab=0">Properties</div>
+    <div class="tab-list-item p-2 hover" [class.active]="activeTab==1" (click)="activeTab=1">Conditions</div>
+</div> -->
 <div>
     <div *ngIf="activeTab==0" class="p-3">
         <div class="border rounded p-2 bg-light mb-3">
@@ -590,7 +603,40 @@
         </div>
     </div>
     <div *ngIf="activeTab==1" class="p-3">
-        <div class="form-group">
+        <div class="d-flex align-items-center justify-content-between">
+            <span class="font-16 fw-500">Conditions</span>
+            <!-- <span *ngIf="edit.status" class="hover dsi dsi-plus-circle text-primary" (click)="addCondition($event)"></span> -->
+        </div>
+        <div class="text-muted" *ngIf="!conditionList || conditionList.length==0">
+            No Conditions Added
+        </div>
+        <div class="mt-3 border rounded bg-light" *ngFor="let item of conditionList;let ci=index">
+            <div class="py-1 px-2 fw-600 border-bottom table-secondary d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <span *ngIf="edit.status && conditionList.length>1" class="dsi dsi-more-vertical-6 mr-2 hover"></span>
+                    <span>Condition(#{{ci+1}})</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span>{{item._id}}</span>
+                    <!-- <span *ngIf="edit.status && conditionList.length>1" class="dsi dsi-minus-circle text-danger hover ml-3"
+                        (click)="removeCondition($event,ci)"></span> -->
+                </div>
+            </div>
+            <div class=" p-2">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <odp-styled-text id="name" [currNode]="currNode" (finalValue)="onValueConditionChange($event, item, 'name')"
+                        [value]="item.name" class="styled-wrapper" placeholder="Name" [disabled]="!edit.status"></odp-styled-text>
+                </div>
+                <div class="form-group">
+                    <label for="condition">Condition</label>
+                    <odp-styled-text id="condition" [currNode]="currNode"
+                        (finalValue)="onValueConditionChange($event, item, 'condition')" [value]="item.condition"
+                        class="styled-wrapper" placeholder="Set Condition" [disabled]="!edit.status"></odp-styled-text>
+                </div>
+            </div>
+        </div>
+        <div class="form-group mt-3" *ngIf="conditionList.length > 0">
             <div class="d-flex align-items-center">
                 <odp-round-radio [edit]="edit" [checked]="currNode.options.conditionType=='parallel'"
                     (checkedChange)="currNode.options.conditionType='parallel'"></odp-round-radio>
@@ -598,7 +644,7 @@
             </div>
         </div>
         <div class="form-group">
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center"  *ngIf="conditionList.length > 0">
                 <odp-round-radio [edit]="edit" [checked]="currNode.options.conditionType=='ifElse'"
                     (checkedChange)="currNode.options.conditionType='ifElse'"></odp-round-radio>
                 <span class="ml-2">Proceed Only First True Condition</span>

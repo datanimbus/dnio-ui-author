@@ -392,7 +392,7 @@ export class B2bFlowService {
     if (definition && definition.length > 0) {
       definition.forEach((def: any) => {
         // let key = parentKey ? parentKey + '.' + def.key : def.key;
-        let key = def.properties.dataPathSegs.join('.');
+        let key = def.properties?.dataPathSegs?.join('.');
         if (def.type == 'Object') {
           list = list.concat(this.getNestedSuggestions(node, def.definition, key));
         } else {

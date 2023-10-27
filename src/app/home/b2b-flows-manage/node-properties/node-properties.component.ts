@@ -487,4 +487,23 @@ export class NodePropertiesComponent implements OnInit {
   nodesFromType(type) {
     return this.processNodeList.filter(node => node.type === type)
   }
+
+  addCondition(event: any) {
+    this.currNode.conditions.push({});
+  }
+
+  removeCondition(event: any, index: number) {
+    this.currNode.conditions.splice(index, 1);
+    // this.flowService.reCreatePaths.emit();
+  }
+
+  onValueConditionChange(value: string, item: any, key: string) {
+    item[key] = value;
+    this.flowService.reCreatePaths.emit()
+  }
+
+  get conditionList(){
+    return this.currNode.onSuccess || []
+  }
+
 }
