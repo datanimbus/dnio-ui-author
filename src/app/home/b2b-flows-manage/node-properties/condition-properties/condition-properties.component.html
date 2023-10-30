@@ -38,12 +38,12 @@
         <div class=" p-2">
             <div class="form-group">
                 <label for="name">Name</label>
-                <odp-styled-text id="name" [currNode]="currNode" (finalValue)="onValueChange($event, item, 'name')"
+                <odp-styled-text id="name" [disabled]="!edit.status" [currNode]="currNode" (finalValue)="onValueChange($event, item, 'name')"
                     [value]="item.name" class="styled-wrapper" placeholder="Name"></odp-styled-text>
             </div>
             <div class="form-group">
                 <label for="condition">Condition</label>
-                <odp-styled-text id="condition" [currNode]="currNode"
+                <odp-styled-text [disabled]="!edit.status" id="condition" [currNode]="currNode"
                     (finalValue)="onValueChange($event, item, 'condition')" [value]="item.condition"
                     class="styled-wrapper" placeholder="Set Condition"></odp-styled-text>
             </div>
