@@ -63,10 +63,13 @@
 }
 
 
-.tab-list {
-    .tab-item {
-        min-height: 32px;
-        max-height: 32px;
-        line-height: 32px;
+.tab-list-item {
+    &:not(:last-child) {
+      border-right: 1px solid $border;
     }
-}
+  
+    &.active {
+      color: $accent;
+      font-weight: 500;
+    }
+  }
