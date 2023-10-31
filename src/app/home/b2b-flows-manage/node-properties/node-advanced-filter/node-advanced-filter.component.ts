@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'lodash';
+import { CommonService } from 'src/app/utils/services/common.service';
 
 @Component({
   selector: 'odp-node-advanced-filter',
@@ -23,8 +25,18 @@ export class NodeAdvancedFilterComponent implements OnInit {
   dateFrom: Date = new Date();
   dateTo: Date = new Date();
   initialValue: any = [];
-
-  constructor() { }
+  advancedToggle: boolean = false
+  @ViewChild('alertModal', { static: false }) alertModal: TemplateRef<HTMLElement>;
+  alertModalRef: NgbModalRef;
+  alertModalData: any= {};
+  hold: boolean = false;
+  
+  constructor(private commonService: CommonService) {
+    this.alertModalData = {
+      title: 'Are you sure you want to toggle filter?',
+      message: 'This action will result in losing all the changes you have made on the filter.',
+    }
+  }
 
   ngOnInit(): void {
     this.definition = this.createDefinition(this.currNode?.options?.dataService?.definition || []);
@@ -36,6 +48,9 @@ export class NodeAdvancedFilterComponent implements OnInit {
     });
     this.filterArray = this.convertToFilters(_.cloneDeep(this.currNode?.options?.filter?.$and || []))
     this.initialValue = _.cloneDeep(this.filterArray)
+    if(this.filterArray.length === 0 && (Array.isArray(this.currNode?.options?.filter) ? this.currNode?.options?.filter.length > 0 : this.currNode.options.filter)){
+      this.advancedToggle = true
+    }
   }
 
   addAdditionalDef(){
@@ -75,6 +90,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
     this.showFromDatePicker = [];
     this.showToDatePicker = [];
     this.toggle = false;
+    this.advancedToggle = false
     this.toggleChange.emit(this.toggle);
   }
 
@@ -128,6 +144,15 @@ export class NodeAdvancedFilterComponent implements OnInit {
   }
 
   done() {
+   if(this.advancedToggle){
+
+    this.value = this.currNode.options.filter
+    this.valueChange.emit(this.value);
+
+    this.toggle = false;
+    this.toggleChange.emit(this.toggle);
+   }
+   else{
     let prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : ''
     this.currNode.options.filterString = this.showFilterString();
     const filterPayload = this.filterArray.map(filter => {
@@ -181,11 +206,12 @@ export class NodeAdvancedFilterComponent implements OnInit {
         return final;
       }
     })
-    this.value = { $and: filterPayload }
-    this.valueChange.emit(this.value);
-
-    this.toggle = false;
+    this.value = filterPayload ? { $and: filterPayload }: {};
+    this.valueChange.emit(this.value);    this.toggle = false;
     this.toggleChange.emit(this.toggle);
+   }
+
+   this.advancedToggle = false
 
   }
 
@@ -332,5 +358,20 @@ export class NodeAdvancedFilterComponent implements OnInit {
       return false
     }
     return true
+  }
+  onToggle(value){
+    this.alertModalRef = this.commonService.modal(this.alertModal, { centered: true });
+    this.hold = true;
+    this.alertModalRef.result.then(close => {
+      if(close){
+        this.hold = false;
+        this.advancedToggle = value;
+        this.filterArray = [];
+      }
+      else{
+        this.hold = false
+        this.advancedToggle = !value
+      }
+    });
   }
 }

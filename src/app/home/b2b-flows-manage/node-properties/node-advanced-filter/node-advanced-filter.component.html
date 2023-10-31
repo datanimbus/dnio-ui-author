@@ -10,11 +10,22 @@
 </div>
 
 <div *ngIf="toggle" class="node-filter-wrapper p-3 bg-white position-fixed border-left ">
-    <div class="d-flex justify-content-between mb-5">
-        <h3 class="font-20 fw-600">Advanced Filter</h3>
+    <div class="d-flex justify-content-between mb-4">
+        <h3 class="font-20 fw-600">Filter</h3>
         <span class="dsi dsi-close hover" (click)="cancel()"></span>
     </div>
 
+    <div class="d-flex justify-content-between">
+        <div class="d-flex flex-column">
+            <div class="my-2 fw-600">Advanced Filter</div>
+        </div>
+        <div class="switch-container d-flex align-items-center justify-content-center">
+            <odp-switch [edit]="{status:edit.status}" [(checked)]="advancedToggle" 
+                (checkedChange)="onToggle($event)"></odp-switch>
+        </div>
+    </div>
+
+   <ng-container *ngIf="!advancedToggle && !hold" class="mt-2">
     <div class="" *ngIf="filterArray.length > 0">
         <div class="form-group d-flex" *ngFor="let obj of filterArray; let i= index">
             <select class="form-control mr-2" [(ngModel)]="filterArray[i]['path']" (ngModelChange)="assignDefaultFilter(i)">
@@ -48,6 +59,38 @@
         <span>Add Condition</span>
     </div>
 
-    <button type="button" class="btn btn-primary mt-4 w-100" [disabled]="!isValid()" (click)="done()">Done</button>
+   </ng-container>
+
+   <textarea placeholder="{}" id="filter" class="mt-2" style="height: 100px;" [(ngModel)]="currNode.options.filter" (keydown.delete)="$event.stopPropagation()" *ngIf="advancedToggle && !hold"></textarea>
+   <button type="button" class="btn btn-primary mt-4 w-100" [disabled]="!isValid()" (click)="done()">Done</button>
 
 </div>
+
+
+<ng-template #alertModal>
+    <div class="delete-modal-body modal-body p-4 d-flex flex-column align-items-center ignore-outside">
+        <div class="d-flex align-items-center justify-content-between mb-2 w-100 flex-column">
+          <span class="fa fa-times text-muted hover ignore-click ml-auto"
+            (click)="alertModalRef.close(false)"></span>
+    
+          <div class="d-flex align-items-center mr-auto">
+            <span class="fw-600 font-20 mb-1">{{alertModalData?.title}}</span>
+          </div>
+        </div>
+        <div class="info d-flex flex-column align-self-center justify-content-center w-100">
+          <div class="d-flex info-msg mb-3">
+            <span class="text-secondary" [innerHTML]="alertModalData?.message"></span>
+          </div>
+          <div class="d-flex align-items-end w-100 justify-content-end">
+            <button type="button" class="btn btn-outline-dark btn-min-width ignore-click mr-2" id="deleteModalNo"
+              (click)="alertModalRef.close(false)">
+              No
+            </button>
+            <button type="button" class="btn btn-danger btn-min-width ignore-click" id="deleteModalYes"
+              (click)="$event.stopPropagation();alertModalRef.close(true)">
+              <span class="text">Yes</span>
+            </button>
+          </div>
+        </div>
+      </div>
+</ng-template>
