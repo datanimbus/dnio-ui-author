@@ -28,9 +28,9 @@ export class NodeAdvancedFilterComponent implements OnInit {
   advancedToggle: boolean = false
   @ViewChild('alertModal', { static: false }) alertModal: TemplateRef<HTMLElement>;
   alertModalRef: NgbModalRef;
-  alertModalData: any= {};
+  alertModalData: any = {};
   hold: boolean = false;
-  
+
   constructor(private commonService: CommonService) {
     this.alertModalData = {
       title: 'Are you sure you want to toggle filter?',
@@ -48,12 +48,12 @@ export class NodeAdvancedFilterComponent implements OnInit {
     });
     this.filterArray = this.convertToFilters(_.cloneDeep(this.currNode?.options?.filter?.$and || []))
     this.initialValue = _.cloneDeep(this.filterArray)
-    if(this.filterArray.length === 0 && (Array.isArray(this.currNode?.options?.filter) ? this.currNode?.options?.filter.length > 0 : this.currNode.options.filter)){
+    if (this.filterArray.length === 0 && (Array.isArray(this.currNode?.options?.filter) ? this.currNode?.options?.filter.length > 0 : this.currNode.options.filter)) {
       this.advancedToggle = true
     }
   }
 
-  addAdditionalDef(){
+  addAdditionalDef() {
     return [{
       key: 'lastUpdated',
       type: 'Date',
@@ -62,7 +62,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
         dataPath: 'lastUpdated',
         dataPathSegs: ['lastUpdated']
       }
-    },{
+    }, {
       key: 'createdAt',
       type: 'Date',
       properties: {
@@ -144,74 +144,74 @@ export class NodeAdvancedFilterComponent implements OnInit {
   }
 
   done() {
-   if(this.advancedToggle){
+    if (this.advancedToggle) {
 
-    this.value = this.currNode.options.filter
-    this.valueChange.emit(this.value);
+      this.value = this.currNode.options.filter
+      this.valueChange.emit(this.value);
 
-    this.toggle = false;
-    this.toggleChange.emit(this.toggle);
-   }
-   else{
-    let prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : ''
-    this.currNode.options.filterString = this.showFilterString();
-    const filterPayload = this.filterArray.map(filter => {
-      if(['lastUpdated','createdAt'].includes(filter['path'])){
-        prefix = '_metadata.'
-      }
-      if (filter['operator'].toLowerCase().includes('equal')) {
-        const operator = filter['operator'] === 'equals' ? '$eq' : '$ne';
-        const path = filter['path'];
-        const query = {};
-        query[operator] = filter['value']['val'] || filter['value']['from'];
-        let final = {};
-        final[prefix + path.toString()] = query;
-        return final;
-      }
+      this.toggle = false;
+      this.toggleChange.emit(this.toggle);
+    }
+    else {
+      let prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : '';
+      this.currNode.options.filterString = this.showFilterString();
+      const filterPayload = this.filterArray.map(filter => {
+        if (['lastUpdated', 'createdAt'].includes(filter['path'])) {
+          prefix = '_metadata.'
+        }
+        if (filter['operator'].toLowerCase().includes('equal')) {
+          const operator = filter['operator'] === 'equals' ? '$eq' : '$ne';
+          const path = filter['path'];
+          const query = {};
+          query[operator] = filter['value']['val'] || filter['value']['from'];
+          let final = {};
+          final[prefix + path.toString()] = query;
+          return final;
+        }
 
-      if (filter['operator'].toLowerCase().includes('contain')) {
-        const regex = { $regex: filter['value']['val'], $options: 'i' }
-        const operation = filter['operator'] === 'contains' ? regex : { $not: regex };
-        const path = filter['path'];
-        let final = {};
-        final[prefix + path.toString()] = operation;
-        return final;
-      }
+        if (filter['operator'].toLowerCase().includes('contain')) {
+          const regex = { $regex: filter['value']['val'], $options: 'i' }
+          const operation = filter['operator'] === 'contains' ? regex : { $not: regex };
+          const path = filter['path'];
+          let final = {};
+          final[prefix + path.toString()] = operation;
+          return final;
+        }
 
-      if (filter['operator'].includes('Than')) {
-        const operator = filter['operator'] === 'greaterThan' ? '$gt' : '$lt';
-        const path = filter['path'];
-        const query = {};
-        query[operator] = filter['value']['val'] || filter['value']['from'];
-        let final = {};
-        final[prefix + path.toString()] = query;
-        return final;
-      }
+        if (filter['operator'].includes('Than')) {
+          const operator = filter['operator'] === 'greaterThan' ? '$gt' : '$lt';
+          const path = filter['path'];
+          const query = {};
+          query[operator] = filter['value']['val'] || filter['value']['from'];
+          let final = {};
+          final[prefix + path.toString()] = query;
+          return final;
+        }
 
-      if (filter['operator'] === 'inRange') {
-        const path = filter['path'];
-        const from = filter['value']['from'];
-        const to = filter['value']['to'];
-        const query = { $gte: from, $lte: to };
-        let final = {};
-        final[prefix + path.toString()] = query;
-        return final;
-      }
+        if (filter['operator'] === 'inRange') {
+          const path = filter['path'];
+          const from = filter['value']['from'];
+          const to = filter['value']['to'];
+          const query = { $gte: from, $lte: to };
+          let final = {};
+          final[prefix + path.toString()] = query;
+          return final;
+        }
 
-      if (filter['operator'] === 'Yes' || filter['operator'] === 'No') {
-        const path = filter['path'];
-        const query = filter['operator'] === 'Yes' ? true : false;
-        let final = {};
-        final[path.toString()] = query;
-        return final;
-      }
-    })
-    this.value = filterPayload ? { $and: filterPayload }: {};
-    this.valueChange.emit(this.value);    this.toggle = false;
-    this.toggleChange.emit(this.toggle);
-   }
+        if (filter['operator'] === 'Yes' || filter['operator'] === 'No') {
+          const path = filter['path'];
+          const query = filter['operator'] === 'Yes' ? true : false;
+          let final = {};
+          final[path.toString()] = query;
+          return final;
+        }
+      })
+      this.value = filterPayload ? { $and: filterPayload } : {};
+      this.valueChange.emit(this.value); this.toggle = false;
+      this.toggleChange.emit(this.toggle);
+    }
 
-   this.advancedToggle = false
+    this.advancedToggle = false
 
   }
 
@@ -222,7 +222,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
 
     queryArray.forEach(queryObject => {
       let path = Object.keys(queryObject)[0];
-      if(path.startsWith('_metadata')){
+      if (path.startsWith('_metadata')) {
         prefix = '_metadata.'
       }
       const value = queryObject[path];
@@ -359,16 +359,16 @@ export class NodeAdvancedFilterComponent implements OnInit {
     }
     return true
   }
-  onToggle(value){
+  onToggle(value) {
     this.alertModalRef = this.commonService.modal(this.alertModal, { centered: true });
     this.hold = true;
     this.alertModalRef.result.then(close => {
-      if(close){
+      if (close) {
         this.hold = false;
         this.advancedToggle = value;
         this.filterArray = [];
       }
-      else{
+      else {
         this.hold = false
         this.advancedToggle = !value
       }
