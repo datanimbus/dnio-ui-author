@@ -1,7 +1,7 @@
 <div class="d-flex flex-column">
     <div class="sub-heading text-dark font-weight-bold mb-3 d-flex align-items-center justify-content-between p-3">
         <div class="d-flex align-items-center">
-            <span class="text font-20 fw-600">Custom Configuration</span>
+            <span class="text font-20 fw-600">Custom Images</span>
         </div>
         <button type="button" class="btn btn-primary btn-min-width" (click)="saveApp()">Save</button>
     </div>
@@ -18,10 +18,12 @@
             <div class="form-group">
                 <label for="libraries" class="fw-600">B2B Base Image</label>
                 <input class="form-control" name="libraries" id="libraries" [(ngModel)]="appData.b2bBaseImage">
+                <span class="form-text text-muted font-12">Default: datanimbus.io.b2b.base:{{version}}</span>
             </div>
             <div class="form-group">
                 <label for="libraries" class="fw-600">Function Base Image</label>
                 <input class="form-control" name="libraries" id="libraries" [(ngModel)]="appData.faasBaseImage">
+                <span class="form-text text-muted font-12">Default: datanimbus.io.faas.base:{{version}}</span>
             </div>
         </div>
         <div class="variables-list p-3 w-50 border-left">
