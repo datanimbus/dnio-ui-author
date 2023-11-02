@@ -160,6 +160,17 @@
           </div>
         </div>
       </div>
+      <div class="form-group mt-3" *ngIf="['CSV','FLATFILE','DELIMITER'].includes(form.get('formatType').value)">
+        <label for="dataType" class="font-13 text-secondary">Sub Type</label>
+        <div class="d-flex flex-wrap">
+          <div class="format-select-list-item d-flex align-items-center mr-4 mb-2" *ngFor="let type of subType"
+            (click)="selectSubType(type);">
+            <odp-round-radio class="mr-2" [edit]="{status:true}" [checked]="isSubTypeSelected(type)">
+            </odp-round-radio>
+            {{type}}
+          </div>
+        </div>
+      </div>
     </ng-container>
   </div>
   <div class="d-flex align-self-end justify-content-end w-100 mt-auto">

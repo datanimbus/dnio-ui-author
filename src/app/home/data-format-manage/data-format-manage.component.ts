@@ -27,8 +27,10 @@ export class DataFormatManageComponent implements
     @ViewChild('deleteModalEle', { static: false }) deleteModalEle: TemplateRef<HTMLElement>;
     @ViewChild('libName', { static: false }) libName: ElementRef;
     @ViewChild('pageChangeModalTemplate', { static: false }) pageChangeModalTemplate: TemplateRef<HTMLElement>;
+    @ViewChild('typeChangeModalTemplate', { static: false }) typeChangeModalTemplate: TemplateRef<HTMLElement>;
     deleteModalEleRef: NgbModalRef;
     pageChangeModalTemplateRef: NgbModalRef;
+    typeChangeModalTemplateRef: NgbModalRef;
     app: string;
     form: UntypedFormGroup;
     edit: any = {};
@@ -64,6 +66,7 @@ export class DataFormatManageComponent implements
         return !event.related.classList.contains('disabled');
     }
     showTextarea: string;
+    subType: Array<any> = [];
 
     constructor(
         private route: ActivatedRoute,
@@ -91,6 +94,7 @@ export class DataFormatManageComponent implements
                 this.schemaService.getDefinitionStructure()
             ]),
             formatType: ['JSON', [Validators.required]],
+            subType: ['flat', [Validators.required]],
             character: [',', [Validators.required]],
             excelType: ['xls', [Validators.required]],
             lineSeparator: ['\\\\n']
@@ -107,6 +111,7 @@ export class DataFormatManageComponent implements
             label: 'Data Formats',
             url: '/app/' + this.commonService.app._id + '/dfl'
         });
+        this.subType = ['flat', 'HRSF']
         this.commonService.changeBreadcrumb(this.breadcrumbPaths)
         this.commonService.activeComponent = this;
         this.ngbToolTipConfig.container = 'body';
@@ -123,6 +128,7 @@ export class DataFormatManageComponent implements
                     this.edit.status = false;
                 }
                 this.fillDetails();
+                console.log(this.definitions);
             } else {
                 this.breadcrumbPaths.push({
                     active: true,
@@ -136,7 +142,7 @@ export class DataFormatManageComponent implements
             }
         });
         this.form.get('formatType').valueChanges.subscribe(val => {
-            if (val === 'CSV') {
+            if (val === 'CSV' && this.form.get('subType').value !== 'HRSF') {
                 this.removeGroups();
                 this.form.get('character').patchValue(',');
             }
@@ -215,6 +221,9 @@ export class DataFormatManageComponent implements
                     if (res.formatType) {
                         this.form.get('formatType').patchValue(res.formatType);
                     }
+                    if (res.subType) {
+                        this.form.get('subType').patchValue(res.subType);
+                    }
                     if (res.excelType) {
                         this.form.get('excelType').patchValue(res.excelType);
                     }
@@ -231,18 +240,34 @@ export class DataFormatManageComponent implements
                         if (temp.definition[i].properties && temp.definition[i].properties.name) {
                             tempDef.get('properties.name').patchValue(temp.definition[i].properties.name);
                             this.onfocus = false;
-                        } else {
-                            tempDef.get('properties.name').patchValue('_self');
-                            this.onfocus = false;
-                        }
+                        } 
                         (this.form.get('definition') as UntypedFormArray).push(tempDef);
                     });
                 } else {
                     temp = {
                         name: res.name,
-                        description: res.description
+                        description: res.description,
                     };
                     this.form.patchValue(temp);
+                    if(res.subType){
+                        this.form.get('subType').patchValue(res.subType);
+                    }
+                    if(res.subType=== 'HRSF'){
+                        res.definition = this.hsrfFormat()
+                        temp.definition = this.schemaService.generateStructure(res.definition);
+                        (this.form.get('definition') as UntypedFormArray).controls.splice(0);
+                        temp.definition.forEach((element, i) => {
+                            const tempDef = this.schemaService.getDefinitionStructure(temp.definition[i]);
+                            if (temp.definition[i].properties && temp.definition[i].properties.name) {
+                                tempDef.get('properties.name').patchValue(temp.definition[i].properties.name);
+                                this.onfocus = false;
+                            } else {
+                                tempDef.get('properties.name').patchValue('_self');
+                                this.onfocus = false;
+                            }
+                            (this.form.get('definition') as UntypedFormArray).push(tempDef);
+                        });
+                    }
                 }
                 if (id) {
                     this.form.controls.name.reset();
@@ -373,6 +398,7 @@ export class DataFormatManageComponent implements
         payload.length = this.form.value.length;
         payload.lineSeparator = this.form.value.lineSeparator;
         payload.strictValidation = this.form.value.strictValidation;
+        payload.subType = this.form.value.subType
         if (this.edit.id) {
             response = this.commonService.put('partnerManager', `/${this.commonService.app._id}/dataFormat/` + this.edit.id, payload);
         } else {
@@ -439,6 +465,23 @@ export class DataFormatManageComponent implements
         }
         this.appService.formatTypeChange.emit(format.formatType);
     }
+
+
+    selectSubType(format: any) {
+        if (!this.edit.status) {
+            return;
+        }
+        this.form.get('subType').patchValue(format);
+    } 
+
+    isSubTypeSelected(format: any) {
+        const subType = this.form.get('subType').value;
+        let flag = false;
+        if (format == subType) {
+          flag = true;
+        }
+        return flag;
+    }   
 
     canDeactivate(): Promise<boolean> | boolean {
         if (this.changesDone) {
@@ -537,6 +580,22 @@ export class DataFormatManageComponent implements
             (this.form.get('definition') as UntypedFormArray).removeAt(i);
         });
     }
+
+    switchType(type: any) {
+        const self = this;
+        if (self.edit) {
+          if (self.typeChangeModalTemplateRef) {
+            self.typeChangeModalTemplateRef.close(false);
+          }
+          self.typeChangeModalTemplateRef = self.commonService.modal(self.typeChangeModalTemplate);
+          self.typeChangeModalTemplateRef.result.then((close) => {
+            if (close) {
+              self.selectSubType(type);
+            }
+          }, dismiss => { });
+        } 
+      }
+      
     get name() {
         if (this.form.get('name')) {
             return this.form.get('name').value;
@@ -603,10 +662,111 @@ export class DataFormatManageComponent implements
         return this.form.get('formatType').value;
     }
 
+    get subTypeValue() {
+        return this.form.get('subType').value;
+    }
+
     get editable() {
         if (this.edit && this.edit.status) {
             return true;
         }
         return false;
+    }
+
+    hsrfFormat(){
+        return [
+            {
+                "key": "header",
+                "type": "Object",
+                "definition": [
+                    {
+                        "type": "String",
+                        "key": "H1",
+                        "properties": {
+                            "name": "H1",
+                            "dataPathSegs": [
+                                "Header",
+                                "H1"
+                            ],
+                            "dataPath": "Header.H1"
+                        }
+                    }
+                ],
+                "properties": {
+                    "name": "Header",
+                    "dataPath": "Header",
+                    "disabled": false,
+                    "dataPathSegs": [
+                        "Header"
+                    ]
+                },
+            },
+            {
+                "key": "records",
+                "type": "Array",
+                "definition": [
+                    {
+                        "type": "Object",
+                        "key": "_self",
+                        "properties": {
+                            "dataPathSegs": [
+                                "Records",
+                                "[#]"
+                            ],
+                            "dataPath": "Records[#]"
+                        },
+                        "definition": [
+                            {
+                                "type": "String",
+                                "key": "R1",
+                                "properties": {
+                                    "name": "R1",
+                                    "dataPathSegs": [
+                                        "Records",
+                                        "[#]",
+                                        "R1"
+                                    ],
+                                    "dataPath": "Records[#].R1"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "properties": {
+                    "name": "Records",
+                    "dataPath": "Records",
+                    "disabled": false,
+                    "dataPathSegs": [
+                        "Records"
+                    ]
+                },
+            },
+            {
+                "key": "footer",
+                "type": "Object",
+                "definition": [
+                    {
+                        "type": "String",
+                        "key": "F1",
+                        "properties": {
+                            "name": "test",
+                            "dataPathSegs": [
+                                "Footer",
+                                "F1"
+                            ],
+                            "dataPath": "Footer.F1"
+                        }
+                    }
+                ],
+                "properties": {
+                    "name": "Footer",
+                    "dataPath": "Footer",
+                    "disabled": false,
+                    "dataPathSegs": [
+                        "Footer"
+                    ]
+                },
+            }
+        ]
     }
 }

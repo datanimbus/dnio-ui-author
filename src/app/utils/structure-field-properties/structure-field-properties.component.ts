@@ -17,6 +17,7 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
   @Input() isLibrary: boolean;
   @Input() isDataFormat: boolean;
   @Input() formatType: string;
+  @Input() subType: string;
   @Input() edit: any;
   @Input() type: string;
   showProperties: boolean;
@@ -29,6 +30,7 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
   _dateFrom: Date;
   form: UntypedFormGroup;
   showCommonFields: boolean;
+  toggleDisable: any = {};
   private subscriptions: any;
   public get dateFrom(): Date {
     const self = this;
@@ -56,6 +58,13 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
     self.showDataTypes = {};
     self.showCommonFields = true;
     self.showProperties = false;
+    if(this.isHrsf()){
+      this.toggleDisable = {
+        footer: false,
+        header: false,
+        records: false
+      }
+    }
   }
 
   ngAfterViewInit(): void {
@@ -367,4 +376,15 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
     }
     return retValue;
   }
+
+  isHrsf(){
+    return this.subType === 'HRSF'
+  }
+
+  disableCheck(){
+    if(this.isHrsf() && ['header','footer','records'].includes(this.form.get('key').value)){
+        return true
+    }
+    return false
+}
 }
