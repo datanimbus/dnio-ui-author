@@ -39,6 +39,8 @@ export class InteractionSettingsComponent implements OnInit, OnDestroy {
       } else {
         this.appData = Object.assign(this.appData, res);
       }
+      delete this.appData._metadata;
+      delete this.appData.__v;
       if (!this.appData.interactionStore) {
         this.appData.interactionStore = {
           retainPolicy: {
@@ -79,7 +81,7 @@ export class InteractionSettingsComponent implements OnInit, OnDestroy {
       this.connectorType = 'S3';
     }
   }
-  
+
 
   // selectConnector(item: NgbTypeaheadSelectItemEvent) {
   //   if (!this.appData.interactionStore) {
@@ -145,7 +147,7 @@ export class InteractionSettingsComponent implements OnInit, OnDestroy {
 
   get invalidForm() {
     if (this.appData?.interactionStore?.storeType != 'db'
-      && (!this.appData?.interactionStore?.configuration?.connector )) {
+      && (!this.appData?.interactionStore?.configuration?.connector)) {
       return true;
     }
     return false;
