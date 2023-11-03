@@ -240,6 +240,9 @@ export class DataFormatManageComponent implements
                         if (temp.definition[i].properties && temp.definition[i].properties.name) {
                             tempDef.get('properties.name').patchValue(temp.definition[i].properties.name);
                             this.onfocus = false;
+                        } else {
+                            tempDef.get('properties.name').patchValue('');
+                            this.onfocus = false;
                         }
                         (this.form.get('definition') as UntypedFormArray).push(tempDef);
                     });
@@ -253,16 +256,33 @@ export class DataFormatManageComponent implements
                         this.form.get('subType').patchValue(res.subType);
                     }
                     if (res.subType === 'HRSF') {
-                        res.definition = this.hsrfFormat()
+                        res.definition = this.hrsfFormat()
                         temp.definition = this.schemaService.generateStructure(res.definition);
                         (this.form.get('definition') as UntypedFormArray).controls.splice(0);
                         temp.definition.forEach((element, i) => {
+                            const initChange = (def) =>{
+                                if(def.definition){
+                                    def.definition.forEach(ele => {
+                                        initChange(ele)
+                                    })
+                                }
+                                else{
+                                    if(def.key === '_self') {
+                                        def.key = '';
+                                        def.properties.name = '';
+                                    }
+                                }
+                            }
                             const tempDef = this.schemaService.getDefinitionStructure(temp.definition[i]);
                             if (temp.definition[i].properties && temp.definition[i].properties.name) {
                                 tempDef.get('properties.name').patchValue(temp.definition[i].properties.name);
-                                this.onfocus = false;
+                                const defs = tempDef.get('definition').value;
+                                defs.forEach(def => {
+                                    initChange(def)
+                                })
+                                tempDef.get('definition').patchValue(defs)
                             } else {
-                                tempDef.get('properties.name').patchValue('_self');
+                                // tempDef.get('properties.name').patchValue('_self');
                                 this.onfocus = false;
                             }
                             (this.form.get('definition') as UntypedFormArray).push(tempDef);
@@ -592,7 +612,7 @@ export class DataFormatManageComponent implements
 
     switchType(type: any) {
         const self = this;
-        if (self.edit) {
+        if (self.edit.status) {
             if (self.typeChangeModalTemplateRef) {
                 self.typeChangeModalTemplateRef.close(false);
             }
@@ -682,102 +702,222 @@ export class DataFormatManageComponent implements
         return false;
     }
 
-    hsrfFormat() {
+    hrsfFormat() {
         return [
             {
-                "key": "header",
                 "type": "Object",
+                "key": "header",
+                "_newField": true,
+                "properties": {
+                    "_type": "Object",
+                    "label": null,
+                    "readonly": false,
+                    "errorMessage": null,
+                    "name": "Header",
+                    "disabled": false,
+                    "fieldLength": 10,
+                    "_description": null,
+                    "_typeChanged": "Object",
+                    "_isParrentArray": null,
+                    "_isGrpParentArray": null,
+                    "dataPath": "Header",
+                    "_detailedType": "",
+                    "schemaFree": false
+                },
                 "definition": [
                     {
+                        "_placeholder": "Untitled Attribute",
                         "type": "String",
-                        "key": "H1",
+                        "key": null,
+                        "_newField": true,
                         "properties": {
-                            "name": "H1",
-                            "dataPathSegs": [
-                                "Header",
-                                "H1"
-                            ],
-                            "dataPath": "Header.H1"
+                            "_type": "String",
+                            "label": null,
+                            "readonly": false,
+                            "errorMessage": null,
+                            "name": null,
+                            "required": false,
+                            "disabled": false,
+                            "fieldLength": 10,
+                            "_description": null,
+                            "_typeChanged": "String",
+                            "_isParrentArray": null,
+                            "_isGrpParentArray": null,
+                            "dataPath": null,
+                            "_detailedType": "",
+                            "default": null,
+                            "createOnly": false,
+                            "unique": false,
+                            "_listInput": null,
+                            "enum": [],
+                            "minlength": null,
+                            "maxlength": null,
+                            "pattern": null,
+                            "email": false,
+                            "password": false,
+                            "longText": false,
+                            "richText": false,
+                            "masking": null,
+                            "hasTokens": []
                         }
                     }
-                ],
-                "properties": {
-                    "name": "Header",
-                    "dataPath": "Header",
-                    "disabled": false,
-                    "dataPathSegs": [
-                        "Header"
-                    ]
-                },
+                ]
             },
             {
-                "key": "records",
+                "_placeholder": "Untitled Attribute",
                 "type": "Array",
+                "key": "records",
+                "_newField": true,
+                "properties": {
+                    "name": "Records",
+                    "_type": "Array",
+                    "label": null,
+                    "readonly": false,
+                    "errorMessage": null,
+                    "disabled": false,
+                    "fieldLength": 10,
+                    "_description": null,
+                    "_typeChanged": "Array",
+                    "_isParrentArray": null,
+                    "_isGrpParentArray": null,
+                    "dataPath": null,
+                    "_detailedType": "",
+                    "createOnly": false,
+                    "maxlength": null
+                },
                 "definition": [
                     {
+                        "_placeholder": "Untitled Attribute",
                         "type": "Object",
                         "key": "_self",
+                        "_newField": true,
                         "properties": {
-                            "dataPathSegs": [
-                                "Records",
-                                "[#]"
-                            ],
-                            "dataPath": "Records[#]"
+                            "name": null,
+                            "_type": "Object",
+                            "label": null,
+                            "readonly": false,
+                            "errorMessage": null,
+                            "disabled": false,
+                            "fieldLength": 10,
+                            "_description": null,
+                            "_typeChanged": "Object",
+                            "_isParrentArray": null,
+                            "_isGrpParentArray": null,
+                            "dataPath": null,
+                            "_detailedType": "",
+                            "schemaFree": false
                         },
                         "definition": [
                             {
+                                "_placeholder": "Untitled Attribute",
                                 "type": "String",
-                                "key": "R1",
+                                "key": null,
+                                "_newField": true,
                                 "properties": {
-                                    "name": "R1",
-                                    "dataPathSegs": [
-                                        "Records",
-                                        "[#]",
-                                        "R1"
-                                    ],
-                                    "dataPath": "Records[#].R1"
+                                    "_type": "String",
+                                    "label": null,
+                                    "readonly": false,
+                                    "errorMessage": null,
+                                    "name": null,
+                                    "required": false,
+                                    "disabled": false,
+                                    "fieldLength": 10,
+                                    "_description": null,
+                                    "_typeChanged": "String",
+                                    "_isParrentArray": true,
+                                    "_isGrpParentArray": true,
+                                    "dataPath": null,
+                                    "_detailedType": "",
+                                    "default": null,
+                                    "_listInput": null,
+                                    "enum": [],
+                                    "minlength": null,
+                                    "maxlength": null,
+                                    "pattern": null,
+                                    "email": false,
+                                    "password": false,
+                                    "longText": false,
+                                    "richText": false,
+                                    "masking": null,
+                                    "hasTokens": []
                                 }
                             },
                             {
+                                "_placeholder": "Untitled Attribute",
                                 "type": "Array",
                                 "key": "subRecords",
+                                "_newField": true,
                                 "properties": {
                                     "name": "Sub Records",
+                                    "_type": "Array",
+                                    "label": null,
+                                    "readonly": false,
+                                    "errorMessage": null,
                                     "disabled": false,
-                                    "dataPathSegs": [
-                                        "Records",
-                                        "[#]",
-                                        "Sub Records"
-                                    ],
-                                    "dataPath": "Records[#].Sub Records"
+                                    "fieldLength": 10,
+                                    "_description": null,
+                                    "_typeChanged": "Array",
+                                    "_isParrentArray": null,
+                                    "_isGrpParentArray": true,
+                                    "dataPath": null,
+                                    "_detailedType": "",
+                                    "maxlength": null
                                 },
                                 "definition": [
                                     {
+                                        "_placeholder": "Untitled Attribute",
                                         "type": "Object",
-                                        "key": "_self",
+                                        "key": "",
+                                        "_newField": true,
                                         "properties": {
-                                            "dataPathSegs": [
-                                                "Records",
-                                                "[#]",
-                                                "Sub Records",
-                                                "[#]"
-                                            ],
-                                            "dataPath": "Records[#].Sub Records[#]"
+                                            "name": null,
+                                            "_type": "Object",
+                                            "label": null,
+                                            "readonly": false,
+                                            "errorMessage": null,
+                                            "disabled": false,
+                                            "fieldLength": 10,
+                                            "_description": null,
+                                            "_typeChanged": "Object",
+                                            "_isParrentArray": null,
+                                            "_isGrpParentArray": null,
+                                            "dataPath": null,
+                                            "_detailedType": "",
+                                            "schemaFree": false
                                         },
                                         "definition": [
                                             {
+                                                "_placeholder": "Untitled Attribute",
                                                 "type": "String",
-                                                "key": "sr1",
+                                                "key": null,
+                                                "_newField": true,
                                                 "properties": {
-                                                    "name": "SR1",
-                                                    "dataPathSegs": [
-                                                        "Records",
-                                                        "[#]",
-                                                        "Sub Records",
-                                                        "[#]",
-                                                        "SR1"
-                                                    ],
-                                                    "dataPath": "Records[#].Sub Records[#].SR1"
+                                                    "_type": "String",
+                                                    "label": null,
+                                                    "readonly": false,
+                                                    "errorMessage": null,
+                                                    "name": null,
+                                                    "required": false,
+                                                    "disabled": false,
+                                                    "fieldLength": 10,
+                                                    "_description": null,
+                                                    "_typeChanged": "String",
+                                                    "_isParrentArray": true,
+                                                    "_isGrpParentArray": true,
+                                                    "dataPath": null,
+                                                    "_detailedType": "",
+                                                    "default": null,
+                                                    "_listInput": null,
+                                                    "enum": [],
+                                                    "minlength": null,
+                                                    "maxlength": null,
+                                                    "pattern": null,
+                                                    "email": false,
+                                                    "password": false,
+                                                    "longText": false,
+                                                    "richText": false,
+                                                    "masking": null,
+                                                    "hasTokens": []
                                                 }
                                             }
                                         ]
@@ -786,42 +926,67 @@ export class DataFormatManageComponent implements
                             }
                         ]
                     }
-                ],
-                "properties": {
-                    "name": "Records",
-                    "dataPath": "Records",
-                    "disabled": false,
-                    "dataPathSegs": [
-                        "Records"
-                    ]
-                },
+                ]
             },
             {
-                "key": "footer",
                 "type": "Object",
+                "key": "footer",
+                "_newField": true,
+                "properties": {
+                    "_type": "Object",
+                    "label": null,
+                    "readonly": false,
+                    "errorMessage": null,
+                    "name": "Footer",
+                    "disabled": false,
+                    "fieldLength": 10,
+                    "_description": null,
+                    "_typeChanged": "Object",
+                    "_isParrentArray": null,
+                    "_isGrpParentArray": null,
+                    "dataPath": "Footer",
+                    "_detailedType": "",
+                    "schemaFree": false
+                },
                 "definition": [
                     {
+                        "_placeholder": "Untitled Attribute",
                         "type": "String",
-                        "key": "F1",
+                        "key": null,
+                        "_newField": true,
                         "properties": {
-                            "name": "test",
-                            "dataPathSegs": [
-                                "Footer",
-                                "F1"
-                            ],
-                            "dataPath": "Footer.F1"
+                            "_type": "String",
+                            "label": null,
+                            "readonly": false,
+                            "errorMessage": null,
+                            "name": null,
+                            "required": false,
+                            "disabled": false,
+                            "fieldLength": 10,
+                            "_description": null,
+                            "_typeChanged": "String",
+                            "_isParrentArray": null,
+                            "_isGrpParentArray": null,
+                            "dataPath": null,
+                            "_detailedType": "",
+                            "default": null,
+                            "createOnly": false,
+                            "unique": false,
+                            "_listInput": null,
+                            "enum": [],
+                            "minlength": null,
+                            "maxlength": null,
+                            "pattern": null,
+                            "email": false,
+                            "password": false,
+                            "longText": false,
+                            "richText": false,
+                            "masking": null,
+                            "hasTokens": []
                         }
                     }
-                ],
-                "properties": {
-                    "name": "Footer",
-                    "dataPath": "Footer",
-                    "disabled": false,
-                    "dataPathSegs": [
-                        "Footer"
-                    ]
-                },
-            }
+                ]
+            },
         ]
     }
 }

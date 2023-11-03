@@ -91,7 +91,7 @@
                                         [isDataFormatUsed]="microflows.length>0"></odp-structure-field>
                                 </div>
                             </div>
-                            <div class="add-attribute d-flex align-items-center text-muted" *ngIf="edit.status">
+                            <div class="add-attribute d-flex align-items-center text-muted" *ngIf="edit.status && this.subTypeValue !== 'HRSF'">
                                 <span class="d-flex align-items-center hover" (click)="addField()"
                                     id="schemaFieldObjectAddField">
                                     <span class="dsi dsi-plus fa-xs mr-1"></span>
@@ -152,12 +152,13 @@
         <span class="dsi dsi-close mr-2 d-flex ml-auto align-items-center hover"
             (click)="showAdvanceSettingsWindow=false"></span>
     </div>
-    <div class="from-group position-relative w-100 mb-3">
+    <div class="form-group position-relative w-100 mb-3 d-flex flex-column">
         <label for="dataType" class="font-13 text-secondary">Data Type</label>
-        <select id="dataType" class="form-control" formControlName="type">
+        <select id="dataType" class="form-control" formControlName="type" *ngIf="edit.status">
             <option value="Object">Object</option>
             <option value="Array">Array</option>
         </select>
+        <span *ngIf="!edit.status">{{form.get('type').value}}</span>
     </div>
     <div *ngIf="showAdvanceSettingsWindow" class="form-group">
         <label class="font-13 text-secondary">Format Type</label>
@@ -174,7 +175,7 @@
         <div class="d-flex flex-wrap">
           <div class="format-select-list-item d-flex align-items-center mr-3 mb-2" *ngFor="let type of subType"
             (click)="switchType(type);">
-            <odp-round-radio class="mr-2" [edit]="{status:true}" [checked]="isSubTypeSelected(type)">
+            <odp-round-radio class="mr-2" [edit]="edit" [checked]="isSubTypeSelected(type)">
             </odp-round-radio>
             {{type}}
           </div>
