@@ -236,7 +236,7 @@
           <div class="w-100 mb-4 mt-3 d-flex" *ngIf="isDataFormat && disableCheck()">
             <div class="text-secondary mr-2">Disable</div>
               <odp-checkbox id="disable" [edit]="{ status: canEdit }"
-              (checkedChange)="form.get('properties.disabled').patchValue(!form.get('properties.disabled').value)"
+              (checkedChange)="toggleDisable()"
               [checked]="form.get('properties.disabled').value"></odp-checkbox>
           </div>
 

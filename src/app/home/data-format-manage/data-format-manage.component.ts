@@ -240,7 +240,7 @@ export class DataFormatManageComponent implements
                         if (temp.definition[i].properties && temp.definition[i].properties.name) {
                             tempDef.get('properties.name').patchValue(temp.definition[i].properties.name);
                             this.onfocus = false;
-                        } 
+                        }
                         (this.form.get('definition') as UntypedFormArray).push(tempDef);
                     });
                 } else {
@@ -249,10 +249,10 @@ export class DataFormatManageComponent implements
                         description: res.description,
                     };
                     this.form.patchValue(temp);
-                    if(res.subType){
+                    if (res.subType) {
                         this.form.get('subType').patchValue(res.subType);
                     }
-                    if(res.subType=== 'HRSF'){
+                    if (res.subType === 'HRSF') {
                         res.definition = this.hsrfFormat()
                         temp.definition = this.schemaService.generateStructure(res.definition);
                         (this.form.get('definition') as UntypedFormArray).controls.splice(0);
@@ -351,7 +351,7 @@ export class DataFormatManageComponent implements
 
     cancel() {
         this.deleteModal.title = 'Unsaved Changes';
-        this.deleteModal.message = 'Are you sure you want to cancel ';
+        this.deleteModal.message = 'Are you sure you want to cancel ?';
         if (this.form.dirty) {
             this.deleteModalEleRef = this.commonService.modal(this.deleteModalEle);
             this.deleteModalEleRef.result.then((close) => {
@@ -454,16 +454,25 @@ export class DataFormatManageComponent implements
         if (!this.edit.status) {
             return;
         }
-        this.formatList.forEach(e => {
-            e.selected = false;
-        });
-        format.selected = true;
-        this.form.get('formatType').patchValue(format.formatType);
-        // this.form.get('formatType').markAsDirty();
-        if (format.formatType === 'EXCEL') {
-            this.form.get('excelType').patchValue(format.excelType);
+        if (this.typeChangeModalTemplateRef) {
+            this.typeChangeModalTemplateRef.close(false);
         }
-        this.appService.formatTypeChange.emit(format.formatType);
+        this.typeChangeModalTemplateRef = this.commonService.modal(this.typeChangeModalTemplate);
+        this.typeChangeModalTemplateRef.result.then((close) => {
+            if (close) {
+                this.formatList.forEach(e => {
+                    e.selected = false;
+                });
+                format.selected = true;
+                this.form.get('formatType').patchValue(format.formatType);
+                // this.form.get('formatType').markAsDirty();
+                if (format.formatType === 'EXCEL') {
+                    this.form.get('excelType').patchValue(format.excelType);
+                }
+                this.appService.formatTypeChange.emit(format.formatType);
+
+            }
+        }, dismiss => { });
     }
 
 
@@ -472,16 +481,16 @@ export class DataFormatManageComponent implements
             return;
         }
         this.form.get('subType').patchValue(format);
-    } 
+    }
 
     isSubTypeSelected(format: any) {
         const subType = this.form.get('subType').value;
         let flag = false;
         if (format == subType) {
-          flag = true;
+            flag = true;
         }
         return flag;
-    }   
+    }
 
     canDeactivate(): Promise<boolean> | boolean {
         if (this.changesDone) {
@@ -584,18 +593,18 @@ export class DataFormatManageComponent implements
     switchType(type: any) {
         const self = this;
         if (self.edit) {
-          if (self.typeChangeModalTemplateRef) {
-            self.typeChangeModalTemplateRef.close(false);
-          }
-          self.typeChangeModalTemplateRef = self.commonService.modal(self.typeChangeModalTemplate);
-          self.typeChangeModalTemplateRef.result.then((close) => {
-            if (close) {
-              self.selectSubType(type);
+            if (self.typeChangeModalTemplateRef) {
+                self.typeChangeModalTemplateRef.close(false);
             }
-          }, dismiss => { });
-        } 
-      }
-      
+            self.typeChangeModalTemplateRef = self.commonService.modal(self.typeChangeModalTemplate);
+            self.typeChangeModalTemplateRef.result.then((close) => {
+                if (close) {
+                    self.selectSubType(type);
+                }
+            }, dismiss => { });
+        }
+    }
+
     get name() {
         if (this.form.get('name')) {
             return this.form.get('name').value;
@@ -673,7 +682,7 @@ export class DataFormatManageComponent implements
         return false;
     }
 
-    hsrfFormat(){
+    hsrfFormat() {
         return [
             {
                 "key": "header",
@@ -728,6 +737,52 @@ export class DataFormatManageComponent implements
                                     ],
                                     "dataPath": "Records[#].R1"
                                 }
+                            },
+                            {
+                                "type": "Array",
+                                "key": "subRecords",
+                                "properties": {
+                                    "name": "Sub Records",
+                                    "disabled": false,
+                                    "dataPathSegs": [
+                                        "Records",
+                                        "[#]",
+                                        "Sub Records"
+                                    ],
+                                    "dataPath": "Records[#].Sub Records"
+                                },
+                                "definition": [
+                                    {
+                                        "type": "Object",
+                                        "key": "_self",
+                                        "properties": {
+                                            "dataPathSegs": [
+                                                "Records",
+                                                "[#]",
+                                                "Sub Records",
+                                                "[#]"
+                                            ],
+                                            "dataPath": "Records[#].Sub Records[#]"
+                                        },
+                                        "definition": [
+                                            {
+                                                "type": "String",
+                                                "key": "sr1",
+                                                "properties": {
+                                                    "name": "SR1",
+                                                    "dataPathSegs": [
+                                                        "Records",
+                                                        "[#]",
+                                                        "Sub Records",
+                                                        "[#]",
+                                                        "SR1"
+                                                    ],
+                                                    "dataPath": "Records[#].Sub Records[#].SR1"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
                             }
                         ]
                     }
