@@ -43,6 +43,7 @@ export class SchemaBuilderService {
             errorMessage: [value.properties && value.properties.errorMessage ? value.properties.errorMessage : null],
             name: [value.properties && value.properties.name ? value.properties.name : null, [maxLenValidator(40)]],
             required: [value.properties && value.properties.required ? value.properties.required : false],
+            disabled: [value.properties && value.properties.disabled ? value.properties.disabled : false],
             fieldLength: [value.properties && value.properties.fieldLength ? value.properties.fieldLength : 10],
             _description: [value.properties && value.properties._description ? value.properties._description : null, [Validators.maxLength(240)]],
             _typeChanged: [value.type],

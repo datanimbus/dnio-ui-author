@@ -27,8 +27,10 @@ export class DataFormatManageComponent implements
     @ViewChild('deleteModalEle', { static: false }) deleteModalEle: TemplateRef<HTMLElement>;
     @ViewChild('libName', { static: false }) libName: ElementRef;
     @ViewChild('pageChangeModalTemplate', { static: false }) pageChangeModalTemplate: TemplateRef<HTMLElement>;
+    @ViewChild('typeChangeModalTemplate', { static: false }) typeChangeModalTemplate: TemplateRef<HTMLElement>;
     deleteModalEleRef: NgbModalRef;
     pageChangeModalTemplateRef: NgbModalRef;
+    typeChangeModalTemplateRef: NgbModalRef;
     app: string;
     form: UntypedFormGroup;
     edit: any = {};
@@ -64,6 +66,7 @@ export class DataFormatManageComponent implements
         return !event.related.classList.contains('disabled');
     }
     showTextarea: string;
+    subType: Array<any> = [];
 
     constructor(
         private route: ActivatedRoute,
@@ -91,6 +94,7 @@ export class DataFormatManageComponent implements
                 this.schemaService.getDefinitionStructure()
             ]),
             formatType: ['JSON', [Validators.required]],
+            subType: ['flat', [Validators.required]],
             character: [',', [Validators.required]],
             excelType: ['xls', [Validators.required]],
             lineSeparator: ['\\\\n']
@@ -107,6 +111,7 @@ export class DataFormatManageComponent implements
             label: 'Data Formats',
             url: '/app/' + this.commonService.app._id + '/dfl'
         });
+        this.subType = ['flat', 'HRSF']
         this.commonService.changeBreadcrumb(this.breadcrumbPaths)
         this.commonService.activeComponent = this;
         this.ngbToolTipConfig.container = 'body';
@@ -123,6 +128,7 @@ export class DataFormatManageComponent implements
                     this.edit.status = false;
                 }
                 this.fillDetails();
+                console.log(this.definitions);
             } else {
                 this.breadcrumbPaths.push({
                     active: true,
@@ -136,7 +142,7 @@ export class DataFormatManageComponent implements
             }
         });
         this.form.get('formatType').valueChanges.subscribe(val => {
-            if (val === 'CSV') {
+            if (val === 'CSV' && this.form.get('subType').value !== 'HRSF') {
                 this.removeGroups();
                 this.form.get('character').patchValue(',');
             }
@@ -215,6 +221,9 @@ export class DataFormatManageComponent implements
                     if (res.formatType) {
                         this.form.get('formatType').patchValue(res.formatType);
                     }
+                    if (res.subType) {
+                        this.form.get('subType').patchValue(res.subType);
+                    }
                     if (res.excelType) {
                         this.form.get('excelType').patchValue(res.excelType);
                     }
@@ -232,7 +241,7 @@ export class DataFormatManageComponent implements
                             tempDef.get('properties.name').patchValue(temp.definition[i].properties.name);
                             this.onfocus = false;
                         } else {
-                            tempDef.get('properties.name').patchValue('_self');
+                            tempDef.get('properties.name').patchValue('');
                             this.onfocus = false;
                         }
                         (this.form.get('definition') as UntypedFormArray).push(tempDef);
@@ -240,9 +249,45 @@ export class DataFormatManageComponent implements
                 } else {
                     temp = {
                         name: res.name,
-                        description: res.description
+                        description: res.description,
                     };
                     this.form.patchValue(temp);
+                    if (res.subType) {
+                        this.form.get('subType').patchValue(res.subType);
+                    }
+                    if (res.subType === 'HRSF') {
+                        res.definition = this.hrsfFormat()
+                        temp.definition = this.schemaService.generateStructure(res.definition);
+                        (this.form.get('definition') as UntypedFormArray).controls.splice(0);
+                        temp.definition.forEach((element, i) => {
+                            const initChange = (def) =>{
+                                if(def.definition){
+                                    def.definition.forEach(ele => {
+                                        initChange(ele)
+                                    })
+                                }
+                                else{
+                                    if(def.key === '_self') {
+                                        def.key = '';
+                                        def.properties.name = '';
+                                    }
+                                }
+                            }
+                            const tempDef = this.schemaService.getDefinitionStructure(temp.definition[i]);
+                            if (temp.definition[i].properties && temp.definition[i].properties.name) {
+                                tempDef.get('properties.name').patchValue(temp.definition[i].properties.name);
+                                const defs = tempDef.get('definition').value;
+                                defs.forEach(def => {
+                                    initChange(def)
+                                })
+                                tempDef.get('definition').patchValue(defs)
+                            } else {
+                                // tempDef.get('properties.name').patchValue('_self');
+                                this.onfocus = false;
+                            }
+                            (this.form.get('definition') as UntypedFormArray).push(tempDef);
+                        });
+                    }
                 }
                 if (id) {
                     this.form.controls.name.reset();
@@ -326,7 +371,7 @@ export class DataFormatManageComponent implements
 
     cancel() {
         this.deleteModal.title = 'Unsaved Changes';
-        this.deleteModal.message = 'Are you sure you want to cancel ';
+        this.deleteModal.message = 'Are you sure you want to cancel ?';
         if (this.form.dirty) {
             this.deleteModalEleRef = this.commonService.modal(this.deleteModalEle);
             this.deleteModalEleRef.result.then((close) => {
@@ -373,6 +418,7 @@ export class DataFormatManageComponent implements
         payload.length = this.form.value.length;
         payload.lineSeparator = this.form.value.lineSeparator;
         payload.strictValidation = this.form.value.strictValidation;
+        payload.subType = this.form.value.subType
         if (this.edit.id) {
             response = this.commonService.put('partnerManager', `/${this.commonService.app._id}/dataFormat/` + this.edit.id, payload);
         } else {
@@ -428,16 +474,42 @@ export class DataFormatManageComponent implements
         if (!this.edit.status) {
             return;
         }
-        this.formatList.forEach(e => {
-            e.selected = false;
-        });
-        format.selected = true;
-        this.form.get('formatType').patchValue(format.formatType);
-        // this.form.get('formatType').markAsDirty();
-        if (format.formatType === 'EXCEL') {
-            this.form.get('excelType').patchValue(format.excelType);
+        if (this.typeChangeModalTemplateRef) {
+            this.typeChangeModalTemplateRef.close(false);
         }
-        this.appService.formatTypeChange.emit(format.formatType);
+        this.typeChangeModalTemplateRef = this.commonService.modal(this.typeChangeModalTemplate);
+        this.typeChangeModalTemplateRef.result.then((close) => {
+            if (close) {
+                this.formatList.forEach(e => {
+                    e.selected = false;
+                });
+                format.selected = true;
+                this.form.get('formatType').patchValue(format.formatType);
+                // this.form.get('formatType').markAsDirty();
+                if (format.formatType === 'EXCEL') {
+                    this.form.get('excelType').patchValue(format.excelType);
+                }
+                this.appService.formatTypeChange.emit(format.formatType);
+
+            }
+        }, dismiss => { });
+    }
+
+
+    selectSubType(format: any) {
+        if (!this.edit.status) {
+            return;
+        }
+        this.form.get('subType').patchValue(format);
+    }
+
+    isSubTypeSelected(format: any) {
+        const subType = this.form.get('subType').value;
+        let flag = false;
+        if (format == subType) {
+            flag = true;
+        }
+        return flag;
     }
 
     canDeactivate(): Promise<boolean> | boolean {
@@ -537,6 +609,22 @@ export class DataFormatManageComponent implements
             (this.form.get('definition') as UntypedFormArray).removeAt(i);
         });
     }
+
+    switchType(type: any) {
+        const self = this;
+        if (self.edit.status) {
+            if (self.typeChangeModalTemplateRef) {
+                self.typeChangeModalTemplateRef.close(false);
+            }
+            self.typeChangeModalTemplateRef = self.commonService.modal(self.typeChangeModalTemplate);
+            self.typeChangeModalTemplateRef.result.then((close) => {
+                if (close) {
+                    self.selectSubType(type);
+                }
+            }, dismiss => { });
+        }
+    }
+
     get name() {
         if (this.form.get('name')) {
             return this.form.get('name').value;
@@ -603,10 +691,302 @@ export class DataFormatManageComponent implements
         return this.form.get('formatType').value;
     }
 
+    get subTypeValue() {
+        return this.form.get('subType').value;
+    }
+
     get editable() {
         if (this.edit && this.edit.status) {
             return true;
         }
         return false;
+    }
+
+    hrsfFormat() {
+        return [
+            {
+                "type": "Object",
+                "key": "header",
+                "_newField": true,
+                "properties": {
+                    "_type": "Object",
+                    "label": null,
+                    "readonly": false,
+                    "errorMessage": null,
+                    "name": "Header",
+                    "disabled": false,
+                    "fieldLength": 10,
+                    "_description": null,
+                    "_typeChanged": "Object",
+                    "_isParrentArray": null,
+                    "_isGrpParentArray": null,
+                    "dataPath": "Header",
+                    "_detailedType": "",
+                    "schemaFree": false
+                },
+                "definition": [
+                    {
+                        "_placeholder": "Untitled Attribute",
+                        "type": "String",
+                        "key": null,
+                        "_newField": true,
+                        "properties": {
+                            "_type": "String",
+                            "label": null,
+                            "readonly": false,
+                            "errorMessage": null,
+                            "name": null,
+                            "required": false,
+                            "disabled": false,
+                            "fieldLength": 10,
+                            "_description": null,
+                            "_typeChanged": "String",
+                            "_isParrentArray": null,
+                            "_isGrpParentArray": null,
+                            "dataPath": null,
+                            "_detailedType": "",
+                            "default": null,
+                            "createOnly": false,
+                            "unique": false,
+                            "_listInput": null,
+                            "enum": [],
+                            "minlength": null,
+                            "maxlength": null,
+                            "pattern": null,
+                            "email": false,
+                            "password": false,
+                            "longText": false,
+                            "richText": false,
+                            "masking": null,
+                            "hasTokens": []
+                        }
+                    }
+                ]
+            },
+            {
+                "_placeholder": "Untitled Attribute",
+                "type": "Array",
+                "key": "records",
+                "_newField": true,
+                "properties": {
+                    "name": "Records",
+                    "_type": "Array",
+                    "label": null,
+                    "readonly": false,
+                    "errorMessage": null,
+                    "disabled": false,
+                    "fieldLength": 10,
+                    "_description": null,
+                    "_typeChanged": "Array",
+                    "_isParrentArray": null,
+                    "_isGrpParentArray": null,
+                    "dataPath": null,
+                    "_detailedType": "",
+                    "createOnly": false,
+                    "maxlength": null
+                },
+                "definition": [
+                    {
+                        "_placeholder": "Untitled Attribute",
+                        "type": "Object",
+                        "key": "_self",
+                        "_newField": true,
+                        "properties": {
+                            "name": null,
+                            "_type": "Object",
+                            "label": null,
+                            "readonly": false,
+                            "errorMessage": null,
+                            "disabled": false,
+                            "fieldLength": 10,
+                            "_description": null,
+                            "_typeChanged": "Object",
+                            "_isParrentArray": null,
+                            "_isGrpParentArray": null,
+                            "dataPath": null,
+                            "_detailedType": "",
+                            "schemaFree": false
+                        },
+                        "definition": [
+                            {
+                                "_placeholder": "Untitled Attribute",
+                                "type": "String",
+                                "key": null,
+                                "_newField": true,
+                                "properties": {
+                                    "_type": "String",
+                                    "label": null,
+                                    "readonly": false,
+                                    "errorMessage": null,
+                                    "name": null,
+                                    "required": false,
+                                    "disabled": false,
+                                    "fieldLength": 10,
+                                    "_description": null,
+                                    "_typeChanged": "String",
+                                    "_isParrentArray": true,
+                                    "_isGrpParentArray": true,
+                                    "dataPath": null,
+                                    "_detailedType": "",
+                                    "default": null,
+                                    "_listInput": null,
+                                    "enum": [],
+                                    "minlength": null,
+                                    "maxlength": null,
+                                    "pattern": null,
+                                    "email": false,
+                                    "password": false,
+                                    "longText": false,
+                                    "richText": false,
+                                    "masking": null,
+                                    "hasTokens": []
+                                }
+                            },
+                            {
+                                "_placeholder": "Untitled Attribute",
+                                "type": "Array",
+                                "key": "subRecords",
+                                "_newField": true,
+                                "properties": {
+                                    "name": "Sub Records",
+                                    "_type": "Array",
+                                    "label": null,
+                                    "readonly": false,
+                                    "errorMessage": null,
+                                    "disabled": false,
+                                    "fieldLength": 10,
+                                    "_description": null,
+                                    "_typeChanged": "Array",
+                                    "_isParrentArray": null,
+                                    "_isGrpParentArray": true,
+                                    "dataPath": null,
+                                    "_detailedType": "",
+                                    "maxlength": null
+                                },
+                                "definition": [
+                                    {
+                                        "_placeholder": "Untitled Attribute",
+                                        "type": "Object",
+                                        "key": "",
+                                        "_newField": true,
+                                        "properties": {
+                                            "name": null,
+                                            "_type": "Object",
+                                            "label": null,
+                                            "readonly": false,
+                                            "errorMessage": null,
+                                            "disabled": false,
+                                            "fieldLength": 10,
+                                            "_description": null,
+                                            "_typeChanged": "Object",
+                                            "_isParrentArray": null,
+                                            "_isGrpParentArray": null,
+                                            "dataPath": null,
+                                            "_detailedType": "",
+                                            "schemaFree": false
+                                        },
+                                        "definition": [
+                                            {
+                                                "_placeholder": "Untitled Attribute",
+                                                "type": "String",
+                                                "key": null,
+                                                "_newField": true,
+                                                "properties": {
+                                                    "_type": "String",
+                                                    "label": null,
+                                                    "readonly": false,
+                                                    "errorMessage": null,
+                                                    "name": null,
+                                                    "required": false,
+                                                    "disabled": false,
+                                                    "fieldLength": 10,
+                                                    "_description": null,
+                                                    "_typeChanged": "String",
+                                                    "_isParrentArray": true,
+                                                    "_isGrpParentArray": true,
+                                                    "dataPath": null,
+                                                    "_detailedType": "",
+                                                    "default": null,
+                                                    "_listInput": null,
+                                                    "enum": [],
+                                                    "minlength": null,
+                                                    "maxlength": null,
+                                                    "pattern": null,
+                                                    "email": false,
+                                                    "password": false,
+                                                    "longText": false,
+                                                    "richText": false,
+                                                    "masking": null,
+                                                    "hasTokens": []
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "Object",
+                "key": "footer",
+                "_newField": true,
+                "properties": {
+                    "_type": "Object",
+                    "label": null,
+                    "readonly": false,
+                    "errorMessage": null,
+                    "name": "Footer",
+                    "disabled": false,
+                    "fieldLength": 10,
+                    "_description": null,
+                    "_typeChanged": "Object",
+                    "_isParrentArray": null,
+                    "_isGrpParentArray": null,
+                    "dataPath": "Footer",
+                    "_detailedType": "",
+                    "schemaFree": false
+                },
+                "definition": [
+                    {
+                        "_placeholder": "Untitled Attribute",
+                        "type": "String",
+                        "key": null,
+                        "_newField": true,
+                        "properties": {
+                            "_type": "String",
+                            "label": null,
+                            "readonly": false,
+                            "errorMessage": null,
+                            "name": null,
+                            "required": false,
+                            "disabled": false,
+                            "fieldLength": 10,
+                            "_description": null,
+                            "_typeChanged": "String",
+                            "_isParrentArray": null,
+                            "_isGrpParentArray": null,
+                            "dataPath": null,
+                            "_detailedType": "",
+                            "default": null,
+                            "createOnly": false,
+                            "unique": false,
+                            "_listInput": null,
+                            "enum": [],
+                            "minlength": null,
+                            "maxlength": null,
+                            "pattern": null,
+                            "email": false,
+                            "password": false,
+                            "longText": false,
+                            "richText": false,
+                            "masking": null,
+                            "hasTokens": []
+                        }
+                    }
+                ]
+            },
+        ]
     }
 }

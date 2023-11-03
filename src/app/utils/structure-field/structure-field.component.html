@@ -1,18 +1,18 @@
 <div class="d-flex flex-column w-100">
-    <div class="field-wrapper w-100 rounded" [ngClass]="{'active':active}" [formGroup]="form" (dblclick)="view()">
+    <div class="field-wrapper w-100 rounded" [ngClass]="{'active':active, 'disabled': form.get('properties.disabled').value}" [formGroup]="form" (dblclick)="view()">
         <div class="field-row d-flex align-items-center justify-content-between w-100 py-3">
             <div class="d-flex align-items-center justify-content-start">
                 <div class="field-name-holder d-flex align-items-center" formGroupName="properties">
                     <!-- <span class="spacer" [ngStyle]="getSpacing()"></span> -->
                     <span class="icon mr-2 ml-3 d-flex align-items-center">
                         <span class="dsi dsi-more-vertical-6 sub-heading hover"
-                            *ngIf="!idField && edit.status && type!=='internal'"></span>
+                            *ngIf="!idField && edit.status && type!=='internal' && !disableCheck()"></span>
                     </span>
                     <div class="input-control position-relative mr-3">
                         <span class="d-flex align-items-center field form-control-plaintext word-elipsis"
                             *ngIf="!edit.status || type==='internal'" [ngbTooltip]="form.get('properties.name').value"
                             #tooltip="ngbTooltip">{{form.get('properties.name').value}}</span>
-                        <input #inputField *ngIf="edit.status && type!=='internal'" placement="top"
+                        <input #inputField *ngIf="edit.status && type!=='internal'" placement="top" [readonly]="disableCheck()"
                             [ngbTooltip]="tipContent" #tooltip="ngbTooltip" triggers="manual"
                             (blur)="checkType(inputField.value);searchService();" (focus)="activateProperty()"
                             (keyup.enter)="addField()" (shift.delete)="deleteField($event)" type="text"
@@ -107,7 +107,7 @@
         <div class="mx-3" *ngIf="objectFields" [ngClass]="{'d-none':collapse}">
             <div [sortablejs]="objectFields.controls" [sortablejsOptions]="{sort:editable}">
                 <ng-container *ngFor="let def of objectFields.controls;let i = index">
-                    <odp-structure-field [all]="objectFields" [index]="i" [isLibrary]="isLibrary"
+                    <odp-structure-field [all]="objectFields" [index]="i" [isLibrary]="isLibrary" [subType]="subType"
                         [isDataFormat]="isDataFormat" [formatType]="formatType" [edit]="edit" [level]="level+1"
                         [isDataFormatUsed]="isDataFormatUsed" [stateModelAttr]='stateModelAttr'
                         (deleteStateModel)='_deleteStateModel($event)' (viewStateModel)='_viewStateModel($event)'>
@@ -119,7 +119,7 @@
         <div class="mx-3" *ngIf="arrayFields" [ngClass]="{'d-none':collapse}">
             <div [sortablejs]="arrayFields.controls" [sortablejsOptions]="{sort:editable}">
                 <ng-container *ngFor="let def of arrayFields.controls;let i = index">
-                    <odp-structure-field [all]="arrayFields" [index]="i" [isLibrary]="isLibrary"
+                    <odp-structure-field [all]="arrayFields" [index]="i" [isLibrary]="isLibrary" [subType]="subType"
                         [isDataFormat]="isDataFormat" [formatType]="formatType" [edit]="edit" [level]="level+1"
                         [isDataFormatUsed]="isDataFormatUsed" [stateModelAttr]='stateModelAttr'
                         (deleteStateModel)='_deleteStateModel($event)' (viewStateModel)='_viewStateModel($event)'>

@@ -188,15 +188,7 @@
         formItem.get('type').value!='Relation' && formItem.get('type').value!='User'">
           Validations
         </div> -->
-        <div class="w-100 mb-4 mt-2" *ngIf="isDataFormat && formatType=='FLATFILE'">
-          <div class=" text-secondary">Field Length
-            <sup class="text-danger font-normal high-zIndex" ngbTooltip="Mandatory field">*</sup>
-          </div>
-          <div>
-            <input *ngIf="canEdit" class="form-control" type="number" formControlName="fieldLength" id="fieldLength">
-            <span *ngIf="!canEdit">{{formItem.get('properties.fieldLength').value}}</span>
-          </div>
-        </div>
+
 
         <div class="w-100 mb-4 mt-2" *ngIf="isDataFormat && formItem.get('type').value=='String'">
           <div class="text-secondary">Masking</div>
@@ -230,6 +222,25 @@
 
 
         <ng-container *ngIf="showCommonFields && formList.length == 1 || formIndex > 0">
+
+          <div class="w-100 mb-4 mt-2" *ngIf="isDataFormat && formatType=='FLATFILE'">
+            <div class=" text-secondary">Field Length
+              <sup class="text-danger font-normal high-zIndex" ngbTooltip="Mandatory field">*</sup>
+            </div>
+            <div>
+              <input *ngIf="canEdit" class="form-control" type="number" formControlName="fieldLength" id="fieldLength">
+              <span *ngIf="!canEdit">{{formItem.get('properties.fieldLength').value}}</span>
+            </div>
+          </div>
+          
+          <div class="w-100 mb-4 mt-3 d-flex" *ngIf="isDataFormat && disableCheck()">
+            <div class="text-secondary mr-2">Disable</div>
+              <odp-checkbox id="disable" [edit]="{ status: canEdit }"
+              (checkedChange)="toggleDisable()"
+              [checked]="form.get('properties.disabled').value"></odp-checkbox>
+          </div>
+
+
           <div class="mt-3 font-16 fw-400" *ngIf="!isDataFormat">
             Display Properties
           </div>

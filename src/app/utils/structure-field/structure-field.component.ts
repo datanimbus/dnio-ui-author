@@ -43,6 +43,7 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
     @Input() isDataFormatUsed: boolean;
     @Input() type: string;
     @Input() formatType: string;
+    @Input() subType: string;
     @ViewChild('tooltip', { static: false }) tooltip: NgbTooltip;
     @ViewChild('inputField', { static: false }) inputField: ElementRef;
     @ViewChild('nameChangeModal', { static: false }) nameChangeModal: TemplateRef<HTMLElement>;
@@ -678,6 +679,9 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
 
     get canDelete() {
         const self = this;
+        if(this.disableCheck()){
+            return false
+        }
         if (self.all.length > 1 && self.form.get('type').value !== 'id') {
             return true;
         }
@@ -698,6 +702,17 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
             return true;
         }
         return false;
+    }
+
+    isHrsf(){
+       return (this.subType === 'HRSF' && this.isDataFormat)
+    }
+
+    disableCheck(){
+        if(this.isHrsf() && ['header','footer','records','subRecords'].includes(this.form.get('key').value)){
+            return true
+        }
+        return false
     }
 
 }

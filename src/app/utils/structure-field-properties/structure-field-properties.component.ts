@@ -17,6 +17,7 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
   @Input() isLibrary: boolean;
   @Input() isDataFormat: boolean;
   @Input() formatType: string;
+  @Input() subType: string;
   @Input() edit: any;
   @Input() type: string;
   showProperties: boolean;
@@ -56,6 +57,7 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
     self.showDataTypes = {};
     self.showCommonFields = true;
     self.showProperties = false;
+
   }
 
   ngAfterViewInit(): void {
@@ -367,4 +369,37 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
     }
     return retValue;
   }
+
+  isHrsf(){
+    return this.subType === 'HRSF'
+  }
+
+  disableCheck(){
+    if(this.isHrsf() && ['header','footer','records','subRecords'].includes(this.form.get('key').value)){
+        return true
+    }
+    return false
+}
+
+toggleDef(definitions,value){
+  definitions.forEach(ele => {
+    if(ele.definition){
+      this.toggleDef(ele.definition,value)
+    }
+      ele['properties']['disabled'] = value
+  })
+}
+
+toggleDisable(){
+  const currentVal = this.form.get('properties.disabled').value;
+  this.form.get('properties.disabled').patchValue(!currentVal);
+  const definitions = this.form.get('definition').value;
+  definitions.forEach(def => {
+    if(def.definition){
+      this.toggleDef(def.definition, !currentVal)
+
+    }
+  })
+  this.form.get('definition').patchValue(definitions);
+}
 }
