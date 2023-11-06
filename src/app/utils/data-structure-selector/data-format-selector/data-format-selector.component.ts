@@ -31,7 +31,7 @@ export class DataFormatSelectorComponent implements OnInit {
     this.apiOptions = {
       page: 1,
       count: 5,
-      select: 'name definition attributeCount formatType character excelType strictValidation lineSeparator type',
+      select: 'name definition attributeCount formatType character excelType strictValidation lineSeparator type subType',
       sort: '-_metadata.lastUpdated'
     }
   }
