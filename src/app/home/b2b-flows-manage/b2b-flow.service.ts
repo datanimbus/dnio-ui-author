@@ -498,14 +498,14 @@ export class B2bFlowService {
       || node.type == 'CONVERT_CSV_JSON') {
       return false;
     }
-    if(node.options.connectorType === 'SFTP' && (node.options.read || node.options.list)) {
+    if(node.options.connectorType === 'SFTP' && (node.options.read || node.options.list || node.options.delete)) {
       return false;
     }
     return true;
   }
 
   showOutputSelector(node, isInputNode) {
-    if(node.options.connectorType === 'SFTP' && node.options.list){
+    if(node.options.connectorType === 'SFTP' && (node.options.read  || node.options.list || node.options.delete)){
       return false
     }
     return node.type != 'ERROR'
