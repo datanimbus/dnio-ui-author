@@ -271,6 +271,7 @@ export class DataFormatManageComponent implements
                                         def.key = '';
                                         def.properties.name = '';
                                     }
+                                    def.properties.required = false;
                                 }
                             }
                             const tempDef = this.schemaService.getDefinitionStructure(temp.definition[i]);
@@ -638,6 +639,7 @@ export class DataFormatManageComponent implements
                                         def.key = '';
                                         def.properties.name = '';
                                     }
+                                      def.properties.required = false;
                                 }
                             }
                             const tempDef = this.schemaService.getDefinitionStructure(temp.definition[i]);

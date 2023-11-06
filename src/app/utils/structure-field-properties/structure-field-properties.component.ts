@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Input, TemplateRef, ViewChild, AfterViewInit, AfterContentChecked } from '@angular/core';
+import { Component, OnDestroy, Input, TemplateRef, ViewChild, AfterViewInit, AfterContentChecked, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 
 import { SchemaBuilderService } from 'src/app/home/schema-utils/schema-builder.service';
@@ -12,7 +12,7 @@ import { AppService } from '../services/app.service';
   templateUrl: './structure-field-properties.component.html',
   styleUrls: ['./structure-field-properties.component.scss']
 })
-export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewInit, AfterContentChecked {
+export class StructureFieldPropertiesComponent implements OnInit, OnDestroy, AfterViewInit, AfterContentChecked {
   @Input() mainForm: any;
   @Input() isLibrary: boolean;
   @Input() isDataFormat: boolean;
@@ -58,6 +58,10 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
     self.showCommonFields = true;
     self.showProperties = false;
 
+  }
+
+  ngOnInit(): void {
+     
   }
 
   ngAfterViewInit(): void {

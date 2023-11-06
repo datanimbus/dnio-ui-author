@@ -162,6 +162,8 @@ export class SchemaBuilderService {
                 && value.properties.defaultTimezone ? value.properties.defaultTimezone :
                 (this.commonService.app.defaultTimezone || this.commonService.userDetails.defaultTimezone)));
             temp.addControl('_listInput', new UntypedFormControl(null));
+            temp.addControl('pattern', new UntypedFormControl(value.properties
+                && value.properties.pattern ? value.properties.pattern : null, [patternValidator]));
             const arr = [];
             if (value.properties && value.properties.supportedTimezones) {
                 for (const i of value.properties.supportedTimezones) {

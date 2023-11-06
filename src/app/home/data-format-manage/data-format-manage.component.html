@@ -59,7 +59,7 @@
                                     odpAutoFocus (odpPasteJson)="onSchemaCreate($event)"></textarea>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-end align-items-center" *ngIf="edit.status">
+                        <div class="d-flex justify-content-end align-items-center" *ngIf="edit.status && form.get('subType').value !=='HRSF'">
                             <button type="button" class="btn text-primary pr-0" (click)="addField('after')"
                                 id="sbInsertAttribute">
                                 Insert
