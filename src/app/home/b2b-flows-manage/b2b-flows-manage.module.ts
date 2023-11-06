@@ -68,6 +68,7 @@ import { NodeAdvancedFilterComponent } from './node-properties/node-advanced-fil
 import { DatePickerModule } from 'src/app/utils/date-picker/datePicker.module';
 import { FlowPropertiesComponent } from './node-properties/flow-properties/flow-properties.component';
 import { ConditionPropertiesComponent } from './node-properties/condition-properties/condition-properties.component';
+import { SearchTermModule } from 'src/app/utils/search-term/search-term.module';
 
 const routes: Routes = [
   {
@@ -144,6 +145,7 @@ const routes: Routes = [
     SideCanvasModule,
     ViewBoxModule,
     DatePickerModule,
+    SearchTermModule
   ],
   exports: [B2bFlowsManageComponent],
   providers: [B2bFlowService, MappingService, ChangeOnEditComponent, B2bPathService]

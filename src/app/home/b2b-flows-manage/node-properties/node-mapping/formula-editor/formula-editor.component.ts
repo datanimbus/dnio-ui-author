@@ -85,6 +85,11 @@ export class FormulaEditorComponent implements OnInit {
     })
   }
 
+  searchFormula(searchTerm: string) {
+    this.searchTerm = searchTerm;
+    this.fetchAllFormulas();
+  }
+
   cancel() {
     this.close.emit(false);
     this.data = this.tempData;
