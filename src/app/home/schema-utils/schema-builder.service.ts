@@ -34,7 +34,7 @@ export class SchemaBuilderService {
         self.typechanged = new EventEmitter();
     }
 
-    getPropertiesStructure(value?: any): UntypedFormGroup {
+    getPropertiesStructure(value?: any, isDataFormat?: boolean): UntypedFormGroup {
         const self = this;
         const temp: UntypedFormGroup = self.fb.group({
             _type: [value.type],
@@ -175,12 +175,12 @@ export class SchemaBuilderService {
             // temp.addControl('max', new UntypedFormControl(value.properties && value.properties.max ? value.properties.max : null));
         }
         if (value.type === 'Object') {
-            temp.removeControl('required');
+            !isDataFormat && temp.removeControl('required');
             temp.addControl('schemaFree', new UntypedFormControl(value.properties &&
                 value.properties.schemaFree ? value.properties.schemaFree : false, [Validators.required]));
         }
         if (value.type === 'Array') {
-            temp.removeControl('required');
+            !isDataFormat && temp.removeControl('required');
             temp.addControl('maxlength', new UntypedFormControl(value.properties
                 && value.properties.maxlength ? value.properties.maxlength : null, [positiveNumber]));
         }
@@ -274,7 +274,7 @@ export class SchemaBuilderService {
     }
 
 
-    getDefinitionStructure(value?: any, _isGrpParentArray?: boolean): UntypedFormGroup {
+    getDefinitionStructure(value?: any, _isGrpParentArray?: boolean, isDataFormat?: boolean): UntypedFormGroup {
         const key = value && value.key ? value.key : '';
         const type = value && value.type ? value.type : 'String';
         const tempForm: UntypedFormGroup = this.fb.group({
@@ -292,7 +292,7 @@ export class SchemaBuilderService {
             tempForm.get('key').markAsTouched()
         }
 
-        tempForm.addControl('properties', this.getPropertiesStructure(options));
+        tempForm.addControl('properties', this.getPropertiesStructure(options, isDataFormat));
         if (value && value.properties && value.properties.relatedTo) {
             tempForm.get('type').patchValue('Relation');
         } else if (value && value.properties && value.properties.schema) {
@@ -327,7 +327,7 @@ export class SchemaBuilderService {
                 if (value.properties && (value.properties._isParrentArray || value.properties._isGrpParentArray)) {
                     value.definition[i].properties._isGrpParentArray = true;
                 }
-                const tempDef: any = this.getDefinitionStructure(value.definition[i]);
+                const tempDef: any = this.getDefinitionStructure(value.definition[i], null, isDataFormat);
                 if (value.definition[i].properties && value.definition[i].properties.name) {
                     tempDef.get('properties.name').patchValue(value.definition[i].properties.name);
                 } else {

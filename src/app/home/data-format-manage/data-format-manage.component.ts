@@ -198,7 +198,7 @@ export class DataFormatManageComponent implements
     resetForm() {
         const self = this;
         (self.form.get('definition') as UntypedFormArray).controls.splice(0);
-        (self.form.get('definition') as UntypedFormArray).push(self.schemaService.getDefinitionStructure());
+        (self.form.get('definition') as UntypedFormArray).push(self.schemaService.getDefinitionStructure(null,null,true));
     }
 
     fillDetails(id?) {
@@ -236,7 +236,7 @@ export class DataFormatManageComponent implements
                     temp.definition = this.schemaService.generateStructure(res.definition);
                     (this.form.get('definition') as UntypedFormArray).controls.splice(0);
                     temp.definition.forEach((element, i) => {
-                        const tempDef = this.schemaService.getDefinitionStructure(temp.definition[i]);
+                        const tempDef = this.schemaService.getDefinitionStructure(temp.definition[i], null, true);
                         if (temp.definition[i].properties && temp.definition[i].properties.name) {
                             tempDef.get('properties.name').patchValue(temp.definition[i].properties.name);
                             this.onfocus = false;
@@ -274,7 +274,7 @@ export class DataFormatManageComponent implements
                                     def.properties.required = false;
                                 }
                             }
-                            const tempDef = this.schemaService.getDefinitionStructure(temp.definition[i]);
+                            const tempDef = this.schemaService.getDefinitionStructure(temp.definition[i], null, true);
                             if (temp.definition[i].properties && temp.definition[i].properties.name) {
                                 tempDef.get('properties.name').patchValue(temp.definition[i].properties.name);
                                 const defs = tempDef.get('definition').value;
@@ -357,7 +357,7 @@ export class DataFormatManageComponent implements
         schema.definition = this.schemaService.generateStructure(schema.definition);
         (this.form.get('definition') as UntypedFormArray).controls.splice(0);
         schema.definition.forEach((element, i) => {
-            const tempDef = this.schemaService.getDefinitionStructure(schema.definition[i]);
+            const tempDef = this.schemaService.getDefinitionStructure(schema.definition[i], null, true);
             if (schema.definition[i].properties && schema.definition[i].properties.name) {
                 tempDef.get('properties.name').patchValue(schema.definition[i].properties.name);
                 this.onfocus = false;
@@ -445,7 +445,7 @@ export class DataFormatManageComponent implements
     addField(place?: string) {
         if (!place) {
             const tempArr = this.form.get('definition') as UntypedFormArray;
-            const temp = this.schemaService.getDefinitionStructure({ _newField: true });
+            const temp = this.schemaService.getDefinitionStructure({ _newField: true }, null, true);
             tempArr.push(temp);
         } else {
             this.schemaService.addAttribute.emit(place);
@@ -465,7 +465,7 @@ export class DataFormatManageComponent implements
         }
         if (type.value === 'Array' || type.value === 'Object') {
             this.form.addControl('definition', this.fb.array([
-                this.schemaService.getDefinitionStructure({ key })
+                this.schemaService.getDefinitionStructure({ key }, null, true)
             ]));
             this.form.controls.definition.setValidators([sameName]);
         }
@@ -624,7 +624,8 @@ export class DataFormatManageComponent implements
                     let temp = {
                         definition: []
                     };
-                    const definition = this.hrsfFormat();
+                    if(type === 'HRSF'){
+                        const definition = this.hrsfFormat();
                         temp.definition = this.schemaService.generateStructure(definition);
                         (this.form.get('definition') as UntypedFormArray).controls.splice(0);
                         temp.definition.forEach((element, i) => {
@@ -639,10 +640,9 @@ export class DataFormatManageComponent implements
                                         def.key = '';
                                         def.properties.name = '';
                                     }
-                                      def.properties.required = false;
                                 }
                             }
-                            const tempDef = this.schemaService.getDefinitionStructure(temp.definition[i]);
+                            const tempDef = this.schemaService.getDefinitionStructure(temp.definition[i], null, true);
                             if (temp.definition[i].properties && temp.definition[i].properties.name) {
                                 tempDef.get('properties.name').patchValue(temp.definition[i].properties.name);
                                 const defs = tempDef.get('definition').value;
@@ -654,9 +654,11 @@ export class DataFormatManageComponent implements
                                 // tempDef.get('properties.name').patchValue('_self');
                                 this.onfocus = false;
                             }
+                            console.log(tempDef);
                             (this.form.get('definition') as UntypedFormArray).push(tempDef);
                         });
                 }
+                    }
             }, dismiss => { });
         }
     }
