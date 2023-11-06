@@ -12,7 +12,7 @@ import { AppService } from '../services/app.service';
   templateUrl: './structure-field-properties.component.html',
   styleUrls: ['./structure-field-properties.component.scss']
 })
-export class StructureFieldPropertiesComponent implements OnInit, OnDestroy, AfterViewInit, AfterContentChecked {
+export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewInit, AfterContentChecked {
   @Input() mainForm: any;
   @Input() isLibrary: boolean;
   @Input() isDataFormat: boolean;
@@ -58,10 +58,6 @@ export class StructureFieldPropertiesComponent implements OnInit, OnDestroy, Aft
     self.showCommonFields = true;
     self.showProperties = false;
 
-  }
-
-  ngOnInit(): void {
-     
   }
 
   ngAfterViewInit(): void {
