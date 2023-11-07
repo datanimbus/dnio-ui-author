@@ -64,6 +64,8 @@ export class GlobalSchemaStructurePipe implements PipeTransform {
                     || i === 'readonly'
                     || i === 'errorMessage'
                     || i === 'disabled'
+                    || i === 'minItems'
+                    || i === 'maxItems'
                     || i === 'masking') {
                     temp[i] = properties[i];
                 }

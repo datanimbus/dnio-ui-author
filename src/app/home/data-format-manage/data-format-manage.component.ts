@@ -764,6 +764,8 @@ export class DataFormatManageComponent implements
             properties: {
               name: "Records",
               fieldLength: 10,
+              minItems:null,
+              maxItems:null,
             },
             definition: [
               {
@@ -784,6 +786,8 @@ export class DataFormatManageComponent implements
                     properties: {
                       name: "Sub Records",
                       fieldLength: 10,
+                      minItems:null,
+                      maxItems:null,
                     },
                     definition: [
                       {

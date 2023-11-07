@@ -161,9 +161,11 @@ export class SchemaBuilderService {
             temp.addControl('defaultTimezone', new UntypedFormControl(value.properties
                 && value.properties.defaultTimezone ? value.properties.defaultTimezone :
                 (this.commonService.app.defaultTimezone || this.commonService.userDetails.defaultTimezone)));
-            temp.addControl('_listInput', new UntypedFormControl(null));
+            temp.addControl('dateFormat', new UntypedFormControl(value.properties
+                && value.properties.dateFormat ? value.properties.dateFormat : ''));
             temp.addControl('pattern', new UntypedFormControl(value.properties
                 && value.properties.pattern ? value.properties.pattern : null, [patternValidator]));
+            temp.addControl('_listInput', new UntypedFormControl(null));
             const arr = [];
             if (value.properties && value.properties.supportedTimezones) {
                 for (const i of value.properties.supportedTimezones) {
@@ -175,14 +177,18 @@ export class SchemaBuilderService {
             // temp.addControl('max', new UntypedFormControl(value.properties && value.properties.max ? value.properties.max : null));
         }
         if (value.type === 'Object') {
-            !isDataFormat && temp.removeControl('required');
+            temp.removeControl('required');
             temp.addControl('schemaFree', new UntypedFormControl(value.properties &&
                 value.properties.schemaFree ? value.properties.schemaFree : false, [Validators.required]));
         }
         if (value.type === 'Array') {
-            !isDataFormat && temp.removeControl('required');
+           temp.removeControl('required');
             temp.addControl('maxlength', new UntypedFormControl(value.properties
                 && value.properties.maxlength ? value.properties.maxlength : null, [positiveNumber]));
+            temp.addControl('minItems', new UntypedFormControl(value.properties
+                && value.properties.minItems ? value.properties.minItems : null));
+            temp.addControl('maxItems', new UntypedFormControl(value.properties
+                && value.properties.maxItems ? value.properties.maxItems : null));
         }
         if (value.type === 'Relation') {
             temp.get('_type').patchValue('Relation');

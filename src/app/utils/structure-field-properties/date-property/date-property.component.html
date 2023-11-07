@@ -34,7 +34,7 @@
       </ng-container>
     </div>
   </div>
-  <div class="d-flex flex-column w-100 mb-4" *ngIf="form.get('properties.supportedTimezones')">
+  <div class="d-flex flex-column w-100 mb-2" *ngIf="form.get('properties.supportedTimezones')">
     <div class="border-left" formArrayName="supportedTimezones" [sortablejs]="supportedTimezonesList"
       [sortablejsOptions]="{sort: !!edit && !!edit.status, filter: '.disabled', onMove: sortableOnMove, onUpdate: sortableOnUpdate }">
       <ng-container *ngFor="let en of supportedTimezonesList; let i=index;">
@@ -65,7 +65,15 @@
     Validations
   </div>
 
-  <div class="d-flex flex-column w-100 mt-3" *ngIf="form.get('properties.pattern')">
+  <div class="d-flex flex-column w-100 mt-3" *ngIf="isDataFormat">
+    <div class="mb-2" *ngIf="form.get('properties.dateFormat')">
+      <div class="font-14 fw-300 text-dark mb-2">Date format</div>
+      <input *ngIf="canEdit" class=" form-control short" placeholder="Format"
+        type="text" min="0" #dateFormatEle formControlName="dateFormat" id="_dateFormat">
+      <span
+        *ngIf="!canEdit && form.get('properties.dateFormat') && form.get('properties.dateFormat').value">{{form.get('properties.dateFormat').value}}</span>
+      <span class="text-muted" *ngIf="!canEdit && !form.get('properties.dateFormat').value">-</span>
+    </div>
     <div class="position-relative ">
       <div class="font-14 fw-300 text-dark mb-2">Pattern</div>
       <div>
@@ -80,21 +88,6 @@
         </span>
       </div>
     </div>
-
-    <!-- <div class="d-flex w-100 my-2"
-*ngIf="sampleRegexValue.length || form.get('properties.pattern').hasError('patternValidator') ">
-<div ></div>
-<div class=" bg-light py-2 pattern font-13 mr-3 text-center">
-<ng-container *ngIf="!form.get('properties.pattern').hasError('patternValidator') && sampleRegexValue.length">
-  <span class="text-secondary">Sample :</span>
-  <span class="text-accent">{{sampleRegexValue}}</span>
-</ng-container>
-<span class="text-danger" *ngIf="form.get('properties.pattern').hasError('patternValidator')">
-  <span class="dsi dsi-close mr-1"></span>
-  <span class="text">Invalid regex pattern</span>
-</span>
-</div>
-</div> -->
   </div>
 </div>
 
