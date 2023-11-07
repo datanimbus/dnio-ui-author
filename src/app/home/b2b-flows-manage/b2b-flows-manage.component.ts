@@ -350,6 +350,13 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
           name: item.dataStructure.outgoing.name
         };
       }
+      if (item.dataStructure && item.dataStructure.incoming && item.dataStructure.incoming._id) {
+        dataStructures[item.dataStructure.incoming._id] = JSON.parse(JSON.stringify(item.dataStructure.incoming));
+        item.dataStructure.incoming = {
+          _id: item.dataStructure.incoming._id,
+          name: item.dataStructure.incoming.name
+        };
+      }
       if (item.type === 'DATASERVICE' && item.options && item.options.dataService && item.options.dataService._id) {
         dataStructures[item.options.dataService._id] = JSON.parse(JSON.stringify(item.options.dataService));
         item.options.dataService = {
@@ -598,8 +605,8 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       let targetEle = (this.isMouseDown.target as HTMLElement);
       let currNode = this.nodeList.find(e => e._id == targetEle.dataset.id);
       if (currNode) {
-        currNode.coordinates.x =  Math.max(Math.floor(currNode.coordinates.x / 20) * 20, 0);
-        currNode.coordinates.y =  Math.max(Math.floor(currNode.coordinates.y / 20) * 20, 0);
+        currNode.coordinates.x = Math.max(Math.floor(currNode.coordinates.x / 20) * 20, 0);
+        currNode.coordinates.y = Math.max(Math.floor(currNode.coordinates.y / 20) * 20, 0);
         delete currNode.coordinates.clientX;
         delete currNode.coordinates.clientY;
         this.flowService.reCreatePaths.emit();
@@ -651,7 +658,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   }
 
   get isValidSchema() {
-    if(this.totalErrors > 0){
+    if (this.totalErrors > 0) {
       return false
     }
     const fileNodes = this.nodeList.filter(node => node.type == 'FILE');
@@ -659,7 +666,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       return node?.options?.agents?.length > 0
     }
     const checkUniqTxnId = (node) => {
-      if(node?.options?.uniqueRemoteTransaction){
+      if (node?.options?.uniqueRemoteTransaction) {
         return node?.options?.uniqueRemoteTransactionOptions?.filename || node?.options?.uniqueRemoteTransactionOptions?.checksum
       }
       return true
@@ -792,18 +799,18 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   getAccumulatedObj(type) {
     const result = [];
     const data = type === 'error' ? this.getErrors() : this.getWarnings();
-    
+
     data.forEach(obj => {
       const { node, [type]: groupValue } = obj;
       const existingNode = result.find(item => item.node === node);
-      
+
       if (existingNode) {
         existingNode[type].push({ [type]: groupValue });
       } else {
         result.push({ node, [type]: [{ [type]: groupValue }] });
       }
     });
-    
+
     return result;
   }
   isInputNode(node) {
