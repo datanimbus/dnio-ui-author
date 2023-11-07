@@ -267,6 +267,11 @@ export class SchemaBuilderService {
             // temp.removeControl('required');
         }
 
+        if(isDataFormat){
+            temp.addControl('fieldNo', new UntypedFormControl(value.properties
+                && value.properties.fieldNo ? value.properties.fieldNo : null));
+        }
+
         if (value && value.properties && value.properties._isParrentArray) {
             temp.removeControl('unique');
         }
