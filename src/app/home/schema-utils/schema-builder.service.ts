@@ -34,7 +34,7 @@ export class SchemaBuilderService {
         self.typechanged = new EventEmitter();
     }
 
-    getPropertiesStructure(value?: any): UntypedFormGroup {
+    getPropertiesStructure(value?: any, isDataFormat?: boolean): UntypedFormGroup {
         const self = this;
         const temp: UntypedFormGroup = self.fb.group({
             _type: [value.type],
@@ -161,6 +161,10 @@ export class SchemaBuilderService {
             temp.addControl('defaultTimezone', new UntypedFormControl(value.properties
                 && value.properties.defaultTimezone ? value.properties.defaultTimezone :
                 (this.commonService.app.defaultTimezone || this.commonService.userDetails.defaultTimezone)));
+            temp.addControl('dateFormat', new UntypedFormControl(value.properties
+                && value.properties.dateFormat ? value.properties.dateFormat : ''));
+            temp.addControl('pattern', new UntypedFormControl(value.properties
+                && value.properties.pattern ? value.properties.pattern : null, [patternValidator]));
             temp.addControl('_listInput', new UntypedFormControl(null));
             const arr = [];
             if (value.properties && value.properties.supportedTimezones) {
@@ -178,9 +182,13 @@ export class SchemaBuilderService {
                 value.properties.schemaFree ? value.properties.schemaFree : false, [Validators.required]));
         }
         if (value.type === 'Array') {
-            temp.removeControl('required');
+           temp.removeControl('required');
             temp.addControl('maxlength', new UntypedFormControl(value.properties
                 && value.properties.maxlength ? value.properties.maxlength : null, [positiveNumber]));
+            temp.addControl('minItems', new UntypedFormControl(value.properties
+                && value.properties.minItems ? value.properties.minItems : null));
+            temp.addControl('maxItems', new UntypedFormControl(value.properties
+                && value.properties.maxItems ? value.properties.maxItems : null));
         }
         if (value.type === 'Relation') {
             temp.get('_type').patchValue('Relation');
@@ -272,7 +280,7 @@ export class SchemaBuilderService {
     }
 
 
-    getDefinitionStructure(value?: any, _isGrpParentArray?: boolean): UntypedFormGroup {
+    getDefinitionStructure(value?: any, _isGrpParentArray?: boolean, isDataFormat?: boolean): UntypedFormGroup {
         const key = value && value.key ? value.key : '';
         const type = value && value.type ? value.type : 'String';
         const tempForm: UntypedFormGroup = this.fb.group({
@@ -290,7 +298,7 @@ export class SchemaBuilderService {
             tempForm.get('key').markAsTouched()
         }
 
-        tempForm.addControl('properties', this.getPropertiesStructure(options));
+        tempForm.addControl('properties', this.getPropertiesStructure(options, isDataFormat));
         if (value && value.properties && value.properties.relatedTo) {
             tempForm.get('type').patchValue('Relation');
         } else if (value && value.properties && value.properties.schema) {
@@ -325,7 +333,7 @@ export class SchemaBuilderService {
                 if (value.properties && (value.properties._isParrentArray || value.properties._isGrpParentArray)) {
                     value.definition[i].properties._isGrpParentArray = true;
                 }
-                const tempDef: any = this.getDefinitionStructure(value.definition[i]);
+                const tempDef: any = this.getDefinitionStructure(value.definition[i], null, isDataFormat);
                 if (value.definition[i].properties && value.definition[i].properties.name) {
                     tempDef.get('properties.name').patchValue(value.definition[i].properties.name);
                 } else {
