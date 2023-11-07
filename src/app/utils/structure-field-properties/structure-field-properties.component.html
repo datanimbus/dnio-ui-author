@@ -210,8 +210,6 @@
           </div>
         </div>
 
-
-
         <div class="w-100 mb-4 mt-2" *ngIf="isDataFormat && formItem.get('type').value=='String'">
           <div class="text-secondary">Masking</div>
           <div>
@@ -254,6 +252,14 @@
             class="ml-2 rounded-circle properties password d-flex justify-content-center align-items-center text-white fw-500 font-12">D</span>
           <span class="ml-2 text-dark font-14 fw-300">Disabled</span>
          </div>
+
+         <div class="w-100 mb-4 mt-2" *ngIf="isDataFormat && ['CSV','EXCEL','DELIMITER'].includes(formatType)">
+          <div class=" text-secondary">Field Number</div>
+          <div>
+            <input *ngIf="canEdit" class="form-control" type="number" formControlName="fieldNo" id="fieldNo">
+            <span *ngIf="!canEdit">{{formItem.get('properties.fieldNo').value}}</span>
+          </div>
+        </div>
 
           <div class="w-100 mb-4 mt-2" *ngIf="isDataFormat && formatType=='FLATFILE'">
             <div class=" text-secondary">Field Length

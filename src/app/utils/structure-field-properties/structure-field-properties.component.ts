@@ -129,6 +129,10 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
       this.form.get('properties.fieldLength').setValidators(null);
     }
 
+    if(['CSV','EXCEL','DELIMITER'].includes(this.formatType)){
+      this.form.get('properties.fieldNo') ? null : this.form.addControl('properties.fieldNo', null) 
+    }
+
     if (self.form.get('properties._detailedType').value === 'enum') {
       self.form.get('properties.enum').setValidators([emptyEnum]);
     }
