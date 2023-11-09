@@ -1051,4 +1051,9 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
     const defaultIds = [this.commonService.appData['connectors']?.data?._id, this.commonService.appData['connectors']?.file?._id];
     return defaultIds.indexOf(id) > -1
   }
+  isDefaultDB(){
+    const currentDataDB = this.form.get('connectors').get('data').value;
+    return this.connectorList.find(ele => ele._id === currentDataDB._id).name === 'Default DB Connector'
+  }
+
 }
