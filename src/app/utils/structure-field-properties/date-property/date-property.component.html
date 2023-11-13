@@ -74,20 +74,6 @@
         *ngIf="!canEdit && form.get('properties.dateFormat') && form.get('properties.dateFormat').value">{{form.get('properties.dateFormat').value}}</span>
       <span class="text-muted" *ngIf="!canEdit && !form.get('properties.dateFormat').value">-</span>
     </div>
-    <div class="position-relative ">
-      <div class="font-14 fw-300 text-dark mb-2">Pattern</div>
-      <div>
-        <input *ngIf="canEdit" class="form-control" type="text" formControlName="pattern" id="_pattern"
-          placeholder="Regular Expression"
-          [ngClass]="{'is-invalid':form.get('properties.pattern').hasError('patternValidator')}"
-          (blur)="reCalibrateTextDefaultValue('pattern', form.get('properties.pattern').value, form.get('properties')) ;generateSampleRegex(form.get('properties.pattern').value) ">
-        <span *ngIf="!canEdit">
-          <ng-container *ngIf="form.get('properties.pattern').value">{{form.get('properties.pattern').value}}
-          </ng-container>
-          <span *ngIf="!form.get('properties.pattern').value" class="text-muted">-</span>
-        </span>
-      </div>
-    </div>
   </div>
 </div>
 
