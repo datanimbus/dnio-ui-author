@@ -1,8 +1,8 @@
 <div id="parent">
-  <div class="input-container bg-white" [ngStyle]="{height: !useEditableDiv && '32px'}" [ngClass]="{'disabled': disabled}">
+  <div class="input-container bg-white" [ngStyle]="{height: !useEditableDiv && '38px'}" [ngClass]="{'disabled': disabled}">
     <input #styledInputText [value]="value" (input)="onChange($event)" [ngbTypeahead]="ngbTypeahead || search"
       (scroll)="handleScroll($event)" [resultFormatter]="resultFormatter || localFormatter" [inputFormatter]="inputFormatter || localFormatter"
-      (selectItem)="selectItem($event)" [disabled]="disabled" (paste)="onPaste.emit($event)"
+      (selectItem)="selectItem($event)" [readonly]="disabled" (paste)="onPaste.emit($event)"
       (keyup.enter)="onEnter.emit($event)" [pattern]="pattern.source" [placeholder]="placeholder"
       (keydown.delete)="$event.stopPropagation();" *ngIf="!useEditableDiv">
 
