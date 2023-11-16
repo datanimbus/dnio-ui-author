@@ -94,8 +94,7 @@ export class StyledTextComponent implements OnInit, OnChanges {
     }
     else {
       this.rendererStyle = {
-        'margin-top': '0.3rem',
-        'padding': '0 10px',
+        'padding': '10px',
         'position': 'relative'
       }
     }

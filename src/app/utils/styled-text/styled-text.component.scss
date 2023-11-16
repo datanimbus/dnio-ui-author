@@ -12,23 +12,29 @@
 // }
 
 .input-container {
-    border: 1px solid $border-color;
-    border-radius: $border-radius;
     // width: 260px;
-    // height: 32px;
+    // height: 38px;
     position: relative;
     margin-right: 1px;
 }
 
 .input-container input {
     width: 100%;
-    border: none;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
     position: absolute;
     inset: 0;
     z-index: 1;
     outline: none;
-    padding: 0 10px;
+    padding: 10px;
     background: transparent;
+    &:focus{
+        color: $input-focus-color;
+        border-color: $input-focus-border-color;
+        outline: 0;   
+        box-shadow: $input-focus-box-shadow;
+    }
+
 }
 
 .input-container .check {
@@ -46,6 +52,10 @@
     letter-spacing: 0.15px;
 }
 
+.input-container input::selection{
+    -webkit-text-fill-color: white;
+}
+
 .input-container .check:not(:placeholder-shown) {
     -webkit-text-fill-color: transparent !important;
     letter-spacing: 0.15px;
@@ -53,7 +63,7 @@
 
 .input-container .input-renderer {
     // position: absolute;
-    top: 0px;
+    top: -2px;
     left: 0px;
     align-items: center;
     // margin: 0 0 0 0.5rem;
