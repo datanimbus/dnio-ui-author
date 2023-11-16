@@ -205,7 +205,7 @@ export class LocalBotComponent implements OnInit {
             self.selectedBot = users[0];
             self.selectRecord(self.selectedBot)
 
-            self.getUserTeam();
+            // self.getUserTeam();
           }
           self.botRecords = users;
 
@@ -323,8 +323,6 @@ export class LocalBotComponent implements OnInit {
     }
     self.selectedBot = bot;
     self.ogKeys = bot.botKeys;
-    self.getAllTeams();
-    self.getUserTeam();
   }
   editBot() {
     const self = this;
@@ -839,6 +837,10 @@ export class LocalBotComponent implements OnInit {
   switchTab(tab) {
     this.isDataLoading = true;
     this.currentTab = tab;
+    if(tab === 'Groups'){
+      this.getAllTeams();
+      this.getUserTeam();
+    }
     this.isDataLoading = false;
   }
 
