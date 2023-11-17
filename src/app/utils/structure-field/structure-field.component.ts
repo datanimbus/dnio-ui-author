@@ -395,7 +395,7 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
             .getPropertiesStructure({
                 name: self.form.get('properties.name').value,
                 type: type.value
-            });
+            }, this.isDataFormat);
         for (const i in (self.form.get('properties') as UntypedFormGroup).controls) {
             if (i === 'name') {
                 continue;

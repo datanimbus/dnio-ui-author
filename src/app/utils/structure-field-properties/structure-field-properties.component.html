@@ -254,10 +254,10 @@
          </div>
 
          <div class="w-100 mb-4 mt-2" *ngIf="isDataFormat && ['CSV','EXCEL','DELIMITER'].includes(formatType)">
-          <div class=" text-secondary">Field Number</div>
+          <div class="text-secondary">Field Number</div>
           <div>
             <input *ngIf="canEdit" class="form-control" type="number" formControlName="fieldNo" id="fieldNo">
-            <span *ngIf="!canEdit">{{formItem.get('properties.fieldNo').value}}</span>
+            <span *ngIf="!canEdit">{{formItem.get('properties.fieldNo')?.value}}</span>
           </div>
         </div>
 
