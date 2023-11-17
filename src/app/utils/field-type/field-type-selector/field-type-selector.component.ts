@@ -133,7 +133,7 @@ export class FieldTypeSelectorComponent implements OnInit {
         },
 
         type: type.value
-      });
+      }, this.isDataFormat);
     for (const i in (self.form.get('properties') as UntypedFormGroup).controls) {
       if (i === 'name') {
         continue;
