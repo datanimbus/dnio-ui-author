@@ -347,14 +347,16 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
         dataStructures[item.dataStructure.outgoing._id] = JSON.parse(JSON.stringify(item.dataStructure.outgoing));
         item.dataStructure.outgoing = {
           _id: item.dataStructure.outgoing._id,
-          name: item.dataStructure.outgoing.name
+          name: item.dataStructure.outgoing.name,
+          definition: item.dataStructure.outgoing.definition || []
         };
       }
       if (item.dataStructure && item.dataStructure.incoming && item.dataStructure.incoming._id) {
         dataStructures[item.dataStructure.incoming._id] = JSON.parse(JSON.stringify(item.dataStructure.incoming));
         item.dataStructure.incoming = {
           _id: item.dataStructure.incoming._id,
-          name: item.dataStructure.incoming.name
+          name: item.dataStructure.incoming.name,
+          definition: item.dataStructure.incoming.definition || []
         };
       }
       if (item.type === 'DATASERVICE' && item.options && item.options.dataService && item.options.dataService._id) {

@@ -52,9 +52,6 @@
     letter-spacing: 0.15px;
 }
 
-.input-container input::selection{
-    -webkit-text-fill-color: white;
-}
 
 .input-container .check:not(:placeholder-shown) {
     -webkit-text-fill-color: transparent !important;
