@@ -230,6 +230,9 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
         if (item.dataStructure && item.dataStructure.outgoing) {
           this.patchDataStructure(item.dataStructure.outgoing, res.dataStructures);
         }
+        if (item.dataStructure && item.dataStructure.incoming) {
+          this.patchDataStructure(item.dataStructure.incoming, res.dataStructures);
+        }
         if (item.type == 'DATASERVICE') {
           this.patchDataStructure(item.options.dataService, res.dataStructures);
         }
@@ -347,16 +350,14 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
         dataStructures[item.dataStructure.outgoing._id] = JSON.parse(JSON.stringify(item.dataStructure.outgoing));
         item.dataStructure.outgoing = {
           _id: item.dataStructure.outgoing._id,
-          name: item.dataStructure.outgoing.name,
-          definition: item.dataStructure.outgoing.definition || []
+          name: item.dataStructure.outgoing.name
         };
       }
       if (item.dataStructure && item.dataStructure.incoming && item.dataStructure.incoming._id) {
         dataStructures[item.dataStructure.incoming._id] = JSON.parse(JSON.stringify(item.dataStructure.incoming));
         item.dataStructure.incoming = {
           _id: item.dataStructure.incoming._id,
-          name: item.dataStructure.incoming.name,
-          definition: item.dataStructure.incoming.definition || []
+          name: item.dataStructure.incoming.name
         };
       }
       if (item.type === 'DATASERVICE' && item.options && item.options.dataService && item.options.dataService._id) {
