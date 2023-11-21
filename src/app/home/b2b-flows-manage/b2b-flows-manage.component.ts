@@ -230,6 +230,9 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
         if (item.dataStructure && item.dataStructure.outgoing) {
           this.patchDataStructure(item.dataStructure.outgoing, res.dataStructures);
         }
+        if (item.dataStructure && item.dataStructure.incoming) {
+          this.patchDataStructure(item.dataStructure.incoming, res.dataStructures);
+        }
         if (item.type == 'DATASERVICE') {
           this.patchDataStructure(item.options.dataService, res.dataStructures);
         }
