@@ -46,8 +46,8 @@
                         <odp-checkbox [edit]="{status:true}" [checked]="user._selected"
                             (checkedChange)="toggleCheck($event, user)"></odp-checkbox>
                     </div>
-                    <div class="user-name">{{user?.basicDetails?.name}}</div>
-                    <div class="user-username">{{user?._id}}</div>
+                    <div class="user-name text-truncate" [ngbTooltip]="user?.basicDetails?.name">{{user?.basicDetails?.name}}</div>
+                    <div class="user-username text-truncate" [ngbTooltip]="user?._id">{{user?._id}}</div>
                 </div>
             </div>
             <p *ngIf="!userList || userList.length==0">No Users Added to this Group</p>
