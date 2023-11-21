@@ -3,6 +3,7 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { NgbModalRef, NgbButtonLabel } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from 'src/app/utils/services/common.service';
 import { AppService } from 'src/app/utils/services/app.service';
+import * as _ from 'lodash';
 
 export interface Definition {
   key?: string;
@@ -400,6 +401,7 @@ export class ManagePermissionsComponent implements OnInit, OnDestroy {
         self.selectedRole.operations.splice(index, 1);
       }
     }
+    self.selectedRole.operations = _.uniqWith(self.selectedRole.operations, _.isEqual);
     self.updateRole();
   }
 
@@ -426,6 +428,8 @@ export class ManagePermissionsComponent implements OnInit, OnDestroy {
         self.selectedRole.operations.splice(index, 1);
       }
     }
+    self.selectedRole.operations = _.uniqWith(self.selectedRole.operations, _.isEqual);
+
     self.updateRole();
   }
 
@@ -452,6 +456,8 @@ export class ManagePermissionsComponent implements OnInit, OnDestroy {
         self.selectedRole.operations.splice(index, 1);
       }
     }
+    self.selectedRole.operations = _.uniqWith(self.selectedRole.operations, _.isEqual);
+
     self.updateRole();
   }
 
@@ -478,6 +484,8 @@ export class ManagePermissionsComponent implements OnInit, OnDestroy {
         self.selectedRole.operations.splice(index, 1);
       }
     }
+    self.selectedRole.operations = _.uniqWith(self.selectedRole.operations, _.isEqual);
+
     self.updateRole();
   }
 
@@ -691,6 +699,11 @@ export class ManagePermissionsComponent implements OnInit, OnDestroy {
   changePermission(event) {
     if (this.edit && this.edit.status) {
       this.selectRoleType = event;
+      if(event == 'manage'){
+        this.canCreate = true;
+        this.canEdit = true;
+        this.canDelete = true;
+      }
     }
   }
 
