@@ -145,11 +145,11 @@ export class NodeMappingComponent implements OnInit {
     this.flowData.errorNode && this.dealWithErroNode(this.nodeList);
     this.nodeList.forEach((node: any) => {
       let outgoing;
-      if (node.dataStructure.outgoing && node.dataStructure.outgoing.definition) {
+      if (node.dataStructure?.outgoing && node.dataStructure?.outgoing?.definition) {
         node.definition = node.dataStructure.outgoing.definition;
       }
       if (node._id != this.currNode._id) {
-        if (node.dataStructure.outgoing && node.dataStructure.outgoing.definition) {
+        if (node.dataStructure?.outgoing && node.dataStructure?.outgoing?.definition) {
           outgoing = this.appService.cloneObject(node.dataStructure.outgoing.definition);
           this.allSources = this.allSources.concat(this.flattenSource(node, outgoing, 'responseBody'));
         }
@@ -578,11 +578,11 @@ export class NodeMappingComponent implements OnInit {
   }
 
   getNodeDataType(node: any) {
-    if (node.dataStructure && node.dataStructure.outgoing && node.dataStructure.outgoing._id) {
+    if (node.dataStructure && node.dataStructure?.outgoing && node.dataStructure?.outgoing?._id) {
       if (node.dataStructure.outgoing._id.startsWith('SRVC')) {
         return 'Array';
       } else {
-        return node.dataStructure.outgoing.type || 'Object';
+        return node.dataStructure?.outgoing?.type || 'Object';
       }
     }
     return 'Object';
