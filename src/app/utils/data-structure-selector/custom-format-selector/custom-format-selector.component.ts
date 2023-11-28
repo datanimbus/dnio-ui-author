@@ -87,7 +87,15 @@ export class CustomFormatSelectorComponent implements OnInit {
         }).map(e => e.trim());
       }
       fields.forEach(key => {
-        this.definition.push({ type: 'String', key: key, properties: { name: key } });
+        this.definition.push({
+          type: 'String',
+          key: key,
+          properties: {
+            name: key,
+            dataPath: key,
+            dataPathSegs: [key]
+          }
+        });
       });
     }
     if (pasteIndex > -1) {
