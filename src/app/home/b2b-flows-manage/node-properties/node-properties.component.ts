@@ -53,7 +53,7 @@ export class NodePropertiesComponent implements OnInit {
 
   ngOnInit(): void {
     this.prevNode = this.nodeList.find(e => (e.onSuccess || []).findIndex(es => es._id == this.currNode._id) > -1);
-    if(!this.prevNode){
+    if (!this.prevNode) {
       this.prevNode = this.nodeList.find(e => (e.onError || []).findIndex(es => es._id == this.currNode._id) > -1);
 
     }
@@ -152,10 +152,10 @@ export class NodePropertiesComponent implements OnInit {
     }
   }
 
-  getConnectorType(){
+  getConnectorType() {
     const connector = this.currNode.options?.connector?._id || '';
-    if(connector){
-      this.commonService.get('user', `/${this.commonService.app._id}/connector/${connector}`,{
+    if (connector) {
+      this.commonService.get('user', `/${this.commonService.app._id}/connector/${connector}`, {
         select: 'category'
       }).subscribe(res => {
         this.currNode.options.connectorType = res.category;
@@ -163,7 +163,7 @@ export class NodePropertiesComponent implements OnInit {
       })
     }
   }
-  
+
 
   enableEditing() {
     this.edit.status = true;
@@ -178,7 +178,7 @@ export class NodePropertiesComponent implements OnInit {
   }
 
   deleteNode() {
-    if(this.currNode.type === 'ERROR'){
+    if (this.currNode.type === 'ERROR') {
       this.flowData.errorNode = ''
     }
     if (this.prevNode) {
@@ -240,7 +240,7 @@ export class NodePropertiesComponent implements OnInit {
       }
     }
 
-    if(type.startsWith('CON_')){
+    if (type.startsWith('CON_')) {
       this.currNode.type = 'CONNECTOR';
       const connectorType = type.split('_')[1];
       this.currNode.options['connectorType'] = connectorType;
@@ -502,7 +502,7 @@ export class NodePropertiesComponent implements OnInit {
     this.flowService.reCreatePaths.emit()
   }
 
-  get conditionList(){
+  get conditionList() {
     return this.currNode.onSuccess || []
   }
 

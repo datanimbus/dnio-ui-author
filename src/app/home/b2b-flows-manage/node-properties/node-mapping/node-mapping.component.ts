@@ -151,17 +151,18 @@ export class NodeMappingComponent implements OnInit {
       if (node._id != this.currNode._id) {
         if (node.dataStructure?.outgoing && node.dataStructure?.outgoing?.definition) {
           outgoing = this.appService.cloneObject(node.dataStructure.outgoing.definition);
-          this.allSources = this.allSources.concat(this.flattenSource(node, outgoing, 'responseBody'));
+          let isDataFormat = node.dataStructure.outgoing._id.startsWith('SRVC') ? false : true;
+          this.allSources = this.allSources.concat(this.flattenSource(node, outgoing, 'responseBody', isDataFormat, false));
         }
       }
     });
   }
 
   dealWithErroNode(completeList: Array<any>) {
-    if(this.flowData.errorNode?.dataStructure?.outgoing?.definition){
+    if (this.flowData.errorNode?.dataStructure?.outgoing?.definition) {
       completeList.push(this.flowData.errorNode)
     }
-    else if(this.flowData.errorNode?.dataStructure?.outgoing?._id){
+    else if (this.flowData.errorNode?.dataStructure?.outgoing?._id) {
       const id = this.flowData.errorNode.dataStructure.outgoing._id || '';
       this.flowData.errorNode.dataStructure['outgoing'] = this.flowData.dataStructures[id]
       completeList.push(this.flowData.errorNode)
@@ -303,7 +304,7 @@ export class NodeMappingComponent implements OnInit {
     }
   }
 
-  flattenSource(node: any, definition: Array<any>, bodyKey: string, parentDef?: any) {
+  flattenSource(node: any, definition: Array<any>, bodyKey: string, isDataFormat: boolean, isSource: boolean, parentDef?: any) {
     let list = [];
     try {
       if (definition && definition.length > 0) {
@@ -322,8 +323,18 @@ export class NodeMappingComponent implements OnInit {
             def.dataPathSegs = [].concat(def.properties.dataPathSegs, ['value']);
           } else if (def.type == 'Date' || def.properties.dateType) {
             def._id = `${node._id}.${bodyKey}.${def.properties.dataPath}`;
-            def.dataPath = def.properties.dataPath + '.utc';
-            def.dataPathSegs = [].concat(def.properties.dataPathSegs, ['utc']);
+            if (isDataFormat) {
+              def.dataPath = def.properties.dataPath;
+              def.dataPathSegs = def.properties.dataPathSegs;
+            } else {
+              if (isSource) {
+                def.dataPath = def.properties.dataPath + '.utc';
+                def.dataPathSegs = [].concat(def.properties.dataPathSegs, ['utc']);
+              } else {
+                def.dataPath = def.properties.dataPath + '.rawData';
+                def.dataPathSegs = [].concat(def.properties.dataPathSegs, ['rawData']);
+              }
+            }
           } else {
             def._id = `${node._id}.${bodyKey}.${def.properties.dataPath}`;
             def.dataPath = def.properties.dataPath;
@@ -332,7 +343,7 @@ export class NodeMappingComponent implements OnInit {
           list.push(def);
           if (def.type == 'Array') {
             if (def.definition[0].type == 'Object') {
-              list = list.concat(this.flattenSource(node, def.definition[0].definition, bodyKey, def));
+              list = list.concat(this.flattenSource(node, def.definition[0].definition, bodyKey, isDataFormat, isSource, def));
             }
           } else if (def.type == 'Object') {
             if (def.properties.relatedTo) {
@@ -344,7 +355,7 @@ export class NodeMappingComponent implements OnInit {
               // idDef.properties['dataPathSegs'] = [def.dataPath, '_id'];
               // list = list.concat(this.flattenSource(node, [idDef], bodyKey, def))
             } else {
-              list = list.concat(this.flattenSource(node, def.definition, bodyKey, def));
+              list = list.concat(this.flattenSource(node, def.definition, bodyKey, isDataFormat, isSource, def));
             }
           }
         });
