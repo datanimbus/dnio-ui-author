@@ -98,7 +98,7 @@ export class B2bFlowService {
           return node.options.connectorType || this.nodeLabelMap[node.type] || node.type;
         }
       case 'DATASERVICE':
-       if (node.options.insert) {
+        if (node.options.insert) {
           return 'Data Service Insert';
         } else if (node.options.delete) {
           return 'Data Service Delete';
@@ -259,9 +259,11 @@ export class B2bFlowService {
       temp.options.connectorType = 'SFTP';
       const subType = changeObj[type.split('_')[1]];
       temp.options[subType.toLowerCase()] = true
-      temp.dataStructure['outgoing'] = this.getSftpListODS()
+      if (subType == 'LIST') {
+        temp.dataStructure['outgoing'] = this.getSftpListODS()
+      }
     }
-    if (['DB','STORAGE'].includes(type)) {
+    if (['DB', 'STORAGE'].includes(type)) {
       temp.type = 'CONNECTOR';
       let category = type;
       temp.options['connectorType'] = category
@@ -498,14 +500,14 @@ export class B2bFlowService {
       || node.type == 'CONVERT_CSV_JSON') {
       return false;
     }
-    if(node.options.connectorType === 'SFTP' && (node.options.read || node.options.list || node.options.delete)) {
+    if (node.options.connectorType === 'SFTP' && (node.options.read || node.options.list || node.options.delete)) {
       return false;
     }
     return true;
   }
 
   showOutputSelector(node, isInputNode) {
-    if(node.options.connectorType === 'SFTP' && (node.options.read  || node.options.list || node.options.delete)){
+    if (node.options.connectorType === 'SFTP' && (node.options.write || node.options.list || node.options.delete)) {
       return false
     }
     return node.type != 'ERROR'
@@ -602,7 +604,7 @@ export class B2bFlowService {
     {
       name: 'Kafka Producer',
       icon: 'dsi dsi-connector',
-      action: 'KAFKA_PRODUCER'    
+      action: 'KAFKA_PRODUCER'
     },
     {
       name: 'Data Service',
