@@ -91,7 +91,7 @@ export class DataFormatManageComponent implements
             type: ['Object', [Validators.required]],
             strictValidation: [false],
             definition: this.fb.array([
-                this.schemaService.getDefinitionStructure()
+                this.schemaService.getDefinitionStructure(null, null, true)
             ]),
             formatType: ['JSON', [Validators.required]],
             subType: ['flat', [Validators.required]],

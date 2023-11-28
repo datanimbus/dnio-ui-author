@@ -34,7 +34,7 @@ export class SchemaBuilderService {
         self.typechanged = new EventEmitter();
     }
 
-    getPropertiesStructure(value?: any, isDataFormat?: boolean): UntypedFormGroup {
+    getPropertiesStructure(value, isDataFormat= false): UntypedFormGroup {
         const self = this;
         const temp: UntypedFormGroup = self.fb.group({
             _type: [value.type],
@@ -285,7 +285,7 @@ export class SchemaBuilderService {
     }
 
 
-    getDefinitionStructure(value?: any, _isGrpParentArray?: boolean, isDataFormat?: boolean): UntypedFormGroup {
+    getDefinitionStructure(value?: any, _isGrpParentArray?: boolean, isDataFormat= false): UntypedFormGroup {
         const key = value && value.key ? value.key : '';
         const type = value && value.type ? value.type : 'String';
         const tempForm: UntypedFormGroup = this.fb.group({

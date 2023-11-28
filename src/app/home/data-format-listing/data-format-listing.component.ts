@@ -141,7 +141,9 @@ export class DataFormatListingComponent implements OnInit, OnDestroy {
     this.form.patchValue({
       name: this.cloneData.name + ' Copy',
       formatType: this.cloneData.formatType,
-      excelType: this.cloneData.excelType
+      excelType: this.cloneData.excelType,
+      subType: this.cloneData.subType
+
     });
     this.showNewDataFormatWindow = true;
   }
@@ -157,7 +159,8 @@ export class DataFormatListingComponent implements OnInit, OnDestroy {
       character: this.cloneData.character,
       definition: this.cloneData.definition,
       lineSeparator: this.cloneData.lineSeparator,
-      strictValidation: this.cloneData.strictValidation
+      strictValidation: this.cloneData.strictValidation,
+      subType: this.cloneData.subType
     };
     this.showLazyLoader = true;
     this.commonService.post('partnerManager', `/${this.commonService.app._id}/dataFormat`, payload).subscribe(res => {

@@ -68,6 +68,7 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
   mongoList: any[];
   tables: any[] = [];
   showDropdownOptions: any;
+  baseUrl: string;
   constructor(
     public commonService: CommonService,
     private appService: AppService,
@@ -118,6 +119,7 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
     this.selectedService = {};
     this.showOptionsDropdown = {};
     this.sortModel = {};
+    this.baseUrl = 'https://' + this.commonService.userDetails.fqdn+ '/api/c/' + this.app
   }
 
   ngOnInit() {
@@ -953,6 +955,14 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
         _id: this.defaultFC
       })
     }
+  }
+
+  copyUrl(srvc: any) {
+    this.copied[srvc._id] = true;
+    this.appService.copyToClipboard(this.baseUrl + srvc.api);
+    setTimeout(() => {
+      this.copied[srvc._id] = false;
+    }, 2000);
   }
 
   private compare(a: any, b: any) {
