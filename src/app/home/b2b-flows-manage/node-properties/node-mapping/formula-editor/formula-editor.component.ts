@@ -150,22 +150,24 @@ export class FormulaEditorComponent implements OnInit {
   }
 
   onBasicDrop(event: any) {
-    if (!this.usedFormulas) {
-      this.usedFormulas = [];
-    }
-    if (this.selectedFormula && this.usedFormulas.length == 1) {
+    this.usedFormulas = this.usedFormulas || [];
+  
+    if (this.selectedFormula && this.usedFormulas.length === 1) {
       let temp = this.usedFormulas[0];
-      if (temp && temp.type && temp.properties) {
-        this.usedFormulas.splice(0);
-        let t = JSON.parse(JSON.stringify(this.selectedFormula));
+      if (temp?.type && temp?.properties) {
+        this.usedFormulas = [];
+        let t = { ...this.selectedFormula };
         t.params[0].substituteVal = temp;
         this.usedFormulas.push(t);
       }
-    } else if (this.selectedFormula && this.usedFormulas.length == 0) {
-      this.usedFormulas.push(JSON.parse(JSON.stringify(this.selectedFormula)));
-    } else if (this.selectedSource && this.usedFormulas.length == 0) {
-      this.usedFormulas.push(JSON.parse(JSON.stringify(this.selectedSource)));
+    } else if (this.usedFormulas.length === 0) {
+      if (this.selectedFormula) {
+        this.usedFormulas.push({ ...this.selectedFormula });
+      } else if (this.selectedSource) {
+        this.usedFormulas.push({ ...this.selectedSource });
+      }
     }
+  
     this.selectedFormula = null;
     this.selectedSource = null;
   }
