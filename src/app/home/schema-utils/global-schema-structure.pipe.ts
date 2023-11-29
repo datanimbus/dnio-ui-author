@@ -67,7 +67,8 @@ export class GlobalSchemaStructurePipe implements PipeTransform {
                     || i === 'minItems'
                     || i === 'maxItems'
                     || i === 'fieldNo'
-                    || i === 'masking') {
+                    || i === 'masking'
+                    || i === 'dateFormat') {
                     temp[i] = properties[i];
                 }
             }
