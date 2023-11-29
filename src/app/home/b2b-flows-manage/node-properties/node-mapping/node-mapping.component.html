@@ -10,12 +10,12 @@
             <div class="d-flex align-items-center justify-content-start px-3">
                 <div class="d-flex align-items-center justify-content-start mr-3" *ngIf="checkForDataMapping()">
                     <odp-round-radio class="mr-2" [edit]="edit" [checked]="mappingType=='custom'"
-                        (checkedChange)="mappingType='custom';configureMappingData();"></odp-round-radio>
+                        (checkedChange)="mappingType='custom';configureMappingData();setMapping()"></odp-round-radio>
                     <span>Data Mapping</span>
                 </div>
                 <div class="d-flex align-items-center justify-content-start">
                     <odp-round-radio class="mr-2" [edit]="edit" [checked]="mappingType=='preset'"
-                        (checkedChange)="mappingType='preset'"></odp-round-radio>
+                        (checkedChange)="mappingType='preset';setMapping()"></odp-round-radio>
                     <span>Data From Source</span>
                 </div>
             </div>

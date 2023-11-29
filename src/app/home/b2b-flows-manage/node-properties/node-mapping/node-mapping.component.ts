@@ -61,6 +61,31 @@ export class NodeMappingComponent implements OnInit {
     }
     this.nodeList = this.flowService.getNodesBefore(this.currNode);
     this.configureMappingData();
+    this.setMapping();
+
+    this.mappingService.reCreatePaths.pipe(debounceTime(200)).subscribe((data: any) => {
+      if (data) {
+        this.renderPaths(data.source.definition, data.target.definition);
+      } else {
+        this.pathList = [];
+        this.allTargets.forEach((target: any) => {
+          (target.source || []).forEach((src) => {
+            this.renderPaths(src, target);
+          });
+        });
+      }
+    });
+    this.mappingService.clearMappings.subscribe(() => {
+      this.allTargets.forEach((target: any) => {
+        if (target.source && target.source.length > 0) {
+          target.source.splice(0);
+          this.markAttributesDisabled(target);
+        }
+      });
+    });
+  }
+
+  setMapping(){
     if (this.currNode.mappings && this.currNode.mappings.length > 0) {
       this.tempMappings = this.appService.cloneObject(this.currNode.mappings);
       this.allTargets.forEach((item: any) => {
@@ -85,27 +110,6 @@ export class NodeMappingComponent implements OnInit {
         this.mappingService.reCreatePaths.emit(null);
       }, 200);
     }
-
-    this.mappingService.reCreatePaths.pipe(debounceTime(200)).subscribe((data: any) => {
-      if (data) {
-        this.renderPaths(data.source.definition, data.target.definition);
-      } else {
-        this.pathList = [];
-        this.allTargets.forEach((target: any) => {
-          (target.source || []).forEach((src) => {
-            this.renderPaths(src, target);
-          });
-        });
-      }
-    });
-    this.mappingService.clearMappings.subscribe(() => {
-      this.allTargets.forEach((target: any) => {
-        if (target.source && target.source.length > 0) {
-          target.source.splice(0);
-          this.markAttributesDisabled(target);
-        }
-      });
-    });
   }
 
   configureMappingData() {
