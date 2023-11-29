@@ -34,6 +34,7 @@ export class NodeMappingComponent implements OnInit {
   dragItem: any;
   targetExpandCollapseObjects: any;
   sourceExpandCollapseObjects: any;
+  currentOpenEditor: any;
   constructor(private appService: AppService,
     private mappingService: MappingService,
     private flowService: B2bFlowService,
@@ -594,5 +595,22 @@ export class NodeMappingComponent implements OnInit {
 
   set mappingType(val: string) {
     this.currNode.mappingType = val;
+  }
+
+  toggleFormulaEditor(def: any): void {
+    if (def._showFn) {
+        def._showFn = false;
+    } else {
+        this.closeCurrentFormulaEditor();
+        def._showFn = true;
+        this.currentOpenEditor = def;
+    }
+  }
+
+  closeCurrentFormulaEditor(): void {
+      if (this.currentOpenEditor) {
+          this.currentOpenEditor._showFn = false;
+      }
+      this.currentOpenEditor = null;
   }
 }
