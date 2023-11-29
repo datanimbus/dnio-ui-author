@@ -708,6 +708,10 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
        return (this.subType === 'HRSF' && this.isDataFormat)
     }
 
+    isBooleanType(){
+        return this.form.get('type').value === 'Boolean'
+    }
+
     disableCheck(){
         if(this.isHrsf() && ['header','footer','records','subRecords'].includes(this.form.get('key').value)){
             return true

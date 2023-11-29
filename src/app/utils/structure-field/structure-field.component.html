@@ -68,8 +68,8 @@
                         Len
                     </span>
                     <span class="ml-2 advanced-badge hover"
-                        *ngIf="form.get('properties.default') && form.get('properties.default').value" placement="top"
-                        [ngbTooltip]="form.get('properties.default').value">
+                        *ngIf="form.get('properties.default') && (form.get('properties.default').value) || isBooleanType()" placement="top"
+                        [ngbTooltip]="form.get('properties.default').value?.toString()">
                         Default
                     </span>
                     <span class="ml-2 advanced-badge hover" (click)="_viewStateModel(true)" *ngIf="checkStateModel()">

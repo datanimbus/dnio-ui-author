@@ -140,14 +140,14 @@
               </label>
             </ng-container>
             <ng-container *ngIf="!canEdit">
-              <span class="text d-flex" *ngIf=" form.get('properties.default').value === true">
+              <span class="text d-flex" *ngIf="form.get('properties.default').value === true">
                 <span
                   class="d-flex align-items-center justify-content-center rounded-circle bg-accent check-circle mr-1">
                   <span class="fa fa-check text-white"></span>
                 </span>
                 <span class="text">Yes</span>
               </span>
-              <span class="text d-flex" *ngIf=" form.get('properties.default').value !== true">
+              <span class="text d-flex" *ngIf="form.get('properties.default').value !== true">
                 <span
                   class="d-flex align-items-center justify-content-center rounded-circle bg-secondary check-circle mr-1">
                 </span>
