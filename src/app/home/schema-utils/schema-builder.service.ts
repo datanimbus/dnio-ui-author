@@ -78,12 +78,14 @@ export class SchemaBuilderService {
         if (value.type === 'String'
             || value.type === 'Number'
             || value.type === 'Relation'
-            || value.type === 'Boolean'
             || value.type === 'Date'
             || value.type === 'User'
         ) {
             temp.addControl('default', new UntypedFormControl(value.properties
                 && (value.properties.default !== null || value.properties.default !== undefined) ? value.properties.default : null));
+        }
+        if (value.type === 'Boolean') {
+            temp.addControl('default', new UntypedFormControl(value.properties.default || false));
         }
         if (value.type === 'String'
             || value.type === 'Number'

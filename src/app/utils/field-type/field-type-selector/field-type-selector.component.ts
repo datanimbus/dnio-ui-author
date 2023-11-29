@@ -238,6 +238,11 @@ export class FieldTypeSelectorComponent implements OnInit {
     if (self.form.get('properties.minlength') && self.form.get('properties.minlength').value) {
       self.form.get('properties.minlength').patchValue(null);
     }
+    if (self.form.get('type').value === 'Boolean') {
+      self.form.get('properties.default').setValue(false);
+    } else {
+      self.form.get('properties.default').setValue(null);
+    }
     self.form.get('properties._detailedType').patchValue(value);
     self.form.markAsDirty();
     self.close();

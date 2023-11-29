@@ -7,7 +7,7 @@ export class GlobalSchemaStructurePipe implements PipeTransform {
     private properties(properties) {
         const temp = {};
         Object.keys(properties || {}).forEach(i => {
-            if (typeof properties[i] === 'number' || properties[i]) {
+            if (typeof properties[i] === 'number' || (properties[i] || i === 'default')) {
                 if (i === 'hasTokens' && (properties['longText'] || properties['richText'])) {
                     if (properties[i] && properties[i].length > 0) {
                         temp[i] = properties[i];
@@ -68,6 +68,7 @@ export class GlobalSchemaStructurePipe implements PipeTransform {
                     || i === 'maxItems'
                     || i === 'fieldNo'
                     || i === 'masking'
+                    || i === 'default'
                     || i === 'dateFormat') {
                     temp[i] = properties[i];
                 }
