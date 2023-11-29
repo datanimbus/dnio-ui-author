@@ -116,7 +116,7 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
         });
         self.subscriptions['addAttribute'] = self.schemaService.addAttribute.subscribe(place => {
             if (self.schemaService.selectedFieldId && self.schemaService.selectedFieldId === self.fieldId) {
-                const temp = self.schemaService.getDefinitionStructure({ key: null, _newField: true });
+                const temp = self.schemaService.getDefinitionStructure({ key: null, _newField: true }, null, this.isDataFormat);
                 if (place === 'before') {
                     if (!self.idField) {
                         self.all.insert(self.index, temp);
@@ -231,7 +231,7 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
         if (self.inputField) {
             self.inputField.nativeElement.focus();
         }
-        const temp = self.schemaService.getDefinitionStructure(val);
+        const temp = self.schemaService.getDefinitionStructure(val,null, this.isDataFormat);
         (self.all as UntypedFormArray).insert(self.index + 1, temp);
         setTimeout(() => {
             self.schemaService.selectedFieldId = temp.value._fieldId;
@@ -244,7 +244,7 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
         const val: any = self.appService.cloneObject(self.form.value);
         val.key = null;
         val.properties.name = null;
-        const temp = self.schemaService.getDefinitionStructure(val);
+        const temp = self.schemaService.getDefinitionStructure(val, null, this.isDataFormat);
         (self.all as UntypedFormArray).insert(self.index + 1, temp);
         self.schemaService.selectedFieldId = temp.value._fieldId;
         self.schemaService.activeField.emit(temp.value._fieldId);
@@ -409,11 +409,11 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
             (self.form.get('properties') as UntypedFormGroup).addControl(i, tempProp.controls[i]);
         }
         if (type.value === 'Object') {
-            const temp = self.schemaService.getDefinitionStructure({ _newField: true });
+            const temp = self.schemaService.getDefinitionStructure({ _newField: true }, null, this.isDataFormat);
             self.form.addControl('definition', self.fb.array([temp]));
         }
         if (type.value === 'Array') {
-            const temp = self.schemaService.getDefinitionStructure({ key: '_self', _newField: true });
+            const temp = self.schemaService.getDefinitionStructure({ key: '_self', _newField: true }, null, this.isDataFormat);
             self.form.addControl('definition', self.fb.array([temp]));
         }
         // if (type.value === 'Array' || type.value === 'Object') {
@@ -541,7 +541,7 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
         const fields = self.schemaService.createSchema(json, self.isDataFormat);
         fields.forEach((field, i) => {
             const temp = fields[i];
-            const tempDef = self.schemaService.getDefinitionStructure(temp);
+            const tempDef = self.schemaService.getDefinitionStructure(temp, null, this.isDataFormat);
             (tempDef.get('properties.name') as UntypedFormGroup).patchValue(temp.properties.name);
             self.all.push(tempDef);
             tempDef.markAsTouched()
