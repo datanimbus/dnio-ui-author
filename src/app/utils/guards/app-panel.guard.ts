@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CommonService } from '../services/common.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AppPanelGuard implements CanActivate {
+export class AppPanelGuard  {
   constructor(private router: Router, private commonService: CommonService) {
   }
 

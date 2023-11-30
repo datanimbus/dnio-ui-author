@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, CanActivateChild, CanLoad } from '@angular/router';
+
 import { Observable } from 'rxjs';
 import { CommonService } from '../services/common.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BeforeGuard implements CanActivate, CanActivateChild, CanLoad {
+export class BeforeGuard  {
   constructor(private commonService: CommonService) {
 
   }
