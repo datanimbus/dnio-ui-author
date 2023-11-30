@@ -96,7 +96,7 @@ export class UserToGroupModalComponent implements OnInit {
     this.gridOptions = {
       paginationPageSize: 30,
       cacheBlockSize: 30,
-      // datasource: this.dataSource,
+      datasource: this.dataSource,
       rowData: list,
       columnDefs: groupColumnDefs,
       animateRows: true,

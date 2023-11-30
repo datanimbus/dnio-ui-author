@@ -43,7 +43,6 @@ const routes: Routes = [
     StructureFieldPropertiesModule,
     FilterTeamModule,
     CheckboxModule,
-    SortablejsModule,
     RoundRadioModule,
     SwitchModule,
     PasteJsonModule

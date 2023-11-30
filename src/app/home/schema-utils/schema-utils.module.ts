@@ -67,7 +67,6 @@ import { ConnectorSettingsComponent } from './configuration/connector-settings/c
         SearchTermModule,
         FilterDefinitionModule,
         LoadingPlaceholderModule,
-        SortablejsModule,
         CheckboxModule,
         MatFormFieldModule,
         MatSelectModule,

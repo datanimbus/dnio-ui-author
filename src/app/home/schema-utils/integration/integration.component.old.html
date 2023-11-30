@@ -71,7 +71,7 @@
                     <span class="text-muted">No pre hooks </span>
                 </div>
                 <div class="hHook-table__body d-flex flex-column" *ngIf="preHook.length > 0">
-                    <div [sortablejs]="preHook" [sortablejsOptions]="{ disabled: !edit.status }">
+                    <div >
                         <div *ngFor="let hook of preHook; let hookIndex = index"
                             class="d-flex p-2 border-bottom w-100 hHook-table__row d-flex align-items-center">
                             <span class="fa fa-bars text-muted hover"></span>

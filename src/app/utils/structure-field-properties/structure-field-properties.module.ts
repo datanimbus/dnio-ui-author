@@ -33,7 +33,6 @@ import { RoundRadioModule } from '../round-radio/round-radio.module';
     FieldTypeModule,
     ClickOutsideModule,
     SwitchModule,
-    SortablejsModule,
     AutoFocusModule,
     TimezonePickerModule,
     CheckboxModule,

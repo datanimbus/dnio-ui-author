@@ -105,7 +105,7 @@
             </div>
         </div>
         <div class="mx-3" *ngIf="objectFields" [ngClass]="{'d-none':collapse}">
-            <div [sortablejs]="objectFields.controls" [sortablejsOptions]="{sort:editable}">
+            <div >
                 <ng-container *ngFor="let def of objectFields.controls;let i = index">
                     <odp-structure-field [all]="objectFields" [index]="i" [isLibrary]="isLibrary" [subType]="subType"
                         [isDataFormat]="isDataFormat" [formatType]="formatType" [edit]="edit" [level]="level+1"
@@ -117,7 +117,7 @@
         </div>
 
         <div class="mx-3" *ngIf="arrayFields" [ngClass]="{'d-none':collapse}">
-            <div [sortablejs]="arrayFields.controls" [sortablejsOptions]="{sort:editable}">
+            <div >
                 <ng-container *ngFor="let def of arrayFields.controls;let i = index">
                     <odp-structure-field [all]="arrayFields" [index]="i" [isLibrary]="isLibrary" [subType]="subType"
                         [isDataFormat]="isDataFormat" [formatType]="formatType" [edit]="edit" [level]="level+1"

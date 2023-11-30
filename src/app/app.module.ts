@@ -68,7 +68,6 @@ import { AdminModule } from './admin/admin.module';
     }),
     LoadingModule,
     ShortcutModule,
-    SortablejsModule.forRoot({ animation: 150 }),
     MatChipsModule,
     MatFormFieldModule,
     MatSelectModule,

@@ -38,7 +38,6 @@ const routes: Routes = [
     StructureFieldModule,
     StructureFieldPropertiesModule,
     PrettyJsonModule,
-    SortablejsModule,
     RoundRadioModule
   ],
   exports: [

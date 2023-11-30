@@ -34,7 +34,6 @@ const routes: Routes = [
         BasicInfoModule,
         StructureFieldModule,
         StructureFieldPropertiesModule,
-        SortablejsModule
     ],
     exports: [RouterModule],
     declarations: [

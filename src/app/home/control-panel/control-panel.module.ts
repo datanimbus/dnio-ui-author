@@ -90,7 +90,6 @@ import { GroupAuthorApiKeysComponent } from './user-group/user-group-manage/user
     ControlPanelRoutingModule,
     NgbModule,
     LoadingModule,
-    SchemaUtilsModule,
     ClickOutsideModule,
     TimeoutTriggerModule,
     SearchBoxModule,

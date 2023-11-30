@@ -81,11 +81,7 @@
                     <span>NO OF APPROVALS</span>
                   </div>
                 </div>
-                <div class="steps-section" formArrayName="steps" [sortablejs]="steps.controls" [sortablejsOptions]="{
-                    sort: !!edit && !!edit.status,
-                    filter: '.disabled',
-                    onUpdate: sortableOnUpdate
-                  }">
+                <div class="steps-section" formArrayName="steps">
                   <div class="step row no-gutters py-3 b-bottom" *ngFor="let step of steps.controls; let i = index">
                     <ng-container [formGroupName]="i">
                       <div class="col-1 d-flex align-items-center" *ngIf="edit.status">
