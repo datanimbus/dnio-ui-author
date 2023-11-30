@@ -30,7 +30,7 @@ export class ManageBotKeyComponent implements OnInit {
   showLazyLoader: boolean;
   keyForm: UntypedFormGroup
   gridOptions: GridOptions;
-  frameworkComponents: any;
+  components: any;
   filterModel: any;
   filtering: boolean;
   gridApi: GridApi;

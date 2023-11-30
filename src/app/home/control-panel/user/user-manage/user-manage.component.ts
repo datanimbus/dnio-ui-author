@@ -22,7 +22,7 @@ import {
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbTooltipConfig, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AgGridAngular } from 'ag-grid-angular';
-import { GridOptions, GridReadyEvent, RowNode } from 'ag-grid-community';
+import { ColDef, GridOptions, GridReadyEvent, RowNode } from 'ag-grid-community';
 import { ToastrService } from 'ngx-toastr';
 import { filter } from 'rxjs/operators';
 import * as _ from 'lodash';
@@ -131,7 +131,7 @@ export class UserManageComponent implements OnInit, OnDestroy {
   showPassword = {};
   showResetPassword: boolean;
   gridOptions: GridOptions;
-  frameworkComponents: any;
+  components: any;
   filtering: boolean;
   showSettings: boolean = false;
   filterModel: any;
@@ -287,9 +287,33 @@ export class UserManageComponent implements OnInit, OnDestroy {
   setupUserAttrsGrid() {
     const hasEditPermission = this.hasPermission('PMUBU');
     const hasDeletePermission = this.hasPermission('PMUBD');
-    this.frameworkComponents = {
+    this.components = {
       customCellRenderer: AttributesCellRendererComponent,
       actionCellRenderer: AgGridActionsRendererComponent,
+    };
+
+    const actionColumn: ColDef = {
+      headerName: 'Actions',
+      cellRenderer: 'actionCellRenderer',
+      sortable: false,
+      filter: false,
+      pinned: 'right',
+      minWidth: (hasEditPermission && hasDeletePermission) ? 130 : 94,
+      maxWidth: (hasEditPermission && hasDeletePermission) ? 130 : 94,
+      refData: {
+        actionsButtons: ['Edit', 'Delete']
+          .filter((button) => {
+            if (button === 'Edit' && !hasEditPermission) {
+              return false;
+            }
+            if (button === 'Delete' && !hasDeletePermission) {
+              return false;
+            }
+            return true;
+          })
+          .join(','),
+        actionCallbackFunction: 'onGridAction',
+      },
     };
     this.gridOptions = {
       defaultColDef: {
@@ -299,8 +323,6 @@ export class UserManageComponent implements OnInit, OnDestroy {
         sortable: true,
         filter: 'agTextColumnFilter',
         suppressMenu: true,
-        floatingFilter: true,
-        floatingFilterComponentFramework: AgGridSharedFloatingFilterComponent,
         filterParams: {
           caseSensitive: true,
           suppressAndOrCondition: true,
@@ -311,6 +333,8 @@ export class UserManageComponent implements OnInit, OnDestroy {
         {
           headerName: 'Label',
           field: 'label',
+          floatingFilter: true,
+          floatingFilterComponent: AgGridSharedFloatingFilterComponent,
           refData: {
             filterType: 'text',
           },
@@ -318,6 +342,8 @@ export class UserManageComponent implements OnInit, OnDestroy {
         {
           headerName: 'Key',
           field: 'key',
+          floatingFilter: true,
+          floatingFilterComponent: AgGridSharedFloatingFilterComponent,
           refData: {
             filterType: 'text',
           },
@@ -327,6 +353,8 @@ export class UserManageComponent implements OnInit, OnDestroy {
           field: 'type',
           width: 140,
           maxWidth: 140,
+          floatingFilter: true,
+          floatingFilterComponent: AgGridSharedFloatingFilterComponent,
           refData: {
             filterType: 'list_of_values',
             mapperFunction: 'gridAttrTypesMapper',
@@ -340,33 +368,12 @@ export class UserManageComponent implements OnInit, OnDestroy {
             filterType: 'text',
           },
         },
-        ...(hasEditPermission || hasDeletePermission
-          ? [
-              {
-                headerName: 'Actions',
-                pinned: 'right',
-                cellRenderer: 'actionCellRenderer',
-                sortable: false,
-                filter: false,
-                minWidth: hasEditPermission && hasDeletePermission ? 130 : 94,
-                maxWidth: hasEditPermission && hasDeletePermission ? 130 : 94,
-                refData: {
-                  actionsButtons: [
-                    hasEditPermission ? 'Edit' : '',
-                    hasDeletePermission ? 'Delete' : '',
-                  ]
-                    .filter((i) => !!i)
-                    .join(','),
-                  actionCallbackFunction: 'onGridAction',
-                },
-              },
-            ]
-          : []),
+        ...(hasEditPermission || hasDeletePermission ? [actionColumn] : [])
       ],
       context: this,
       animateRows: true,
       onGridReady: this.onGridReady.bind(this),
-      onRowDataChanged: this.autoSizeAllColumns.bind(this),
+      onRowDataUpdated: this.autoSizeAllColumns.bind(this),
       onGridSizeChanged: this.forceResizeColumns.bind(this),
       onRowDoubleClicked: this.onRowDoubleClick.bind(this),
     };
@@ -417,7 +424,7 @@ export class UserManageComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         const container = document.querySelector('.attrs-grid-container');
         const availableWidth = !!container ? container.clientWidth - 170 : 993;
-        const allColumns = this.agGrid.columnApi.getAllColumns();
+        const allColumns = this.agGrid.api?.getAllGridColumns();
         allColumns?.forEach((col) => {
           this.agGrid.columnApi.autoSizeColumn(col);
           if (

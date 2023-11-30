@@ -37,7 +37,7 @@ export class ManageBotPropertyComponent implements OnInit {
   showLazyLoader: boolean;
   editAttributeForm: UntypedFormGroup;
   gridOptions: GridOptions;
-  frameworkComponents: any;
+  components: any;
   filterModel: any;
   filtering: boolean;
   @Output() onAdd: EventEmitter<any> = new EventEmitter();

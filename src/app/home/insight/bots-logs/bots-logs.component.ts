@@ -60,7 +60,7 @@ export class BotsLogsComponent implements OnInit, OnDestroy {
       suppressMenu: true,
       sortable: true,
       resizable: true,
-      floatingFilterComponentFramework: AgGridSharedFloatingFilterComponent
+      floatingFilterComponent: AgGridSharedFloatingFilterComponent
     };
     const columnDefs = [
       {
@@ -68,6 +68,7 @@ export class BotsLogsComponent implements OnInit, OnDestroy {
         field: '_metadata.createdAt',
         valueFormatter: this.dateFormatter.bind(this),
         minWidth: 270,
+        floatingFilter: true,
         refData: {
           filterType: 'date-time',
           timezone: 'Zulu'
@@ -76,6 +77,7 @@ export class BotsLogsComponent implements OnInit, OnDestroy {
       {
         headerName: 'Summary',
         field: 'summary',
+        floatingFilter: true,
         valueFormatter: params => params.value,
         minWidth: 800,
         refData: {
@@ -90,7 +92,6 @@ export class BotsLogsComponent implements OnInit, OnDestroy {
       suppressColumnVirtualisation: true,
       animateRows: true,
       rowModelType: 'infinite',
-      floatingFilter: true,
       cacheBlockSize: 30,
       overlayNoRowsTemplate: '<span>No records to display</span>'
     };
@@ -115,7 +116,7 @@ export class BotsLogsComponent implements OnInit, OnDestroy {
         } else {
           delete this.apiConfig.filter.$and;
         }
-        this.apiConfig.sort = this.appService.getSortFromModel(this.agGrid?.api?.getSortModel() || []);
+        this.apiConfig.sort = this.appService.getSortFromModel(this.agGrid?.api?.getColumnState() || []);
         this.agGrid.api.showLoadingOverlay();
         if (this.subscriptions['getRecords_data']) {
           this.subscriptions['getRecords_data'].unsubscribe();

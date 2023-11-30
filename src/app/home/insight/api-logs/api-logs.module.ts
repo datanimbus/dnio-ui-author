@@ -26,9 +26,7 @@ import { AgGridSharedFloatingFilterModule } from 'src/app/utils/ag-grid-shared-f
     CheckboxModule,
     ClickOutsideModule,
     OnChangeModule,
-    AgGridModule.withComponents([
-      AgGridFiltersComponent,
-    ]),
+    AgGridModule,
     AgGridSharedFloatingFilterModule
   ],
 

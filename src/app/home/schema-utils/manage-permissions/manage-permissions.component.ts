@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Input, EventEmitter, OnDestroy, TemplateRef, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { NgbModalRef, NgbButtonLabel } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from 'src/app/utils/services/common.service';
 import { AppService } from 'src/app/utils/services/app.service';
 import * as _ from 'lodash';
@@ -15,7 +15,7 @@ export interface Definition {
   selector: 'odp-manage-permissions',
   templateUrl: './manage-permissions.component.html',
   styleUrls: ['./manage-permissions.component.scss'],
-  providers: [NgbButtonLabel]
+  // providers: [NgbButtonLabel]
 })
 export class ManagePermissionsComponent implements OnInit, OnDestroy {
 

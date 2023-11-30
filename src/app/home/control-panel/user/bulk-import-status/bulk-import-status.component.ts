@@ -212,7 +212,7 @@ export class BulkImportStatusComponent implements OnInit {
         } else {
           delete this.apiConfig.filter.$and;
         }
-        const sortString = this.appService.getSortFromModel(this.agGrid?.api?.getSortModel() || []);
+        const sortString = this.appService.getSortFromModel(this.agGrid?.api?.getColumnState() || []);
         this.apiConfig.sort = sortString || 'data.name';
         this.agGrid.api.hideOverlay();
         this.agGrid?.api?.showLoadingOverlay();

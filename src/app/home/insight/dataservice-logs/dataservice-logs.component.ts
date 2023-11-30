@@ -45,7 +45,7 @@ export class DataserviceLogsComponent implements OnInit, OnDestroy {
   loaded: number;
   dataservices: Array<any>;
   noRowsTemplate;
-  frameworkComponents: any;
+  components: any;
   getRowsDebounceSubject: Subject<any>;
   htmlContent;
   constructor(private commonService: CommonService, private appService: AppService) {
@@ -78,7 +78,7 @@ export class DataserviceLogsComponent implements OnInit, OnDestroy {
       .subscribe(params => {
         this.getRows(params);
       });
-    this.frameworkComponents = {
+    this.components = {
       customCellRenderer: AgGridCellComponent
     };
     const defaultColDef: ColDef = {
@@ -93,13 +93,14 @@ export class DataserviceLogsComponent implements OnInit, OnDestroy {
       sortable: true,
       resizable: true,
       cellRenderer: 'customCellRenderer',
-      floatingFilterComponentFramework: AgGridSharedFloatingFilterComponent
+      floatingFilterComponent: AgGridSharedFloatingFilterComponent
     };
     const columnDefs: Array<ColDef> = [
       {
         headerName: 'Date and Time',
         field: '_metadata.createdAt',
         minWidth: 270,
+        floatingFilter: true,
         refData: {
           filterType: 'date-time',
           timezone: 'Zulu'
@@ -108,6 +109,7 @@ export class DataserviceLogsComponent implements OnInit, OnDestroy {
       {
         headerName: 'Data Service',
         field: 'service.name',
+        floatingFilter: true,
         minWidth: 140,
         refData: {
           filterType: 'list_of_values',
@@ -117,6 +119,7 @@ export class DataserviceLogsComponent implements OnInit, OnDestroy {
       {
         headerName: 'TxnId',
         field: 'txnId',
+        floatingFilter: true,
         refData: {
           filterType: 'text'
         }
@@ -124,6 +127,7 @@ export class DataserviceLogsComponent implements OnInit, OnDestroy {
       {
         headerName: 'Type',
         field: 'type',
+        floatingFilter: true,
         minWidth: 140,
         refData: {
           filterType: 'list_of_values',
@@ -133,6 +137,7 @@ export class DataserviceLogsComponent implements OnInit, OnDestroy {
       {
         headerName: 'Status',
         field: 'statusCode',
+        floatingFilter: true,
         refData: {
           filterType: 'number'
         }
@@ -140,6 +145,7 @@ export class DataserviceLogsComponent implements OnInit, OnDestroy {
       {
         headerName: 'RecordId',
         field: 'docId',
+        floatingFilter: true,
         refData: {
           filterType: 'text'
         }
@@ -147,6 +153,7 @@ export class DataserviceLogsComponent implements OnInit, OnDestroy {
       {
         headerName: 'User',
         field: 'user',
+        floatingFilter: true,
         refData: {
           filterType: 'text'
         }
@@ -154,6 +161,7 @@ export class DataserviceLogsComponent implements OnInit, OnDestroy {
       {
         headerName: 'Retry',
         field: 'retry',
+        floatingFilter: true,
         refData: {
           filterType: 'text'
         }
@@ -161,6 +169,7 @@ export class DataserviceLogsComponent implements OnInit, OnDestroy {
       {
         headerName: 'URL',
         field: 'url',
+        floatingFilter: true,
         minWidth: 300,
         refData: {
           filterType: 'text'
@@ -174,11 +183,10 @@ export class DataserviceLogsComponent implements OnInit, OnDestroy {
       suppressColumnVirtualisation: true,
       animateRows: true,
       rowModelType: 'infinite',
-      floatingFilter: true,
       cacheBlockSize: 30,
       overlayNoRowsTemplate: '<span>No records to display</span>',
       onGridReady: this.onGridReady.bind(this),
-      onRowDataChanged: this.autoSizeAllColumns.bind(this),
+      onRowDataUpdated: this.autoSizeAllColumns.bind(this),
       onGridSizeChanged: this.forceResizeColumns.bind(this),
       onRowDoubleClicked: this.onRowDoubleClick.bind(this)
     };
@@ -203,12 +211,12 @@ export class DataserviceLogsComponent implements OnInit, OnDestroy {
   }
 
   private autoSizeAllColumns() {
-    if (!!this.agGrid.api && !!this.agGrid.columnApi) {
+    if (!!this.agGrid.api && !!this.agGrid.api) {
       setTimeout(() => {
         const container = document.querySelector('.grid-container');
         const availableWidth = !!container ? container.clientWidth : 1154;
-        this.agGrid.columnApi.autoSizeAllColumns();
-        const allColumns = this.agGrid.columnApi.getAllColumns() || [];
+        this.agGrid.api.autoSizeAllColumns();
+        const allColumns = this.agGrid.api?.getAllGridColumns() || [];
         const occupiedWidth = allColumns.reduce((pv, cv) => pv + cv.getActualWidth(), 0);
         if (occupiedWidth < availableWidth) {
           this.agGrid.api.sizeColumnsToFit();
@@ -248,7 +256,7 @@ export class DataserviceLogsComponent implements OnInit, OnDestroy {
     } else {
       delete self.apiConfig.filter.$and;
     }
-    self.apiConfig.sort = this.appService.getSortFromModel(this.agGrid?.api?.getSortModel() || [])
+    self.apiConfig.sort = this.appService.getSortFromModel(this.agGrid?.api?.getColumnState() || [])
     self.agGrid.api.showLoadingOverlay();
     if (self.subscriptions['getRecords_data']) {
       self.subscriptions['getRecords_data'].unsubscribe();

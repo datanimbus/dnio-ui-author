@@ -21,7 +21,7 @@ export class UserToGroupModalComponent implements OnInit {
   gridApi: GridApi;
   gridOptions: GridOptions;
   dataSource: IDatasource;
-  frameworkComponents: any;
+  components: any;
   context: any;
   userGroups: any;
   groupList: any;
@@ -34,7 +34,7 @@ export class UserToGroupModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) private data: any
   ) { }
   ngOnInit(): void {
-    this.frameworkComponents = {
+    this.components = {
       appCheckRenderer: UserGridAppsRendererComponent,
     };
 
@@ -56,16 +56,19 @@ export class UserToGroupModalComponent implements OnInit {
         headerCheckboxSelection: true,
         checkboxSelection: true,
         headerCheckboxSelectionFilteredOnly: false,
+        floatingFilter: false,
       },
       {
         headerName: 'NAME',
         field: 'name',
         width: 300,
+        floatingFilter: false,
       },
       {
         headerName: 'MEMBERS',
         field: 'users',
         width: 150,
+        floatingFilter: false,
         valueFormatter: (params) => {
           return params?.value?.length || 0;
         },
@@ -77,6 +80,7 @@ export class UserToGroupModalComponent implements OnInit {
         cellRendererParams: {
           checkApp: 'author',
         },
+        floatingFilter: false,
       },
       {
         headerName: 'APPCENTER',
@@ -85,24 +89,24 @@ export class UserToGroupModalComponent implements OnInit {
         cellRendererParams: {
           checkApp: 'author',
         },
+        floatingFilter: false,
       },
     ];
 
     this.gridOptions = {
       paginationPageSize: 30,
       cacheBlockSize: 30,
-      floatingFilter: false,
       // datasource: this.dataSource,
       rowData: list,
       columnDefs: groupColumnDefs,
       animateRows: true,
       rowHeight: 48,
       headerHeight: 48,
-      frameworkComponents: this.frameworkComponents,
+      components: this.components,
       suppressPaginationPanel: true,
       context: this.context,
       rowSelection: 'multiple',
-      suppressCellSelection: true,
+      suppressCellFocus: true,
 
 
       onSelectionChanged: (event) => this.onSelectionChanged(event),

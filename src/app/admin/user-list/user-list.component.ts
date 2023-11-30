@@ -50,7 +50,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     currUserType: string;
     showPassword: any;
     gridOptions: GridOptions;
-    frameworkComponents: any;
+    components: any;
     dataSource: IDatasource;
     validAuthTypes: Array<any>;
     availableAuthTypes: Array<any>;
@@ -175,7 +175,7 @@ export class UserListComponent implements OnInit, OnDestroy {
             .subscribe(params => {
                 this.getRows(params);
             });
-        this.frameworkComponents = {
+        this.components = {
             customCheckboxCellRenderer: GridCheckboxComponent,
             customCellRenderer: UserListCellRendererComponent,
             actionCellRenderer: AgGridActionsRendererComponent
@@ -188,8 +188,6 @@ export class UserListComponent implements OnInit, OnDestroy {
                 sortable: true,
                 filter: 'agTextColumnFilter',
                 suppressMenu: true,
-                floatingFilter: true,
-                floatingFilterComponentFramework: AgGridSharedFloatingFilterComponent,
                 filterParams: {
                     caseSensitive: true,
                     suppressAndOrCondition: true,
@@ -209,6 +207,8 @@ export class UserListComponent implements OnInit, OnDestroy {
                 {
                     headerName: 'Name',
                     field: 'basicDetails.name',
+                    floatingFilter: true,
+                    floatingFilterComponent: AgGridSharedFloatingFilterComponent,
                     refData: {
                         filterType: 'text'
                     }
@@ -216,6 +216,8 @@ export class UserListComponent implements OnInit, OnDestroy {
                 {
                     headerName: 'Username',
                     field: 'username',
+                    floatingFilter: true,
+                    floatingFilterComponent: AgGridSharedFloatingFilterComponent,
                     refData: {
                         filterType: 'text'
                     }
@@ -223,6 +225,8 @@ export class UserListComponent implements OnInit, OnDestroy {
                 {
                     headerName: 'Apps',
                     field: 'accessControl.apps._id',
+                    floatingFilter: true,
+                    floatingFilterComponent: AgGridSharedFloatingFilterComponent,
                     refData: {
                         filterType: 'list_of_values',
                         mapperFunction: 'gridAppsMapper'
@@ -231,6 +235,8 @@ export class UserListComponent implements OnInit, OnDestroy {
                 {
                     headerName: 'User Type',
                     field: 'bot',
+                    floatingFilter: true,
+                    floatingFilterComponent: AgGridSharedFloatingFilterComponent,
                     refData: {
                         filterType: 'list_of_values',
                         mapperFunction: 'gridUserTypeMapper'
@@ -239,6 +245,8 @@ export class UserListComponent implements OnInit, OnDestroy {
                 {
                     headerName: 'Auth Mode',
                     field: 'auth.authType',
+                    floatingFilter: true,
+                    floatingFilterComponent: AgGridSharedFloatingFilterComponent,
                     refData: {
                         filterType: 'list_of_values',
                         mapperFunction: 'gridAuthTypeMapper'
@@ -247,6 +255,8 @@ export class UserListComponent implements OnInit, OnDestroy {
                 {
                     headerName: 'Last Login',
                     field: 'lastLogin',
+                    floatingFilter: true,
+                    floatingFilterComponent: AgGridSharedFloatingFilterComponent,
                     minWidth: 270,
                     refData: {
                         filterType: 'date-time',
@@ -271,10 +281,10 @@ export class UserListComponent implements OnInit, OnDestroy {
             context: this,
             animateRows: true,
             rowSelection: 'multiple',
-            rowDeselection: true,
+            // rowDeselection: true,
             rowMultiSelectWithClick: true,
             onGridReady: this.onGridReady.bind(this),
-            onRowDataChanged: this.autoSizeAllColumns.bind(this),
+            onRowDataUpdated: this.autoSizeAllColumns.bind(this),
             onGridSizeChanged: this.forceResizeColumns.bind(this),
             onRowDoubleClicked: this.onRowDoubleClick.bind(this)
         };
@@ -325,7 +335,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         } else {
             delete this.apiConfig.filter;
         }
-        const sortString = this.appService.getSortFromModel(this.agGrid?.api?.getSortModel() || []);
+        const sortString = this.appService.getSortFromModel(this.agGrid?.api?.getColumnState() || []);
         this.apiConfig.sort = sortString || 'basicDetails.name';
         this.agGrid?.api?.showLoadingOverlay();
         if (!!this.subscriptions['data_userlist']) {
@@ -374,13 +384,13 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
 
     private autoSizeAllColumns() {
-        if (!!this.agGrid.api && !!this.agGrid.columnApi) {
+        if (!!this.agGrid.api && !!this.agGrid.api) {
             setTimeout(() => {
                 const container = document.querySelector('.grid-container');
                 const availableWidth = !!container ? container.clientWidth - 170 : 1350;
-                const allColumns = this.agGrid.columnApi.getAllColumns();
+                const allColumns = this.agGrid.api?.getAllGridColumns();
                 allColumns.forEach(col => {
-                    this.agGrid.columnApi.autoSizeColumn(col);
+                    this.agGrid.api.autoSizeColumn(col);
                     if (col.getActualWidth() > 200 || this.agGrid.api.getDisplayedRowCount() === 0) {
                         col.setActualWidth(200);
                     }
@@ -500,7 +510,7 @@ export class UserListComponent implements OnInit, OnDestroy {
 
     checkAllUser(val) {
         this.agGrid.api.forEachNode(row => {
-            this.agGrid.api.getRowNode(row.id).selectThisNode(val);
+            this.agGrid.api.getRowNode(row.id).setSelected(val);
         });
     }
 

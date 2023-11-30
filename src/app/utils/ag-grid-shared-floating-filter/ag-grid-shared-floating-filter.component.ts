@@ -222,7 +222,7 @@ export class AgGridSharedFloatingFilterComponent implements IFloatingFilter, AgF
         }
         break;
     }
-    this.params.parentFilterInstance(function (instance: IFilterComp) {
+    this.params.parentFilterInstance(function (instance) {
       (instance as TextFilter).onFloatingFilterChanged('like', obj ? JSON.stringify(obj) : null);
     });
   }

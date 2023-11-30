@@ -44,7 +44,7 @@
     </div>
     <div class="d-flex flex-column w-100 h-100 grid-container">
       <ag-grid-angular #agGrid *ngIf="dataSource" class="card-container ag-theme-balham ag-grid-container"
-        [gridOptions]="gridOptions" [datasource]="dataSource" [frameworkComponents]="frameworkComponents"
+        [gridOptions]="gridOptions" [datasource]="dataSource" [components]="components"
         rowModelType="infinite" [rowHeight]="56" cacheBlockSize="30">
       </ag-grid-angular>
     </div>

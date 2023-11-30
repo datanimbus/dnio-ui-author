@@ -53,7 +53,7 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
   easterEggEnabled: boolean;
   serviceRecordCounts: Array<any>;
   toggleImportWizard: boolean;
-  frameworkComponents: any;
+  components: any;
   showNewServiceWindow: boolean;
   showCloneServiceWindow: boolean;
   showYamlWindow: boolean;

@@ -21,7 +21,7 @@ export class ManageBotGroupComponent implements OnInit {
   @Output() onAdd: EventEmitter<any> = new EventEmitter();
 
   showLazyLoader: boolean;
-  frameworkComponents: any;
+  components: any;
   searchTerm: any;
 
   @ViewChild('agGrid') agGrid: AgGridAngular;
@@ -108,7 +108,7 @@ export class ManageBotGroupComponent implements OnInit {
 
 
     }
-    this.gridOptions.api.setRowData(filtered)
+    this.agGrid.api.setGridOption('rowData', filtered)
 
   }
 
