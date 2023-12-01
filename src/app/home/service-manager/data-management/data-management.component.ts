@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService, GetOptions } from 'src/app/utils/services/common.service';
 import { App } from 'src/app/utils/interfaces/app';
@@ -11,7 +11,7 @@ import { switchMap } from 'rxjs/operators';
   templateUrl: './data-management.component.html',
   styleUrls: ['./data-management.component.scss']
 })
-export class DataManagementComponent implements OnInit {
+export class DataManagementComponent implements OnInit, OnDestroy {
   @ViewChild('startStopServiceModalTemplate') startStopServiceModalTemplate: TemplateRef<HTMLElement>;
   startStopServiceModalRef: NgbModalRef;
   startStopServiceModal: any;
@@ -22,7 +22,8 @@ export class DataManagementComponent implements OnInit {
   oldData: App;
   versionConfig: any;
   defaultVersionValues: Array<any> = [null, '', '-1', '10', '25', '50', '100', '1 months', '3 months', '6 months', '1 years'];
-  connectorList: Array<any>
+  connectorList: Array<any>;
+  subscriptions: Array<any> = [];
 
   constructor(
     private commonService: CommonService,
@@ -46,9 +47,15 @@ export class DataManagementComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    Object.keys(this.subscriptions).forEach(e => {
+      this.subscriptions[e].unsubscribe();
+  });
+  }
+
   getManagementDetails() {
     const self = this;
-    self.commonService.get('serviceManager', `/${this.commonService.app._id}/service/utils/status/count`, { filter: { app: this.commonService.app._id } }).subscribe(res => {
+    this.subscriptions['managementDetails'] =  self.commonService.get('serviceManager', `/${this.commonService.app._id}/service/utils/status/count`, { filter: { app: this.commonService.app._id } }).subscribe(res => {
       self.serviceStatus = res;
     }, (err) => {
       self.ts.warning(err.error.message);
@@ -60,8 +67,8 @@ export class DataManagementComponent implements OnInit {
     const self = this;
     self.showLazyLoader = true;
     self.retainDataHistory = true;
-    self.commonService.get('user', '/data/app/' + id, { noApp: true }).subscribe(res => {
-      self.appData = Object.assign(self.appData, res);
+    this.subscriptions['appDetails'] =  self.commonService.get('user', '/data/app/' + id, { noApp: true }).subscribe(res => {
+      self.appData = res[0]
       if (!self.appData['connectors']) {
         self.appData['connectors'] = {
           data: {
@@ -180,7 +187,7 @@ export class DataManagementComponent implements OnInit {
     // if (this.connectorList.length === 1) {
     //   this.appData['connectors']['data']['_id'] = this.connectorList[0]._id
     // }
-    self.commonService.put('user', '/data/app/' + self.appData._id, self.appData).subscribe(res => {
+    this.subscriptions['save'] =  self.commonService.put('user', '/data/app/' + self.appData._id, self.appData).subscribe(res => {
       self.oldData = self.appService.cloneObject(self.appData);
       self.ts.success('App saved successfully');
       self.commonService.appUpdates.emit(self.appData);
@@ -197,7 +204,7 @@ export class DataManagementComponent implements OnInit {
     const filter = {
       "options.isValid": true
     }
-    this.commonService.get('user', `/${this.commonService.app._id}/connector/utils/count`)
+    this.subscriptions['connectorsList'] =  this.commonService.get('user', `/${this.commonService.app._id}/connector/utils/count`)
       .pipe(switchMap((ev: any) => {
         return this.commonService.get('user', `/${this.commonService.app._id}/connector`, { count: ev, select: '_id, name, category, type, options, _metadata', filter: filter });
       })).subscribe(res => {
@@ -226,7 +233,7 @@ export class DataManagementComponent implements OnInit {
   updateServicesState(value) {
     const self = this;
     let endpoint = value == 'Start' ? 'startAll' : 'stopAll'
-    self.commonService.put('serviceManager', `/${self.appData._id}/service/utils/${endpoint}`, { app: this.commonService.app._id }).subscribe(res => {
+    this.subscriptions['updateService'] = self.commonService.put('serviceManager', `/${self.appData._id}/service/utils/${endpoint}`, { app: this.commonService.app._id }).subscribe(res => {
       self.ts.info(`${value} all process initiated !`)
       self.getManagementDetails();
     })

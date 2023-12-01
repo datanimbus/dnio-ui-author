@@ -4,6 +4,7 @@ export class App {
     description: string;
     appCenterStyle: AppCenterStyle;
     logo: Logo;
+    maskingPaths: Array<any>;
     users: Array<string>;
     groups: Array<string>;
     selected: boolean;

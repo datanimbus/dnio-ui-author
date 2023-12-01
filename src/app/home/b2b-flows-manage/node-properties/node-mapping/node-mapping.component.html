@@ -5,175 +5,169 @@
             <span class="dsi dsi-close text-dark ignore-outside" (click)="cancel()"></span>
         </button>
     </div>
-    <div class="mapping-container my-3 d-flex border rounded">
-        <div [ngClass]="{'show':selectedTargetField}" class="source-fields position-relative">
-            <ng-container *ngIf="selectedTargetField">
-                <ng-container *ngIf="sourceFields">
-                    <div class="sub-header d-flex align-items-start justify-content-between border-bottom p-3 mb-2">
-                        <div class="d-flex flex-column">
-                            <span class="font-14 fw-500">Select Source Fields</span>
-                            <span class="font-14 fw-500 text-secondary">For:&nbsp;
-                                <span class="text-primary">{{selectedTargetField.dataPath}}</span>
-                            </span>
-                        </div>
-                    </div>
-                    <!-- <div class="field-block d-flex align-items-center p-2"
-                        *ngFor="let item of customSourceFields; let i=index;">
-                        <odp-checkbox [edit]="edit" class="mx-2" [checked]="isSourceSelected(item)"
-                            (checkedChange)="toggleSource($event,item)"></odp-checkbox>
-                        <div class="input-wrapper w-100 d-flex align-items-center position-relative mr-3">
-                            <span class="font-14 fw-400">{{item?.name}}</span>
-                        </div>
-                    </div> -->
-                    <ng-container *ngFor="let item of customSourceFields; let i=index;">
-                        <ng-container *ngTemplateOutlet="sFields; context: {def:item}"></ng-container>
-                    </ng-container>
-                </ng-container>
-                <ng-container *ngIf="!sourceFields">
-                    <div class="sub-header d-flex align-items-start justify-content-between border-bottom mb-3 p-3">
-                        <div class="d-flex flex-column">
-                            <span class="font-14 fw-500">Add Source Fields</span>
-                            <span class="font-14 fw-500 text-secondary">For:&nbsp;
-                                <span class="text-primary">{{selectedTargetField.dataPath}}</span>
-                            </span>
-                        </div>
-                        <button type="button" class="btn btn-link text-primary" (click)="addField('source')">
-                            <span class="dsi dsi-plus-circle"></span>
-                        </button>
-                    </div>
-                    <div *ngIf="!customSourceFields || customSourceFields.length==0" class="text-secondary p-4 font-12">
-                        No
-                        Data
-                        Structure
-                        Found. Please add a Data Structure in Previous node or create fields manually
-                        by click on the <span class="dsi dsi-plus-circle text-primary mx-1 font-11"></span> icon</div>
-                    <div class="field-block bg-white d-flex align-items-center mb-1"
-                        *ngFor="let item of customSourceFields; let i=index;">
-                        <odp-checkbox [edit]="edit" class="mx-2" [checked]="isSourceSelected(item)"
-                            (checkedChange)="toggleSource($event,item)"></odp-checkbox>
-                        <div class="input-wrapper w-100 d-flex align-items-center position-relative mr-3">
-                            <input type="text" class="form-control" placeholder="Data Path" odpAutoFocus
-                                (keyup.enter)="addField('source')" [(ngModel)]="item.dataPath"
-                                (paste)="onPaste($event,'source', i)">
-                            <button type="button" class="delete-btn btn btn-link text-danger"
-                                (click)="removeField('source',i)">
-                                <span class="dsi dsi-trash"></span>
-                            </button>
-                        </div>
-                    </div>
-                </ng-container>
-            </ng-container>
-        </div>
-        <div class="destination-fields bg-light position-relative">
-            <div *ngIf="showFormulaBuilder" class="formula-builder position-absolute h-100 w-100 bg-white border-left">
-                <div class="sub-header d-flex align-items-start justify-content-between border-bottom p-3">
-                    <span class="font-14 fw-500">Formula for:<br>
-                        <span class="text-primary">{{selectedTargetField.dataPath}}</span>
-                    </span>
-                    <button type="button" class="btn btn-link text-dark" (click)="showFormulaBuilder=false">
-                        <span class="dsi dsi-close fw-500"></span>
-                    </button>
+    <div class="mapping-container my-3 border rounded">
+        <div class="mapping-options d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center justify-content-start px-3">
+                <div class="d-flex align-items-center justify-content-start mr-3" *ngIf="checkForDataMapping()">
+                    <odp-round-radio class="mr-2" [edit]="edit" [checked]="mappingType=='custom'"
+                        (checkedChange)="mappingType='custom';configureMappingData();setMapping()"></odp-round-radio>
+                    <span>Data Mapping</span>
                 </div>
-                <div *ngIf="selectedTargetField.source && selectedTargetField.source.length>0"
-                    class="d-flex flex-column p-3 border-bottom text-secondary">
-                    <span *ngFor="let item of selectedTargetField.source;let sourceIndex=index"
-                        class="font-13 fw-400">Use <i>{{item.dataPath}}</i> as <span
-                            class="fw-500">input{{sourceIndex+1}}</span>
-                    </span>
+                <div class="d-flex align-items-center justify-content-start">
+                    <odp-round-radio class="mr-2" [edit]="edit" [checked]="mappingType=='preset'"
+                        (checkedChange)="mappingType='preset';setMapping()"></odp-round-radio>
+                    <span>Data From Source</span>
                 </div>
-                <textarea class="form-control border-0"
-                    [(ngModel)]="selectedTargetField.formula">{{baseCode}}</textarea>
             </div>
-            <ng-container *ngIf="targetFields">
-                <div class="sub-header d-flex align-items-center justify-content-between border-bottom bg-white p-3"
-                    [ngClass]="{'border-left':selectedTargetField}">
-                    <span class="font-14 fw-500">Target Fields</span>
-                </div>
-                <!-- <div class="field-block d-flex align-items-center p-3 hover"
-                    *ngFor="let item of customTargetFields; let i=index;" (click)="selectedTargetField=item"
-                    [ngClass]="{'bg-white':selectedTargetField==item,'border-left':selectedTargetField && selectedTargetField!=item}">
-                    <span class="mr-3 text-success font-12 hover underline"
-                        (click)="showFormulaBuilder=true"><i>fn()</i></span>
-                    <div class="input-wrapper w-100 d-flex align-items-center position-relative">
-                        <span class="font-14 fw-400">{{item?.name}}</span>
-                    </div>
-                </div> -->
-                <ng-container *ngFor="let item of customTargetFields; let i=index;">
-                    <ng-container *ngTemplateOutlet="tFields; context: {def:item}"></ng-container>
-                </ng-container>
-            </ng-container>
-            <ng-container *ngIf="!targetFields">
-                <div class="sub-header d-flex align-items-center justify-content-between border-bottom bg-white p-3"
-                    [ngClass]="{'border-left':selectedTargetField}">
-                    <span class="font-14 fw-500">Add Target Fields</span>
-                    <button type="button" class="btn btn-link text-primary" (click)="addField('target')">
-                        <span class="dsi dsi-plus-circle"></span>
-                    </button>
-                </div>
-                <div *ngIf="!customTargetFields || customTargetFields.length==0" class="text-secondary p-4 font-12">No
-                    Data
-                    Structure
-                    Found. Please add a Data Structure in Current node or create fields manually
-                    by click on the <span class="dsi dsi-plus-circle text-primary mx-1 font-11"></span> icon</div>
-                <div class="field-block d-flex align-items-center px-3 py-1"
-                    *ngFor="let item of customTargetFields; let i=index;" (click)="selectedTargetField=item"
-                    [ngClass]="{'bg-white':selectedTargetField==item,'border-left':selectedTargetField && selectedTargetField!=item}">
-                    <span class="mr-3 text-success font-12 hover underline"
-                        (click)="showFormulaBuilder=true"><i>fn()</i></span>
-                    <div class="input-wrapper w-100 d-flex align-items-center position-relative">
-                        <input type="text" class="form-control" placeholder="Data Path" odpAutoFocus
-                            (keyup.enter)="addField('target')" [(ngModel)]="item.dataPath"
-                            (paste)="onPaste($event,'target', i)">
-                        <button type="button" class="delete-btn btn btn-link text-danger"
-                            (click)="removeField('target',i)">
-                            <span class="dsi dsi-trash"></span>
-                        </button>
-                    </div>
-                </div>
-            </ng-container>
+            <div *ngIf="mappingType=='custom' && edit.status" class="d-flex align-items-center justify-content-end">
+                <button type="button" class="btn btn-link d-flex align-items-center" (click)="doFuzzyMapping()">
+                    <span class="dsi dsi-mapping mr-2"></span>
+                    <span>Fuzzy Mappings</span>
+                </button>
+                <button type="button" class="btn btn-link d-flex align-items-center" (click)="doClearMapping()"
+                    *ngIf="edit.status">
+                    <span class="dsi dsi-ban mr-2"></span>
+                    <span>Clear Mappings</span>
+                </button>
+            </div>
         </div>
+        <div *ngIf="mappingType=='custom'" class="d-flex border-top">
+            <div>
+                <div class="source format-selector">
+                    <div class="border-right ml-3">
+                        <div class="p-2 d-flex align-items-center justify-content-between">
+                            <span class="font-14 fw-600 text-primary text-uppercase">Constants</span>
+                        </div>
+                        <div class="source-list font-12">
+                            <ng-container *ngFor="let def of allConstants">
+                                <div class="data-field d-flex align-items-center justify-content-start pl-2"
+                                    [draggable]="edit.status" (dragstart)="onDragStart($event,def)"
+                                    [attr.data-id]="def._id">
+                                    <div class="spacer" [ngStyle]="{'width':(def.depth*10)+'px'}"></div>
+                                    <div class="field-type mr-2">
+                                        <odp-field-type [field]="def" [onMapper]="true"></odp-field-type>
+                                    </div>
+                                    <div class="field-key text-truncate">
+                                        <span class="mr-1">{{def.key}}</span>
+                                        <span class="text-muted" *ngIf="def.dataType=='String'">
+                                            <i>('{{def.value}}')</i>
+                                        </span>
+                                        <span class="text-muted" *ngIf="def.dataType!='String'">
+                                            <i>({{def.value}})</i>
+                                        </span>
+                                    </div>
+                                    <div class="mapping-line flex-fill"
+                                        [ngClass]="{'border-accent border-top':isSourceMapped(def)}"></div>
+                                </div>
+                            </ng-container>
+                            <div *ngIf="!allConstants || allConstants.length==0"
+                                class="px-2 font-12 fw-500 text-secondary">
+                                No Constants Found
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="source-list ml-3 border-right">
+                    <div class="source-list-item mb-3">
+                        <ng-container *ngFor="let node of nodeList">
+                            <ng-container *ngIf="node.type!='CONDITION'">
+                                <div class="d-flex align-items-center">
+                                    <span class="dsi hover text-muted" (click)="toggleSource(node)"
+                                        [ngClass]="{'dsi-plus':sourceExpandCollapseObjects[node._id],'dsi-minus':!sourceExpandCollapseObjects[node._id]}"></span>
+                                    <div class="py-2">
+                                        <span class="fw-600 text-primary">{{node.name}}</span>
+                                        <span *ngIf="getNodeDataType(node)=='Object'"
+                                            class="fw-600 text-dark font-12 ml-3 dsi dsi-object"></span>
+                                        <span *ngIf="getNodeDataType(node)=='Array'"
+                                            class="fw-600 text-dark font-12 ml-3 dsi dsi-array"></span>
+                                    </div>
+                                </div>
+                                <div *ngIf="!sourceExpandCollapseObjects[node._id]">
+                                    <ng-container *ngFor="let def of allSources">
+                                        <div *ngIf="!isSourceItemCollapsed(def) && def.nodeId == node._id"
+                                            class="data-field d-flex align-items-center justify-content-start"
+                                            [draggable]="edit.status" (dragstart)="onDragStart($event,def)"
+                                            [attr.data-id]="def._id">
+                                            <div class="spacer" [ngStyle]="{'width':(def.depth*10)+'px'}"></div>
+                                            <div class="toggle-btn d-flex align-items-center justify-content-center">
+                                                <span *ngIf="showToggleBtn(def)" class="dsi hover text-muted"
+                                                    (click)="toggleSource(def)"
+                                                    [ngClass]="{'dsi-plus':sourceExpandCollapseObjects[def._id],'dsi-minus':!sourceExpandCollapseObjects[def._id]}"></span>
+                                            </div>
+                                            <div class="field-type mr-2">
+                                                <odp-field-type [field]="def" [onMapper]="true"></odp-field-type>
+                                            </div>
+                                            <div class="field-key">{{def.name}}</div>
+                                            <div class="mapping-line flex-fill"
+                                                [ngClass]="{'border-accent border-top':isSourceMapped(def)}"></div>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+            <svg #svgCanvas class="mapping-paths" (click)="selectedPath=null;">
+                <g *ngFor="let p of pathList;let i=index;">
+                    <path class="transparent-path no-outline" [attr.d]="p.path" (click)="selectPath($event,p,i)" />
+                    <path [class.selected]="isPathSelected(p)" [attr.d]="p.path" (click)="selectPath($event,p,i)"
+                        class="no-outline" />
+                </g>
+            </svg>
+            <div class="target-list border-left">
+                <div class="target-list-item mb-3">
+                    <span class="font-14 p-2">
+                        <span class="fw-600 text-primary">{{currNode.name}}</span>
+                        <span *ngIf="getNodeDataType(currNode)=='Object'"
+                            class="fw-600 text-dark font-12 ml-3 dsi dsi-object"></span>
+                        <span *ngIf="getNodeDataType(currNode)=='Array'"
+                            class="fw-600 text-dark font-12 ml-3 dsi dsi-array"></span>
+                    </span>
+                    <div class="target-field-list">
+                        <div *ngFor="let def of allTargets" class="target-field-list-item position-relative">
+                            <div *ngIf="!def.hide && !isTargetItemCollapsed(def)"
+                                class="data-field d-flex align-items-center justify-content-start"
+                                [ngClass]="{'bg-accent text-white':def.over,'mark-disabled':def.disabled}"
+                                (drop)="onDrop($event,def)" (dragover)="onDragOver($event,def)"
+                                (dragenter)="onDragEnter($event,def)" (dragleave)="onDragLeave($event,def)"
+                                [attr.data-id]="def._id">
+                                <div class="spacer" [ngClass]="{'border-accent border-top':isMapped(def)}"
+                                    [ngStyle]="{'width':((def.depth+1)*12)+'px'}"></div>
+                                <div class="toggle-btn d-flex align-items-center justify-content-center">
+                                    <span *ngIf="showToggleBtn(def)" class="dsi hover text-muted"
+                                        (click)="toggleTarget(def)"
+                                        [ngClass]="{'dsi-plus':targetExpandCollapseObjects[def.dataPath],'dsi-minus':!targetExpandCollapseObjects[def.dataPath]}"></span>
+                                </div>
+                                <div class="field-type mr-2">
+                                    <odp-field-type [field]="def" [onMapper]="true"></odp-field-type>
+                                </div>
+                                <div class="field-key">{{def.name}}</div>
+                                <a href="#" (click)="$event.preventDefault();toggleFormulaEditor(def)">
+                                    <i class="hover mx-2"
+                                        [ngClass]="{'text-success':isValidFunction(def),'text-danger':!isValidFunction(def)}">f(x)</i>
+                                </a>
+                                <odp-formula-editor *ngIf="def._showFn" [edit]="edit"
+                                    class="function-wrapper position-absolute bg-white border rounded" [data]="def"
+                                    (close)="def._showFn=false" [edit]="edit"></odp-formula-editor>
+                                <div class="mapped-sources d-flex ml-3 text-secondary font-12">
+                                    <div *ngFor="let source of def.source"
+                                        class="border rounded px-1 mr-1 d-flex align-items-center">
+                                        <span>{{source.name}}</span>
+                                        <span (click)="removeSource(def,source)" *ngIf="edit.status"
+                                            class="dsi dsi-minus-circle text-danger hover ml-1 font-14"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <odp-mapping-preset *ngIf="mappingType=='preset'" [edit]="edit" [flowData]="flowData" [currNode]="currNode"
+            [(allSources)]="allSources" [(allTargets)]="allTargets"></odp-mapping-preset>
     </div>
     <div class="d-flex justify-content-end">
         <button type="button" class="btn btn-primary btn-min-width" (click)="done()">Done</button>
     </div>
 </div>
-
-
-
-<ng-template #sFields let-def="def">
-    <div class="field-block d-flex flex-column p-2 mx-2 mt-2 border rounded flex-fill">
-        <div class="d-flex align-items-center w-100" (click)="toggleSource(!isSourceSelected(def),def)">
-            <odp-checkbox [edit]="edit" class="mx-2" [checked]="isSourceSelected(def)"></odp-checkbox>
-            <div class="input-wrapper w-100 d-flex align-items-center position-relative mr-3">
-                <span class="font-14 fw-400">{{def?.name}}</span>
-            </div>
-        </div>
-        <ng-container *ngFor="let item of def.definition">
-            <ng-container *ngTemplateOutlet="sFields; context: {def:item}"></ng-container>
-        </ng-container>
-    </div>
-</ng-template>
-
-<ng-template #tFields let-def="def">
-    <div class="field-block d-flex flex-column p-2 mx-2 mt-2 border rounded hover"
-        [ngClass]="{'text-primary':selectedTargetField==def,'border-left':selectedTargetField && selectedTargetField!=def}">
-        <div class="d-flex align-items-center justify-content-between" (click)="selectedTargetField=def">
-            <div class="d-flex align-items-center">
-                <span class="mr-3 text-success font-12 hover underline"
-                    (click)="showFormulaBuilder=true"><i>fn()</i></span>
-                <div class="input-wrapper w-100 d-flex align-items-center position-relative">
-                    <span class="font-14 fw-400">{{def?.name}}</span>
-                </div>
-            </div>
-            <div class="d-flex align-items-center">
-                <ng-container *ngFor="let item of def.source;let l=last">
-                    <span class="font-12 fw-400 text-muted">{{item.name}}</span>
-                    <span *ngIf="!l" class="font-12 fw-400 text-muted">,&nbsp;</span>
-                </ng-container>
-            </div>
-        </div>
-        <ng-container *ngFor="let item of def.definition">
-            <ng-container *ngTemplateOutlet="tFields; context: {def:item}"></ng-container>
-        </ng-container>
-    </div>
-</ng-template>

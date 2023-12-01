@@ -31,8 +31,8 @@ export class DataFormatSelectorComponent implements OnInit {
     this.apiOptions = {
       page: 1,
       count: 5,
-      select: 'name definition attributeCount formatType character excelType strictValidation lineSeparator',
-      sort: 'name'
+      select: 'name definition attributeCount formatType character excelType strictValidation lineSeparator type subType',
+      sort: '-_metadata.lastUpdated'
     }
   }
 
@@ -43,8 +43,8 @@ export class DataFormatSelectorComponent implements OnInit {
   loadInitial() {
     this.showLoader = true;
     zip(
-      this.commonService.get('serviceManager', `/${this.commonService.app._id}/service`, this.apiOptions),
-      this.commonService.get('partnerManager', `/${this.commonService.app._id}/dataFormat`, this.apiOptions)
+      this.commonService.get('partnerManager', `/${this.commonService.app._id}/dataFormat`, this.apiOptions),
+      this.commonService.get('serviceManager', `/${this.commonService.app._id}/service`, this.apiOptions)
     ).subscribe((res) => {
       this.showLoader = false;
       let allResult = _.flatten(res);
@@ -100,6 +100,7 @@ export class DataFormatSelectorComponent implements OnInit {
   clearSearch() {
     this.dataFormatList = [];
     this.searchTerm = null;
+    delete this.apiOptions.filter;
     this.loadInitial();
   }
 

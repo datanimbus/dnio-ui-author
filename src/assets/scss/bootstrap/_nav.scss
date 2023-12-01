@@ -36,6 +36,7 @@
 
   .nav-item {
     margin-bottom: -$nav-tabs-border-width;
+    color: $nav-tabs-link-active-color
   }
 
   .nav-link {
@@ -55,7 +56,7 @@
 
   .nav-link.active,
   .nav-item.show .nav-link {
-    color: $nav-tabs-link-active-color;
+    color: $primary;
     background-color: $nav-tabs-link-active-bg;
     border-color: $nav-tabs-link-active-border-color;
   }

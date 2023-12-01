@@ -96,7 +96,7 @@
             </div>
             <label class="font-weight-bold m-0">Attributes</label>
           </div>
-          <button type="button" class="btn btn-link" (click)="manageUserAttribute()">
+          <button type="button" class="btn btn-link d-flex align-items-center" (click)="manageUserAttribute()">
             <span class="dsi dsi-plus mr-2"></span>
             <span class="text">Add</span>
           </button>
@@ -264,7 +264,7 @@
             <button type="button"
               class="btn btn-link type-width d-flex justify-content-center align-items-center text-accent ignore-outside"
               *ngFor="let type of types; let i = index" (click)="setUserAttributeType(type)">
-              <span class="{{ type.class }}" placement="left"></span>
+              <span class="dsi {{ type.class }}" placement="left"></span>
             </button>
           </div>
         </div>

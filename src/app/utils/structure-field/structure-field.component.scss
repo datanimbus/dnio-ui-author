@@ -46,6 +46,10 @@
     &.password {
       background: $dark;
     }
+
+    &.schema-free {
+      background: $secondary;
+    }
   }
 
   .icon {
@@ -149,4 +153,8 @@
 .field-flag-holder {
   min-width: 120px;
   overflow: hidden;
+}
+
+.disabled{
+  background: $gray-95;
 }

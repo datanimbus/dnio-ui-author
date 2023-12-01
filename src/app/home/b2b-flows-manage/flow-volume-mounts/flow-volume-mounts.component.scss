@@ -1,0 +1,47 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.grid {
+    .grid-row {
+
+        .grid-cell {
+            min-height: 32px;
+            max-height: 32px;
+            padding: 5px;
+            font-size: 13px;
+        }
+
+        .grid-cell:not(.flex-fill) {
+            min-width: 120px;
+            max-width: 120px;
+
+            &.name {
+                min-width: 160px;
+                max-width: 160px;
+            }
+
+            &.mount-type {
+                min-width: 166px;
+                max-width: 166px;
+            }
+        }
+
+        &.head {
+            font-weight: 500;
+            color: $secondary;
+            text-transform: uppercase;
+            
+            .grid-cell {
+                min-height: 24px !important;
+                max-height: 24px !important;
+                font-size: 11px !important;
+            }
+        }
+    }
+
+    .grid-body {
+        overflow-y: auto;
+        max-height: 300px;
+    }
+
+}

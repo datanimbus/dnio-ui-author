@@ -47,7 +47,6 @@ import { Breadcrumb } from '../interfaces/breadcrumb';
   providedIn: 'root',
 })
 export class CommonService {
-  invokeEvent: Subject<any> = new Subject();
   private autoRefreshRoutine: any;
   private heartBeatRoutine: any;
   private sessionWarningRoutine: any;
@@ -85,6 +84,11 @@ export class CommonService {
     status: EventEmitter<any>;
     delete: EventEmitter<any>;
   };
+  processFlow: {
+    new: EventEmitter<any>;
+    status: EventEmitter<any>;
+    delete: EventEmitter<any>;
+  };
   bulkUpload: {
     status: EventEmitter<any>;
   };
@@ -111,6 +115,7 @@ export class CommonService {
   breadcrumbTrigger: Subject<any> = new Subject();
   appData: any;
   serviceData: any;
+  timeInterval: any;
 
   constructor(
     private http: HttpClient,
@@ -122,6 +127,7 @@ export class CommonService {
   ) {
     const self = this;
     self.commonSpinner = false;
+    self.timeInterval = {};
     self.apiCalls = {};
     self.permissions = [];
     self.appList = [];
@@ -199,10 +205,6 @@ export class CommonService {
         }
       };
     });
-  }
-
-  getconnectors() { 
-    this.invokeEvent.next()
   }
 
   afterAuthentication(): Promise<any> {
@@ -392,14 +394,15 @@ export class CommonService {
     }
     return new Promise((resolve, reject) => {
       self.subscriptions['getAppDetails_' + app._id] = self
-        .get('user', '/data/app/' + app._id)
+        .get('user', '/data/app/' + app._id, {noApp: true})
         .subscribe(
           (res: any) => {
-            self.appData = res;
-            app.logo = res.logo;
-            app.appCenterStyle = res.appCenterStyle;
-            app.description = res.description;
-            app.serviceVersionValidity = res.serviceVersionValidity;
+            const data = res[0];
+            self.appData = data;
+            app.logo = data.logo;
+            app.appCenterStyle = data.appCenterStyle;
+            app.description = data.description;
+            app.serviceVersionValidity = data.serviceVersionValidity;
             if (!app.firstLetter) {
               app.firstLetter = app._id.charAt(0);
             }
@@ -842,10 +845,15 @@ export class CommonService {
     const self = this;
     const URL = environment.url[type] + url;
     let httpParams = new HttpParams();
-    httpParams = httpParams.set(
-      'filter',
-      JSON.stringify({ app: this.app?._id })
-    );
+    if(data?.noApp){
+     data = {}
+    }
+    else{
+      httpParams = httpParams.set(
+        'filter',
+        JSON.stringify({ app: this.app?._id })
+      );
+    }
     return self.http.request(
       new HttpRequest('DELETE', URL, data, {
         headers: self._getHeaders(false),
@@ -1057,7 +1065,7 @@ export class CommonService {
     self.userDetails = {};
     self.apiCalls = {};
     self.noAccess = false;
-    self.disconnectSocket();
+    // self.disconnectSocket();
     self.ts.clear();
     this.deleteAllCookies();
   }
@@ -1207,85 +1215,207 @@ export class CommonService {
     // });
   }
 
-  connectSocket() {
+  updateStatus(_id, type, operation?) {
     const self = this;
-    if (!self.socket && self.app && self.app._id) {
-      const socketConfig: Partial<ManagerOptions & SocketOptions> = {
-        query: {
-          app: self.app._id,
-          userId: self.userDetails._id,
-          portal: 'author',
-        },
-      };
-      self.socket = connect(
-        environment.production ? '/' : 'http://localhost',
-        socketConfig
-      );
-      self.socket.on('connected', (data) => {
-        self.socket.emit('authenticate', { token: self.userDetails.token });
-      });
-      self.socket.on('deleteService', (data) => {
-        if (data.app === self.app._id) {
-          self.entity.delete.emit(data);
-        }
-      });
-
-      self.socket.on('serviceStatus', (data) => {
-        if (data.app === self.app._id) {
-          self.entity.status.emit(data);
-        }
-      });
-
-      self.socket.on('newService', (data) => {
-        if (data.app === self.app._id) {
-          self.entity.new.emit(data);
-        }
-      });
-      self.socket.on('flowDeleted', (data) => {
-        if (data.app === self.app._id) {
-          self.flow.delete.emit(data);
-        }
-      });
-      self.socket.on('flowStatus', (data) => {
-        if (data.app === self.app._id) {
-          self.flow.status.emit(data);
-        }
-      });
-      self.socket.on('flowCreated', (data) => {
-        if (data.app === self.app._id) {
-          self.flow.new.emit(data);
-        }
-      });
-      self.socket.on('faasDeleted', (data) => {
-        if (data.app === self.app._id) {
-          self.faas.delete.emit(data);
-        }
-      });
-      self.socket.on('faasStatus', (data) => {
-        if (data.app === self.app._id) {
-          self.faas.status.emit(data);
-        }
-      });
-      self.socket.on('faasCreated', (data) => {
-        if (data.app === self.app._id) {
-          self.faas.new.emit(data);
-        }
-      });
-      self.socket.on('bulk-upload', (data) => {
-        if (data.app === self.app._id) {
-          self.bulkUpload.status.emit(data);
-        }
-      });
+    if (type == 'flow' && !this.timeInterval[_id]) {
+      this.timeInterval[_id] = setInterval(() => {
+        this.get('partnerManager', `/${this.app?._id}/flow`, { filter: { "_id": _id }, select: "status" }).subscribe(res => {
+          if (res[0]?.status != 'Pending') {
+            self.flow.status.emit(res)
+            clearInterval(this.timeInterval[_id])
+            delete this.timeInterval[_id]
+          }
+        })
+      }, 10000)
+    }
+    if (type == 'service' && !this.timeInterval[_id]) {
+      this.timeInterval[_id] = setInterval(() => {
+        this.get('serviceManager', `/${this.app._id}/service`, { filter: { "_id": _id }, select: "status" }).subscribe(res => {
+          if (operation == 'start' && res[0].status != 'Pending' && res[0].status != 'Undeployed') {
+            self.entity.status.emit(res);
+            clearInterval(this.timeInterval[_id])
+            delete this.timeInterval[_id]
+          } else if (res[0].status != 'Pending' && !operation) {
+            self.entity.status.emit(res);
+            clearInterval(this.timeInterval[_id])
+            delete this.timeInterval[_id]
+          }
+        })
+      }, 10000)
+    }
+    if (type == 'faas' && !this.timeInterval[_id]) {
+      this.timeInterval[_id] = setInterval(() => {
+        this.get('partnerManager', `/${this.app._id}/faas`, { filter: { "_id": _id }, select: "status" }).subscribe(res => {
+          if (res[0].status != 'Pending') {
+            self.faas.status.emit(res);
+            clearInterval(this.timeInterval[_id])
+            delete this.timeInterval[_id]
+          }
+        })
+      }, 10000)
+    }
+    if (type == 'bulkUpload' && !this.timeInterval[_id]) {
+      this.timeInterval[_id] = setInterval(() => {
+        this.get('user', `/${this.app._id}/user/utils/bulkCreate/fileTransfers`, { filter: { "_id": _id }, select: "status" }).subscribe(res => {
+          if (res[0].status != 'Pending') {
+            self.bulkUpload.status.emit(res);
+            clearInterval(this.timeInterval[_id])
+            delete this.timeInterval[_id]
+          }
+        })
+      }, 10000)
+    }
+    if (type == 'processFlow' && !this.timeInterval[_id]) {
+      this.timeInterval[_id] = setInterval(() => {
+        this.get('config', `/${this.app._id}/processflow`, { filter: { "_id": _id } }).subscribe(res => {
+          if (res[0].status != 'Pending') {
+            self.processFlow.status.emit(res);
+            clearInterval(this.timeInterval[_id])
+            delete this.timeInterval[_id]
+          }
+        })
+      }, 10000)
     }
   }
 
-  disconnectSocket() {
+  updateDelete(_id, type) {
     const self = this;
-    if (self.socket) {
-      self.socket.close();
-      self.socket = null;
+    if (type == 'flow') {
+      this.timeInterval[_id] = setInterval(() => {
+        this.get('partnerManager', `/${this.app._id}/flow`, { filter: { "_id": _id } }).subscribe(res => {
+          if (!res.length) {
+            self.flow.delete.emit(_id)
+            clearInterval(this.timeInterval[_id])
+            delete this.timeInterval[_id]
+          }
+        })
+      }, 10000)
+    }
+    if (type == 'service') {
+      this.timeInterval[_id] = setInterval(() => {
+        this.get('serviceManager', `/${this.app._id}/service`, { filter: { "_id": _id } }).subscribe(res => {
+          if (!res.length) {
+            self.entity.delete.emit(_id);
+            clearInterval(this.timeInterval[_id])
+            delete this.timeInterval[_id]
+          }
+        })
+      }, 10000)
+    }
+    if (type == 'faas') {
+      this.timeInterval[_id] = setInterval(() => {
+        this.get('partnerManager', `/${this.app._id}/faas`, { filter: { "_id": _id } }).subscribe(res => {
+          if (!res.length) {
+            self.faas.delete.emit(_id);
+            clearInterval(this.timeInterval[_id])
+            delete this.timeInterval[_id]
+          }
+        })
+      }, 10000)
+    }
+    if (type == 'processnode') {
+      this.timeInterval[_id] = setInterval(() => {
+        this.get('config', `/${this.app._id}/processnode`, { filter: { "_id": _id } }).subscribe(res => {
+          if (!res.length) {
+            self.entity.delete.emit(_id);
+            clearInterval(this.timeInterval[_id])
+            delete this.timeInterval[_id]
+          }
+        })
+      }, 10000)
+    }
+    if (type == 'processFlow') {
+      this.timeInterval[_id] = setInterval(() => {
+        this.get('config', `/${this.app._id}/processflow`, { filter: { "_id": _id } }).subscribe(res => {
+          if (!res.length) {
+            self.processFlow.delete.emit(_id);
+            clearInterval(this.timeInterval[_id])
+            delete this.timeInterval[_id]
+          }
+        })
+      }, 10000)
     }
   }
+
+  // connectSocket() {
+  //   const self = this;
+  //   if (!self.socket && self.app && self.app._id) {
+  //     const socketConfig: Partial<ManagerOptions & SocketOptions> = {
+  //       query: {
+  //         app: self.app._id,
+  //         userId: self.userDetails._id,
+  //         portal: 'author',
+  //       },
+  //     };
+  //     self.socket = connect(
+  //       environment.production ? '/' : 'http://localhost',
+  //       socketConfig
+  //     );
+  //     self.socket.on('connected', (data) => {
+  //       self.socket.emit('authenticate', { token: self.userDetails.token });
+  //     });
+  //     self.socket.on('deleteService', (data) => {
+  //       if (data.app === self.app._id) {
+  //         self.entity.delete.emit(data);
+  //       }
+  //     });
+
+  //     self.socket.on('serviceStatus', (data) => {
+  //       if (data.app === self.app._id) {
+  //         self.entity.status.emit(data);
+  //       }
+  //     });
+
+  //     self.socket.on('newService', (data) => {
+  //       if (data.app === self.app._id) {
+  //         self.entity.new.emit(data);
+  //       }
+  //     });
+  //     self.socket.on('flowDeleted', (data) => {
+  //       if (data.app === self.app._id) {
+  //         self.flow.delete.emit(data);
+  //       }
+  //     });
+  //     self.socket.on('flowStatus', (data) => {
+  //       if (data.app === self.app._id) {
+  //         self.flow.status.emit(data);
+  //       }
+  //     });
+  //     self.socket.on('flowCreated', (data) => {
+  //       if (data.app === self.app._id) {
+  //         self.flow.new.emit(data);
+  //       }
+  //     });
+  //     self.socket.on('faasDeleted', (data) => {
+  //       if (data.app === self.app._id) {
+  //         self.faas.delete.emit(data);
+  //       }
+  //     });
+  //     self.socket.on('faasStatus', (data) => {
+  //       if (data.app === self.app._id) {
+  //         self.faas.status.emit(data);
+  //       }
+  //     });
+  //     self.socket.on('faasCreated', (data) => {
+  //       if (data.app === self.app._id) {
+  //         self.faas.new.emit(data);
+  //       }
+  //     });
+  //     self.socket.on('bulk-upload', (data) => {
+  //       if (data.app === self.app._id) {
+  //         self.bulkUpload.status.emit(data);
+  //       }
+  //     });
+  //   }
+  // }
+
+  // disconnectSocket() {
+  //   const self = this;
+  //   if (self.socket) {
+  //     self.socket.close();
+  //     self.socket = null;
+  //   }
+  // }
 
   modal(template, options?: NgbModalOptions): NgbModalRef {
     const self = this;

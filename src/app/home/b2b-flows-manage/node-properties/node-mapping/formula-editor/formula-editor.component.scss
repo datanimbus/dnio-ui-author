@@ -1,0 +1,23 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.suggestion-list-wrapper {
+    width: 200px;
+    overflow-y: auto;
+
+    .suggestion-list {
+        overflow-y: auto;
+        max-height: 120px;
+    }
+}
+
+.source-list-wrapper,
+.title {
+    width: 140px;
+}
+
+.formula-canvas {
+    width: 300px;
+    min-height: 140px;
+    overflow: auto;
+}

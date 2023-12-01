@@ -13,7 +13,9 @@
       <span *ngIf="searchTerm" ngbTooltip="Filter Applied" class="dsi dsi-filter-alt text-secondary ml-2"></span>
     </div>
     <div class="d-flex align-items-center">
-      <odp-search-box (enteredText)="searchTerm=$event" (reset)="searchTerm=null"></odp-search-box>
+      <div class="text-secondary fw-600 mr-2">Base URL: </div>
+      <div class="text-secondary mr-3 text-truncate item-url" [ngbTooltip]="baseUrl">{{baseUrl}}</div>
+      <odp-search-box (enteredText)="searchTerm=$event" (reset)="searchTerm=null" [edit]="{status:true}"></odp-search-box>
       <button type="button" id="data-management" class="btn btn-white d-flex align-items-center border ml-3"
         [routerLink]="['settings']" *ngIf="isAppAdmin || isSuperAdmin">
         <span class="dsi dsi-settings text-secondary"></span>
@@ -68,6 +70,11 @@
               <span *ngIf="sortModel['_webHooks']==1" class="dsi dsi-drop-down"></span>
               <span *ngIf="sortModel['_webHooks']==-1" class="dsi dsi-drop-up"></span>
             </div>
+            <div (click)="applySort('api')" class="hover d-flex align-items-center item-url">
+              <span class="mr-2">URL</span>
+              <span *ngIf="sortModel['api']==1" class="dsi dsi-drop-down"></span>
+              <span *ngIf="sortModel['api']==-1" class="dsi dsi-drop-up"></span>
+            </div>
             <div (click)="applySort('status')" class="hover d-flex align-items-center item-status">
               <span class="mr-2">Status</span>
               <span *ngIf="sortModel['status']==1" class="dsi dsi-drop-down"></span>
@@ -82,7 +89,7 @@
           <div class="list-group-item d-flex align-items-center justify-content-start" (dblclick)="viewService(i)">
             <div class="item-name fw-500 d-flex align-items-center">
               <!-- <odp-checkbox [edit]="{status:true}"></odp-checkbox> -->
-              <span class="ml-2 pl-1 text-dark hover service-name" (click)="viewService(i)" [ngbTooltip]="srvc.name"
+              <span class="ml-2 pl-1 text-dark hover service-name text-truncate" (click)="viewService(i)" [ngbTooltip]="srvc.name"
                 placement="right">{{srvc.name}}</span>
               <span class="ml-2 version sub-heading font-11 text-uppercase">(v{{srvc.version}})</span>
               <span *ngIf="srvc.draftVersion" class="ml-2 draft sub-heading font-11 text-uppercase">(Draft)</span>
@@ -92,7 +99,11 @@
               <div class="sub-heading item-attribute-count">{{srvc._attributes}}</div>
               <div class="sub-heading item-reference-count">{{srvc._references}}</div>
               <div class="sub-heading item-hook-count">{{srvc._webHooks}}</div>
-              <div class="item-status d-flex align-items-center">
+              <div class="sub-heading item-url pr-2 d-flex align-items-center">
+                <span *ngIf="copied[srvc._id]" class="text-accent mr-2">Copied!</span>
+                <span *ngIf="!copied[srvc._id]" class="dsi dsi-copy text-accent mr-2 hover" (click)="copyUrl(srvc)"></span>
+                <span class="text-truncate" [ngbTooltip]="srvc.api" container="body">{{srvc.api}}</span>
+              </div>              <div class="item-status d-flex align-items-center">
                 <span class="fa fa-circle mr-2" [ngClass]="getStatusClass(srvc)"></span>
                 <span class="text font-12 fw-400">{{getStatusLabel(srvc)}}</span>
               </div>
@@ -249,7 +260,7 @@
           autocomplete="off" [value]="form.get('connectors')?.get('data')?.value?.options?.tableName || ''"
           (blur)="selectTables($event?.target?.value)">
         <i class="dsi dsi-drop-down"></i>
-        <div class="popover" *ngIf="showDropdownOptions">
+        <div class="popover" *ngIf="showDropdownOptions && tables.length > 0 && !isDefaultDB()">
           <span class="popover-options" *ngFor="let table of tables"
             (click)="selectTables(table.name);showDropdownOptions=false ">{{table.name}}</span>
         </div>

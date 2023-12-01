@@ -1,0 +1,54 @@
+<div class="d-flex align-items-start flex-column p-3">
+  <!-- Informational Text -->
+  <div class="text-muted font-14 mb-2 p-2 ml-2 pl-1">
+    <span>Please hover over the info icon to see which components need to be restarted.</span>
+  </div>
+
+  <div class="w-100 rounded pl-2">
+    <div class="card">
+      <div class="card-body bg-light rounded">
+        <!-- Environment Variable List -->
+        <ng-container *ngFor="let variable of envVariableList">
+          <div class="d-flex align-items-center mb-3">
+            <!-- Variable Label -->
+            <code class="form-label m-0 me-3 font-13 fw-500" [attr.for]="variable._id">{{ variable._id }}</code>
+
+            <!-- Display Variable Value as Text (or Input if not Installation) -->
+            <ng-container *ngIf="variable.classification === 'Runtime'; else textDisplay">
+              <ng-container [ngSwitch]="variable._id">
+                <!-- Handle ALLOWED_FILE_TYPES case with a text area -->
+                <ng-container *ngSwitchCase="'ALLOWED_FILE_TYPES'">
+                  <textarea class="form-value form-control form-control-sm me-3" [id]="variable._id" [(ngModel)]="variable.value"></textarea>
+                </ng-container>
+                <!-- Handle all other cases with input elements -->
+                <ng-container *ngSwitchDefault>
+                  <input *ngIf="variable.type === 'string'" class="form-value form-control form-control-sm me-3" [id]="variable._id" type="text" [(ngModel)]="variable.value">
+                  <input *ngIf="variable.type === 'number'" class="form-value form-control form-control-sm me-3" [id]="variable._id" type="number" [(ngModel)]="variable.value">
+                  <input *ngIf="variable.type === 'boolean'" class="form-value form-control form-control-sm me-3" [id]="variable._id" type="text" [(ngModel)]="variable.value">
+                </ng-container>
+              </ng-container>
+            </ng-container>
+            <ng-template #textDisplay>
+              <div class="text-secondary form-info flex-fill font-12" [id]="variable._id" style="min-width: 300px; max-width: 300px;">
+                <span [ngbTooltip]="'Cannot edit here; Please use the ConfigMap.'">
+                  {{ variable.value }}
+                </span>
+              </div>
+            </ng-template>            
+                        
+            <!-- Info Icon -->
+            <span class="dsi dsi-info-circle info-icon" data-toggle="tooltip" data-placement="top" ngbTooltip="{{ variable.usedIn }}"></span>
+
+            <!-- Variable Description -->
+            <span class="form-info text-secondary flex-fill font-12 pl-3">
+              <label class="form-key me-2 font-13">{{ variable.description }}</label>
+            </span>
+          </div>
+        </ng-container>
+
+        <!-- Button to Save Config Changes -->
+        <button type="button" class="btn btn-primary" (click)="saveConfig()">Save Config</button>
+      </div>
+    </div>
+  </div>
+</div>

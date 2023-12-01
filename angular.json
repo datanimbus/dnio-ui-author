@@ -76,8 +76,13 @@
                   "maximumError": "40mb"
                 }
               ]
+            },
+            "development": {
+              "optimization": false,
+              "sourceMap": true
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -88,6 +93,9 @@
           "configurations": {
             "production": {
               "browserTarget": "odp-ui-author:build:production"
+            },
+            "development": {
+              "browserTarget": "odp-ui-author:build:development"
             }
           }
         },

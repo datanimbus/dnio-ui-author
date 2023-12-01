@@ -1,0 +1,66 @@
+<div class="d-flex flex-column">
+    <div class="sub-heading text-dark font-weight-bold mb-3 d-flex align-items-center justify-content-between p-3">
+        <div class="d-flex align-items-center">
+            <span class="text font-20 fw-600">Custom Images</span>
+        </div>
+        <button type="button" class="btn btn-primary btn-min-width" (click)="saveApp()">Save</button>
+    </div>
+    <div class="d-flex border-top border-bottom">
+        <!-- <div class="variables-list p-3 w-50 border-right">
+            <div class="form-group">
+                <label for="libraries">NPM Libraries</label>
+                <div class="form-text mb-2 text-secondary font-12">Add all the npm libraries here</div>
+                <textarea class="form-control" name="libraries" id="libraries" cols="30" rows="10"
+                    [(ngModel)]="appData.npmLibraries"></textarea>
+            </div>
+        </div> -->
+        <div class="base-images p-3 w-50">
+            <div class="form-group">
+                <label for="libraries" class="fw-600">B2B Base Image</label>
+                <input class="form-control" name="libraries" id="libraries" [(ngModel)]="appData.b2bBaseImage">
+                <span class="form-text text-muted font-12">Default: datanimbus.io.b2b.base:{{version}}</span>
+            </div>
+            <div class="form-group">
+                <label for="libraries" class="fw-600">Function Base Image</label>
+                <input class="form-control" name="libraries" id="libraries" [(ngModel)]="appData.faasBaseImage">
+                <span class="form-text text-muted font-12">Default: datanimbus.io.faas.base:{{version}}</span>
+            </div>
+        </div>
+        <div class="variables-list p-3 w-50 border-left">
+            <div class="form-group">
+                <label for="libraries" class="fw-600">Instructions to Build Base Image</label>
+                <div class="form-control-readonly">
+                    <ol>
+                        <li class="mb-3">Create a new Dockerfile using:<br>
+                            <code class="bg-light border rounded p-1">
+                                FROM &lt;image-registry&gt;/datanimbus.io.b2b.base:{{version}}
+                            </code>
+                        </li>
+                        <li class="mb-3">Add NPM Libraries using:<br>
+                            <code class="bg-light border rounded p-1">
+                                RUN npm install &lt;library-name&gt;
+                            </code>
+                        </li>
+                        <li class="mb-3">Repeat step 2, for all the npm libraries you need</li>
+                        <li class="mb-3">Add
+                            <code class="bg-light border rounded p-1">
+                                CMD ["node", "app.js"]
+                            </code>&nbsp;in the last line
+                        </li>
+                        <li class="mb-3">Build the Docker Image using the Dockerfile with a tag of your choice<br>
+                            <code class="bg-light border rounded p-1">
+                                docker build -t &lt;your-tag&gt; .
+                            </code>
+                        </li>
+                        <li class="mb-3">Add the Image Tag in the Left Section</li>
+                        <li class="mb-3">Repeat steps 2-6 for Function Base Image using:<br>
+                            <code class="bg-light border rounded p-1">
+                                FROM &lt;image-registry&gt;/datanimbus.io.faas.base:{{version}}
+                            </code>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

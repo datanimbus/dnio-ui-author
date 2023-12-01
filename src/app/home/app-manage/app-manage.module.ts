@@ -15,6 +15,12 @@ import { AppPanelGuard } from 'src/app/utils/guards/app-panel.guard';
 import { CheckboxModule } from 'src/app/utils/checkbox/checkbox.module';
 import { UploadImageModule } from 'src/app/utils/upload-image/upload-image.module';
 import { TimezonePickerModule } from 'src/app/utils/timezone-picker/timezone-picker.module';
+import { AppSecretsComponent } from './app-secrets/app-secrets.component';
+import { AutoFocusModule } from 'src/app/utils/directives/auto-focus/auto-focus.module';
+import { NpmLibrariesComponent } from './npm-libraries/npm-libraries.component';
+import { InteractionSettingsComponent } from './interaction-settings/interaction-settings.component';
+import { ConnectorSelectorComponent } from './interaction-settings/connector-selector/connector-selector.component';
+import { RoundRadioModule } from 'src/app/utils/round-radio/round-radio.module';
 const routes: Routes = [
   { path: '', component: AppManageComponent, canActivate: [AppPanelGuard] },
 ];
@@ -35,11 +41,13 @@ const routes: Routes = [
     DeleteModalModule,
     CheckboxModule,
     UploadImageModule,
-    TimezonePickerModule
+    TimezonePickerModule,
+    AutoFocusModule,
+    RoundRadioModule
   ],
   exports: [
     RouterModule
   ],
-  declarations: [AppManageComponent]
+  declarations: [AppManageComponent, AppSecretsComponent, NpmLibrariesComponent, InteractionSettingsComponent, ConnectorSelectorComponent]
 })
 export class AppManageModule { }

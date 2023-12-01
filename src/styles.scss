@@ -367,7 +367,7 @@ $weights: 200,
 }
 
 .nav-active {
-  color: #181818;
+  color: $primary
 }
 
 // // Custom scrollbar
@@ -742,7 +742,7 @@ $weights: 200,
 /*---- AG-GRID START ----*/
 .ag-theme-balham {
   @include ag-theme-balham((balham-active-color: $primary));
-  font-family: "Inter";
+  font-family: "Manrope";
   font-size: 14px;
 
 
@@ -773,8 +773,14 @@ $weights: 200,
     }
   }
 
-  .ag-row {
-    padding: 10px;
+  // .ag-row {
+  //   padding: 10px;
+  // }
+  .ag-row .ag-cell {
+    display: flex;
+    // justify-content: center;
+    /* align horizontal */
+    align-items: center;
   }
 
   .ag-layout-normal {
@@ -884,7 +890,7 @@ $weights: 200,
 }
 
 .selected {
-  background: rgba($orange, 0.04);
+  background: $primary95;
 }
 
 .selectedTab {
@@ -893,7 +899,7 @@ $weights: 200,
 }
 
 .icon-primary {
-  color: $orange
+  color: $primary
 }
 
 .btn-delete {
@@ -916,47 +922,118 @@ $weights: 200,
   overflow-y: hidden;
 }
 
-.node-options-item,
-.node-block {
-  .dsi-api-reciever {
-    color: #6C7584;
-  }
+// .node-options-item,
+// .node-block,
+// .node-item {
+//   .dsi-api-receiver {
+//     color: #6C7584;
+//   }
 
-  .dsi-invoke-api {
-    color: #00CCCB;
-  }
+//   .dsi-invoke-api {
+//     color: #00CCCB;
+//   }
 
-  .dsi-clock {
-    color: #2FC48F;
-  }
+//   .dsi-clock {
+//     color: #2FC48F;
+//   }
 
-  .dsi-data-service {
-    color: #A94CFF;
-  }
+//   .dsi-data-service {
+//     color: #A94CFF;
+//   }
 
-  .dsi-function {
-    color: #FFBB1A;
-  }
+//   .dsi-function {
+//     color: #FFBB1A;
+//   }
 
-  .dsi-connector,
-  .dsi-file {
-    color: #009BFF;
-  }
+//   .dsi-connector,
+//   .dsi-file {
+//     color: #009BFF;
+//   }
 
-  .dsi-logs {
-    color: #FF7D4C;
-  }
+//   .dsi-branch {
+//     color: #FF4C82;
+//   }
 
-  .dsi-mapping {
-    color: #FF4C82;
-  }
+//   .dsi-logs {
+//     color: #FF7D4C;
+//   }
 
-  .dsi-expand {
-    color: #FF4C82;
-  }
+//   .dsi-mapping,
+//   .dsi-object,
+//   .dsi-insight,
+//   .dsi-expand {
+//     color: #FF4C82;
+//   }
 
-  .dsi-response {
-    color: #2FC48F;
+//   .dsi-response {
+//     color: #2FC48F;
+//   }
+// }
+
+// .node-icon {
+
+//   &.dsi-api-receiver,
+//   &.dsi-copy {
+//     color: #6C7584;
+//   }
+
+//   &.dsi-invoke-api {
+//     color: #00CCCB;
+//   }
+
+//   &.dsi-clock,
+//   &.dsi-relation {
+//     color: #2FC48F;
+//   }
+
+//   &.dsi-data-service,
+//   &.dsi-refresh {
+//     color: #A94CFF;
+//   }
+
+//   &.dsi-function,
+//   &.dsi-nano-service,
+//   &.dsi-undo {
+//     color: #FFBB1A;
+//   }
+
+//   &.dsi-connector,
+//   &.dsi-file {
+//     color: #009BFF;
+//   }
+
+//   &.dsi-file.read {
+//     color: #2FC48F;
+//   }
+
+//   &.dsi-file.write,
+//   &.dsi-branch {
+//     color: #FF4C82;
+//   }
+
+//   &.dsi-logs {
+//     color: #FF7D4C;
+//   }
+
+//   &.dsi-mapping,
+//   &.dsi-object,
+//   &.dsi-insight {
+//     color: #FF4C82;
+//   }
+
+//   &.dsi-expand {
+//     color: #FF4C82;
+//   }
+
+//   &.dsi-response {
+//     color: #2FC48F;
+//   }
+// }
+
+.node-icon {
+
+  &.dsi {
+    color: $secondary;
   }
 }
 
@@ -981,11 +1058,11 @@ $weights: 200,
 
   .field-block {
     @if $n % 2==0 {
-      background: $white;
+      background: #f9f9f9;
     }
 
     @else {
-      background: $light;
+      background: $white;
     }
 
     @if ($n < 9) {
@@ -1008,4 +1085,23 @@ $weights: 200,
   left: 0;
 }
 
+.btn-link,
+a {
+  .dsi:before {
+    text-decoration: none;
+    display: inline-block;
+  }
+}
+
 @include altBox(1);
+
+
+[draggable="true"] {
+  /*
+ To prevent user selecting inside the drag source
+*/
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}

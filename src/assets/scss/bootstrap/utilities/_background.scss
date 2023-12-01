@@ -15,7 +15,7 @@
     fill: $value;
   }
   .stroke-#{$color} {
-    fill: $value;
+    stroke: $value;
   }
 }
 
@@ -32,5 +32,5 @@
 }
 
 .bg-light-gray{
-  background: #f7f7f7;
+  background: #FEFBFF;
 }

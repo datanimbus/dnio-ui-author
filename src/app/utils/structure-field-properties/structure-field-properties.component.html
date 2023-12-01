@@ -21,8 +21,17 @@
     <ng-container
       *ngFor="let formItem of formList;let formIndex = index; let isLastFormItem = last; let isFirstFormItem = first"
       [formGroup]="formItem">
+      <div class="w-100" *ngIf="key !== '_self' && displayKey()">
+        <div class="w-100 mt-3" *ngIf="!isDataFormat">
+          <div class="font-14 fw-300 text-dark mb-2">Key</div>
+          <div>
+            <input *ngIf="edit.status" class="form-control" type="text" formControlName="key" id="key">
+            <span *ngIf="!edit.status">{{key}}</span>
+          </div>
+        </div>
+      </div>
       <div class="schemaProperties-body" formGroupName="properties">
-        <div class="w-100" *ngIf="formItem.get('key').value !== '_self'">
+        <div class="w-100 mt-3" *ngIf="formItem.get('key').value !== '_self'">
           <div class="font-14 fw-300 text-dark mb-2">Type</div>
           <div class="w-100 bg-white position-relative">
             <button type="button"
@@ -41,6 +50,7 @@
             </odp-field-type-selector>
           </div>
         </div>
+
 
         <div *ngIf="formItem.get('type').value=='Array'" class="w-100" [formGroup]="formList[formIndex+1]">
           <div class="font-14 fw-300 text-dark mb-2 mt-3">Collection of</div>
@@ -64,11 +74,11 @@
           </div>
         </div>
 
-        <div class="w-100 justify-content-center" *ngIf="!(isDataFormat || checkStateModel())">
+        <div class="w-100 justify-content-center" *ngIf="!checkStateModel()">
           <div class="font-16 fw-400 mt-40 mb-3" *ngIf="formItem.get('key').value !== '_self'">Properties</div>
           <div class=" d-flex align-items-center w-100 pb-3" [ngClass]="{'hover':canEdit}"
             *ngIf="formItem.get('properties.required') && formItem.get('key').value !== '_self'">
-            <odp-checkbox id="reqAttr" [edit]="{ status: canEdit }"
+            <odp-checkbox id="reqAttr" [edit]="edit"
               (checkedChange)="toggleCheck(formItem.get('properties.required'))"
               [checked]="formItem.get('properties.required').value"></odp-checkbox>
             <span
@@ -76,7 +86,7 @@
             <span class="ml-2 text-dark font-14 fw-300">Required</span>
           </div>
           <div class=" d-flex align-items-center pb-3" [ngClass]="{'hover':canEdit}"
-            *ngIf="formItem.get('properties.createOnly') && formItem.get('key').value !=='_self'">
+            *ngIf="formItem.get('properties.createOnly') && formItem.get('key').value !=='_self' && !isDataFormat">
             <odp-checkbox id="createAttr" [edit]="{ status: canEdit }"
               (checkedChange)="toggleCheck(formItem.get('properties.createOnly'))"
               [checked]="formItem.get('properties.createOnly').value"></odp-checkbox>
@@ -85,7 +95,7 @@
             <span class="ml-2 text-dark font-14 fw-300">Create Only</span>
           </div>
           <div class=" d-flex align-items-center pb-3" [ngClass]="{'hover':canEdit}"
-            *ngIf="formItem.get('properties.unique') && formItem.get('key').value !== '_self'">
+            *ngIf="formItem.get('properties.unique') && formItem.get('key').value !== '_self' && !isDataFormat">
             <odp-checkbox id="UniqAttr" [edit]="{ status: canEdit }"
               (checkedChange)="toggleCheck(formItem.get('properties.unique'))"
               [checked]="formItem.get('properties.unique').value"></odp-checkbox>
@@ -94,13 +104,27 @@
             <span class="ml-2 text-dark font-14 fw-300">Unique</span>
           </div>
           <div class=" d-flex align-items-center pb-3" [ngClass]="{'hover':canEdit}"
-            *ngIf="formItem.get('properties.password') && (formItem.get('properties._detailedType').value !== 'email') && formItem.get('properties._detailedType').value !== 'enum' ">
+            *ngIf="formItem.get('properties.password') && (formItem.get('properties._detailedType').value !== 'email') && formItem.get('properties._detailedType').value !== 'enum' && !isDataFormat ">
             <odp-checkbox id="secureAttr" [edit]="{ status: canEdit }"
               (checkedChange)="toggleCheck(formItem.get('properties.password'))"
               [checked]="formItem.get('properties.password').value"></odp-checkbox>
             <span
               class="ml-2 rounded-circle properties password d-flex justify-content-center align-items-center text-white fw-500 font-12">S</span>
             <span class="ml-2 text-dark font-14 fw-300">Secure</span>
+          </div>
+
+          <div class=" d-flex align-items-center pb-3" [ngClass]="{'hover':canEdit}"
+            *ngIf="formItem.get('properties.schemaFree') && !isDataFormat">
+            <odp-checkbox id="secureAttr" [edit]="{ status: canEdit }"
+              (checkedChange)="toggleCheck(formItem.get('properties.schemaFree'),'schemaFree')"
+              [checked]="formItem.get('properties.schemaFree').value"></odp-checkbox>
+            <span
+              class="ml-2 rounded-circle properties schema-free d-flex justify-content-center align-items-center text-dark fw-500 font-12">
+              <!-- <span class="dsi dsi-ban"></span> -->
+              <span class="font-9 text-white">SF</span>
+            </span>
+            <span class="ml-2 text-dark font-14 fw-300">Schema Free</span>
+            <span class="font-10 text-primary ml-1">(BETA)</span>
           </div>
         </div>
         <div *ngIf="formItem.get('type').value=='Boolean' && !isDataFormat && !isLibrary ">
@@ -116,14 +140,14 @@
               </label>
             </ng-container>
             <ng-container *ngIf="!canEdit">
-              <span class="text d-flex" *ngIf=" form.get('properties.default').value === true">
+              <span class="text d-flex" *ngIf="form.get('properties.default').value === true">
                 <span
                   class="d-flex align-items-center justify-content-center rounded-circle bg-accent check-circle mr-1">
                   <span class="fa fa-check text-white"></span>
                 </span>
                 <span class="text">Yes</span>
               </span>
-              <span class="text d-flex" *ngIf=" form.get('properties.default').value !== true">
+              <span class="text d-flex" *ngIf="form.get('properties.default').value !== true">
                 <span
                   class="d-flex align-items-center justify-content-center rounded-circle bg-secondary check-circle mr-1">
                 </span>
@@ -164,13 +188,32 @@
         formItem.get('type').value!='Relation' && formItem.get('type').value!='User'">
           Validations
         </div> -->
-        <div class="w-100 mb-4 mt-2" *ngIf="isDataFormat && formatType=='FLATFILE'">
-          <div class=" text-secondary">Field Length
-            <sup class="text-danger font-normal high-zIndex" ngbTooltip="Mandatory field">*</sup>
+
+        <div class="w-100 mb-4 mt-2" *ngIf="isDataFormat && formItem.get('type').value=='Array'">
+          <div class="d-flex flex-column w-100 mt-3" >
+            <div class="position-relative ">
+              <div class="font-14 fw-300 text-dark mb-2">Minimum Items</div>
+              <div>
+                <input *ngIf="canEdit" class="form-control" type="number" formControlName="minItems" id="minItems">
+              <span *ngIf="!canEdit">{{formItem.get('properties.minItems').value}}</span>
+              </div>
+            </div>
           </div>
+          <div class="d-flex flex-column w-100 mt-3">
+            <div class="position-relative ">
+              <div class="font-14 fw-300 text-dark mb-2">Maximum Items</div>
+              <div>
+                <input *ngIf="canEdit" class="form-control" type="number" formControlName="maxItems" id="maxItems">
+                <span *ngIf="!canEdit">{{formItem.get('properties.maxItems').value}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-100 mb-4 mt-2" *ngIf="isDataFormat && formItem.get('type').value=='String'">
+          <div class="text-secondary">Masking</div>
           <div>
-            <input *ngIf="canEdit" class="form-control" type="number" formControlName="fieldLength" id="fieldLength">
-            <span *ngIf="!canEdit">{{formItem.get('properties.fieldLength').value}}</span>
+            <odp-masking-property [edit]="edit" [form]="formItem"></odp-masking-property>
           </div>
         </div>
 
@@ -199,6 +242,35 @@
 
 
         <ng-container *ngIf="showCommonFields && formList.length == 1 || formIndex > 0">
+
+          <div class=" d-flex align-items-center w-100 pb-3" [ngClass]="{'hover':canEdit}"
+          *ngIf="isDataFormat && disableCheck()">
+          <odp-checkbox id="disable" [edit]="edit"
+          (checkedChange)="toggleDisable()"
+          [checked]="form.get('properties.disabled').value"></odp-checkbox>
+          <span
+            class="ml-2 rounded-circle properties password d-flex justify-content-center align-items-center text-white fw-500 font-12">D</span>
+          <span class="ml-2 text-dark font-14 fw-300">Disabled</span>
+         </div>
+
+         <div class="w-100 mb-4 mt-2" *ngIf="isDataFormat && ['CSV','EXCEL','DELIMITER'].includes(formatType)">
+          <div class="text-secondary">Field Number</div>
+          <div>
+            <input *ngIf="canEdit" class="form-control" type="number" formControlName="fieldNo" id="fieldNo">
+            <span *ngIf="!canEdit">{{formItem.get('properties.fieldNo')?.value}}</span>
+          </div>
+        </div>
+
+          <div class="w-100 mb-4 mt-2" *ngIf="isDataFormat && formatType=='FLATFILE'">
+            <div class=" text-secondary">Field Length
+              <sup class="text-danger font-normal high-zIndex" ngbTooltip="Mandatory field">*</sup>
+            </div>
+            <div>
+              <input *ngIf="canEdit" class="form-control" type="number" formControlName="fieldLength" id="fieldLength">
+              <span *ngIf="!canEdit">{{formItem.get('properties.fieldLength').value}}</span>
+            </div>
+          </div>
+
           <div class="mt-3 font-16 fw-400" *ngIf="!isDataFormat">
             Display Properties
           </div>

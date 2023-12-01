@@ -55,7 +55,7 @@
             </div>
             <div class="lower-wrapper bg-light p-3" *ngIf="selectedType && selectedType!='binary'">
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <odp-search-box (enteredText)="searchFormat($event,'in')" (reset)="clearSearch()"></odp-search-box>
+                    <odp-search-box (enteredText)="searchFormat($event,'in')" (reset)="clearSearch()" [edit]="{status:true}"></odp-search-box>
                     <!-- <button *ngIf="formatSelected" type="button" class="btn btn-link text-accent"
                         (click)="showDataStructure=!showDataStructure">
                         {{showDataStructure?'Hide':'Show'}} Preview

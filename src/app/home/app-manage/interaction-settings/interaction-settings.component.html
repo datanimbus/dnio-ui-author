@@ -1,0 +1,64 @@
+<div class="d-flex flex-column">
+    <div class="sub-heading text-dark font-weight-bold mb-3 d-flex align-items-center justify-content-between p-3">
+        <div class="d-flex align-items-center">
+            <span class="text font-20 fw-600">Interaction Settings</span>
+        </div>
+        <button type="button" class="btn btn-primary btn-min-width" (click)="saveApp()"
+            [disabled]="invalidForm">Save</button>
+    </div>
+    <div class="d-flex border-top border-bottom">
+        <div class="base-images p-3 w-50">
+            <div class="form-group">
+                <label for="retainPolicy" class="fw-600">Interactions Retain Policy</label>
+                <div class="input-group">
+                    <input class="form-control" name="retainPolicy" id="retainPolicy" type="number" min="-1"
+                        [(ngModel)]="retainValue">
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-primary" [class.active]="retainType=='count'"
+                            (click)="retainType='count'">Count</button>
+                        <button type="button" class="btn btn-outline-primary" [class.active]="retainType=='days'"
+                            (click)="retainType='days'">Days</button>
+                    </div>
+                </div>
+                <span class="form-text text-muted font-12">
+                    This configuration will be applicable for each data pipe
+                </span>
+            </div>
+            <!-- <div class="form-group">
+                <label for="libraries" class="fw-600">Function Base Image</label>
+                <input class="form-control" name="libraries" id="libraries" [(ngModel)]="appData.faasBaseImage">
+                <span class="form-text text-muted font-12">Default: datanimbus.io.faas.base:{{version}}</span>
+            </div> -->
+        </div>
+        <div class="variables-list p-3 w-50 border-left">
+            <ng-container *ngIf="appData.interactionStore">
+                <div class="form-group">
+                    <label for="storeType" class="fw-600">Interactions Data Store</label>
+                    <select id="storeType" name="storeType" class="form-control"
+                        [(ngModel)]="appData.interactionStore.storeType" (ngModelChange)="onStoreTypeChange($event)">
+                        <option value="db">DB</option>
+                        <option value="azureblob">Azure Blob</option>
+                        <option value="awss3">AWS S3</option>
+                    </select>
+                </div>
+                <ng-container *ngIf="appData.interactionStore.storeType!='db'">
+                    <div class="form-group">
+                        <label for="connector" class="fw-600">{{selectedConnector ? 'Selected' : 'Select a'}} Connector</label>
+                        <odp-connector-selector [(connector)]="selectedConnector"  category="STORAGE" [type]="connectorType"></odp-connector-selector>
+                    </div>
+                </ng-container>
+                <!-- <ng-container *ngIf="appData.interactionStore.storeType=='azureblob'">
+                    <div class="form-group">
+                        <label for="connectionString" class="fw-600">Connection String</label>
+                        <textarea class="form-control" name="connectionString" id="connectionString"
+                            [(ngModel)]="connectionString"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="container" class="fw-600">Container</label>
+                        <input class="form-control" name="container" id="container" [(ngModel)]="container">
+                    </div>
+                </ng-container> -->
+            </ng-container>
+        </div>
+    </div>
+</div>

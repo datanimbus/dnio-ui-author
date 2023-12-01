@@ -1076,12 +1076,17 @@ export class UserComponent implements OnInit, OnDestroy {
     if (user.attributes && user.attributes !== null) {
       user.attributesData = Object.values(user.attributes).map((ele: Object, i) => {
         const key = Object.keys(user.attributes)[i];
-        return { ...ele, key }
-      });
+        if (ele) {
+          return { ...ele, key }
+        }
+
+      }).filter(ele => ele);
     }
     if (this.details._id !== user._id) {
       this.details = user;
-      this.fetchUserGroups();
+      if (this.hasPermission('PMUG')) {
+        this.fetchUserGroups();
+      }
     } else {
       this.details = user;
     }
@@ -1237,6 +1242,8 @@ export class UserComponent implements OnInit, OnDestroy {
           }
         })
         this.showLazyLoader = false;
+      }, err => {
+        this.showLazyLoader = false;
       });
   }
 
@@ -1304,7 +1311,9 @@ export class UserComponent implements OnInit, OnDestroy {
           this.ts.success(
             `${data.name} Group has been removed for user ${this.details.basicDetails.name}`
           );
-          this.fetchUserGroups();
+          if (this.hasPermission('PMUG')) {
+            this.fetchUserGroups();
+          }
         },
         (err) => {
           data.loading = false;
@@ -1325,8 +1334,8 @@ export class UserComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((res) => {
-      if (res) {
-        this.fetchUserGroups();
+      if (res && this.hasPermission('PMUG')) {
+          this.fetchUserGroups()
       }
     });
   }
@@ -1362,5 +1371,4 @@ export class UserComponent implements OnInit, OnDestroy {
     }
     return true
   }
-
 }

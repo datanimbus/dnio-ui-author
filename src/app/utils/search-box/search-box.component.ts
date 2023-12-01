@@ -24,6 +24,8 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
   @Input() selectOnEnter: boolean;
   @Input() tooltipDir: string;
   @Input() open: boolean;
+  @Input() fullWidth: boolean;
+  @Input() edit: any;
   @Output() enteredText: EventEmitter<string>;
   @Output() enteredPressed: EventEmitter<any>;
   @Output() reset: EventEmitter<string>;
@@ -35,6 +37,9 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
     this.enteredText = new EventEmitter<string>();
     this.enteredPressed = new EventEmitter<string>();
     this.reset = new EventEmitter<string>();
+    this.edit= {
+      status: true
+    }
   }
   ngOnInit() {
     this.openSearchBox = this.open;
@@ -87,6 +92,10 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
     this.slideState = 'blur';
   }
 
+  resetSearchInput() {
+    this.searchTerm = null;
+  }
+  
   get info() {
     if (this.onEnter) {
       return 'Search will be executed on Enter Pressed';
@@ -99,6 +108,6 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
     if (this.tooltipDir) {
       return this.tooltipDir;
     }
-    return 'right';
+    return 'left';
   }
 }

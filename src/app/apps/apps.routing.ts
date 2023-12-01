@@ -144,6 +144,34 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'plugin',
+        loadChildren: () =>
+          import('../home/plugins-listing/plugins-listing.module').then(
+            (m) => m.PluginsListingModule
+          ),
+      },
+      {
+        path: 'plugin/:id',
+        loadChildren: () =>
+          import('../home/plugins-manage/plugins-manage.module').then(
+            (m) => m.PluginsManageModule
+          ),
+      },
+      {
+        path: 'formula',
+        loadChildren: () =>
+          import('../home/formula-listing/formula-listing.module').then(
+            (m) => m.FormulaListingModule
+          ),
+      },
+      {
+        path: 'formula/:id',
+        loadChildren: () =>
+          import('../home/formula-manage/formula-manage.module').then(
+            (m) => m.FormulaManageModule
+          ),
+      },
+      {
         path: 'con',
         loadChildren: () =>
           import('../home/connectors/connectors.module').then(
@@ -155,8 +183,43 @@ const routes: Routes = [
         loadChildren: () =>
           import('../home/connectors-manage/connectors-manage.module').then(
             (m) => m.ConnectorsManageModule
+          )
+      },
+      {
+        path: 'api-keys',
+        loadChildren: () =>
+          import('../home/api-keys/api-keys.module').then(
+            (m) => m.ApiKeysModule
           ),
       },
+      {
+        path: 'processNode',
+        loadChildren: () =>
+          import('../home/nodes/nodes.module').then(
+            (m) => m.NodesModule
+          )
+      },
+      {
+        path: 'processNode/:id',
+        loadChildren: () =>
+          import('../home/nodes/node-details/node-details.module').then(
+            (m) => m.NodeDetailsModule
+          )
+      },
+      {
+        path: 'processFlow',
+        loadChildren: () =>
+          import('../home/process-flows/process-flows.module').then(
+            (m) => m.ProcessFlowsModule
+          ),
+      },
+      {
+        path: 'processFlow/:id',
+        loadChildren: () =>
+          import('../home/process-flow-manage/process-flow-manage.module').then(
+            (m) => m.ProcessFlowManageModule
+          ),
+      }
     ],
   },
 ];

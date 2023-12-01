@@ -1,10 +1,11 @@
-import { Component, OnDestroy, Input, TemplateRef, ViewChild, AfterViewInit, AfterContentChecked } from '@angular/core';
-import { UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy, Input, TemplateRef, ViewChild, AfterViewInit, AfterContentChecked, OnInit } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 
 import { SchemaBuilderService } from 'src/app/home/schema-utils/schema-builder.service';
 import { CommonService } from '../services/common.service';
 import { ToastrService } from 'ngx-toastr';
 import { emptyEnum } from 'src/app/home/custom-validators/empty-enum-validator';
+import { AppService } from '../services/app.service';
 
 @Component({
   selector: 'odp-structure-field-properties',
@@ -16,6 +17,7 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
   @Input() isLibrary: boolean;
   @Input() isDataFormat: boolean;
   @Input() formatType: string;
+  @Input() subType: string;
   @Input() edit: any;
   @Input() type: string;
   showProperties: boolean;
@@ -40,7 +42,9 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
   }
   constructor(private schemaService: SchemaBuilderService,
     private commonService: CommonService,
-    private ts: ToastrService) {
+    private ts: ToastrService,
+    private fb: UntypedFormBuilder,
+    private appService: AppService) {
     const self = this;
     self.sampleRegexValue = [];
     self.showDatePicker = false;
@@ -53,6 +57,7 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
     self.showDataTypes = {};
     self.showCommonFields = true;
     self.showProperties = false;
+
   }
 
   ngAfterViewInit(): void {
@@ -123,6 +128,10 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
     } else {
       this.form.get('properties.fieldLength').setValidators(null);
     }
+
+    // if(['CSV','EXCEL','DELIMITER'].includes(this.formatType)){
+    //   this.form.get('properties.fieldNo') ? null : this.form.addControl('properties.fieldNo', null) 
+    // }
 
     if (self.form.get('properties._detailedType').value === 'enum') {
       self.form.get('properties.enum').setValidators([emptyEnum]);
@@ -206,11 +215,21 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
     (prop.get('default')).setErrors(errors);
   }
 
-  toggleCheck(prop) {
+  toggleCheck(prop: UntypedFormControl, key?: string) {
     const self = this;
     if (self.canEdit) {
       prop.patchValue(!prop.value);
       self.form.markAsDirty();
+    }
+    if (key && key == 'schemaFree') {
+      console.log(this.form);
+      if (prop.value) {
+        self.form.removeControl('definition');
+        // (this.form.get('definition') as UntypedFormArray).controls.splice(0);
+      } else {
+        const temp = self.schemaService.getDefinitionStructure({ _newField: true });
+        self.form.addControl('definition', self.fb.array([temp]));
+      }
     }
   }
 
@@ -279,6 +298,13 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
     this.formList[0].get('properties.default').patchValue(null);
   }
 
+  displayKey() {
+    const connectorsList = this.appService.connectorsList || [];
+    const serviceDataConnector = this.schemaService.serviceObj?.connectors?.data || {};
+    return connectorsList.find(ele => ele._id === serviceDataConnector._id)?.type !== 'MONGODB' || false;
+  }
+
+
   get labelError() {
     const self = this;
     if (self.form.get('properties.label') && self.form.get('properties.label').errors) {
@@ -303,6 +329,24 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
       return null;
     }
   }
+
+
+  get key() {
+    const self = this;
+    if (self.form && self.form.get('key')) {
+      return self.form.get('key').value;
+    } else {
+      return null;
+    }
+  }
+
+  // set key(value) {
+  //   const self = this;
+  //   if (self.form && self.form.get('key')) {
+  //     self.form.get('key').setValue(value);
+  //   }
+
+  // }
 
   get canDelete() {
     const self = this;
@@ -329,4 +373,37 @@ export class StructureFieldPropertiesComponent implements OnDestroy, AfterViewIn
     }
     return retValue;
   }
+
+  isHrsf(){
+    return this.subType === 'HRSF'
+  }
+
+  disableCheck(){
+    if(this.isHrsf() && ['header','footer','records','subRecords'].includes(this.form.get('key').value)){
+        return true
+    }
+    return false
+}
+
+toggleDef(definitions,value){
+  definitions.forEach(ele => {
+    if(ele.definition){
+      this.toggleDef(ele.definition,value)
+    }
+      ele['properties']['disabled'] = value
+  })
+}
+
+toggleDisable(){
+  const currentVal = this.form.get('properties.disabled').value;
+  this.form.get('properties.disabled').patchValue(!currentVal);
+  const definitions = this.form.get('definition').value;
+  definitions.forEach(def => {
+    if(def.definition){
+      this.toggleDef(def.definition, !currentVal)
+
+    }
+  })
+  this.form.get('definition').patchValue(definitions);
+}
 }

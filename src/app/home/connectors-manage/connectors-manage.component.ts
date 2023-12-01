@@ -252,6 +252,9 @@ export class ConnectorsManageComponent implements OnInit, OnDestroy {
       return true;
     }
     return Object.keys(condition).every(key => {
+      if(Array.isArray(condition[key])){
+        return condition[key].includes(this.connector.values[key]);
+      }
       return this.connector.values[key] == condition[key];
     });
   }
@@ -263,11 +266,12 @@ export class ConnectorsManageComponent implements OnInit, OnDestroy {
       delete payload.name;
       delete payload.description;
     }
-
+    this.showLazyLoader = true;
     this.subscriptions['saveConnector'] = this.commonService.post('user', `/${this.commonService.app._id}/connector/utils/test`, payload).subscribe(res => {
+      this.showLazyLoader = false;
       this.ts.success(res.message);
     }, err => {
-
+      this.showLazyLoader = false;
       this.commonService.errorToast(err);
     });
   }

@@ -7,7 +7,7 @@ export class GlobalSchemaStructurePipe implements PipeTransform {
     private properties(properties) {
         const temp = {};
         Object.keys(properties || {}).forEach(i => {
-            if (typeof properties[i] === 'number' || properties[i]) {
+            if (typeof properties[i] === 'number' || (properties[i] || i === 'default')) {
                 if (i === 'hasTokens' && (properties['longText'] || properties['richText'])) {
                     if (properties[i] && properties[i].length > 0) {
                         temp[i] = properties[i];
@@ -62,7 +62,14 @@ export class GlobalSchemaStructurePipe implements PipeTransform {
                     || i === 'deleteAction'
                     || i === 'label'
                     || i === 'readonly'
-                    || i === 'errorMessage') {
+                    || i === 'errorMessage'
+                    || i === 'disabled'
+                    || i === 'minItems'
+                    || i === 'maxItems'
+                    || i === 'fieldNo'
+                    || i === 'masking'
+                    || i === 'default'
+                    || i === 'dateFormat') {
                     temp[i] = properties[i];
                 }
             }
@@ -92,7 +99,7 @@ export class GlobalSchemaStructurePipe implements PipeTransform {
         temp['name'] = value.name;
         temp['description'] = value.description;
         temp['character'] = value.character;
-        temp['type'] = value.dataFormatType;
+        temp['type'] = value.dataFormatType || value.type;
         temp['description'] = value.description;
         if (isDataFormat) {
             temp['definition'] = this.buildDefinition(value.definition);

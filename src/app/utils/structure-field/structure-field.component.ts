@@ -43,6 +43,7 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
     @Input() isDataFormatUsed: boolean;
     @Input() type: string;
     @Input() formatType: string;
+    @Input() subType: string;
     @ViewChild('tooltip', { static: false }) tooltip: NgbTooltip;
     @ViewChild('inputField', { static: false }) inputField: ElementRef;
     @ViewChild('nameChangeModal', { static: false }) nameChangeModal: TemplateRef<HTMLElement>;
@@ -102,7 +103,7 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
             }));
         }
         if (!self.form.get('definition')) {
-            if (self.form.get('type').value === 'Object') {
+            if (self.form.get('type').value === 'Object' && !self.form.get('properties.schemaFree').value) {
                 self.selectType({ value: 'Object', label: 'Group' });
             }
         }
@@ -115,7 +116,7 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
         });
         self.subscriptions['addAttribute'] = self.schemaService.addAttribute.subscribe(place => {
             if (self.schemaService.selectedFieldId && self.schemaService.selectedFieldId === self.fieldId) {
-                const temp = self.schemaService.getDefinitionStructure({ key: null, _newField: true });
+                const temp = self.schemaService.getDefinitionStructure({ key: null, _newField: true }, null, this.isDataFormat);
                 if (place === 'before') {
                     if (!self.idField) {
                         self.all.insert(self.index, temp);
@@ -230,7 +231,7 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
         if (self.inputField) {
             self.inputField.nativeElement.focus();
         }
-        const temp = self.schemaService.getDefinitionStructure(val);
+        const temp = self.schemaService.getDefinitionStructure(val,null, this.isDataFormat);
         (self.all as UntypedFormArray).insert(self.index + 1, temp);
         setTimeout(() => {
             self.schemaService.selectedFieldId = temp.value._fieldId;
@@ -243,7 +244,7 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
         const val: any = self.appService.cloneObject(self.form.value);
         val.key = null;
         val.properties.name = null;
-        const temp = self.schemaService.getDefinitionStructure(val);
+        const temp = self.schemaService.getDefinitionStructure(val, null, this.isDataFormat);
         (self.all as UntypedFormArray).insert(self.index + 1, temp);
         self.schemaService.selectedFieldId = temp.value._fieldId;
         self.schemaService.activeField.emit(temp.value._fieldId);
@@ -394,7 +395,7 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
             .getPropertiesStructure({
                 name: self.form.get('properties.name').value,
                 type: type.value
-            });
+            }, this.isDataFormat);
         for (const i in (self.form.get('properties') as UntypedFormGroup).controls) {
             if (i === 'name') {
                 continue;
@@ -408,11 +409,11 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
             (self.form.get('properties') as UntypedFormGroup).addControl(i, tempProp.controls[i]);
         }
         if (type.value === 'Object') {
-            const temp = self.schemaService.getDefinitionStructure({ _newField: true });
+            const temp = self.schemaService.getDefinitionStructure({ _newField: true }, null, this.isDataFormat);
             self.form.addControl('definition', self.fb.array([temp]));
         }
         if (type.value === 'Array') {
-            const temp = self.schemaService.getDefinitionStructure({ key: '_self', _newField: true });
+            const temp = self.schemaService.getDefinitionStructure({ key: '_self', _newField: true }, null, this.isDataFormat);
             self.form.addControl('definition', self.fb.array([temp]));
         }
         // if (type.value === 'Array' || type.value === 'Object') {
@@ -472,7 +473,7 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
     pasteOnField(e) {
         const self = this;
         // self.schemaService.selectedFieldId = null;
-        self.schemaService.activeProperty.emit(null);
+        // self.schemaService.activeProperty.emit(null);
         if (!self.all.get([self.index, '_id'])) {
             let val = e.clipboardData.getData('text/plain');
             try {
@@ -506,10 +507,12 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
             }).map(e => e.trim());
         }
         const json = {};
-        def.forEach(element => {
-            self.getJSON(element, json);
-        });
-        self.createSchema(json);
+        if (def.length > 1) {
+            def.forEach(element => {
+                self.getJSON(element, json);
+            });
+            self.createSchema(json);
+        }
     }
 
     getJSON(field, value) {
@@ -538,7 +541,7 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
         const fields = self.schemaService.createSchema(json, self.isDataFormat);
         fields.forEach((field, i) => {
             const temp = fields[i];
-            const tempDef = self.schemaService.getDefinitionStructure(temp);
+            const tempDef = self.schemaService.getDefinitionStructure(temp, null, this.isDataFormat);
             (tempDef.get('properties.name') as UntypedFormGroup).patchValue(temp.properties.name);
             self.all.push(tempDef);
             tempDef.markAsTouched()
@@ -676,6 +679,9 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
 
     get canDelete() {
         const self = this;
+        if(this.disableCheck()){
+            return false
+        }
         if (self.all.length > 1 && self.form.get('type').value !== 'id') {
             return true;
         }
@@ -696,6 +702,21 @@ export class StructureFieldComponent implements OnInit, AfterContentInit, OnDest
             return true;
         }
         return false;
+    }
+
+    isHrsf(){
+       return (this.subType === 'HRSF' && this.isDataFormat)
+    }
+
+    isBooleanType(){
+        return this.form.get('type').value === 'Boolean'
+    }
+
+    disableCheck(){
+        if(this.isHrsf() && ['header','footer','records','subRecords'].includes(this.form.get('key').value)){
+            return true
+        }
+        return false
     }
 
 }

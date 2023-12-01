@@ -75,6 +75,12 @@ import { RoundRadioModule } from 'src/app/utils/round-radio/round-radio.module';
 import { UserGroupUsersComponent } from './user-group/user-group-manage/user-group-members/user-group-users/user-group-users.component';
 import { UserGroupMembersSearchComponent } from './user-group/user-group-manage/user-group-members/user-group-members-search/user-group-members-search.component';
 import { GroupAuthorConnectorsComponent } from './user-group/user-group-manage/user-group-author/group-author-connectors/group-author-connectors.component';
+import { GroupAuthorFlowsComponent } from './user-group/user-group-manage/user-group-author/group-author-flows/group-author-flows.component';
+import { GroupAuthorProcessFlowsComponent } from './user-group/user-group-manage/user-group-author/group-author-process-flows/group-author-process-flows.component';
+import { GroupAuthorProcessFlowsNodesComponent } from './user-group/user-group-manage/user-group-author/group-author-process-flows-nodes/group-author-process-flows-nodes.component';
+import { GroupAuthorPluginsComponent } from './user-group/user-group-manage/user-group-author/group-author-plugins/group-author-plugins.component';
+import { GroupAuthorFormulasComponent } from './user-group/user-group-manage/user-group-author/group-author-formulas/group-author-formulas.component';
+import { GroupAuthorApiKeysComponent } from './user-group/user-group-manage/user-group-author/group-author-api-keys/group-author-api-keys.component';
 
 @NgModule({
   imports: [
@@ -145,6 +151,9 @@ import { GroupAuthorConnectorsComponent } from './user-group/user-group-manage/u
     GroupAuthorAgentsComponent,
     GroupAuthorLibraryComponent,
     GroupAuthorFunctionsComponent,
+    GroupAuthorFlowsComponent,
+    GroupAuthorProcessFlowsComponent,
+    GroupAuthorProcessFlowsNodesComponent,
     GroupAuthorPartnersComponent,
     GroupAuthorNanoServicesComponent,
     GroupAuthorBookmarksComponent,
@@ -157,7 +166,10 @@ import { GroupAuthorConnectorsComponent } from './user-group/user-group-manage/u
     UserGridAppsRendererComponent,
     UserGroupUsersComponent,
     UserGroupMembersSearchComponent,
-    GroupAuthorConnectorsComponent
+    GroupAuthorConnectorsComponent,
+    GroupAuthorPluginsComponent,
+    GroupAuthorFormulasComponent,
+    GroupAuthorApiKeysComponent
   ],
   exports: [UserGridAppsRendererComponent, UserToGroupModalComponent]
 })

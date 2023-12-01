@@ -41,9 +41,17 @@ export class FieldTypeSelectorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.appService.connectorsList.length === 0) {
+    if (this.appService.connectorsList?.length === 0) {
       this.types = this.types.filter(ele => ele.value !== 'File')
     }
+    if (this.isDataFormat) {
+      let hideForDataFormat = ['File', 'Relation', 'Library', 'Location', 'User'];
+      if ((this.formatType !== 'JSON' && this.formatType !== 'XML')) {
+        hideForDataFormat = hideForDataFormat.concat(['Collection', 'Group']) // hide for non json/xml
+      }
+      this.types = this.types.filter(ele => hideForDataFormat.indexOf(ele.label) === -1);
+    }
+
   }
 
   getTooltipText(index: number) {
@@ -125,7 +133,7 @@ export class FieldTypeSelectorComponent implements OnInit {
         },
 
         type: type.value
-      });
+      }, this.isDataFormat);
     for (const i in (self.form.get('properties') as UntypedFormGroup).controls) {
       if (i === 'name') {
         continue;
@@ -229,6 +237,11 @@ export class FieldTypeSelectorComponent implements OnInit {
     }
     if (self.form.get('properties.minlength') && self.form.get('properties.minlength').value) {
       self.form.get('properties.minlength').patchValue(null);
+    }
+    if (self.form.get('type').value === 'Boolean') {
+      self.form.get('properties.default').setValue(false);
+    } else {
+      self.form.get('properties.default').setValue(null);
     }
     self.form.get('properties._detailedType').patchValue(value);
     self.form.markAsDirty();

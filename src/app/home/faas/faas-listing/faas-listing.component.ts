@@ -27,6 +27,8 @@ export class FaasListingComponent implements OnInit, OnDestroy {
   showNewFaasWindow: boolean;
   searchTerm: string;
   faasList: Array<any>;
+  isClone: boolean = false;
+  baseUrl: string;
   alertModal: {
     statusChange?: boolean;
     title: string;
@@ -43,6 +45,7 @@ export class FaasListingComponent implements OnInit, OnDestroy {
   selectedLibrary: any;
   sortModel: any;
   breadcrumbPaths: Array<Breadcrumb>;
+  cloneOldUrl: any;
   constructor(public commonService: CommonService,
     private appService: AppService,
     private router: Router,
@@ -76,6 +79,7 @@ export class FaasListingComponent implements OnInit, OnDestroy {
       active: true,
       label: 'Functions'
     }];
+    this.baseUrl = 'https://' + this.commonService.userDetails.fqdn+ '/api/a/faas/' + this.app
   }
   ngOnInit() {
     this.commonService.changeBreadcrumb(this.breadcrumbPaths)
@@ -93,7 +97,9 @@ export class FaasListingComponent implements OnInit, OnDestroy {
       this.getFaas();
     });
     this.subscriptions['faas.status'] = this.commonService.faas.status.subscribe(data => {
-      this.getFaas();
+      if (data[0].status != 'Pending') {
+        this.getFaas();
+      }
     });
     this.subscriptions['faas.new'] = this.commonService.faas.new.subscribe(data => {
       this.getFaas();
@@ -118,6 +124,12 @@ export class FaasListingComponent implements OnInit, OnDestroy {
     this.commonService.post('partnerManager', `/${this.commonService.app._id}/faas`, payload).subscribe(res => {
       this.showLazyLoader = false;
       this.form.reset();
+      if (this.isClone) {
+        const newUrl = res.url.split('/').at(-1);
+        payload.code = payload.code.replaceAll('/' + payload.app + '/' + this.cloneOldUrl, '/' + payload.app + '/' + newUrl);
+        this.isClone = false;
+        this.appService.code = payload.code;
+      }
       this.ts.success('Function has been created.');
       this.appService.edit = res._id;
       this.router.navigate(['/app/', this.commonService.app._id, 'faas', res._id]);
@@ -126,6 +138,15 @@ export class FaasListingComponent implements OnInit, OnDestroy {
       this.form.reset();
       this.commonService.errorToast(err);
     });
+  }
+
+  cloneFunction(index: number) {
+    this.form.reset();
+    const temp = this.faasList[index];
+    this.cloneOldUrl = temp.url.split('/').at(-1);
+    this.form.get('name').patchValue(temp.name + ' Copy');
+    this.form.get('code').patchValue(temp.code);
+    this.showNewFaasWindow = true;
   }
 
   getFaas() {
@@ -142,6 +163,11 @@ export class FaasListingComponent implements OnInit, OnDestroy {
         item.url = 'https://' + this.commonService.userDetails.fqdn + item.url;
         this.faasList.push(item);
       });
+      this.faasList.forEach(e => {
+        if (e.status == 'Pending') {
+          this.commonService.updateStatus(e._id, 'faas');
+        }
+      })
     }, err => {
       this.showLazyLoader = false;
       this.commonService.errorToast(err);
@@ -305,6 +331,7 @@ export class FaasListingComponent implements OnInit, OnDestroy {
                   this.ts.info('Starting function...');
                 }
                 this.faasList[index].status = 'Pending';
+                this.commonService.updateStatus(this.faasList[index]._id, 'faas');
               },
               (err) => {
                 this.commonService.errorToast(err);
@@ -329,6 +356,7 @@ export class FaasListingComponent implements OnInit, OnDestroy {
             this.showLazyLoader = false;
             this.ts.info(d.message ? d.message : 'Deleting function...');
             this.faasList[data.index].status = 'Pending';
+            this.commonService.updateDelete(this.faasList[data.index]._id, 'faas');
           },
           (err) => {
             this.showLazyLoader = false;
@@ -360,14 +388,6 @@ export class FaasListingComponent implements OnInit, OnDestroy {
     this.openDeleteModal.emit(this.alertModal);
   }
 
-  cloneFunction(index: number) {
-    this.form.reset();
-    const temp = this.faasList[index];
-    this.form.get('name').patchValue(temp.name + ' Copy');
-    this.form.get('code').patchValue(temp.code);
-    this.showNewFaasWindow = true;
-  }
-
   copyUrl(faas: any) {
     this.copied[faas._id] = true;
     this.appService.copyToClipboard(faas.url);
@@ -394,6 +414,10 @@ export class FaasListingComponent implements OnInit, OnDestroy {
     })
     this.selectedLibrary = this.faasList[i];
     this.showOptionsDropdown[i] = true;
+  }
+
+  showUrl(url){
+    return '/'+ url.split('/').pop();
   }
 
   private compare(a: any, b: any) {

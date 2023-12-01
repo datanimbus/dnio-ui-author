@@ -16,7 +16,7 @@
                         class="btn btn-white border mr-3" (click)="deleteConnector()">
                         <span class="dsi dsi-trash"></span>
                     </button>
-                    <button class="btn btn-outline-primary btn-min-width mr-3" (click)="testConnection()">
+                    <button class="btn btn-outline-primary btn-min-width mr-3" (click)="testConnection()" *ngIf="connector.category === 'DB' || connector.type === 'SFTP'">
                         <span>Test</span>
                     </button>
                     <button class="btn btn-white border btn-min-width mr-3" routerLink="../">
@@ -27,7 +27,7 @@
                             [disabled]="connector.name === 'Default DB Connector' || connector.name === 'Default File Connector'">
                             <span>Edit</span>
                         </button>
-                        <button *ngIf="edit.status" class="btn btn-primary btn-min-width" (click)="saveConnector()">
+                        <button *ngIf="edit.status" [disabled]="!connector.name" class="btn btn-primary btn-min-width" (click)="saveConnector()">
                             <span>Save</span>
                         </button>
                     </ng-container>

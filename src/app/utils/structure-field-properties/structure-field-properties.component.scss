@@ -32,6 +32,9 @@
     &.password {
       background: $dark;
     }
+    &.schema-free {
+      background: $secondary;
+    }
   }
 
   .schemaProperties-header {
@@ -103,7 +106,7 @@
   .dataTypeDropdown {
     top: 2rem;
     z-index: 2;
-    box-shadow: 0 0 15px $gray-400;
+    box-shadow: 0 0 15px $gray-70;
   }
 
   .rounded-top-radius {

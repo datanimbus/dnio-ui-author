@@ -1,13 +1,13 @@
 import { EventEmitter } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, Validators, UntypedFormControl, ValidatorFn, UntypedFormArray } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, UntypedFormControl, ValidatorFn, UntypedFormArray, AbstractControl } from '@angular/forms';
 import { Injectable } from '@angular/core';
 import { positiveNumber } from '../../home/custom-validators/positive-number-validator';
 import { maxLenValidator, minMax, minMaxLength, patternValidator } from '../../home/custom-validators/min-max-validator';
-import { CommonService } from '../../utils/services/common.service';
 
 import * as _ from 'lodash';
 import * as uuid from 'uuid/v1';
 import { FieldType } from 'src/app/utils/interfaces/fieldType';
+import { CommonService } from '../../utils/services/common.service';
 
 @Injectable()
 export class SchemaBuilderService {
@@ -20,7 +20,8 @@ export class SchemaBuilderService {
     selectedFieldId: string;
     typechanged: EventEmitter<any>;
     idFieldId: string;
-    stateModel:any;
+    stateModel: any;
+    serviceObj: any;
     constructor(
         private fb: UntypedFormBuilder,
         private commonService: CommonService) {
@@ -33,7 +34,7 @@ export class SchemaBuilderService {
         self.typechanged = new EventEmitter();
     }
 
-    getPropertiesStructure(value?: any): UntypedFormGroup {
+    getPropertiesStructure(value, isDataFormat= false): UntypedFormGroup {
         const self = this;
         const temp: UntypedFormGroup = self.fb.group({
             _type: [value.type],
@@ -42,6 +43,7 @@ export class SchemaBuilderService {
             errorMessage: [value.properties && value.properties.errorMessage ? value.properties.errorMessage : null],
             name: [value.properties && value.properties.name ? value.properties.name : null, [maxLenValidator(40)]],
             required: [value.properties && value.properties.required ? value.properties.required : false],
+            disabled: [value.properties && value.properties.disabled ? value.properties.disabled : false],
             fieldLength: [value.properties && value.properties.fieldLength ? value.properties.fieldLength : 10],
             _description: [value.properties && value.properties._description ? value.properties._description : null, [Validators.maxLength(240)]],
             _typeChanged: [value.type],
@@ -76,12 +78,14 @@ export class SchemaBuilderService {
         if (value.type === 'String'
             || value.type === 'Number'
             || value.type === 'Relation'
-            || value.type === 'Boolean'
             || value.type === 'Date'
             || value.type === 'User'
         ) {
             temp.addControl('default', new UntypedFormControl(value.properties
                 && (value.properties.default !== null || value.properties.default !== undefined) ? value.properties.default : null));
+        }
+        if (value.type === 'Boolean') {
+            temp.addControl('default', new UntypedFormControl(value.properties.default || false));
         }
         if (value.type === 'String'
             || value.type === 'Number'
@@ -129,6 +133,8 @@ export class SchemaBuilderService {
                 && value.properties.richText ? value.properties.richText : false));
             temp.addControl('fieldLength', new UntypedFormControl(value.properties
                 && value.properties.fieldLength ? value.properties.fieldLength : null));
+            temp.addControl('masking', new UntypedFormControl(value.properties
+                && value.properties.masking ? value.properties.masking : null));
             const arr = [];
             if (value.properties && value.properties.hasTokens) {
                 for (const i of value.properties.hasTokens) {
@@ -157,6 +163,10 @@ export class SchemaBuilderService {
             temp.addControl('defaultTimezone', new UntypedFormControl(value.properties
                 && value.properties.defaultTimezone ? value.properties.defaultTimezone :
                 (this.commonService.app.defaultTimezone || this.commonService.userDetails.defaultTimezone)));
+            temp.addControl('dateFormat', new UntypedFormControl(value.properties
+                && value.properties.dateFormat ? value.properties.dateFormat : ''));
+            temp.addControl('pattern', new UntypedFormControl(value.properties
+                && value.properties.pattern ? value.properties.pattern : null, [patternValidator]));
             temp.addControl('_listInput', new UntypedFormControl(null));
             const arr = [];
             if (value.properties && value.properties.supportedTimezones) {
@@ -165,16 +175,22 @@ export class SchemaBuilderService {
                 }
             }
             temp.addControl('supportedTimezones', new UntypedFormArray(arr));
-            // temp.addControl('min', new FormControl(value.properties && value.properties.min ? value.properties.min : null));
-            // temp.addControl('max', new FormControl(value.properties && value.properties.max ? value.properties.max : null));
+            // temp.addControl('min', new UntypedFormControl(value.properties && value.properties.min ? value.properties.min : null));
+            // temp.addControl('max', new UntypedFormControl(value.properties && value.properties.max ? value.properties.max : null));
         }
         if (value.type === 'Object') {
             temp.removeControl('required');
+            temp.addControl('schemaFree', new UntypedFormControl(value.properties &&
+                value.properties.schemaFree ? value.properties.schemaFree : false, [Validators.required]));
         }
         if (value.type === 'Array') {
-            temp.removeControl('required');
+           temp.removeControl('required');
             temp.addControl('maxlength', new UntypedFormControl(value.properties
                 && value.properties.maxlength ? value.properties.maxlength : null, [positiveNumber]));
+            temp.addControl('minItems', new UntypedFormControl(value.properties
+                && value.properties.minItems ? value.properties.minItems : null));
+            temp.addControl('maxItems', new UntypedFormControl(value.properties
+                && value.properties.maxItems ? value.properties.maxItems : null));
         }
         if (value.type === 'Relation') {
             temp.get('_type').patchValue('Relation');
@@ -253,6 +269,11 @@ export class SchemaBuilderService {
             // temp.removeControl('required');
         }
 
+        if(isDataFormat){
+            temp.addControl('fieldNo', new UntypedFormControl(value.properties
+                && value.properties.fieldNo ? value.properties.fieldNo : null));
+        }
+
         if (value && value.properties && value.properties._isParrentArray) {
             temp.removeControl('unique');
         }
@@ -266,22 +287,25 @@ export class SchemaBuilderService {
     }
 
 
-    getDefinitionStructure(value?: any, _isGrpParentArray?: boolean): UntypedFormGroup {
+    getDefinitionStructure(value?: any, _isGrpParentArray?: boolean, isDataFormat= false): UntypedFormGroup {
         const key = value && value.key ? value.key : '';
         const type = value && value.type ? value.type : 'String';
         const tempForm: UntypedFormGroup = this.fb.group({
             _fieldId: [uuid()],
             _placeholder: ['Untitled Attribute'],
             type: [type, [Validators.required]],
-            key: [key ? key : null, [Validators.required]],
+            key: [key ? key : null, [Validators.required, this.checkForCase]],
             _newField: [value && value._newField === false ? value._newField : true]
         });
         const options = { type, key };
         if (value && value.properties) {
             options['properties'] = value.properties;
         }
+        if (tempForm.get('key').value) {
+            tempForm.get('key').markAsTouched()
+        }
 
-        tempForm.addControl('properties', this.getPropertiesStructure(options));
+        tempForm.addControl('properties', this.getPropertiesStructure(options, isDataFormat));
         if (value && value.properties && value.properties.relatedTo) {
             tempForm.get('type').patchValue('Relation');
         } else if (value && value.properties && value.properties.schema) {
@@ -316,7 +340,7 @@ export class SchemaBuilderService {
                 if (value.properties && (value.properties._isParrentArray || value.properties._isGrpParentArray)) {
                     value.definition[i].properties._isGrpParentArray = true;
                 }
-                const tempDef: any = this.getDefinitionStructure(value.definition[i]);
+                const tempDef: any = this.getDefinitionStructure(value.definition[i], null, isDataFormat);
                 if (value.definition[i].properties && value.definition[i].properties.name) {
                     tempDef.get('properties.name').patchValue(value.definition[i].properties.name);
                 } else {
@@ -334,12 +358,49 @@ export class SchemaBuilderService {
             tempForm.addControl('definition', tempArr);
         }
         tempForm.get('properties.name').valueChanges.subscribe(val => {
+            // if (!tempForm.get('key').touched) {
             tempForm.get('key').patchValue(val === '_self' ? '_self' : _.camelCase(val));
+            // }
         });
+        // tempForm.get('key').valueChanges.subscribe(val => {
+        //     tempForm.get('key').patchValue(val === '_self' ? '_self' : val);
+        // });
         if (value && value.disableType) {
             tempForm.addControl('_disableType', new UntypedFormControl(true));
         }
         return tempForm;
+    }
+
+
+
+    checkForCase(control: AbstractControl) {
+
+        const isCamelCase = (value: string): boolean => {
+            const result = /^[a-zA-Z][a-zA-Z0-9]*$/.test(value);
+            return result;
+        }
+        const isSnakeCase = (value: string): boolean => {
+            const result = /^[a-zA-Z][a-zA-Z0-9_.]*$/.test(value);
+            return result;
+        }
+        const isKebabCase = (value: string): boolean => {
+            const result = /^[a-zA-Z][a-zA-Z0-9-]*$/.test(value);
+            return result;
+        }
+
+        const isValidCase = (value: string): boolean => {
+            const result = /[^?\[\]\{\}\(\)\"*&%$<>\/;:]/.test(value);
+            return result;
+        }
+
+        if (isValidCase(control.value) || !control.value || control.value === '_self') {
+            return null;
+        }
+        else {
+            return {
+                caseError: "Case issue"
+            }
+        }
     }
 
     generateStructure(definitions) {

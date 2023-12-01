@@ -297,7 +297,7 @@
           <strong class="ignore-outside">Add Groups</strong>
         </label>
         <div class="position-relative ignore-outside">
-          <odp-search-box (enteredText)="teamSearch($event)" (reset)="resetTeams()" [ignoreOutside]="true">
+          <odp-search-box (enteredText)="teamSearch($event)" (reset)="resetTeams()" [ignoreOutside]="true" [edit]="{status:true}">
           </odp-search-box>
         </div>
       </div>
@@ -437,7 +437,7 @@
                     *ngFor="let type of types; let typeIndex = index" (click)="
                       setUserAttributeType(type, i); $event.stopPropagation()
                     ">
-                    <span class="{{ type.class }}" placement="left"></span>
+                    <span class="dsi {{ type.class }}" placement="left"></span>
                   </button>
                 </div>
               </div>

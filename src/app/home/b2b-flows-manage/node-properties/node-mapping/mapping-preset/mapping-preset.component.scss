@@ -1,0 +1,119 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.mapping-options {
+    min-height: 40px;
+    max-height: 40px;
+}
+
+.source-list {
+    min-width: 300px;
+    max-width: 300px;
+}
+
+.mapping-paths {
+    min-width: 120px;
+    max-width: 120px;
+}
+
+.target-list {
+    min-width: 400px;
+}
+
+path {
+    stroke: #ccc;
+    stroke-width: 2;
+    fill: none;
+
+    &:hover {
+        cursor: pointer;
+        stroke-width: 4;
+    }
+
+    &.selected {
+        stroke: $accent;
+        stroke-width: 3;
+    }
+}
+
+.no-outline {
+    outline: none !important;
+}
+
+.transparent-path {
+    stroke: transparent;
+    stroke-width: 4;
+    fill: none;
+
+    &:hover {
+        cursor: pointer;
+        stroke-width: 20;
+    }
+}
+
+.svg-path-transparent:hover~path {
+    cursor: pointer;
+    stroke-width: 4;
+}
+
+.delete-rect {
+    fill: #fff;
+    stroke: $danger;
+    stroke-width: 1;
+}
+
+.suggestion-list {
+    width: 300px;
+    max-width: 300px;
+    max-height: 300px;
+    overflow: auto;
+}
+
+.method-list {
+    min-width: 300px;
+    max-width: 300px;
+}
+
+.method-drop {
+    margin: auto 0 auto auto;
+}
+
+.list-group-item {
+    padding: 0.75rem 0.5rem;
+}
+
+
+
+
+
+.source-list {
+    .data-field {
+        &:hover {
+            cursor: pointer;
+            background: $accent;
+            color: $white;
+        }
+    }
+}
+
+
+.spacer {
+    height: 3px;
+}
+
+.function-wrapper {
+    top: 20px;
+    left: 12px;
+    z-index: 1;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+.mark-disabled {
+    opacity: 0.75;
+    color: #ccc !important;
+}
+
+.toggle-btn {
+    min-width: 16px;
+    min-height: 16px;
+}

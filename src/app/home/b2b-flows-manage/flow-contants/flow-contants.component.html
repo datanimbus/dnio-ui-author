@@ -1,0 +1,85 @@
+<div class="w-100 p-3">
+    <div class="p-3 border-bottom mb-3">
+        <h3>Constants</h3>
+        <p class="font-12 text-muted">Create constants and use inside the flow</p>
+    </div>
+    <div class="grid border rounded w-100">
+        <div class="grid-row head d-flex align-items-center border-bottom bg-light">
+            <div class="grid-cell border-right name">Key</div>
+            <div class="grid-cell border-right">Type</div>
+            <div class="grid-cell border-right value">Value</div>
+            <div class="grid-cell d-flex align-items-center justify-content-end flex-fill">
+                <span class="hover" (click)="addConstant()" *ngIf="edit.status">
+                    <span class="dsi dsi-plus-circle text-primary"></span>
+                </span>
+            </div>
+        </div>
+        <div class="grid-body">
+            <div class="grid-row d-flex align-items-center border-bottom" [class.border-bottom]="!last"
+                *ngFor="let item of constantList;let index=index;let last=last;">
+                <div class="grid-cell border-right name">
+                    <div class="key-content">{{item.key}}</div>
+                </div>
+                <div class="grid-cell border-right">{{item.dataType}}</div>
+                <div *ngIf="item.dataType=='String'" class="grid-cell border-right value text-truncate">"{{item.value}}"</div>
+                <div *ngIf="item.dataType!='String'" class="grid-cell border-right value text-truncate">{{item.value}}</div>
+                <div class="grid-cell d-flex align-items-center justify-content-end flex-fill">
+                    <span class="hover mr-2" (click)="editConstant(index)" *ngIf="edit.status">
+                        <span class="dsi dsi-edit text-accent"></span>
+                    </span>
+                    <span class="hover" (click)="deleteConstant(index)" *ngIf="edit.status">
+                        <span class="dsi dsi-trash text-danger"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="grid-row" *ngIf="!constantList || constantList.length==0">
+                <div class="grid-cell flex-fill">No Records</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<odp-side-canvas [(toggle)]="toggleVariableForm">
+    <div *ngIf="toggleVariableForm" class="p-3">
+        <div class="font-22 fw-600 mb-3">
+            <span *ngIf="selectedIndex==-1">New Constant</span>
+            <span *ngIf="selectedIndex>-1">Edit Constant</span>
+        </div>
+        <div class="">
+            <div class="form-group">
+                <label for="key">Key</label>
+                <input type="text" [class.is-invalid]="keyError" class="form-control" [(ngModel)]="form.key" (blur)="onKeyBlur()" required>
+                <span *ngIf="keyError" class="form-text text-danger">Duplicate Key</span>
+                <span *ngIf="requiredError" class="form-text text-danger">Key is required</span>
+            </div>
+            <div class="form-group">
+                <label for="dataType">Data Type</label>
+                <select id="dataType" class="form-control" [(ngModel)]="form.dataType" required>
+                    <option value="String">String</option>
+                    <option value="Number">Number</option>
+                    <option value="Boolean">Boolean</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="value">Value</label>
+                <input *ngIf="form.dataType=='String'" id="value" type="text" class="form-control" [(ngModel)]="form.value">
+                <input *ngIf="form.dataType=='Number'" id="value" type="number" class="form-control" [(ngModel)]="form.value">
+                <div *ngIf="form.dataType=='Boolean'">
+                    
+                    <label class="mr-4">
+                        <input type="radio" value="true" [(ngModel)]="form.value" class="mr-2" [checked]="radioButtonValue">
+                        <span class="font-14 text-dark">True</span>
+                      </label>
+                      <label class="mr-4">
+                        <input type="radio" value="false" [(ngModel)]="form.value" [checked]="!radioButtonValue" class="mr-2">
+                        <span class="font-14 text-dark">False</span>
+                      </label>
+                    </div>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-end">
+            <button type="button" class="btn btn-min-width btn-dark mr-3" (click)="cancel()">Cancel</button>
+            <button type="button" class="btn btn-min-width btn-primary" (click)="saveData()" [disabled]="keyError || requiredError">Save</button>
+        </div>
+    </div>
+</odp-side-canvas>

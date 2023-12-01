@@ -60,12 +60,12 @@
       <ng-container *ngIf="
       hasConnectorsPermission||
       hasDataFormatPermission||
-      hasAgentsPermission
+      hasAgentsPermission||hasFlowsPermission
     ">
         <div class="icon-block-group text-secondary border-top border-border pt-3">
           <span *ngIf="showSideNav" class="nav-active d-flex align-items-center">
             <span>INTEGRATION</span>
-            <span class="text-uppercase ml-2 text-primary font-10">(beta)</span>
+            <!-- <span class="text-uppercase ml-2 text-primary font-10">(beta)</span> -->
           </span>
           <div *ngIf="showSideNav" class="dsi padding" [ngClass]="{
               'dsi-drop-down': openPanel['integration'],
@@ -95,7 +95,20 @@
               }">Connectors</span>
             </div>
           </div>
-          <div #flowRoute="routerLinkActive" class="icon-block d-flex align-items-center my-3"
+          <!-- <div *ngIf="hasFlowsPermission" #processNodeRoute="routerLinkActive"
+            class="icon-block d-flex align-items-center my-3"
+            [ngClass]="{'justify-content-between':showSideNav, 'justify-content-center':!showSideNav}"
+            routerLinkActive="text-primary bg-white active" [routerLink]="['process-node']" id="processNodeManager">
+            <div class="d-flex align-items-center">
+              <span [ngClass]="{'nav-inactive':!processNodeRoute.isActive}" class="dsi dsi-refresh"></span>
+              <span *ngIf="showSideNav" class="text items font-14" [ngClass]="{
+                  'fw-600 nav-active': processNodeRoute.isActive,
+                  'nav-inactive': !processNodeRoute.isActive
+                }">Process Nodes</span>
+            </div>
+          </div> -->
+          <div *ngIf="hasFlowsPermission" #flowRoute="routerLinkActive"
+            class="icon-block d-flex align-items-center my-3"
             [ngClass]="{'justify-content-between':showSideNav, 'justify-content-center':!showSideNav}"
             routerLinkActive="text-primary bg-white active" [routerLink]="['flow']" id="flowManager">
             <div class="d-flex align-items-center">
@@ -130,8 +143,72 @@
                 }">Agents</span>
             </div>
           </div>
+          <div *ngIf="hasPluginsPermission" #pluginRoute="routerLinkActive"
+            class="icon-block d-flex align-items-center my-3"
+            [ngClass]="{'justify-content-between':showSideNav, 'justify-content-center':!showSideNav}"
+            routerLinkActive="text-primary bg-white active" [routerLink]="['plugin']" id="pluginManager">
+            <div class="d-flex align-items-center">
+              <span [ngClass]="{'nav-inactive':!pluginRoute.isActive}" class="dsi dsi-api-doc"></span>
+              <span *ngIf="showSideNav" class="text items font-14" [ngClass]="{
+                  'fw-600 nav-active': pluginRoute.isActive,
+                  'nav-inactive': !pluginRoute.isActive
+                }">Plugins</span>
+            </div>
+          </div>
+          <div *ngIf="hasFormulaPermission" #formulaRoute="routerLinkActive"
+            class="icon-block d-flex align-items-center my-3"
+            [ngClass]="{'justify-content-between':showSideNav, 'justify-content-center':!showSideNav}"
+            routerLinkActive="text-primary bg-white active" [routerLink]="['formula']" id="formulaManager">
+            <div class="d-flex align-items-center">
+              <!-- <span [ngClass]="{'nav-inactive':!formulaRoute.isActive}" class="dsi dsi-nano-service"></span> -->
+              <span [ngClass]="{'nav-inactive':!formulaRoute.isActive}" class="dsi dsi-console"></span>
+              <span *ngIf="showSideNav" class="text items font-14" [ngClass]="{
+                  'fw-600 nav-active': formulaRoute.isActive,
+                  'nav-inactive': !formulaRoute.isActive
+                }">Formulas</span>
+            </div>
+          </div>
         </div>
       </ng-container>
+      <!-- <ng-container *ngIf="experimentalFeatures">
+        <div class="icon-block-group text-secondary border-top border-border pt-3">
+          <span *ngIf="showSideNav" class="nav-active d-flex align-items-center">
+            <span>PROCESS FLOWS</span>
+            <span class="text-uppercase ml-2 text-primary font-10">(beta)</span>
+          </span>
+          <div *ngIf="showSideNav" class="dsi padding" [ngClass]="{
+              'dsi-drop-down': openPanel['processFlows'],
+              'dsi-drop-up': !openPanel['processFlows']
+            }" (click)="togglePanel('processFlows')"></div>
+        </div>
+        <div *ngIf="openPanel['processFlows']">
+          <div *ngIf="hasConnectorsPermission" #nodeRoute="routerLinkActive"
+            class="icon-block d-flex align-items-center my-3"
+            [ngClass]="{'justify-content-between':showSideNav, 'justify-content-center':!showSideNav}"
+            routerLinkActive="text-primary bg-white active" [routerLink]="['processNode']" id="_nodes">
+            <div class="d-flex align-items-center">
+              <span [ngClass]="{'nav-inactive':!nodeRoute.isActive}" class="dsi dsi-connector"></span>
+              <span *ngIf="showSideNav" class="text items font-14" [ngClass]="{
+                'fw-600 nav-active': nodeRoute.isActive,
+                'nav-inactive': !nodeRoute.isActive
+              }">Nodes</span>
+            </div>
+          </div>
+          <div *ngIf="hasConnectorsPermission" #pfRoute="routerLinkActive"
+          class="icon-block d-flex align-items-center my-3"
+          [ngClass]="{'justify-content-between':showSideNav, 'justify-content-center':!showSideNav}"
+          routerLinkActive="text-primary bg-white active" [routerLink]="['processFlow']" id="_con">
+          <div class="d-flex align-items-center">
+            <span [ngClass]="{'nav-inactive':!pfRoute.isActive}" class="dsi dsi-connector"></span>
+            <span *ngIf="showSideNav" class="text items font-14" [ngClass]="{
+              'fw-600 nav-active': pfRoute.isActive,
+              'nav-inactive': !pfRoute.isActive
+            }">Flows</span>
+          </div>
+        </div>
+        
+        </div>
+      </ng-container> -->
       <ng-container *ngIf="
           hasGroupsPermission ||
           hasUsersPermission ||
@@ -226,6 +303,20 @@
                   'fw-600 nav-active': groupRoute.isActive,
                   'nav-inactive': !groupRoute.isActive
                 }">Groups</span>
+            </div>
+          </div>
+          <div *ngIf="hasAPIKeyPermission" #apiKeyRoute="routerLinkActive"
+            class="icon-block d-flex align-items-center my-3"
+            [ngClass]="{'justify-content-between':showSideNav, 'justify-content-center':!showSideNav}"
+            routerLinkActive="text-primary bg-white active" [routerLink]="['api-keys']" id="_apiKeys">
+            <div class="d-flex align-items-center ml-1">
+              <span [ngClass]="{'nav-inactive':!apiKeyRoute.isActive}" class="dsi dsi-id"></span>
+              <span *ngIf="showSideNav" class="text items font-14" [ngClass]="{
+                  'fw-600 nav-active': apiKeyRoute.isActive,
+                  'nav-inactive': !apiKeyRoute.isActive
+                }">API Keys
+                <!-- <span class="text-uppercase ml-2 text-primary font-10">(beta)</span> -->
+              </span>
             </div>
           </div>
           <div *ngIf="hasInsightsPermission" #insightRoute="routerLinkActive"

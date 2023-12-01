@@ -51,6 +51,9 @@ export class DatePickerComponent implements OnInit, OnDestroy, AfterViewInit, Co
   @ViewChild('minute', { static: false }) minute: ElementRef;
   @ViewChild('second', { static: false }) second: ElementRef;
 
+
+  @Output() assignDate: EventEmitter<any> = new EventEmitter();
+
   private valueChange: any;
   private focusChange: any;
   private toChanged: boolean;
@@ -109,7 +112,7 @@ export class DatePickerComponent implements OnInit, OnDestroy, AfterViewInit, Co
     }
     self.initKeyboadEvents();
     self.fillMonthData(self.fromDate.getMonth(), self.fromDate.getFullYear());
-    if (!self.options.type) {
+    if (!self.options.type || self.options?.type?.toLowerCase() === 'datetime') {
       self.options.type = 'date-time';
     }
     for (let i = 1970; i <= 2100; i++) {
@@ -479,6 +482,7 @@ export class DatePickerComponent implements OnInit, OnDestroy, AfterViewInit, Co
   }
   done() {
     const self = this;
+    self.assignDate.emit(self.fromDate.toISOString())
     if (self.fromChanged) {
       if (self.valueChange) {
         self.valueChange(self.fromDate.toISOString());

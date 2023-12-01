@@ -116,7 +116,7 @@
                     <span class="ignore-outside font-20 fw-600">Add App</span>
                 </label>
                 <div class="position-relative ignore-outside ml-auto">
-                    <odp-search-box (enteredText)="appSearch($event)" (reset)="resetApp()" [ignoreOutside]="true">
+                    <odp-search-box (enteredText)="appSearch($event)" (reset)="resetApp()" [ignoreOutside]="true" [edit]="{status:true}">
                     </odp-search-box>
                 </div>
             </div>

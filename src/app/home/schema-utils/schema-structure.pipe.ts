@@ -6,7 +6,7 @@ export class SchemaStructurePipe implements PipeTransform {
     private properties(properties) {
         const temp = {};
         Object.keys(properties).forEach(i => {
-            if (typeof properties[i] === 'number' || properties[i]) {
+            if (typeof properties[i] === 'number' || (properties[i] || i === 'default')) {
                 if (i === 'hasTokens' && (properties['longText'] || properties['richText'])) {
                     if (properties[i] && properties[i].length > 0) {
                         temp[i] = properties[i];
@@ -28,16 +28,16 @@ export class SchemaStructurePipe implements PipeTransform {
                 } else if (i === 'password' && properties['_detailedType'] === 'rich') {
                     temp[i] = properties[i];
                 }
-                else if (!properties['richText'] && !properties['longText'] && !properties['email'] && properties['_detailedType'] != 'enum' && properties['_type'] == 'String' && i == 'password'){
+                else if (!properties['richText'] && !properties['longText'] && !properties['email'] && properties['_detailedType'] != 'enum' && properties['_type'] == 'String' && i == 'password') {
                     temp[i] = properties[i];
                 }
                 else if (i === 'longText' && properties['_detailedType'] === 'long') {
                     temp[i] = properties[i];
-                }  else if (i === 'password' && properties['_detailedType'] === 'long') {
+                } else if (i === 'password' && properties['_detailedType'] === 'long') {
                     temp[i] = properties[i];
                 } else if (i === 'password' && properties['_type'] === 'File') {
                     temp[i] = properties[i];
-                } 
+                }
                 else if (i === 'natural' && properties['_detailedType'] === 'natural') {
                     temp[i] = properties[i];
                 } else if (i === 'max'
@@ -66,7 +66,10 @@ export class SchemaStructurePipe implements PipeTransform {
                     || i === 'readonly'
                     || i === 'errorMessage'
                     || i === 'defaultTimezone'
-                    || i === 'supportedTimezones') {
+                    || i === 'supportedTimezones'
+                    || i === 'schemaFree'
+                    || i === 'masking'
+                    || i === 'dateFormat') {
                     temp[i] = properties[i];
                 }
             }

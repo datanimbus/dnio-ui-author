@@ -8,29 +8,13 @@ import { Component, Input, OnInit } from '@angular/core';
 export class SftpConnectorComponent implements OnInit {
 
   @Input() edit: any;
-  @Input() prevNode: any;
   @Input() currNode: any;
   @Input() nodeList: Array<any>;
+  toggle: any;
   constructor() {
-    this.edit = {
-      status: true
-    };
+    this.toggle = {};
   }
 
   ngOnInit(): void {
-    if (!this.currNode.options.put && !this.currNode.options.get) {
-      this.currNode.options.put = true;
-    }
-  }
-
-  setSFTPAction(action: string, flag: boolean) {
-    if (action == 'get') {
-      delete this.currNode.options.put;
-    } else {
-      delete this.currNode.options.get;
-    }
-    if (!this.currNode.options.get && !this.currNode.options.put) {
-      this.currNode.options.get = true;
-    }
   }
 }

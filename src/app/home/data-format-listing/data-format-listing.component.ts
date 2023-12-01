@@ -36,6 +36,12 @@ export class DataFormatListingComponent implements OnInit, OnDestroy {
   searchTerm: string;
   sortModel: any;
   formatList: Array<any>;
+  cloneData: any;
+  isClone: boolean;
+  dataType: string;
+  showTextarea: string;
+  definition: Array<any>;
+  subType: Array<any> = [];
   constructor(private commonService: CommonService,
     private appService: AppService,
     private router: Router,
@@ -52,14 +58,17 @@ export class DataFormatListingComponent implements OnInit, OnDestroy {
       active: true,
       label: 'Data Formats'
     }];
+    this.definition = [];
 
     this.commonService.changeBreadcrumb(this.breadcrumbPaths)
     this.openDeleteModal = new EventEmitter();
     this.form = this.fb.group({
-      name: [null, [Validators.required, Validators.maxLength(40), Validators.pattern(/\w+/)]],
-      description: [null, [Validators.maxLength(240), Validators.pattern(/\w+/)]],
+      name: [null, [Validators.required, Validators.maxLength(40), Validators.pattern(/^[a-zA-Z]/)]],
+      description: [null, [Validators.maxLength(240), Validators.pattern(/^[a-zA-Z]/)]],
       strictValidation: [false],
+      type: ['Object', [Validators.required]],
       formatType: ['JSON', [Validators.required]],
+      subType: ['flat', []],
       character: [',', [Validators.required]],
       excelType: ['xls', [Validators.required]],
       lineSeparator: ['\\\\n']
@@ -79,7 +88,7 @@ export class DataFormatListingComponent implements OnInit, OnDestroy {
       this.showLazyLoader = true;
       this.getDataFormats();
     });
-
+    this.subType = ['flat', 'HRSF']
   }
 
   ngOnDestroy() {
@@ -89,7 +98,7 @@ export class DataFormatListingComponent implements OnInit, OnDestroy {
   }
 
   newDataFormat() {
-    this.form.reset({ formatType: 'JSON', character: ',', excelType: 'xls', lineSeparator: '\\\\n' });
+    this.form.reset({ type: 'Object', formatType: 'JSON', subType: 'flat', character: ',', excelType: 'xls', lineSeparator: '\\\\n' });
     this.showNewDataFormatWindow = true;
   }
 
@@ -99,7 +108,14 @@ export class DataFormatListingComponent implements OnInit, OnDestroy {
     }
     const payload = this.form.value;
     payload.app = this.commonService.app._id;
-    payload.definition = [];
+    payload.definition = this.definition;
+    if(this.dataType){
+      payload.type = this.dataType;
+    }
+    if(!['CSV','FLATFILE','DELIMITER'].includes(payload.formatType)){
+      payload.subType = ''
+    } 
+    console.log(payload);
     this.showLazyLoader = true;
     this.commonService.post('partnerManager', `/${this.commonService.app._id}/dataFormat`, payload).subscribe(res => {
       this.ts.success('DataFormat Created.');
@@ -119,8 +135,43 @@ export class DataFormatListingComponent implements OnInit, OnDestroy {
   }
 
   cloneDataFormat(_index) {
-    this.appService.cloneLibraryId = this.dataFormatList[_index]._id;
-    this.router.navigate(['/app/', this.app, 'dfm', this.appService.cloneLibraryId]);
+    this.appService.cloneLibraryId = this.records[_index]._id;
+    this.cloneData = this.records[_index];
+    this.isClone = true;
+    this.form.patchValue({
+      name: this.cloneData.name + ' Copy',
+      formatType: this.cloneData.formatType,
+      excelType: this.cloneData.excelType,
+      subType: this.cloneData.subType
+
+    });
+    this.showNewDataFormatWindow = true;
+  }
+
+  triggerDataFormatClone() {
+    this.isClone = false;
+    const payload = {
+      name: this.form.value.name,
+      formatType: this.form.value.formatType,
+      excelType: this.form.value.excelType,
+      app: this.cloneData.app,
+      attributeCount: this.cloneData.attributeCount,
+      character: this.cloneData.character,
+      definition: this.cloneData.definition,
+      lineSeparator: this.cloneData.lineSeparator,
+      strictValidation: this.cloneData.strictValidation,
+      subType: this.cloneData.subType
+    };
+    this.showLazyLoader = true;
+    this.commonService.post('partnerManager', `/${this.commonService.app._id}/dataFormat`, payload).subscribe(res => {
+      this.ts.success('DataFormat Cloned.');
+      this.appService.editLibraryId = res._id;
+      this.router.navigate(['/app/', this.commonService.app._id, 'dfm', res._id]);
+      this.showLazyLoader = false;
+    }, err => {
+      this.showLazyLoader = false;
+      this.commonService.errorToast(err);
+    });
   }
 
   getDataFormats() {
@@ -243,6 +294,9 @@ export class DataFormatListingComponent implements OnInit, OnDestroy {
       this.form.get('excelType').patchValue(format.excelType);
     }
   }
+  selectSubType(format: any) {
+   this.form.get('subType').patchValue(format);
+  }
 
   isFormatSelected(format: any) {
     const formatType = this.form.get('formatType').value;
@@ -259,9 +313,23 @@ export class DataFormatListingComponent implements OnInit, OnDestroy {
     }
     return flag;
   }
+  isSubTypeSelected(format: any) {
+    const subType = this.form.get('subType').value;
+    let flag = false;
+    if (format == subType) {
+      flag = true;
+    }
+    return flag;
+  }
 
-  navigate(dataFormat) {
+  navigate(dataFormat: any) {
     this.router.navigate(['/app/', this.app, 'dfm', dataFormat._id])
+  }
+
+  onSchemaCreate(schema: any) {
+    this.form.get('type').patchValue(schema.type);
+    this.definition = schema.definition;
+    this.showTextarea = null;
   }
 
   private compare(a: any, b: any) {
@@ -317,4 +385,5 @@ export class DataFormatListingComponent implements OnInit, OnDestroy {
   get app() {
     return this.commonService.app._id;
   }
+  
 }

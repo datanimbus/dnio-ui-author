@@ -443,6 +443,9 @@ export class UserAppsComponent implements OnInit, OnDestroy {
     }
     ngOnDestroy(): void {
         const self = this;
+        Object.keys(this.subscriptions).forEach(e => {
+            this.subscriptions[e].unsubscribe();
+        });
         if (self.deleteModalTemplateRef) {
             self.deleteModalTemplateRef.close();
         }

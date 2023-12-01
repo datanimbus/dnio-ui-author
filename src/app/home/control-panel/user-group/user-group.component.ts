@@ -75,7 +75,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
             .subscribe(res => {
                 this.showLazyLoader = false;
                 res.forEach(item => {
-                    const usersLen = item.users.filter(e => e.indexOf('@') > -1);
+                    const usersLen = item.users.filter(e =>e.lastIndexOf('-') != 23);
                     item.membersCount = usersLen.length;
                     item.botsCount = Math.abs(usersLen.length - item.users.length);
 
@@ -116,6 +116,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
             count: -1,
             filter: {},
             select: 'name users roles.id',
+            sort: '-_metadata.lastUpdated',
             noApp: true
         };
         this.groupList = [];

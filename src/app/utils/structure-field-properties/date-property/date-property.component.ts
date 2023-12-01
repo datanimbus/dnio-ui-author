@@ -3,6 +3,8 @@ import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGr
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AppService } from '../../services/app.service';
 import { CommonService } from '../../services/common.service';
+import * as RandExp from 'randexp';
+
 
 @Component({
   selector: 'odp-date-property',
@@ -141,7 +143,7 @@ export class DatePropertyComponent implements OnInit, OnDestroy {
 
   removeFromList(control, index) {
     this.editStateListOfValues = null;
-    // const list = (this.form.get('properties')).get(control) as FormArray;
+    // const list = (this.form.get('properties')).get(control) as UntypedFormArray;
     const list = this.form.getRawValue()['properties'][control];
     const tempValue = list[index];
     this.deleteModal.title = 'Remove ' + list[index];
@@ -165,6 +167,58 @@ export class DatePropertyComponent implements OnInit, OnDestroy {
 
   listEnterKey(event, control) {
     this.addToList(control);
+  }
+
+  generateSampleRegex(value) {
+    const self = this;
+    self.sampleRegexValue = [];
+    if (value) {
+      for (let i = 0; i < 3; i++) {
+        self.sampleRegexValue.push(self.generate(value));
+      }
+    }
+  }
+
+  generate(value) {
+    const randexp = new RandExp(value);
+    const sampleValue = randexp.gen();
+    return sampleValue;
+  }
+
+  reCalibrateTextDefaultValue(type, value, prop) {
+    value = parseInt(value, 10);
+    const self = this;
+    if (prop.get('default')) {
+      const deafaultValue = prop.get('default').value;
+         if (type === 'pattern') {
+        const re = new RegExp(prop.get('pattern').value);
+        if (deafaultValue && prop.get('pattern').value && !re.test(deafaultValue)) {
+          self.setError(type, prop);
+        } else if ((prop.get('default')).getError(type)) {
+          self.deleteError(type, prop);
+        }
+      }
+    }
+  }
+
+  setError(type, prop) {
+    let errors = (prop.get('default')).errors;
+    if (!errors) {
+      errors = {};
+    }
+    errors[type] = true;
+    (prop.get('default')).setErrors(errors);
+  }
+
+  deleteError(type, prop) {
+    let errors = (prop.get('default')).errors;
+    if (errors) {
+      delete errors[type];
+      if (Object.keys(errors).length === 0) {
+        errors = null;
+      }
+    }
+    (prop.get('default')).setErrors(errors);
   }
 
   get supportedTimezonesList() {

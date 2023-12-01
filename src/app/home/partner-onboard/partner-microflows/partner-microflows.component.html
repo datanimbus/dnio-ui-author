@@ -5,7 +5,7 @@
             <span class="fa fa-exchange-alt mr-2 text-accent"></span>
             <span class="text">Integration Flows</span>
         </div>
-        <odp-search-box (enteredText)="searchTerm=$event" (reset)="searchTerm=null"></odp-search-box>
+        <odp-search-box (enteredText)="searchTerm=$event" (reset)="searchTerm=null" [edit]="{status:true}"></odp-search-box>
         <button type="button" class="btn btn-sm btn-link" (click)="newMicroflow()"
             *ngIf="edit.status && edit.id && canCreateFlow()">
             <span class="dsi dsi-plus-circle mr-2"></span>
