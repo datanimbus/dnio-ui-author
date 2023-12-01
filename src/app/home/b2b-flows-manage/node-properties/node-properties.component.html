@@ -110,7 +110,7 @@
         </div>
         <button type="button" class="btn btn-dark ignore-outside d-flex align-items-center mb-3"
             (click)="toggle['mapping']=!toggle['mapping']"
-            *ngIf="currNode.type=='DATASERVICE' && currNode.dataStructure?.incoming">
+            *ngIf="(currNode.type=='DATASERVICE' && currNode.dataStructure?.incoming) || currNode.type=='MAPPING'">
             <span class="dsi dsi-mapping mr-2"></span>
             <span>Data Mapping</span>
         </button>
@@ -656,7 +656,7 @@
 <div [ngClass]="{'show':toggle['mapping']}" class="node-mapping-window border-left position-fixed bg-white p-4">
     <odp-node-mapping *ngIf="toggle['mapping']" [edit]="edit" [flowData]="flowData" [currNode]="currNode"
         [inputNode]="this.flowData.inputNode._id" (close)="toggle['mapping']=false"
-        source="incoming"></odp-node-mapping>
+        source="outgoing"></odp-node-mapping>
 </div>
 
 <div [ngClass]="{'show':toggle['codeBlock']}" class="node-coding-window border-left position-fixed bg-white p-4">

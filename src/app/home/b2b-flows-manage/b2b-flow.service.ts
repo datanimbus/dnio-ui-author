@@ -487,6 +487,9 @@ export class B2bFlowService {
     if (node.type == 'ERROR') {
       return false;
     }
+    if (node.type == 'MAPPING') {
+      return false;
+    }
     if (node.type == 'DATASERVICE') {
       return false;
     }
@@ -512,7 +515,6 @@ export class B2bFlowService {
     }
     return node.type != 'ERROR'
       && node?.type != 'DATASERVICE'
-      && node?.type != 'MAPPING'
       && node?.type != 'DEDUPE'
       && node?.type != 'CONFLICT'
       && node?.type != 'FILE_WRITE'
