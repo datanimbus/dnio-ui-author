@@ -64,7 +64,7 @@ export class DataFormatListingComponent implements OnInit, OnDestroy {
     this.openDeleteModal = new EventEmitter();
     this.form = this.fb.group({
       name: [null, [Validators.required, Validators.maxLength(40), Validators.pattern(/^[a-zA-Z]/)]],
-      description: [null, [Validators.maxLength(240), Validators.pattern(/^[a-zA-Z]/)]],
+      description: [null, [Validators.maxLength(500), Validators.pattern(/^[a-zA-Z]/)]],
       strictValidation: [false],
       type: ['Object', [Validators.required]],
       formatType: ['JSON', [Validators.required]],

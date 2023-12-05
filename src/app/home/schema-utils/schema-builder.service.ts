@@ -45,7 +45,7 @@ export class SchemaBuilderService {
             required: [value.properties && value.properties.required ? value.properties.required : false],
             disabled: [value.properties && value.properties.disabled ? value.properties.disabled : false],
             fieldLength: [value.properties && value.properties.fieldLength ? value.properties.fieldLength : 10],
-            _description: [value.properties && value.properties._description ? value.properties._description : null, [Validators.maxLength(240)]],
+            _description: [value.properties && value.properties._description ? value.properties._description : null, [Validators.maxLength(500)]],
             _typeChanged: [value.type],
             _isParrentArray: [value.properties && value.properties._isParrentArray ? value.properties._isParrentArray : null],
             _isGrpParentArray: [value.properties && value.properties._isGrpParentArray ? value.properties._isGrpParentArray : null],
