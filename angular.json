@@ -88,21 +88,20 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "proxyConfig": "proxy.conf.json",
-            "buildTarget": "odp-ui-author:build"
-          },
+            "browserTarget": "odp-ui-author:build"          },
           "configurations": {
             "production": {
-              "buildTarget": "odp-ui-author:build:production"
+              "browserTarget": "odp-ui-author:build:production"
             },
             "development": {
-              "buildTarget": "odp-ui-author:build:development"
+              "browserTarget": "odp-ui-author:build:development"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "odp-ui-author:build"
+            "browserTarget": "odp-ui-author:build"
           }
         },
         "test": {

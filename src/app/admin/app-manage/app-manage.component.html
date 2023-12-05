@@ -124,18 +124,29 @@
                         <div class="d-flex flex-column justify-content-between theme-settings">
                             <div class="d-flex align-items-center">
                                 <span class="text-secondary label">Lights:</span>
-                                <div class="btn-group btn-group-toggle" ngbRadioGroup name="theme" [(ngModel)]="appData.appCenterStyle.theme">
-                                    <label ngbButtonLabel class="btn-outline-primary">
-                                        <input ngbButton type="radio" value="light">
-                                        <span class="fa fa-sun mr-2"></span>
-                                        <span class="text">Light</span>
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-outline-primary" [ngClass]="{ 'active': appData.appCenterStyle.theme === 'light' }">
+                                      <input
+                                        type="radio"
+                                        value="light"
+                                        [(ngModel)]="appData.appCenterStyle.theme"
+                                        [ngModelOptions]="{ standalone: true }"
+                                        autocomplete="off"
+                                      />
+                                      Light
                                     </label>
-                                    <label ngbButtonLabel class="btn-outline-dark">
-                                        <input ngbButton type="radio" value="dark">
-                                        <span class="fa fa-moon mr-2"></span>
-                                        <span class="text">Dark</span>
+                                  
+                                    <label class="btn btn-outline-dark" [ngClass]="{ 'active': appData.appCenterStyle.theme === 'dark' }">
+                                      <input
+                                        type="radio"
+                                        value="dark"
+                                        [(ngModel)]="appData.appCenterStyle.theme"
+                                        [ngModelOptions]="{ standalone: true }"
+                                        autocomplete="off"
+                                      />
+                                      Dark
                                     </label>
-                                </div>
+                                  </div>
                             </div>
                             <div class="d-flex align-items-center">
                                 <span class="text-secondary label">Dark Banner:</span>

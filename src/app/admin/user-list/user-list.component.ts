@@ -4,7 +4,7 @@ import { NgbTooltipConfig, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ToastrService } from 'ngx-toastr';
 import * as moment from 'moment';
-import { of, Subject } from 'rxjs';
+import { of, Subject, } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { GridOptions, GridReadyEvent, IDatasource, IGetRowsParams, RowNode } from 'ag-grid-community';
 
@@ -351,26 +351,37 @@ export class UserListComponent implements OnInit, OnDestroy {
                     return this.getUserList();
                 })
             )
-            .subscribe(
-                docs => {
+            .subscribe({
+                next: (docs) => {
                     if (!!docs) {
-                        this.loadedCount += docs.length;
-                        if (this.loadedCount < this.totalCount) {
-                            params.successCallback(docs);
-                        } else {
-                            this.totalCount = this.loadedCount;
-                            params.successCallback(docs, this.totalCount);
+                        let lastRow = -1;
+                        if(this.loadedCount >= this.totalCount){
+                            this.loadedCount = this.totalCount
                         }
+                        else{
+                            this.loadedCount += docs.length;
+                        }
+                        if (this.totalCount <= this.loadedCount) {
+                            // params.successCallback(docs);
+                            lastRow = this.loadedCount;
+                        } 
+                        params.successCallback(docs, lastRow);
+                        // else {
+                        //     this.totalCount = this.loadedCount;
+                        //     params.successCallback(docs, this.totalCount);
+                        // }
                     } else {
                         params.successCallback([], 0);
                     }
                     this.agGrid?.api?.hideOverlay();
                 },
-                err => {
+                error: (err) => {
                     this.agGrid?.api?.hideOverlay();
                     console.error(err);
                     params.failCallback();
                 }
+            }
+                
             );
     }
 
@@ -611,7 +622,9 @@ export class UserListComponent implements OnInit, OnDestroy {
                     this.showUserDetails = false;
                     this.ts.success('User(s) deleted successfully');
                     this.agGrid.api.deselectAll();
-                    this.agGrid.api.purgeInfiniteCache();
+                             this.agGrid.api.purgeInfiniteCache();
+                    // this.agGrid.api.redrawRows();
+                    this.agGrid?.api?.refreshInfiniteCache();
                 },
                 err => {
                     this.showSpinner = false;
@@ -650,9 +663,9 @@ export class UserListComponent implements OnInit, OnDestroy {
             res => {
                 this.showSpinner = false;
                 this.agGrid.api.deselectAll();
-                this.agGrid.api.purgeInfiniteCache();
                 this.ts.success(`${deleteReqArr.length > 1 ? 'Users' : 'User'} deleted successfully`)
                 this.agGrid?.api?.refreshInfiniteCache();
+
                 this.deleteSelectedModalRef.close(true);
             },
             err => {
