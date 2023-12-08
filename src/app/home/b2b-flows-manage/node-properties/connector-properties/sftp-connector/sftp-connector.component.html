@@ -5,7 +5,7 @@
     <odp-autocomplete-on-edit #typeAhead [(ngModel)]="currNode.options.folderPath" [currNode]="currNode"
         class="styled-wrapper" [edit]="edit"></odp-autocomplete-on-edit>
 </div>
-<div *ngIf="!currNode.options.list" class="form-group position-relative">
+<div *ngIf="!currNode.options.list && !currNode.options.move" class="form-group position-relative">
     <label for="fileName" class="font-14 fw-400 text-dark d-flex align-items-center justify-content-between">
         File Name
     </label>

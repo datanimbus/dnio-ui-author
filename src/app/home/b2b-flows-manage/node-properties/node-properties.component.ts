@@ -446,11 +446,12 @@ export class NodePropertiesComponent implements OnInit {
     let flag = false;
     if (this.currNode.type == 'FILE') {
       flag = true;
-    } else if (this.currNode.type == 'API' && this.currNode.options.contentType == 'multipart/form-data') {
+    } if (this.currNode.type == 'API' && this.currNode.options.contentType == 'multipart/form-data') {
       flag = true;
     }
     if (flag && (this.currNode?.dataStructure?.outgoing?.formatType === 'EXCEL'
       || this.currNode?.dataStructure?.outgoing?.formatType === 'CSV'
+      || this.currNode?.dataStructure?.outgoing?.formatType === 'FLATFILE'
       || this.currNode?.dataStructure?.outgoing?.formatType === 'DELIMITER')) {
       flag = true;
     } else {
