@@ -259,7 +259,7 @@ export class B2bFlowService {
       temp.options.connectorType = 'SFTP';
       const subType = changeObj[type.split('_')[1]];
       temp.options[subType.toLowerCase()] = true
-      if (subType == 'LIST') {
+      if (subType == 'list') {
         temp.dataStructure['outgoing'] = this.getSftpListODS()
       }
     }
