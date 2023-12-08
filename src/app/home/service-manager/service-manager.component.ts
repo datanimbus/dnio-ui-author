@@ -97,13 +97,13 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
     this.form = this.fb.group({
       name: [null, [Validators.required, Validators.maxLength(40), Validators.pattern(/\w+/)]],
       connectors: connectorForm,
-      description: [null, [Validators.maxLength(240), Validators.pattern(/\w+/)]],
+      description: [null, [Validators.maxLength(500), Validators.pattern(/\w+/)]],
       schemaFree: []
     });
 
     this.cloneForm = this.fb.group({
       name: [null, [Validators.required, Validators.maxLength(40), Validators.pattern(/\w+/)]],
-      description: [null, [Validators.maxLength(240), Validators.pattern(/\w+/)]],
+      description: [null, [Validators.maxLength(500), Validators.pattern(/\w+/)]],
       desTab: [true],
       intTab: [false],
       expTab: [false],
