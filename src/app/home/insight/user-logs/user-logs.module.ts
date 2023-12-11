@@ -25,9 +25,8 @@ import { OnChangeModule } from 'src/app/utils/directives/on-change/on-change.mod
         CheckboxModule,
         ClickOutsideModule,
         OnChangeModule,
-        AgGridModule.withComponents([
-            AgGridFiltersComponent,
-        ])],
+        AgGridModule
+    ],
     providers: [DatePipe],
     exports: [UserLogsComponent]
 })

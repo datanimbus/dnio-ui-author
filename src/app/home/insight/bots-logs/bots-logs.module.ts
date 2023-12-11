@@ -21,9 +21,8 @@ import { AgGridFiltersComponent } from './ag-grid-filters/ag-grid-filters.compon
     CheckboxModule,
     ClickOutsideModule,
     OnChangeModule,
-    AgGridModule.withComponents([
-      AgGridFiltersComponent
-    ])],
+    AgGridModule
+  ],
   providers: [DatePipe],
   exports: [BotsLogsComponent]
 })

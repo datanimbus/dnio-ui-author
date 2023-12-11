@@ -144,8 +144,7 @@
               </div>
               <div class="schema-creator scroll position-relative" id="schema-creator" [scrollTop]="schemaFieldheight">
                 <ng-container formArrayName="definition">
-                  <div [sortablejs]="definitions"
-                    [sortablejsOptions]="{sort: editable, filter: '.disabled', onMove: sortableOnMove }">
+                  <div >
                     <ng-container *ngFor="let def of definitions;let fieldIndex = index; let first = first;">
                       <div [class.disabled]="def.value.hasOwnProperty('_id')">
                         <odp-structure-field [formGroupName]="fieldIndex" [all]="form.get('definition')"

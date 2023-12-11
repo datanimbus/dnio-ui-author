@@ -87,9 +87,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "odp-ui-author:build",
-            "proxyConfig": "proxy.conf.json"
-          },
+            "proxyConfig": "proxy.conf.json",
+            "browserTarget": "odp-ui-author:build"          },
           "configurations": {
             "production": {
               "browserTarget": "odp-ui-author:build:production"

@@ -6,7 +6,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { SortablejsModule } from 'ngx-sortablejs';
+// import { SortablejsModule } from 'ngx-sortablejs';
 
 import { SchemaBuilderService } from './schema-builder.service';
 import { SchemaStructurePipe } from './schema-structure.pipe';
@@ -67,7 +67,6 @@ import { ConnectorSettingsComponent } from './configuration/connector-settings/c
         SearchTermModule,
         FilterDefinitionModule,
         LoadingPlaceholderModule,
-        SortablejsModule,
         CheckboxModule,
         MatFormFieldModule,
         MatSelectModule,

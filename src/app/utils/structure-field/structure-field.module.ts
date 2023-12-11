@@ -18,7 +18,6 @@ import { SortablejsModule } from 'ngx-sortablejs';
     DeleteModalModule,
     FieldTypeModule,
     KeyStrokesModule,
-    SortablejsModule
   ],
   declarations: [StructureFieldComponent],
   exports: [StructureFieldComponent]

@@ -166,7 +166,7 @@ export class AppService {
     }
 
     getFlows() {
-        this.invokeEvent.next()
+        this.invokeEvent.next(null)
     }
 
     rand(index: number) {

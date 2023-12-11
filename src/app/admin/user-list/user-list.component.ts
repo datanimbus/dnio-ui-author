@@ -4,7 +4,7 @@ import { NgbTooltipConfig, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ToastrService } from 'ngx-toastr';
 import * as moment from 'moment';
-import { of, Subject } from 'rxjs';
+import { of, Subject, } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { GridOptions, GridReadyEvent, IDatasource, IGetRowsParams, RowNode } from 'ag-grid-community';
 
@@ -50,7 +50,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     currUserType: string;
     showPassword: any;
     gridOptions: GridOptions;
-    frameworkComponents: any;
+    components: any;
     dataSource: IDatasource;
     validAuthTypes: Array<any>;
     availableAuthTypes: Array<any>;
@@ -175,7 +175,7 @@ export class UserListComponent implements OnInit, OnDestroy {
             .subscribe(params => {
                 this.getRows(params);
             });
-        this.frameworkComponents = {
+        this.components = {
             customCheckboxCellRenderer: GridCheckboxComponent,
             customCellRenderer: UserListCellRendererComponent,
             actionCellRenderer: AgGridActionsRendererComponent
@@ -188,8 +188,6 @@ export class UserListComponent implements OnInit, OnDestroy {
                 sortable: true,
                 filter: 'agTextColumnFilter',
                 suppressMenu: true,
-                floatingFilter: true,
-                floatingFilterComponentFramework: AgGridSharedFloatingFilterComponent,
                 filterParams: {
                     caseSensitive: true,
                     suppressAndOrCondition: true,
@@ -209,6 +207,8 @@ export class UserListComponent implements OnInit, OnDestroy {
                 {
                     headerName: 'Name',
                     field: 'basicDetails.name',
+                    floatingFilter: true,
+                    floatingFilterComponent: AgGridSharedFloatingFilterComponent,
                     refData: {
                         filterType: 'text'
                     }
@@ -216,6 +216,8 @@ export class UserListComponent implements OnInit, OnDestroy {
                 {
                     headerName: 'Username',
                     field: 'username',
+                    floatingFilter: true,
+                    floatingFilterComponent: AgGridSharedFloatingFilterComponent,
                     refData: {
                         filterType: 'text'
                     }
@@ -223,6 +225,8 @@ export class UserListComponent implements OnInit, OnDestroy {
                 {
                     headerName: 'Apps',
                     field: 'accessControl.apps._id',
+                    floatingFilter: true,
+                    floatingFilterComponent: AgGridSharedFloatingFilterComponent,
                     refData: {
                         filterType: 'list_of_values',
                         mapperFunction: 'gridAppsMapper'
@@ -231,6 +235,8 @@ export class UserListComponent implements OnInit, OnDestroy {
                 {
                     headerName: 'User Type',
                     field: 'bot',
+                    floatingFilter: true,
+                    floatingFilterComponent: AgGridSharedFloatingFilterComponent,
                     refData: {
                         filterType: 'list_of_values',
                         mapperFunction: 'gridUserTypeMapper'
@@ -239,6 +245,8 @@ export class UserListComponent implements OnInit, OnDestroy {
                 {
                     headerName: 'Auth Mode',
                     field: 'auth.authType',
+                    floatingFilter: true,
+                    floatingFilterComponent: AgGridSharedFloatingFilterComponent,
                     refData: {
                         filterType: 'list_of_values',
                         mapperFunction: 'gridAuthTypeMapper'
@@ -247,6 +255,8 @@ export class UserListComponent implements OnInit, OnDestroy {
                 {
                     headerName: 'Last Login',
                     field: 'lastLogin',
+                    floatingFilter: true,
+                    floatingFilterComponent: AgGridSharedFloatingFilterComponent,
                     minWidth: 270,
                     refData: {
                         filterType: 'date-time',
@@ -271,10 +281,10 @@ export class UserListComponent implements OnInit, OnDestroy {
             context: this,
             animateRows: true,
             rowSelection: 'multiple',
-            rowDeselection: true,
+            // rowDeselection: true,
             rowMultiSelectWithClick: true,
             onGridReady: this.onGridReady.bind(this),
-            onRowDataChanged: this.autoSizeAllColumns.bind(this),
+            onRowDataUpdated: this.autoSizeAllColumns.bind(this),
             onGridSizeChanged: this.forceResizeColumns.bind(this),
             onRowDoubleClicked: this.onRowDoubleClick.bind(this)
         };
@@ -325,7 +335,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         } else {
             delete this.apiConfig.filter;
         }
-        const sortString = this.appService.getSortFromModel(this.agGrid?.api?.getSortModel() || []);
+        const sortString = this.appService.getSortFromModel(this.agGrid?.api?.getColumnState() || []);
         this.apiConfig.sort = sortString || 'basicDetails.name';
         this.agGrid?.api?.showLoadingOverlay();
         if (!!this.subscriptions['data_userlist']) {
@@ -341,26 +351,37 @@ export class UserListComponent implements OnInit, OnDestroy {
                     return this.getUserList();
                 })
             )
-            .subscribe(
-                docs => {
+            .subscribe({
+                next: (docs) => {
                     if (!!docs) {
-                        this.loadedCount += docs.length;
-                        if (this.loadedCount < this.totalCount) {
-                            params.successCallback(docs);
-                        } else {
-                            this.totalCount = this.loadedCount;
-                            params.successCallback(docs, this.totalCount);
+                        let lastRow = -1;
+                        if(this.loadedCount >= this.totalCount){
+                            this.loadedCount = this.totalCount
                         }
+                        else{
+                            this.loadedCount += docs.length;
+                        }
+                        if (this.totalCount <= this.loadedCount) {
+                            // params.successCallback(docs);
+                            lastRow = this.loadedCount;
+                        } 
+                        params.successCallback(docs, lastRow);
+                        // else {
+                        //     this.totalCount = this.loadedCount;
+                        //     params.successCallback(docs, this.totalCount);
+                        // }
                     } else {
                         params.successCallback([], 0);
                     }
                     this.agGrid?.api?.hideOverlay();
                 },
-                err => {
+                error: (err) => {
                     this.agGrid?.api?.hideOverlay();
                     console.error(err);
                     params.failCallback();
                 }
+            }
+                
             );
     }
 
@@ -374,13 +395,13 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
 
     private autoSizeAllColumns() {
-        if (!!this.agGrid.api && !!this.agGrid.columnApi) {
+        if (!!this.agGrid.api && !!this.agGrid.api) {
             setTimeout(() => {
                 const container = document.querySelector('.grid-container');
                 const availableWidth = !!container ? container.clientWidth - 170 : 1350;
-                const allColumns = this.agGrid.columnApi.getAllColumns();
+                const allColumns = this.agGrid.api?.getAllGridColumns();
                 allColumns.forEach(col => {
-                    this.agGrid.columnApi.autoSizeColumn(col);
+                    this.agGrid.api.autoSizeColumn(col);
                     if (col.getActualWidth() > 200 || this.agGrid.api.getDisplayedRowCount() === 0) {
                         col.setActualWidth(200);
                     }
@@ -500,7 +521,7 @@ export class UserListComponent implements OnInit, OnDestroy {
 
     checkAllUser(val) {
         this.agGrid.api.forEachNode(row => {
-            this.agGrid.api.getRowNode(row.id).selectThisNode(val);
+            this.agGrid.api.getRowNode(row.id).setSelected(val);
         });
     }
 
@@ -601,7 +622,9 @@ export class UserListComponent implements OnInit, OnDestroy {
                     this.showUserDetails = false;
                     this.ts.success('User(s) deleted successfully');
                     this.agGrid.api.deselectAll();
-                    this.agGrid.api.purgeInfiniteCache();
+                             this.agGrid.api.purgeInfiniteCache();
+                    // this.agGrid.api.redrawRows();
+                    this.agGrid?.api?.refreshInfiniteCache();
                 },
                 err => {
                     this.showSpinner = false;
@@ -640,9 +663,9 @@ export class UserListComponent implements OnInit, OnDestroy {
             res => {
                 this.showSpinner = false;
                 this.agGrid.api.deselectAll();
-                this.agGrid.api.purgeInfiniteCache();
                 this.ts.success(`${deleteReqArr.length > 1 ? 'Users' : 'User'} deleted successfully`)
                 this.agGrid?.api?.refreshInfiniteCache();
+
                 this.deleteSelectedModalRef.close(true);
             },
             err => {

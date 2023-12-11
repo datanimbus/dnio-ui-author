@@ -83,8 +83,7 @@
 
   <div class="d-flex flex-column w-100 mb-4 overflow-auto" style="max-height: 30vh;"
     *ngIf="form.get('properties.enum') && form.get('properties._detailedType').value === 'enum'">
-    <div class="" formArrayName="enum" [sortablejs]="enumList"
-      [sortablejsOptions]="{sort: !!edit && !!edit.status, filter: '.disabled', onMove: sortableOnMove, onUpdate: sortableOnUpdate }">
+    <div class="" formArrayName="enum" >
       <ng-container *ngFor="let en of enumList; let i=index;">
         <div class="d-flex p-2" [class.disabled]="!edit || !edit.status">
           <span class="icon" *ngIf="!!edit && !!edit.status">

@@ -93,8 +93,7 @@
                         </div>
                     </div>
 
-                    <div class="state-model-config" [sortablejs]="stateModelData"
-                        [sortablejsOptions]="{sort: !!edit && !!edit.status, filter: '.disabled', onMove: sortableOnMove, onUpdate: sortableOnUpdate }">
+                    <div class="state-model-config" >
                         <div class="row align-items-center" *ngFor="let stateData of stateModelData; let i = index ">
                             <div class="col-4" [ngClass]="{'mb-2': edit.status }">
                                 <div *ngIf="edit.status" class="d-inline-block">
@@ -114,16 +113,16 @@
                             </div>
                             <div class="col-8" [ngClass]="{'mb-2': !edit.status }">
                                 <mat-form-field class="example-chip-list w-100" appearance="fill">
-                                    <mat-chip-list #chipList aria-label="Next State selection"
+                                    <mat-chip-listbox #chipList aria-label="Next State selection"
                                         [disabled]="!edit.status">
-                                        <mat-chip *ngFor="let nextState of nextStates(stateData.state)"
+                                        <mat-chip-option *ngFor="let nextState of nextStates(stateData.state)"
                                             [selectable]="selectable" [removable]="removable"
                                             (removed)="removeNextState(nextState, stateData.state)">
                                             {{nextState}}
                                             <mat-icon matChipRemove *ngIf="removable">
                                                 <span class="fa fa-times"></span>
                                             </mat-icon>
-                                        </mat-chip>
+                                        </mat-chip-option>
                                         <input placeholder="{{ edit.status ? 'Next State...': '' }}" #chipInput
                                             [formControl]="stateCtrl" [matChipInputFor]="chipList"
                                             [matAutocomplete]="auto"
@@ -131,7 +130,7 @@
                                             [matChipInputAddOnBlur]="addOnBlur"
                                             (matChipInputTokenEnd)="addNewNextState($event, stateData.state , chipInput, auto)"
                                             autocomplete="disabled">
-                                    </mat-chip-list>
+                                    </mat-chip-listbox>
 
                                     <mat-autocomplete #auto="matAutocomplete"
                                         (optionSelected)="selectedNextState($event, chipInput, i)">

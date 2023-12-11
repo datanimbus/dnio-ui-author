@@ -28,9 +28,8 @@ import { DateFormatModule } from 'src/app/utils/date-format/date-format.module';
         ClickOutsideModule,
         OnChangeModule,
         DateFormatModule,
-        AgGridModule.withComponents([
-            AgGridFiltersComponent,
-        ])],
+        AgGridModule
+    ],
     exports: [DataserviceLogsComponent]
 })
 export class DataserviceLogsModule { }

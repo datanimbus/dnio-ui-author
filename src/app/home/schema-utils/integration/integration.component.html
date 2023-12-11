@@ -97,7 +97,7 @@
                     <span class="text-muted">No {{hooks.hookshortName}} hooks </span>
                 </div>
                 <div class="hHook-table__body d-flex flex-column" *ngIf="hookList.length > 0">
-                    <div [sortablejs]="hookList" [sortablejsOptions]="{ disabled: !edit.status }">
+                    <div >
                         <div *ngFor="let hook of hookList; let hookIndex = index"
                             class="d-flex p-2 border-bottom w-100 hHook-table__row d-flex align-items-center position-relative">
                             <span class="fa fa-bars text-muted hover"></span>

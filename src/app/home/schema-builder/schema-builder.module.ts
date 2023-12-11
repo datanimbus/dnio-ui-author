@@ -5,7 +5,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SchemaBuilderComponent } from './schema-builder.component';
-import { SchemaUtilsModule } from '../schema-utils/schema-utils.module';
+import { SchemaUtilsModule } from 'src/app/home/schema-utils/schema-utils.module';
 import { LoadingModule } from '../../utils/loading/loading.module';
 import { RouteGuard } from '../../utils/guards/route.guard';
 import { LogsModule } from '../logs/logs.module';
@@ -38,7 +38,6 @@ const routes: Routes = [
     StructureFieldModule,
     StructureFieldPropertiesModule,
     PrettyJsonModule,
-    SortablejsModule,
     RoundRadioModule
   ],
   exports: [

@@ -70,7 +70,7 @@ export class UserComponent implements OnInit, OnDestroy {
   userInLocal: boolean;
   userInAzureAD: boolean;
   showPassword;
-  frameworkComponents: any;
+  components: any;
   gridAttrOptions: GridOptions;
   gridGroupOptions: GridOptions;
   dataSource: IDatasource;
@@ -152,7 +152,7 @@ export class UserComponent implements OnInit, OnDestroy {
       cpassword: [null, [Validators.required]],
     });
 
-    this.frameworkComponents = {
+    this.components = {
       actionRenderer: UserGridActionRendererComponent,
       appCheckRenderer: UserGridAppsRendererComponent,
     };
@@ -446,7 +446,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   checkAllUser(val) {
     this.agGrid.api.forEachNode((row) => {
-      this.agGrid.api.getRowNode(row.id).selectThisNode(val);
+      this.agGrid.api.getRowNode(row.id).setSelected(val);
     });
   }
 

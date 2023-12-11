@@ -46,17 +46,34 @@
                     <div class="font-14 fw-700 my-2">Retain data by</div>
                 </div>
                 <div class="d-flex flex-column">
-                    <div class="btn-group btn-group-toggle" (change)="patchVersionValue(true)" ngbRadioGroup
-                        [ngModelOptions]="{ standalone: true }" [(ngModel)]="versionConfig.type">
-                        <label ngbButtonLabel class="btn btn-outline-dark">
-                            <input ngbButton type="radio" value="count" [disabled]="!edit.status || !canEdit('S')" />
-                            Versions
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-outline-dark" [ngClass]="{ 'active': versionConfig.type === 'count' }">
+                          <input
+                            type="radio"
+                            value="count"
+                            [disabled]="!edit.status || !canEdit('S')"
+                            [(ngModel)]="versionConfig.type"
+                            [ngModelOptions]="{ standalone: true }"
+                            autocomplete="off"
+                            (change)="patchVersionValue(true)"
+                          />
+                          Versions
                         </label>
-                        <label ngbButtonLabel class="btn btn-outline-dark">
-                            <input ngbButton type="radio" value="time" [disabled]="!edit.status || !canEdit('S')" />
-                            Duration
+                      
+                        <label class="btn btn-outline-dark" [ngClass]="{ 'active': versionConfig.type === 'time' }">
+                          <input
+                            type="radio"
+                            value="time"
+                            [disabled]="!edit.status || !canEdit('S')"
+                            [(ngModel)]="versionConfig.type"
+                            [ngModelOptions]="{ standalone: true }"
+                            autocomplete="off"
+                            (change)="patchVersionValue(true)"
+                          />
+                          Duration
                         </label>
-                    </div>
+                      </div>
+                      
                     <ng-container>
                         <select *ngIf="form.get('versionValidity.validityType').value == 'time'"
                             class="form-control my-2" [(ngModel)]="versionConfig.value"

@@ -83,8 +83,7 @@
                     </div>
                     <div class="schema-creator scroll position-relative" id="schema-creator">
                         <ng-container formArrayName="definition">
-                            <div class="p-3" [sortablejs]="definitions"
-                                [sortablejsOptions]="{sort: editable, filter: '.disabled', onMove: sortableOnMove }">
+                            <div class="p-3" >
                                 <div *ngFor="let def of definitions;let i = index;let first = first;">
                                     <odp-structure-field [formGroupName]="i" [all]="form.get('definition')" [index]="i"
                                         [first]="first" [edit]="edit" [isDataFormat]="true" [formatType]="formatType" [subType]="subTypeValue"

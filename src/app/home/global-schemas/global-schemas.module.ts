@@ -5,7 +5,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { GlobalSchemasComponent } from './global-schemas.component';
 import { LoadingModule } from '../../utils/loading/loading.module';
-import { SchemaUtilsModule } from '../schema-utils/schema-utils.module';
+import { SchemaUtilsModule } from 'src/app/home/schema-utils/schema-utils.module';
 import { RouteGuard } from '../../utils/guards/route.guard';
 import { BreadcrumbModule } from 'src/app/utils/breadcrumb/breadcrumb.module';
 import { AutoFocusModule } from 'src/app/utils/directives/auto-focus/auto-focus.module';
@@ -34,7 +34,6 @@ const routes: Routes = [
         BasicInfoModule,
         StructureFieldModule,
         StructureFieldPropertiesModule,
-        SortablejsModule
     ],
     exports: [RouterModule],
     declarations: [

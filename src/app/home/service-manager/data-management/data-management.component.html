@@ -60,15 +60,31 @@
                     <div class="text-secondary">select method to retain data by version or duration</div>
                 </div>
                 <div class="col-9">
-                    <div class="btn-group btn-group-toggle" (change)="patchVersionValue(true)" ngbRadioGroup
-                        [ngModelOptions]="{standalone: true}" [(ngModel)]="versionConfig.type">
-                        <label ngbButtonLabel class="btn btn-outline-dark">
-                            <input ngbButton type="radio" value="count"> Versions
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-outline-dark" [ngClass]="{ 'active': versionConfig.type === 'count' }">
+                          <input
+                            type="radio"
+                            value="count"
+                            [(ngModel)]="versionConfig.type"
+                            [ngModelOptions]="{ standalone: true }"
+                            autocomplete="off"
+                            (change)="patchVersionValue(true)"
+                          />
+                          Versions
                         </label>
-                        <label ngbButtonLabel class="btn btn-outline-dark">
-                            <input ngbButton type="radio" value="time"> Duration
+                      
+                        <label class="btn btn-outline-dark" [ngClass]="{ 'active': versionConfig.type === 'time' }">
+                          <input
+                            type="radio"
+                            value="time"
+                            [(ngModel)]="versionConfig.type"
+                            [ngModelOptions]="{ standalone: true }"
+                            autocomplete="off"
+                            (change)="patchVersionValue(true)"
+                          />
+                          Duration
                         </label>
-                    </div>
+                      </div>
                 </div>
             </div>
             <div class="retain-data-options mt-4" *ngIf="retainDataHistory">

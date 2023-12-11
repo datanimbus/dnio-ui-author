@@ -42,8 +42,8 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     if (!value || !value.trim()) {
       temp = null;
     }
-    self.params.parentFilterInstance(function (instance: IFilterComp) {
-      (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
+    self.params.parentFilterInstance((instance) => {
+      instance.onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
     });
   }
   getDateQuery(value: any) {

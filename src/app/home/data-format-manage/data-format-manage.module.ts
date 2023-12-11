@@ -7,7 +7,7 @@ import { ClickOutsideModule } from 'src/app/utils/directives/click-outside/click
 import { BreadcrumbModule } from 'src/app/utils/breadcrumb/breadcrumb.module';
 import { SearchBoxModule } from 'src/app/utils/search-box/search-box.module';
 import { DataFormatManageComponent } from './data-format-manage.component';
-import { SchemaUtilsModule } from '../schema-utils/schema-utils.module';
+import { SchemaUtilsModule } from 'src/app/home/schema-utils/schema-utils.module';
 import { BasicInfoModule } from 'src/app/utils/basic-info/basic-info.module';
 import { FormatTypeBadgeModule } from 'src/app/utils/format-type-badge/format-type-badge.module';
 import { RouteGuard } from 'src/app/utils/guards/route.guard';
@@ -43,7 +43,6 @@ const routes: Routes = [
     StructureFieldPropertiesModule,
     FilterTeamModule,
     CheckboxModule,
-    SortablejsModule,
     RoundRadioModule,
     SwitchModule,
     PasteJsonModule

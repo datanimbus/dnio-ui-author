@@ -8,7 +8,7 @@ import { AppComponent } from './app/app.component';
 import { UserComponent } from './user/user.component';
 import { LoadingModule } from '../../utils/loading/loading.module';
 import { UserManageComponent } from './user/user-manage/user-manage.component';
-import { SchemaUtilsModule } from '../schema-utils/schema-utils.module';
+import { SchemaUtilsModule } from 'src/app/home/schema-utils/schema-utils.module';
 import { SelectedAccessComponent } from './selected-access/selectedAccess.component';
 import { TimeoutTriggerModule } from 'src/app/utils/directives/timeout-trigger/timeout-trigger.module';
 import { UserGroupManageComponent } from './user-group/user-group-manage/user-group-manage.component';
@@ -90,7 +90,6 @@ import { GroupAuthorApiKeysComponent } from './user-group/user-group-manage/user
     ControlPanelRoutingModule,
     NgbModule,
     LoadingModule,
-    SchemaUtilsModule,
     ClickOutsideModule,
     TimeoutTriggerModule,
     SearchBoxModule,
