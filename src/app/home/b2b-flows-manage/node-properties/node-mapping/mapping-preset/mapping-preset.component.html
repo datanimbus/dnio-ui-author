@@ -48,10 +48,10 @@
                             <odp-field-type [field]="def" [onMapper]="true"></odp-field-type>
                         </div>
                         <div class="field-key">{{def.key}}</div>
-                        <a href="#" (click)="$event.preventDefault();def._showFn=true">
+                        <!-- <a href="#" (click)="$event.preventDefault();def._showFn=true">
                             <i class="hover mx-2"
                                 [ngClass]="{'text-success':isValidFunction(def),'text-danger':!isValidFunction(def)}">f(x)</i>
-                        </a>
+                        </a> -->
                         <odp-formula-editor *ngIf="def._showFn" [edit]="edit"
                             class="function-wrapper position-absolute bg-white border rounded" [data]="def"
                             (close)="def._showFn=false"></odp-formula-editor>
