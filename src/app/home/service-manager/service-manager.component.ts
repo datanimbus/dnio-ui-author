@@ -119,7 +119,7 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
     this.selectedService = {};
     this.showOptionsDropdown = {};
     this.sortModel = {};
-    this.baseUrl = 'https://' + this.commonService.userDetails.fqdn+ '/api/c/' + this.app
+    this.baseUrl = window.location.protocol + '//' + this.commonService.userDetails.fqdn+ '/api/c/' + this.app
   }
 
   ngOnInit() {
