@@ -65,7 +65,7 @@ export class PluginSelectorComponent implements OnInit {
     const options: GetOptions = {
       filter: filter,
       count: 5,
-      noApp: true
+      // noApp: true
     };
     this.searchTerm = searchTerm;
     this.showLoader = true;
