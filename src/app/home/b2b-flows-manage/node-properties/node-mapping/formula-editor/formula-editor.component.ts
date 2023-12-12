@@ -103,7 +103,7 @@ export class FormulaEditorComponent implements OnInit {
       this.data.formulaConfig = null;
     }
     this.data.advanceFormula = this.advanceFormula;
-    this.data.formulaType == this.formulaType;
+    this.data.formulaType = this.formulaType;
     this.dataChange.emit(this.data);
   }
 
