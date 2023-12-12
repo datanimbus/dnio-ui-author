@@ -100,8 +100,8 @@ export class NodeMappingComponent implements OnInit {
             return t;
           }).filter(e => e);
         }
-        if (temp && temp.formula) {
-          item.formula = temp.formula;
+        if (temp && temp.advanceFormula) {
+          item.advanceFormula = temp.advanceFormula;
         }
         if (temp && temp.formulaConfig) {
           item.formulaConfig = temp.formulaConfig;
