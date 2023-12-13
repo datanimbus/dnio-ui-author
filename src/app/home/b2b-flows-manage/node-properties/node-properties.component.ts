@@ -449,10 +449,8 @@ export class NodePropertiesComponent implements OnInit {
     } if (this.currNode.type == 'API' && this.currNode.options.contentType == 'multipart/form-data') {
       flag = true;
     }
-    if (flag && (this.currNode?.dataStructure?.outgoing?.formatType === 'EXCEL'
-      || this.currNode?.dataStructure?.outgoing?.formatType === 'CSV'
-      || this.currNode?.dataStructure?.outgoing?.formatType === 'FLATFILE'
-      || this.currNode?.dataStructure?.outgoing?.formatType === 'DELIMITER')) {
+    if (flag && !(this.currNode?.dataStructure?.outgoing?.formatType === 'EXCEL'
+      || this.currNode?.dataStructure?.outgoing?.formatType === 'JSON')) {
       flag = true;
     } else {
       this.currNode.options['skipLines'] = null;
