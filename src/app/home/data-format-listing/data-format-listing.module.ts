@@ -12,6 +12,7 @@ import { FormatTypeBadgeModule } from 'src/app/utils/format-type-badge/format-ty
 import { AutoFocusModule } from 'src/app/utils/directives/auto-focus/auto-focus.module';
 import { RoundRadioModule } from 'src/app/utils/round-radio/round-radio.module';
 import { PasteJsonModule } from 'src/app/utils/paste-json/paste-json.module';
+import { SwitchModule } from 'src/app/utils/switch/switch.module';
 
 const routes: Routes = [
   {
@@ -32,7 +33,8 @@ const routes: Routes = [
     FormatTypeBadgeModule,
     AutoFocusModule,
     RoundRadioModule,
-    PasteJsonModule
+    PasteJsonModule,
+    SwitchModule
   ],
   declarations: [DataFormatListingComponent]
 })

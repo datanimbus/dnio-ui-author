@@ -332,6 +332,10 @@ export class DataFormatListingComponent implements OnInit, OnDestroy {
     this.showTextarea = null;
   }
 
+  toggleType(event){
+    this.form.get('type').patchValue(event.target.value);
+  }
+
   private compare(a: any, b: any) {
     if (a > b) {
       return 1;
