@@ -133,6 +133,46 @@
           </ng-container>
         </div>
       </div>
+      <div class="form-group mt-3">
+        <label for="dataType" class="font-13 text-secondary">Format Type</label>
+        <div class="" >
+          <ul class="list-group mr-4 mb-2" >
+            <li class="list-group-item d-flex" (click)="selectFormat(format);"  *ngFor="let format of formatList">
+              <odp-round-radio class="mr-2" [edit]="{status:true}" [checked]="isFormatSelected(format)">
+              </odp-round-radio>
+              <div style="margin-top: -4px;"><odp-format-type-badge [data]="format"></odp-format-type-badge></div>
+            </li>
+          </ul>
+          <!-- <div class="format-select-list-item d-flex align-items-center mr-4 mb-2" *ngFor="let format of formatList"
+            (click)="selectFormat(format);">
+           
+          
+          </div> -->
+        </div>
+      </div>
+      <div class="form-group mt-3" *ngIf="['CSV','FLATFILE','DELIMITER'].includes(form.get('formatType').value)">
+        <label for="dataType" class="font-13 text-secondary">Sub Type</label>
+        <div >
+
+          <ul class="list-group mr-4 mb-2" >
+            <li class="list-group-item d-flex" *ngFor="let type of subType" (click)="selectSubType(type);">
+              <odp-round-radio class="mr-2" [edit]="{status:true}" [checked]="isSubTypeSelected(type)">
+              </odp-round-radio>
+  
+              <span class="font-13 font-weight-bold ">{{type.toUpperCase()}}</span>
+              <!-- <div style="margin-top: -4px;"><odp-format-type-badge data="Object"></odp-format-type-badge></div> -->
+            </li>
+          </ul>
+          <!-- <div class="format-select-list-item d-flex align-items-center mr-4 mb-2" *ngFor="let type of subType"
+            (click)="selectSubType(type);">
+            <odp-round-radio class="mr-2" [edit]="{status:true}" [checked]="isSubTypeSelected(type)">
+            </odp-round-radio>
+
+            {{type.toUpperCase()}}
+          </div> -->
+        </div> 
+      </div>
+
       <div class="from-group position-relative">
         <label for="dataType" class="font-13 text-secondary">Data Type
           <button *ngIf="!showTextarea" type="button" class="btn btn-sm btn-link" (click)="showTextarea='json'">
@@ -144,32 +184,24 @@
           <textarea *ngIf="showTextarea" style="top: 45px;" class="form-control position-absolute" id="jsonTextarea"
             cols="30" rows="10" odpAutoFocus (odpPasteJson)="onSchemaCreate($event)"></textarea>
         </label>
-        <select id="dataType" class="form-control" formControlName="type">
+
+        <ul class="list-group mr-4 mb-2" >
+          <li class="list-group-item d-flex" (click)="form.get('type').setValue('Object')">
+            <odp-round-radio class="mr-2" [edit]="{status:true}" [checked]="form.get('type').value==='Object'">
+            </odp-round-radio>
+            <span class="font-13 font-weight-bold ">Object</span>
+            <!-- <div style="margin-top: -4px;"><odp-format-type-badge data="Object"></odp-format-type-badge></div> -->
+          </li>
+          <li class="list-group-item d-flex" (click)="form.get('type').setValue('Array')">
+            <odp-round-radio class="mr-2" [edit]="{status:true}" [checked]="form.get('type').value==='Array'">
+            </odp-round-radio>
+            <span class="font-13 font-weight-bold ">Array</span>
+          </li>
+        </ul>
+        <!-- <select id="dataType" class="form-control mb-2" formControlName="type">
           <option value="Object">Object</option>
           <option value="Array">Array</option>
-        </select>
-      </div>
-      <div class="form-group mt-3">
-        <label for="dataType" class="font-13 text-secondary">Format Type</label>
-        <div class="d-flex flex-wrap">
-          <div class="format-select-list-item d-flex align-items-center mr-4 mb-2" *ngFor="let format of formatList"
-            (click)="selectFormat(format);">
-            <odp-round-radio class="mr-2" [edit]="{status:true}" [checked]="isFormatSelected(format)">
-            </odp-round-radio>
-            <odp-format-type-badge [data]="format"></odp-format-type-badge>
-          </div>
-        </div>
-      </div>
-      <div class="form-group mt-3" *ngIf="['CSV','FLATFILE','DELIMITER'].includes(form.get('formatType').value)">
-        <label for="dataType" class="font-13 text-secondary">Sub Type</label>
-        <div class="d-flex flex-wrap">
-          <div class="format-select-list-item d-flex align-items-center mr-4 mb-2" *ngFor="let type of subType"
-            (click)="selectSubType(type);">
-            <odp-round-radio class="mr-2" [edit]="{status:true}" [checked]="isSubTypeSelected(type)">
-            </odp-round-radio>
-            {{type}}
-          </div>
-        </div>
+        </select> -->
       </div>
     </ng-container>
   </div>

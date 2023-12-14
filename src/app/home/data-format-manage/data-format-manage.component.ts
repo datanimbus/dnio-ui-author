@@ -496,6 +496,15 @@ export class DataFormatManageComponent implements
         }, dismiss => { });
     }
 
+    getFormat(){
+        let value = this.form.get('formatType').value;
+        if ( this.form.get('excelType').value) {
+            value = this.form.get('excelType').value
+        }
+        return value;
+
+    }
+
 
     selectSubType(format: any) {
         if (!this.edit.status) {
