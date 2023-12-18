@@ -1,4 +1,5 @@
 import { AfterViewInit, Directive, ElementRef, EventEmitter, Input, Output } from '@angular/core';
+import { fromEvent } from 'rxjs';
 
 @Directive({
   selector: '[odpViewBox]'
@@ -6,18 +7,24 @@ import { AfterViewInit, Directive, ElementRef, EventEmitter, Input, Output } fro
 export class ViewBoxDirective implements AfterViewInit {
 
   @Input() move: EventEmitter<{ left: number, top: number }>;
+  @Input() zoomAction: EventEmitter<any>;
   @Output() moved: EventEmitter<{ left: number, top: number }>;
   wrapper: HTMLElement;
   svg: SVGElement;
   startX: number;
-  left: number;
   startY: number;
-  top: number;
+  width: number;
+  height: number;
+  initialWidth: number;
+  initialHeight: number;
   constructor(private ele: ElementRef) {
     this.startX = 0;
     this.startY = 0;
+    this.width = 3000;
+    this.height = 1000;
     this.wrapper = this.ele.nativeElement.parentElement;
     this.move = new EventEmitter();
+    this.zoomAction = new EventEmitter();
     this.moved = new EventEmitter();
   }
 
@@ -29,10 +36,35 @@ export class ViewBoxDirective implements AfterViewInit {
     //   this.top = 0;
     //   this.svg.setAttribute('viewBox', `${this.startX} ${this.startY} ${this.wrapper.clientWidth} ${this.wrapper.clientHeight}`);
     // });
+    this.initialWidth = window.innerWidth * 2;
+    this.initialHeight = window.innerHeight * 2;
+    this.zoomAction.subscribe((action: string) => {
+      if (action == 'out') {
+        this.zoomInOut(20);
+      } else if (action == 'in') {
+        this.zoomInOut(-20);
+      } else {
+        this.width = this.initialWidth;
+        this.height = this.initialHeight;
+        this.svg.setAttribute('viewBox', `${this.startX} ${this.startY} ${this.width} ${this.height}`);
+      }
+    });
     this.svg = (this.ele.nativeElement as SVGElement);
-    // this.svg.setAttribute('viewBox', `${this.startX} ${this.startY} ${this.wrapper.clientWidth} ${this.wrapper.clientHeight}`);
+    this.width = this.initialWidth;
+    this.height = this.initialHeight;
+    this.svg.setAttribute('viewBox', `${this.startX} ${this.startY} ${this.width} ${this.height}`);
     this.drawGrid(this.wrapper.clientWidth, this.wrapper.clientHeight);
+    fromEvent(this.ele.nativeElement, 'wheel').subscribe({
+      next: (event: any) => {
+        if (event.metaKey) {
+          event.preventDefault();
+          this.zoomInOut(event.deltaY);
+        }
+      },
+      error: (err) => {
 
+      },
+    });
 
     // fromEvent(this.ele.nativeElement, 'mousedown').pipe(
     //   switchMap((start: MouseEvent) => {
@@ -83,5 +115,17 @@ export class ViewBoxDirective implements AfterViewInit {
     }
     (this.ele.nativeElement as SVGElement).prepend(group);
     // (this.ele.nativeElement as SVGElement).insertBefore(group, (this.ele.nativeElement as SVGElement).children[0]);
+  }
+
+  zoomInOut(delta: number) {
+    this.width += delta;
+    this.height += delta;
+    if (this.width < this.initialWidth) {
+      this.width = this.initialWidth;
+    }
+    if (this.height < this.initialHeight) {
+      this.height = this.initialHeight;
+    }
+    this.svg.setAttribute('viewBox', `${this.startX} ${this.startY} ${this.width} ${this.height}`);
   }
 }

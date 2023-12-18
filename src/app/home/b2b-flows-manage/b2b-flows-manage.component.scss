@@ -101,8 +101,10 @@
 
 .flow-designer-svg-wrapper {
   width: 100%;
-  min-height: calc(100vh - 144px);
-  max-height: calc(100vh - 144px);
+  // min-height: calc(100vh - 188px);
+  // max-height: calc(100vh - 188px);
+  min-height: calc(100vh - 148px);
+  max-height: calc(100vh - 148px);
   overflow: auto;
 
   &:focus {
@@ -157,10 +159,10 @@
       }
     }
 
-    &:hover > .node-list-item {
+    &:hover>.node-list-item {
       display: block;
     }
-    
+
     &:hover {
       background: $light;
       border-right: 1px solid $border-color;
@@ -191,26 +193,26 @@
 }
 
 
-.disabled{
-    background-color: $gray-95;
-    pointer-events: none;
-    border-right: 1px solid $border-color;
-    cursor: none !important;
+.disabled {
+  background-color: $gray-95;
+  pointer-events: none;
+  border-right: 1px solid $border-color;
+  cursor: none !important;
 }
 
-.icons{
+.icons {
   max-width: 25px;
   min-width: 25px;
   max-height: 25px;
   min-height: 25px;
 }
 
-.modal-style{
+.modal-style {
   max-height: 300px;
   overflow-y: auto;
 }
 
-.issues{
+.issues {
   width: 400px;
   top: 149px;
   right: 0px;
@@ -219,9 +221,17 @@
   transition: 0.2s;
 }
 
-.active-warn{
+.active-warn {
   color: $warning;
 }
-.active-error{
+
+.active-error {
   color: $danger;
+}
+
+.zoom-options {
+  bottom: 20px;
+  left: 10px;
+  z-index: 2;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }

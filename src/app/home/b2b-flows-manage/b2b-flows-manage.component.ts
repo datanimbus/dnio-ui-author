@@ -58,6 +58,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   data: any;
   nodeOptions: Array<any> = [];
   openIssues: boolean = false;
+  zoomAction: EventEmitter<any>;
   constructor(private commonService: CommonService,
     private appService: AppService,
     private route: ActivatedRoute,
@@ -85,6 +86,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     this.openDeleteModal = new EventEmitter();
     this.nodeList = [];
     this.activeTab = 0;
+    this.zoomAction = new EventEmitter();
   }
 
   ngOnInit(): void {
@@ -822,6 +824,10 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     }
     return true;
     // return this.nodeList[0]._id == this.currNode._id;
+  }
+
+  triggerZoomAction(action: string) {
+    this.zoomAction.emit(action);
   }
 
   get totalErrors() {
