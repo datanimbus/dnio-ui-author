@@ -40,9 +40,9 @@ export class ViewBoxDirective implements AfterViewInit {
     this.initialHeight = window.innerHeight * 2;
     this.zoomAction.subscribe((action: string) => {
       if (action == 'out') {
-        this.zoomInOut(20);
+        this.zoomInOut(100);
       } else if (action == 'in') {
-        this.zoomInOut(-20);
+        this.zoomInOut(-100);
       } else {
         this.width = this.initialWidth;
         this.height = this.initialHeight;
