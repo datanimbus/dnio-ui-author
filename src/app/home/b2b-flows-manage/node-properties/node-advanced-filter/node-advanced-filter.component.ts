@@ -30,6 +30,9 @@ export class NodeAdvancedFilterComponent implements OnInit {
   alertModalRef: NgbModalRef;
   alertModalData: any = {};
   hold: boolean = false;
+  showOptionsDropdown: Boolean = false;
+  filterPayload:any;
+  
 
   constructor(private commonService: CommonService) {
     this.alertModalData = {
@@ -42,7 +45,10 @@ export class NodeAdvancedFilterComponent implements OnInit {
     this.definition = this.createDefinition(this.currNode?.options?.dataService?.definition || []);
     this.definition = this.definition.concat(this.addAdditionalDef())
     console.log(this.definition);
-
+    this.filterPayload={
+      condition: '$and',
+      rules:[]
+    }
     this.definition.forEach(ele => {
       ele['filterOptions'] = this.setFilterTypeOptions(ele)
     });
@@ -94,16 +100,19 @@ export class NodeAdvancedFilterComponent implements OnInit {
     this.toggleChange.emit(this.toggle);
   }
 
-  addCondition() {
-    const filterObj = {
-      path: this.definition[0].properties.dataPath,
-      operator: this.getFilterOptionsItem(this.definition[0])[0].value,
-      value: {}
-    }
-    this.showFromDatePicker[this.filterArray.length] = false;
-    this.showToDatePicker[this.filterArray.length] = false;
-    this.filterArray.push(filterObj);
-  }
+  // addCondition(op) {
+  //   const filterObj = {
+  //    operator: op,
+  //    condition: {
+  //     path: this.definition[0].properties.dataPath,
+  //     operator: this.getFilterOptionsItem(this.definition[0])[0].value,
+  //     value: {},
+  //    }
+  //   }
+  //   this.showFromDatePicker[this.filterArray.length] = false;
+  //   this.showToDatePicker[this.filterArray.length] = false;
+  //   this.filterArray.push(filterObj);
+  // }
 
   removeCondition(i) {
     this.filterArray.splice(i, 1);
@@ -153,67 +162,65 @@ export class NodeAdvancedFilterComponent implements OnInit {
       this.toggleChange.emit(this.toggle);
     }
     else {
-      let prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : '';
       this.currNode.options.filterString = this.showFilterString();
-      const filterPayload = this.filterArray.map(filter => {
-        if (['lastUpdated', 'createdAt'].includes(filter['path'])) {
-          prefix = '_metadata.'
-        }
-        if (filter['operator'].toLowerCase().includes('equal')) {
-          const operator = filter['operator'] === 'equals' ? '$eq' : '$ne';
-          const path = filter['path'];
-          const query = {};
-          query[operator] = filter['value']['val'] || filter['value']['from'];
-          let final = {};
-          final[prefix + path.toString()] = query;
-          return final;
-        }
-
-        if (filter['operator'].toLowerCase().includes('contain')) {
-          const regex = { $regex: filter['value']['val'], $options: 'i' }
-          const operation = filter['operator'] === 'contains' ? regex : { $not: regex };
-          const path = filter['path'];
-          let final = {};
-          final[prefix + path.toString()] = operation;
-          return final;
-        }
-
-        if (filter['operator'].includes('Than')) {
-          const operator = filter['operator'] === 'greaterThan' ? '$gt' : '$lt';
-          const path = filter['path'];
-          const query = {};
-          query[operator] = filter['value']['val'] || filter['value']['from'];
-          let final = {};
-          final[prefix + path.toString()] = query;
-          return final;
-        }
-
-        if (filter['operator'] === 'inRange') {
-          const path = filter['path'];
-          const from = filter['value']['from'];
-          const to = filter['value']['to'];
-          const query = { $gte: from, $lte: to };
-          let final = {};
-          final[prefix + path.toString()] = query;
-          return final;
-        }
-
-        if (filter['operator'] === 'Yes' || filter['operator'] === 'No') {
-          const path = filter['path'];
-          const query = filter['operator'] === 'Yes' ? true : false;
-          let final = {};
-          final[path.toString()] = query;
-          return final;
-        }
-      })
-      this.value = filterPayload ? { $and: filterPayload } : {};
-      this.valueChange.emit(this.value); this.toggle = false;
+      const finalPayload = this.convertToMongoFilter(this.filterPayload)
+      this.valueChange.emit(finalPayload); this.toggle = false;
       this.toggleChange.emit(this.toggle);
+
+    
+    console.log(this.convertToMongoFilter(this.filterPayload));
     }
 
     this.advancedToggle = false
 
   }
+  convertToMongoFilter(query) {
+    if (!query || typeof query !== 'object') {
+        return {};
+    }
+
+    const operatorsMap = {
+        equals: '$eq',
+        notEquals: '$ne',
+        greaterThan: '$gt',
+        lessThan: '$lt',
+        contains: '$regex',
+        notContains: '$not',
+        Yes: true,
+        No: false,
+        
+    };
+
+    const conditionMap = {
+        $and: '$and',
+        $or: '$or',
+    };
+    let prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : '';
+
+    if (['lastUpdated', 'createdAt'].includes(query.path)) {
+          prefix = '_metadata.'
+        }
+    if (query.condition) {
+        const condition = conditionMap[query.condition] || query.condition;
+        const rules = query.rules.map(rule => this.convertToMongoFilter(rule));
+        return { [condition]: rules };
+    } else if (query.path && query.operator && query.value !== undefined) {
+        const operator = operatorsMap[query.operator] || query.operator;
+        if(query.operator == 'inRange'){
+          return { [prefix+query.path.toString()]: { $gte: query.value.from, $lte: query.value.to } };
+        }
+        if(query.operator.toLowerCase().includes('contains')){
+          const regex = { $regex: query.value?.val || query.value, $options: 'i' };
+          return {[prefix+query.path.toString()]: (query.operator === 'contains' ? regex : {$not: regex})}
+        }
+        if (query.operator.includes('Than')) {
+          return { [prefix+query.path.toString()]: { [operator]: (query['value']['val'] || query['value']['from']) } };
+        }
+        return { [prefix+query.path.toString()]: { [operator]: query.value.val || query.val } };
+    }
+
+    return {};
+}
 
 
   convertToFilters(queryArray) {
@@ -276,6 +283,33 @@ export class NodeAdvancedFilterComponent implements OnInit {
     return filters;
   }
 
+  convertToJSONStructure(mongoQuery) {
+    const operatorsMap = {
+        $eq: 'equals',
+        $ne: 'notEquals',
+        $gt: 'greaterThan',
+        $lt: 'lessThan',
+        $regex: 'contains',
+        $not: 'notContains',
+    };
+
+    const conditionMap = {
+        $and: '$and',
+        $or: '$or',
+    };
+
+    if (mongoQuery.$and || mongoQuery.$or) {
+        const condition = Object.keys(mongoQuery)[0];
+        const rules = mongoQuery[condition].map(rule => this.convertToJSONStructure(rule));
+        return { condition: conditionMap[condition] || condition, rules };
+    } else {
+        const path = Object.keys(mongoQuery)[0];
+        const operator = Object.keys(mongoQuery[path])[0];
+        const value = mongoQuery[path][operator];
+        return { path, operator: operatorsMap[operator] || operator, value };
+    }
+    
+}
 
   showFilterString() {
     const opObj = {
@@ -296,45 +330,66 @@ export class NodeAdvancedFilterComponent implements OnInit {
     })
   }
 
-  assignDate(event, i, type) {
-    this.filterArray[i].value[type] = event
+  assignDate(event, obj, type) {
+    obj.value[type] = event
   }
 
-  assignDefaultFilter(i) {
-    this.filterArray[i].operator = this.getFilterOptions(i)[0].value;
-    this.assignValue(i);
+  assignDefaultFilter(obj) {
+    obj.operator = this.getFilterOptions(obj)[0].value;
+    this.assignValue(obj);
   }
 
-  assignValue(i) {
-    if (this.definition.find(ele => ele.properties.dataPath === this.filterArray[i].path).type === 'Boolean') {
-      this.filterArray[i].value = {
-        val: this.filterArray[i].operator
+  assignValue(obj) {
+    if (this.definition.find(ele => ele.properties.dataPath === obj.path).type === 'Boolean') {
+      obj.value = {
+        val: obj.operator
       }
     }
   }
 
-  toggleDatePicker(i, type) {
-    if (type === 'from') {
-      this.showFromDatePicker.fill(false).fill(!this.showFromDatePicker[i], i, i + 1)
-    }
-    else {
-      this.showToDatePicker.fill(false).fill(!this.showToDatePicker[i], i, i + 1)
-    }
-    // this.showFromDatePicker[i]=!this.showFromDatePicker[i]
+  toggleDatePicker() {
+   this.removeAllDatePickers(this.filterPayload);
   }
-  getFilterOptions(i) {
-    return this.definition.find(ele => ele.properties.dataPath == this.filterArray[i].path)?.filterOptions || []
+
+   accessNestedLevel(array, level) {
+    if (level === 0) {
+      return array;
+  } else {
+      let result = [];
+      array.forEach(obj => {
+          if (obj.rules) {
+              result = result.concat(this.accessNestedLevel(obj.rules, level - 1));
+          }
+      });
+      return result;
+  }
+    
+}
+
+  removeAllDatePickers(data){
+    data.rules.forEach((ele)=>{
+      if(ele.path){
+        ele.showFromDatePicker = false;
+        ele.showToDatePicker = false;
+      }
+      else if(ele.rules){
+        this.removeAllDatePickers(ele);
+      }
+     })
+  }
+  getFilterOptions(obj) {
+    return this.definition.find(ele => ele.properties.dataPath == obj.path)?.filterOptions || []
   }
 
   getFilterOptionsItem(def) {
     return this.definition.find(ele => ele.properties.dataPath == def.properties.dataPath)?.filterOptions
   }
 
-  getType(i) {
-    return this.definition.find(ele => ele.properties.dataPath == this.filterArray[i].path)?.type
+  getType(obj) {
+    return this.definition.find(ele => ele.properties.dataPath == obj.path)?.type
   }
-  getDateType(i) {
-    return this.definition.find(ele => ele.properties.dataPath == this.filterArray[i].path)?.properties?.dateType?.split('-')?.[0] || 'date'
+  getDateType(obj) {
+    return this.definition.find(ele => ele.properties.dataPath == obj.path)?.properties?.dateType?.split('-')?.[0] || 'date'
   }
 
   show(value) {
@@ -342,7 +397,8 @@ export class NodeAdvancedFilterComponent implements OnInit {
   }
 
   isValid() {
-    const check = this.filterArray.map(ele => {
+    const check = this.filterArray.map(obj => {
+      const ele = obj.condition;
       if (['greaterThan', 'lesserThan'].includes(ele.operator) && (ele.value.from || ele.value.val)) {
         return true
       }
@@ -373,5 +429,41 @@ export class NodeAdvancedFilterComponent implements OnInit {
         this.advancedToggle = !value
       }
     });
+  }
+  
+  addCondition(ruleObj){
+    const obj = {
+      path: this.definition[0].properties.dataPath,
+      operator: this.getFilterOptionsItem(this.definition[0])[0].value,
+      value: {},
+      showToDatePicker: false,
+      showFromDatePicker: false
+    }
+
+    ruleObj.rules.push(obj)
+  }
+  
+  removeRule(i, obj){
+    obj?.rules?.splice(i,1);
+  }
+
+  addRuleSet(ruleObj){
+    const obj = {
+      condition: '$and',
+      rules:[{
+        path: this.definition[0].properties.dataPath,
+        operator: this.getFilterOptionsItem(this.definition[0])[0].value,
+        value: {},
+      }]
+    }
+    ruleObj.rules.push(obj);
+  }
+
+  removeRuleSet(i, obj){
+    obj?.rules?.splice(i,1);
+  }
+
+  switchCondition(obj,value){
+    obj.condition = value;
   }
 }
