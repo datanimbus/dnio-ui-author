@@ -1,3 +1,6 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
 .dynamic-variable-button {
     top: 39px;
     left: 9px;
@@ -37,4 +40,11 @@
 .filter-wrapper{
     max-height: 200px;
     overflow-y: auto;
+}
+
+.active {
+&:disabled{
+    background-color: $primary;
+    color: white;
+}
 }

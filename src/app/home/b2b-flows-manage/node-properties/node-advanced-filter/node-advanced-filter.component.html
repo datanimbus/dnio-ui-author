@@ -30,11 +30,11 @@
             <div class="d-flex mb-2">
                 <div class="d-flex align-items-center">
                     <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-outline-primary" [ngClass]="{active:filterObj.condition == '$and'}" (click)="switchCondition(filterObj, '$and')">AND</button>
-                        <button type="button" class="btn btn-outline-primary" [ngClass]="{active:filterObj.condition == '$or'}" (click)="switchCondition(filterObj, '$or')">OR</button>
+                        <button type="button" [ngClass]="{active:filterObj.condition == '$and'}"  class="btn btn-outline-primary" (click)="switchCondition(filterObj, '$and')" [disabled]="!edit.status">AND</button>
+                        <button type="button" class="btn btn-outline-primary" [ngClass]="{active:filterObj.condition == '$or'}" (click)="switchCondition(filterObj, '$or')" [disabled]="!edit.status">OR</button>
                       </div>
                 </div>
-                <div class="d-flex align-items-center ml-auto">
+                <div class="d-flex align-items-center ml-auto" *ngIf="edit.status">
                     <div class="d-flex text-primary hover ml-4" (click)="addCondition(filterObj)">
                         <span class="dsi dsi-plus-circle mr-2 d-flex justify-content-center align-items-center"></span>
                         <span>Condition</span>
@@ -52,26 +52,26 @@
                 <div class="form-group d-flex flex-column" *ngFor="let obj of filterObj.rules; let i= index">
                     <div *ngIf="!obj.rules">
                         <div class="d-flex">
-                            <select class="form-control mr-2" [(ngModel)]="obj['path']"
+                            <select class="form-control mr-2" [(ngModel)]="obj['path']" [disabled]="!edit.status"
                                 (ngModelChange)="assignDefaultFilter(obj)">
                                 <option *ngFor="let item of definition" [value]="item.properties.dataPath || item.path">
                                     {{item?.properties?.name || item.name}}
                                 </option>
                             </select>
-                            <select class="form-control mr-2" [(ngModel)]="obj['operator']"
+                            <select class="form-control mr-2" [(ngModel)]="obj['operator']" [disabled]="!edit.status"
                                 (ngModelChange)="assignValue(obj)">
                                 <option *ngFor="let item of getFilterOptions(obj)" [value]="item.value">{{item?.name}}
                                 </option>
                             </select>
-                            <input class="form-control mr-2" [(ngModel)]="obj['value']['val']"
+                            <input class="form-control mr-2" [(ngModel)]="obj['value']['val']" [readonly]="!edit.status"
                                 *ngIf="getType(obj) != 'Date' && getType(obj) !='Boolean'">
-                            <input class="form-control mr-2" [(ngModel)]="obj['operator']"
+                            <input class="form-control mr-2" [(ngModel)]="obj['operator']" [readonly]="!edit.status"
                                 *ngIf="getType(obj) === 'Boolean'" readonly>
-                            <input class="form-control mr-2" [(ngModel)]="obj['value']['from'] "
-                                *ngIf="getType(obj)?.startsWith('Date')" (click)="toggleDatePicker(); obj.showFromDatePicker = true">
+                            <input class="form-control mr-2" [(ngModel)]="obj['value']['from'] " [readonly]="!edit.status"
+                                *ngIf="getType(obj)?.startsWith('Date')" (click)="edit.status && toggleDatePicker(); obj.showFromDatePicker = true">
                             <input class="form-control mr-2" [(ngModel)]="obj['value']['to']"
                                 *ngIf="getType(obj)?.startsWith('Date') && obj['operator'] === 'inRange'"
-                                (click)="toggleDatePicker(); obj.showToDatePicker= true">
+                                (click)="edit.status && toggleDatePicker(); obj.showToDatePicker= true">
                             <odp-date-picker [(togglePicker)]="obj.showFromDatePicker"
                                 [options]="{floating:true,buttons:true, right: '100px', type:getDateType(obj)}"
                                 [(from)]="dateFrom" *ngIf="obj.showFromDatePicker"
@@ -80,7 +80,7 @@
                                 [options]="{floating:true,buttons:true, right: '100px', type:getDateType(obj)}"
                                 [(to)]="dateTo" *ngIf="obj.showToDatePicker"
                                 (assignDate)="assignDate($event,obj,'to')"></odp-date-picker>
-                            <span
+                            <span *ngIf="edit.status"
                                 class="dsi dsi-minus-circle hover text-danger d-flex justify-content-center align-items-center"
                                 (click)="removeRule(i, filterObj)"></span>
                         </div>
@@ -158,7 +158,7 @@
 
     <textarea placeholder="{}" id="filter" class="mt-2" style="height: 100px;" [(ngModel)]="currNode.options.filter"
         (keydown.delete)="$event.stopPropagation()" *ngIf="advancedToggle && !hold"></textarea>
-    <button type="button" class="btn btn-primary mt-4 w-100" [disabled]="!isValid()" (click)="done()">Done</button>
+    <button type="button" class="btn btn-primary mt-4 w-100" [disabled]="!isValid()" (click)="done()" *ngIf="edit.status">Done</button>
 
 </div>
 
