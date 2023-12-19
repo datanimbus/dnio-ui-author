@@ -536,22 +536,20 @@ export class SchemaBuilderService {
         }
     }
 
-    initialState(res: any) {
-        if (!res.definition) {
-            res.definition = [
-                {
-                    key: '_id',
-                    prefix: _.toUpper(_.camelCase(res.name.substring(0, 3))),
-                    suffix: null,
-                    padding: null,
-                    counter: 1001,
-                    properties: {
-                        name: 'ID',
-                        dataKey: '_id',
-                        dataPath: '_id'
-                    }
-                }
-            ];
+    async initialState(res: any) {
+        if(!res.definition) {
+            const connectorsData = res.connectors?.data;
+            const options = connectorsData?.options;
+
+            if (connectorsData && options && options.tableName) {
+                const id = connectorsData._id;
+                const tableName = options.tableName;
+                const serviceName = res.name;
+                const schema = await this.fetchTableSchema(id, tableName, serviceName);
+                res.definition = schema || this.getDefaultDefinition(res);
+            }else {
+                res.definition = this.getDefaultDefinition(res);
+            }
         }
         if (!res.tags) {
             res.tags = [];
@@ -559,6 +557,43 @@ export class SchemaBuilderService {
         if (!res.roles) {
             res.roles = [];
         }
+    }
+
+    async fetchTableSchema(id: string, tableName: string, serviceName: string): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.commonService.get('user', `/${this.commonService.app._id}/connector/${id}`).subscribe((result) => {
+                if (result.category === 'DB') {
+                    this.commonService.get('user', `/${this.commonService.app._id}/connector/${id}/utils/fetchTableSchema?serviceName=${serviceName}&tableName=${tableName}`)
+                        .subscribe((schemaResult) => {
+                            resolve(schemaResult);
+                        }, (error) => {
+                            reject(error);
+                        });
+                } else {
+                    resolve(null);
+                }
+            }, (error) => {
+                reject(error);
+            });
+        });
+    }
+    
+
+    getDefaultDefinition(res: any): any[] {
+        return [
+          {
+            key: '_id',
+            prefix: _.toUpper(_.camelCase(res.name.substring(0, 3))),
+            suffix: null,
+            padding: null,
+            counter: 1001,
+            properties: {
+              name: 'ID',
+              dataKey: '_id',
+              dataPath: '_id'
+            }
+          }
+        ];
     }
 
     patchType(definition: any) {
