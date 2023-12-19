@@ -69,6 +69,8 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
   tables: any[] = [];
   showDropdownOptions: any;
   baseUrl: string;
+  dbType: string = '';
+  tableType: string = ''
   constructor(
     public commonService: CommonService,
     private appService: AppService,
@@ -98,7 +100,7 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
       name: [null, [Validators.required, Validators.maxLength(40), Validators.pattern(/\w+/)]],
       connectors: connectorForm,
       description: [null, [Validators.maxLength(500), Validators.pattern(/\w+/)]],
-      schemaFree: []
+      schemaFree: [null, Validators.required]
     });
 
     this.cloneForm = this.fb.group({
@@ -169,14 +171,14 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
             `/${this.commonService.app._id}/service/` + data._id,
             { filter: { app: this.commonService.app._id } }
           )
-          .subscribe(
-            (service) => {
-              // this.setServiceDetails(service);
-              // this.serviceList.push(service);
-            },
-            (err) => {
-              this.commonService.errorToast(err);
-            }
+          .subscribe({
+            next: (res) => {
+            
+          },
+          error: (err) => {
+            this.commonService.errorToast(err);
+          }
+        }
           );
       }
     });
@@ -207,7 +209,7 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
       .pipe(switchMap((ev: any) => {
         return this.commonService.get('user', `/${this.commonService.app._id}/connector`, { count: ev, select: '_id, name, category, type, options, _metadata', filter: filter });
       }))
-      .subscribe(res => {
+      .subscribe({ next: res => {
         this.connectorList = res;
         this.mongoList = res.filter(ele => ele.type === 'MONGODB');
         if (res.length > 0) {
@@ -215,9 +217,9 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
           this.defaultFC = res.filter(ele => ele.category === 'STORAGE').find(ele => this.checkDefault(ele._id))?._id || '';
         }
         this.appService.connectorsList = res;
-      }, err => {
+      },error: err => {
         this.commonService.errorToast(err, 'We are unable to fetch records, please try again later');
-      });
+      }});
 
   }
 
@@ -232,11 +234,11 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
 
   newService() {
     this.form.reset({ name: this.searchTerm });
-    this.form.get('schemaFree').setValue(false);
+    // this.form.get('schemaFree').setValue(false);
     this.form.get('connectors').get('data').setValue({
       _id: this.defaultDC
     })
-    this.fetchTables(this.defaultDC)
+    // this.fetchTables(this.defaultDC)
 
     this.form.get('connectors').get('file').setValue({
       _id: this.defaultFC
@@ -313,8 +315,8 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
 
    this.subscriptions['createService'] =  this.commonService
       .post('serviceManager', `/${this.commonService.app._id}/service`, payload)
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           this.ts.success('Service Created.');
           this.appService.editServiceId = res._id;
           this.showLazyLoader = false;
@@ -326,11 +328,11 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
             res._id,
           ]);
         },
-        (err) => {
+        error: (err) => {
           this.showLazyLoader = false;
           this.commonService.errorToast(err);
         }
-      );
+  });
   }
 
   editService(index: number) {
@@ -350,15 +352,15 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
       '/repair';
     this.subscriptions['updateservice'] = this.commonService
       .put('serviceManager', url, null)
-      .subscribe(
-        (d) => {
+      .subscribe({
+        next: (d) => {
           this.ts.info('Repairing data service...');
           this.records[index].status = 'Pending';
         },
-        (err) => {
+        error: (err) => {
           this.commonService.errorToast(err);
         }
-      );
+  });
   }
 
   getYamls(index: number) {
@@ -367,16 +369,16 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
       const url = `/${this.commonService.app._id}/service/utils/${this.selectedService._id}/yamls`;
       this.subscriptions['updateservice'] = this.commonService
         .get('serviceManager', url, null)
-        .subscribe(
-          (data) => {
+        .subscribe({
+         next: (data) => {
             this.selectedService.serviceYaml = data.service;
             this.selectedService.deploymentYaml = data.deployment;
             this.showYamlWindow = true;
           },
-          (err) => {
+          error: (err) => {
             this.commonService.errorToast(err);
           }
-        );
+    });
     } else {
       this.showYamlWindow = true;
     }
@@ -457,8 +459,8 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
     delete payload.setTab;
    this.subscriptions['cloneService'] =  this.commonService
       .post('serviceManager', `/${this.commonService.app._id}/service`, payload)
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           this.ts.success('Service Cloned.');
           this.appService.editServiceId = res._id;
           this.showCloneServiceWindow = false;
@@ -469,10 +471,10 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
             res._id,
           ]);
         },
-        (err) => {
+        error: (err) => {
           this.commonService.errorToast(err);
         }
-      );
+  });
   }
 
   getServices() {
@@ -487,7 +489,7 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
         return this.commonService.get('serviceManager', `/${this.commonService.app._id}/service`, {
           count: ev
         })
-      })).subscribe((res) => {
+      })).subscribe({next: (res) => {
         this.showLazyLoader = false;
         if (res.length > 0) {
           res.forEach((service, i) => {
@@ -521,9 +523,9 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
             }
           );
         }
-      }, (err) => {
+      }, error:(err) => {
         this.commonService.errorToast(err, 'We are unable to fetch records, please try again later');
-      });
+      }});
   }
 
   getServicesWithDraftData() {
@@ -565,11 +567,11 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
   _getServiceRecords(service: any) {
     this.subscriptions['getservicerecord_' + service._id] = this.commonService
       .get('serviceManager', `/${this.commonService.app._id}/service/utils/count/${service._id}`,
-        { filter: { app: this.commonService.app._id } }).subscribe((res) => {
+        { filter: { app: this.commonService.app._id } }).subscribe({next: (res) => {
           service._records = res;
-        }, (err) => {
+        }, error: (err) => {
           service._records = 0;
-        });
+        }});
   }
 
   _getAllServiceRecords(serviceIds: Array<string>) {
@@ -595,15 +597,15 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
     if (data) {
       const url = `/${this.commonService.app._id}/service/` + this.records[data.index]._id;
       this.showLazyLoader = true;
-      this.subscriptions['deleteservice'] = this.commonService.delete('serviceManager', url).subscribe((d) => {
+      this.subscriptions['deleteservice'] = this.commonService.delete('serviceManager', url).subscribe({next: (d) => {
         this.showLazyLoader = false;
         this.ts.info(d.message ? d.message : 'Deleting data service...');
         this.records[data.index].status = 'Working';
         this.commonService.updateDelete(this.records[data.index]._id,'service');
-      }, (err) => {
+      }, error: (err) => {
         this.showLazyLoader = false;
         this.commonService.errorToast(err, 'Oops, something went wrong. Please try again later.');
-      });
+      }});
     }
   }
 
@@ -634,8 +636,8 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
           }
           this.subscriptions['updateservice'] = this.commonService
             .put('serviceManager', url, { app: this.commonService.app._id })
-            .subscribe(
-              (d) => {
+            .subscribe({
+             next: (d) => {
                 if (this.records[index].status === 'Active') {
                   this.ts.info('Stopping data service...');
                   this.commonService.updateStatus(this.records[index]._id,'service')
@@ -645,10 +647,10 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
                 }
                 this.records[index].status = 'Pending';
               },
-              (err) => {
+             error:  (err) => {
                 this.commonService.errorToast(err);
               }
-            );
+        });
         }
       },
       (dismiss) => { }
@@ -678,13 +680,13 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
           const url = `/${this.commonService.app._id}/service/utils/` + this.records[index]._id + '/deploy';
           this.subscriptions['updateservice'] = this.commonService
             .put('serviceManager', url, { app: this.commonService.app._id })
-            .subscribe((d) => {
+            .subscribe({next: (d) => {
               this.ts.info('Deploying data service...');
               this.records[index].status = 'Pending';
               this.commonService.updateStatus(this.records[index]._id,'service')
-            }, (err) => {
+            }, error: (err) => {
               this.commonService.errorToast(err);
-            });
+            }});
         }
       },
       (dismiss) => { }
@@ -838,8 +840,8 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
           `/${this.commonService.app._id}/service/` + service._id,
           { filter: { app: this.commonService.app._id } }
         )
-        .subscribe(
-          (res) => {
+        .subscribe({
+          next: (res) => {
             this.setServiceDetails(res);
             this.serviceList.splice(index, 1, res);
             this.serviceRecordCounts.forEach((item) => {
@@ -849,10 +851,10 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
               }
             });
           },
-          (err) => {
+          error: (err) => {
             console.error(err);
           }
-        );
+    });
     }
   }
 
@@ -916,26 +918,41 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
     this.form.get('connectors').get(type).setValue({
       _id: event.target.value
     })
-   this.fetchTables(event.target.value);
+  //  this.fetchTables(event.target.value);
   }
 
-  fetchTables(id) {
-    this.subscriptions['fetchTables'] = this.commonService.get('user', `/${this.commonService.app._id}/connector/${id}/utils/fetchTables`).subscribe(res => {
-      this.tables = res;
-    }, err => {
-      this.commonService.errorToast(err, 'Unable to fetch user groups, please try again later');
+  fetchTables() {
+    const id = this.form.get('connectors').get('data').value._id;
+    this.subscriptions['fetchTables']?.unsubscribe();
+    this.tables = [];
+    this.subscriptions['fetchTables'] = this.commonService.get('user', `/${this.commonService.app._id}/connector/${id}/utils/fetchTables`).subscribe({
+      next: (res) => {
+        this.tables = res;
+      },
+      error: (err) => {
+        this.commonService.errorToast(err, 'Unable to fetch user groups, please try again later');
+      }
     });
   }
 
   selectTables(event) {
     let data = this.form.get('connectors').get('data');
     let _id = data.value._id;
-    data.setValue({
-      _id: _id,
-      options: {
-        tableName: event
-      }
-    });
+    if(event){
+      data.setValue({
+        _id: _id,
+        options: {
+          tableName: event
+        }
+      });
+    }
+    else{
+      data.setValue({
+        _id: _id,
+        options: {}
+      });
+    }
+   
   }
 
   toggleSchemaType(schemaFree) {
@@ -1033,7 +1050,7 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
 
   get dataConnectors() {
     const typeList = this.form.get('schemaFree').value ? this.mongoList : this.connectorList
-    const list = typeList?.filter(ele => ele.category === 'DB').sort((a, b) => {
+    const list = typeList?.filter(ele => ele.category === 'DB' && ele.type === this.dbType).sort((a, b) => {
       if (a.name < b.name) {
         return -1;
       }
@@ -1064,6 +1081,14 @@ export class ServiceManagerComponent implements OnInit, OnDestroy {
   isDefaultDB(){
     const currentDataDB = this.form.get('connectors').get('data').value;
     return this.connectorList.find(ele => ele._id === currentDataDB._id).name === 'Default DB Connector'
+  }
+
+  getDbType(){
+    return _.uniq(this.connectorList.map(ele => {
+      if( ele.category === 'DB') 
+       return ele.type
+    }
+      ).filter(Boolean))
   }
 
 }
