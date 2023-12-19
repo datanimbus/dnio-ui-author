@@ -40,12 +40,13 @@ export class NodeAdvancedFilterComponent implements OnInit {
       message: 'This action will result in losing all the changes you have made on the filter.',
     }
   }
+  isEmpty= _.isEmpty
 
   ngOnInit(): void {
     this.definition = this.createDefinition(this.currNode?.options?.dataService?.definition || []);
     this.definition = this.definition.concat(this.addAdditionalDef())
-    console.log(this.definition);
-    this.filterPayload={
+    this.advancedToggle = this.currNode.options.isAdvancedFilter || false;
+    this.filterPayload= this.currNode.options.filter || {
       condition: '$and',
       rules:[]
     }
@@ -53,6 +54,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
       ele['filterOptions'] = this.setFilterTypeOptions(ele)
     });
 
+    this.currNode.options.filterString = this.advancedToggle ? this.filterPayload : this.showFilterString();
     if(!_.isEmpty(this.currNode?.options?.filter)){
       this.filterPayload = this.convertToJSONStructure(_.cloneDeep(this.currNode?.options?.filter || {}))
     }
@@ -157,24 +159,23 @@ export class NodeAdvancedFilterComponent implements OnInit {
   }
 
   done() {
+    this.currNode.options.isAdvancedFilter = this.advancedToggle;
     if (this.advancedToggle) {
 
-      this.value = this.currNode.options.filter
+      this.value = this.filterPayload
       this.valueChange.emit(this.value);
 
       this.toggle = false;
       this.toggleChange.emit(this.toggle);
     }
     else {
-      this.currNode.options.filterString = this.showFilterString();
+      // this.currNode.options.filterString = this.showFilterString();
       console.log(this.filterPayload)
       const finalPayload = this.convertToMongoFilter(this.filterPayload)
       this.valueChange.emit(finalPayload); this.toggle = false;
       this.toggleChange.emit(this.toggle);
 
     }
-
-    this.advancedToggle = false
 
   }
   convertToMongoFilter(query) {
@@ -344,15 +345,25 @@ export class NodeAdvancedFilterComponent implements OnInit {
       'lesserThan': '<',
       'contains': 'contains',
       'notContains': 'does not contain',
-
+      '$and': '&&',
+      '$or': '||',
+      'Yes': '=',
+      'No': '=',
     }
-    return this.filterArray.length === 0 ? ['{}'] : this.filterArray.map(filter => {
-      if (filter.operator === 'inRange') {
-        return `${filter.value.from}' <= ${filter.path} <= '${filter.value.to}'`;
-      } else {
-        return `${filter.path} ${filter.operator === 'Yes' || filter.operator === 'No' ? 'is' : opObj[filter.operator]} '${filter.value.val || filter.value.from}' ${filter.value.to ? "and '" + filter.value.to + "'" : ''}`;
+    const condition = this.filterPayload?.condition || ''
+    if(condition){
+      let str = ''
+      for (const ele of this.filterPayload.rules) {
+        if (ele.path) {
+          str = `${ele.path} ${opObj[ele.operator]} ${ele.value.val || ele.value.from || ele.value.to} ${opObj[condition]} ...`;
+          return str;
+        }
       }
-    })
+      return str;
+    }
+    else{
+      return ''
+    }
   }
 
   assignDate(event, obj, type) {
@@ -422,25 +433,35 @@ export class NodeAdvancedFilterComponent implements OnInit {
   }
 
   isValid() {
-    return true
-    // const check = this.filterArray.map(obj => {
-    //   const ele = obj.condition;
-    //   if (['greaterThan', 'lesserThan'].includes(ele.operator) && (ele.value.from || ele.value.val)) {
-    //     return true
-    //   }
-    //   if (ele.operator === 'inRange' && ele.value.from && ele.value.to) {
-    //     return true
-    //   }
-    //   if (ele.value.val || ele.value.from) {
-    //     return true
-    //   }
-    //   return false
-    // })
-    // if (check.filter(ele => !ele).length > 0) {
-    //   return false
-    // }
-    // return true
+    return this.isValidPayload(this.filterPayload)
   }
+
+  isValidPayload(obj) {
+    if (typeof obj !== 'object' || obj === null) {
+        return false;
+    }
+    if (obj.hasOwnProperty('rules')) {
+        if (!Array.isArray(obj.rules) || obj.rules.length === 0) {
+            return false;
+        }
+        for (let rule of obj.rules) {
+            if (!this.isValidPayload(rule)) {
+                return false;
+            }
+        }
+    }
+    if (obj.hasOwnProperty('value')) {
+        let value = obj.value;
+        if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) {
+            return false;
+        }
+        if (typeof value === 'string' && value.trim() === '') {
+            return false;
+        }
+    }
+
+    return true;
+}
   onToggle(value) {
     this.alertModalRef = this.commonService.modal(this.alertModal, { centered: true });
     this.hold = true;
@@ -448,7 +469,10 @@ export class NodeAdvancedFilterComponent implements OnInit {
       if (close) {
         this.hold = false;
         this.advancedToggle = value;
-        this.filterPayload = [];
+        this.filterPayload =  this.advancedToggle ? [] : {
+          condition: '$and',
+          rules:[]
+        };
       }
       else {
         this.hold = false
