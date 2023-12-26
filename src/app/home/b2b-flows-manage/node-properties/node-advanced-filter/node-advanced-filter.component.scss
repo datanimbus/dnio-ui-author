@@ -17,6 +17,14 @@
     z-index: 1;
 }
 
+.second-div {
+    position: fixed;
+    top: 130px;
+    z-index: 2; 
+    width: 200px;
+    min-height: 60vh;
+    background-color: white;
+  }
 .node-type {
     width: 120px;
 }
@@ -47,4 +55,18 @@
     background-color: $primary;
     color: white;
 }
+}
+
+.sources:hover {
+        text-decoration: underline;
+}
+
+.form-control{
+    width: 200px;
+}
+
+
+.styled-wrapper {
+    max-width: 420px;
+    width: 420px;
 }

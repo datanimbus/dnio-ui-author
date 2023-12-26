@@ -9,159 +9,196 @@
     </ng-container>
 </div>
 
-<div *ngIf="toggle" class="node-filter-wrapper p-3 bg-white position-fixed border-left ">
-    <div class="d-flex justify-content-between mb-4">
-        <h3 class="font-20 fw-600">Filter</h3>
-        <span class="dsi dsi-close hover" (click)="cancel()"></span>
-    </div>
-
-    <div class="d-flex justify-content-between">
-        <div class="d-flex flex-column">
-            <div class="my-2 fw-600">Advanced Filter</div>
+<div class="d-flex position-relative">
+    <div *ngIf="toggle" class="node-filter-wrapper p-3 bg-white position-fixed border-left " id="main">
+        <div class="d-flex justify-content-between mb-4">
+            <h3 class="font-20 fw-600">Filter</h3>
+            <span class="dsi dsi-close hover" (click)="cancel()"></span>
         </div>
-        <div class="switch-container d-flex align-items-center justify-content-center">
-            <odp-switch [edit]="{status:edit.status}" [(checked)]="advancedToggle"
-                (checkedChange)="onToggle($event)"></odp-switch>
-        </div>
-    </div>
-
-    <ng-template #myTemplate let-filterObj="filterObj" let-index="index" let-previous="previous" let-ctr="ctr">
-        <div *ngIf="!advancedToggle && !hold" class="p-2 border rounded">
-            <div class="d-flex mb-2">
-                <div class="d-flex align-items-center">
-                    <div class="btn-group" role="group">
-                        <button type="button" [ngClass]="{active:filterObj.condition == '$and'}"  class="btn btn-outline-primary" (click)="switchCondition(filterObj, '$and')" [disabled]="!edit.status">AND</button>
-                        <button type="button" class="btn btn-outline-primary" [ngClass]="{active:filterObj.condition == '$or'}" (click)="switchCondition(filterObj, '$or')" [disabled]="!edit.status">OR</button>
-                      </div>
-                </div>
-                <div class="d-flex align-items-center ml-auto" *ngIf="edit.status">
-                    <div class="d-flex text-primary hover ml-4" (click)="addCondition(filterObj)">
-                        <span class="dsi dsi-plus-circle mr-2 d-flex justify-content-center align-items-center"></span>
-                        <span>Condition</span>
-                    </div>
-                    <div class="d-flex text-primary hover ml-4" (click)="addRuleSet(filterObj)">
-                        <span class="dsi dsi-plus-circle mr-2 d-flex justify-content-center align-items-center"></span>
-                        <span>Group</span>
-                    </div>
-                    <span
-                    class="dsi dsi-minus-circle hover text-danger d-flex justify-content-center align-items-center ml-4" *ngIf="!isEmpty(previous)"
-                    (click)="removeRuleSet(index, previous)"></span>
-                </div>
+    
+        <div class="d-flex mb-2">
+            <div class="d-flex flex-column">
+                <div class="my-2 fw-600">Advanced Filter</div>
             </div>
-            <div class="" *ngIf="filterObj?.rules?.length > 0">
-                <div class="form-group d-flex flex-column" *ngFor="let obj of filterObj.rules; let i= index">
-                    <div *ngIf="!obj.rules">
-                        <div class="d-flex">
-                            <select class="form-control mr-2" [(ngModel)]="obj['path']" [disabled]="!edit.status"
-                                (ngModelChange)="assignDefaultFilter(obj)">
-                                <option *ngFor="let item of definition" [value]="item.properties.dataPath || item.path">
-                                    {{item?.properties?.name || item.name}}
-                                </option>
-                            </select>
-                            <select class="form-control mr-2" [(ngModel)]="obj['operator']" [disabled]="!edit.status"
-                                (ngModelChange)="assignValue(obj)">
-                                <option *ngFor="let item of getFilterOptions(obj)" [value]="item.value">{{item?.name}}
-                                </option>
-                            </select>
-                            <input class="form-control mr-2" [(ngModel)]="obj['value']['val']" [readonly]="!edit.status"
-                                *ngIf="getType(obj) != 'Date' && getType(obj) !='Boolean'">
-                            <input class="form-control mr-2" [(ngModel)]="obj['operator']" [readonly]="!edit.status"
-                                *ngIf="getType(obj) === 'Boolean'" readonly>
-                            <input class="form-control mr-2" [(ngModel)]="obj['value']['from'] " [readonly]="!edit.status"
-                                *ngIf="getType(obj)?.startsWith('Date')" (click)="edit.status && toggleDatePicker(); obj.showFromDatePicker = true">
-                            <input class="form-control mr-2" [(ngModel)]="obj['value']['to']"
-                                *ngIf="getType(obj)?.startsWith('Date') && obj['operator'] === 'inRange'"
-                                (click)="edit.status && toggleDatePicker(); obj.showToDatePicker= true">
-                            <odp-date-picker [(togglePicker)]="obj.showFromDatePicker"
-                                [options]="{floating:true,buttons:true, right: '100px', type:getDateType(obj)}"
-                                [(from)]="dateFrom" *ngIf="obj.showFromDatePicker"
-                                (assignDate)="assignDate($event,obj, 'from')"></odp-date-picker>
-                            <odp-date-picker [(togglePicker)]="obj.showToDatePicker"
-                                [options]="{floating:true,buttons:true, right: '100px', type:getDateType(obj)}"
-                                [(to)]="dateTo" *ngIf="obj.showToDatePicker"
-                                (assignDate)="assignDate($event,obj,'to')"></odp-date-picker>
-                            <span *ngIf="edit.status"
-                                class="dsi dsi-minus-circle hover text-danger d-flex justify-content-center align-items-center"
-                                (click)="removeRule(i, filterObj)"></span>
+            <div class="switch-container d-flex align-items-center justify-content-center ml-4">
+                <odp-switch [edit]="{status:edit.status}" [(checked)]="advancedToggle"
+                    (checkedChange)="onToggle($event)"></odp-switch>
+            </div>
+        </div>
+       <div (click)="listToggle = !listToggle" class="my-2 text-primary hover sources">
+        <i class="fa fa-chevron-left text-primary mr-2"></i>
+        <span>Sources</span>
+       </div>
+    
+        <ng-template #myTemplate let-filterObj="filterObj" let-index="index" let-previous="previous" let-ctr="ctr">
+            <div *ngIf="!advancedToggle && !hold" class="p-2 border rounded">
+                <div class="d-flex mb-2">
+                    <div class="d-flex align-items-center">
+                        <div class="btn-group" role="group">
+                            <button type="button" [ngClass]="{active:filterObj.condition == '$and'}"  class="btn btn-outline-primary" (click)="switchCondition(filterObj, '$and')" [disabled]="!edit.status">AND</button>
+                            <button type="button" class="btn btn-outline-primary" [ngClass]="{active:filterObj.condition == '$or'}" (click)="switchCondition(filterObj, '$or')" [disabled]="!edit.status">OR</button>
+                          </div>
+                    </div>
+                    <div class="d-flex align-items-center ml-auto" *ngIf="edit.status">
+                        <div class="d-flex text-primary hover ml-4" (click)="addCondition(filterObj)">
+                            <span class="dsi dsi-plus-circle mr-2 d-flex justify-content-center align-items-center"></span>
+                            <span>Condition</span>
+                        </div>
+                        <div class="d-flex text-primary hover ml-4" (click)="addRuleSet(filterObj)">
+                            <span class="dsi dsi-plus-circle mr-2 d-flex justify-content-center align-items-center"></span>
+                            <span>Group</span>
+                        </div>
+                        <span
+                        class="dsi dsi-minus-circle hover text-danger d-flex justify-content-center align-items-center ml-4" *ngIf="!isEmpty(previous)"
+                        (click)="removeRuleSet(index, previous)"></span>
+                    </div>
+                </div>
+                <div class="" *ngIf="filterObj?.conditions?.length > 0">
+                    <div class="form-group d-flex flex-column" *ngFor="let obj of filterObj.conditions; let i= index">
+                        <div *ngIf="!obj.conditions">
+                            <div class="d-flex mb-2 justify-content-between">
+                                <select class="form-control mr-2" [(ngModel)]="obj['path']" [disabled]="!edit.status"
+                                    (ngModelChange)="assignDefaultFilter(obj)">
+                                    <option *ngFor="let item of definition" [value]="item.properties.dataPath || item.path">
+                                        {{item?.properties?.name || item.name}}
+                                    </option>
+                                </select>
+                                <select class="form-control mr-2" [(ngModel)]="obj['operator']" [disabled]="!edit.status"
+                                    (ngModelChange)="assignValue(obj)" placeholder="Select Operator">
+                                    <option *ngFor="let item of getFilterOptions(obj)" [value]="item.value">{{item?.name}}
+                                    </option>
+                                </select>
+                                <!-- <input class="form-control mr-2" [(ngModel)]="obj['value']['val']" [readonly]="!edit.status" (drop)="onBasicDrop($event, obj)" (dragover)="$event.preventDefault();"> -->
+                                <span *ngIf="edit.status"
+                                    class="dsi dsi-minus-circle hover text-danger d-flex justify-content-center align-items-center"
+                                    (click)="removeRule(i, filterObj)"></span>
+                            </div>
+                               <div class="styled-wrapper" (drop)="onBasicDrop($event, obj)" (dragover)="$event.preventDefault();" >
+                                <odp-styled-text [currNode]="currNode" (finalValue)="obj['value']['val'] = $event"
+                                [value]="obj['value']['val']"  placeholder="Value"
+                                [disabled]="!edit.status" *ngIf="obj['operator'] !== 'inRange'"></odp-styled-text>
+                               </div>
+                                 <div *ngIf="obj['operator'] == 'inRange'">
+                                    <div class="styled-wrapper" (drop)="onBasicDrop($event, obj, 'from')" (dragover)="$event.preventDefault();" >
+                                        <odp-styled-text [currNode]="currNode" (finalValue)="obj['value']['from'] = $event"
+                                        [value]="obj['value']['from']"  placeholder="Value"
+                                        [disabled]="!edit.status"></odp-styled-text>
+                                    </div>
+                                    <div class="styled-wrapper mt-2" (drop)="onBasicDrop($event, obj, 'to')" (dragover)="$event.preventDefault();" >
+                                        <odp-styled-text [currNode]="currNode" (finalValue)="obj['value']['to'] = $event"
+                                        [value]="obj['value']['to']"  placeholder="Value"
+                                        [disabled]="!edit.status"></odp-styled-text>
+                                    </div>
+                                   
+                                 </div>   
+                        </div>
+                        <div *ngIf="obj.conditions">
+                            <ng-container [ngTemplateOutlet]="myTemplate" [ngTemplateOutletContext]="{ filterObj: obj, index: i, previous: filterObj , ctr: ctr+1}">
+                            </ng-container>
                         </div>
                     </div>
-                    <div *ngIf="obj.rules">
-                        <ng-container [ngTemplateOutlet]="myTemplate" [ngTemplateOutletContext]="{ filterObj: obj, index: i, previous: filterObj , ctr: ctr+1}">
-                        </ng-container>
+                    <!-- <div class="d-flex text-primary hover ml-4" (click)="createCondition('or')">
+                      <span class="dsi dsi-plus-circle mr-2 d-flex justify-content-center align-items-center"></span>
+                      <span>Rule</span>
                     </div>
+                    <div class="d-flex text-primary hover ml-4" (click)="createCondition('or')">
+                      <span class="dsi dsi-plus-circle mr-2 d-flex justify-content-center align-items-center"></span>
+                      <span>Set</span>
+                    </div> -->
                 </div>
-                <!-- <div class="d-flex text-primary hover ml-4" (click)="createCondition('or')">
-                  <span class="dsi dsi-plus-circle mr-2 d-flex justify-content-center align-items-center"></span>
-                  <span>Rule</span>
-                </div>
-                <div class="d-flex text-primary hover ml-4" (click)="createCondition('or')">
-                  <span class="dsi dsi-plus-circle mr-2 d-flex justify-content-center align-items-center"></span>
-                  <span>Set</span>
-                </div> -->
+            </div>
+        </ng-template>
+    
+        <!-- <ng-container *ngIf="!advancedToggle && !hold" class="mt-2">
+        <div class="" *ngIf="filterArray.length > 0">
+            <div class="form-group d-flex flex-column" *ngFor="let obj of filterArray; let i= index">
+                <div class="btn-group mb-2" role="group" style="width: 100px">
+                    <button type="button" class="btn btn-outline-primary" (click)="switchCondition(i, '$and')">AND</button>
+                    <button type="button" class="btn btn-outline-primary" (click)="switchCondition(i, '$or')">OR</button>
+                  </div>
+               <div class="d-flex">
+                <select class="form-control mr-2" [(ngModel)]="filterArray[i]['condition']['path']" (ngModelChange)="assignDefaultFilter(i)">
+                    <option *ngFor="let item of definition" [value]="item.properties.dataPath || item.path">{{item?.properties?.name || item.name}}
+                    </option>
+                </select>
+                <select class="form-control mr-2" [(ngModel)]="filterArray[i]['condition']['operator']" (ngModelChange)="assignValue(i)">
+                    <option *ngFor="let item of getFilterOptions(i)" [value]="item.value">{{item?.name}}</option>
+                </select>
+                <input class="form-control mr-2" [(ngModel)]="filterArray[i]['condition']['value']['val']"
+                    *ngIf="getType(i) != 'Date' && getType(i) !='Boolean'">
+                <input class="form-control mr-2" [(ngModel)]="filterArray[i]['condition']['operator']"
+                    *ngIf="getType(i) === 'Boolean'" readonly>
+                <input class="form-control mr-2" [(ngModel)]="filterArray[i]['condition']['value']['from'] "
+                    *ngIf="getType(i)?.startsWith('Date')" (click)="toggleDatePicker(i, 'from')">
+                <input class="form-control mr-2" [(ngModel)]="filterArray[i]['condition']['value']['to']"
+                    *ngIf="getType(i)?.startsWith('Date') && filterArray[i]['condition']['operator'] === 'inRange'"
+                    (click)="toggleDatePicker(i, 'to')">
+                <odp-date-picker [(togglePicker)]="showFromDatePicker[i]"
+                    [options]="{floating:true,buttons:true, right: '100px', type:getDateType(i)}" [(from)]="dateFrom"
+                    *ngIf="showFromDatePicker[i]" (assignDate)="assignDate($event,i, 'from')"></odp-date-picker>
+                <odp-date-picker [(togglePicker)]="showToDatePicker[i]"
+                    [options]="{floating:true,buttons:true, right: '100px', type:getDateType(i)}" [(to)]="dateTo"
+                    *ngIf="showToDatePicker[i]" (assignDate)="assignDate($event,i,'to')"></odp-date-picker>
+                <span class="dsi dsi-minus-circle hover text-danger d-flex justify-content-center align-items-center"
+                    (click)="removeCondition(i)"></span>
+               </div>
             </div>
         </div>
-    </ng-template>
-
-    <!-- <ng-container *ngIf="!advancedToggle && !hold" class="mt-2">
-    <div class="" *ngIf="filterArray.length > 0">
-        <div class="form-group d-flex flex-column" *ngFor="let obj of filterArray; let i= index">
-            <div class="btn-group mb-2" role="group" style="width: 100px">
-                <button type="button" class="btn btn-outline-primary" (click)="switchCondition(i, '$and')">AND</button>
-                <button type="button" class="btn btn-outline-primary" (click)="switchCondition(i, '$or')">OR</button>
-              </div>
-           <div class="d-flex">
-            <select class="form-control mr-2" [(ngModel)]="filterArray[i]['condition']['path']" (ngModelChange)="assignDefaultFilter(i)">
-                <option *ngFor="let item of definition" [value]="item.properties.dataPath || item.path">{{item?.properties?.name || item.name}}
-                </option>
-            </select>
-            <select class="form-control mr-2" [(ngModel)]="filterArray[i]['condition']['operator']" (ngModelChange)="assignValue(i)">
-                <option *ngFor="let item of getFilterOptions(i)" [value]="item.value">{{item?.name}}</option>
-            </select>
-            <input class="form-control mr-2" [(ngModel)]="filterArray[i]['condition']['value']['val']"
-                *ngIf="getType(i) != 'Date' && getType(i) !='Boolean'">
-            <input class="form-control mr-2" [(ngModel)]="filterArray[i]['condition']['operator']"
-                *ngIf="getType(i) === 'Boolean'" readonly>
-            <input class="form-control mr-2" [(ngModel)]="filterArray[i]['condition']['value']['from'] "
-                *ngIf="getType(i)?.startsWith('Date')" (click)="toggleDatePicker(i, 'from')">
-            <input class="form-control mr-2" [(ngModel)]="filterArray[i]['condition']['value']['to']"
-                *ngIf="getType(i)?.startsWith('Date') && filterArray[i]['condition']['operator'] === 'inRange'"
-                (click)="toggleDatePicker(i, 'to')">
-            <odp-date-picker [(togglePicker)]="showFromDatePicker[i]"
-                [options]="{floating:true,buttons:true, right: '100px', type:getDateType(i)}" [(from)]="dateFrom"
-                *ngIf="showFromDatePicker[i]" (assignDate)="assignDate($event,i, 'from')"></odp-date-picker>
-            <odp-date-picker [(togglePicker)]="showToDatePicker[i]"
-                [options]="{floating:true,buttons:true, right: '100px', type:getDateType(i)}" [(to)]="dateTo"
-                *ngIf="showToDatePicker[i]" (assignDate)="assignDate($event,i,'to')"></odp-date-picker>
-            <span class="dsi dsi-minus-circle hover text-danger d-flex justify-content-center align-items-center"
-                (click)="removeCondition(i)"></span>
-           </div>
+    
+       <div class="d-flex ">
+        <div class="d-flex text-primary hover ml-4" (click)="createCondition('or')" >
+            <span class="dsi dsi-plus-circle mr-2 d-flex justify-content-center align-items-center"></span>
+            <span>Rule</span>
         </div>
+        <div class="d-flex text-primary hover ml-4" (click)="createCondition('or')" >
+            <span class="dsi dsi-plus-circle mr-2 d-flex justify-content-center align-items-center"></span>
+            <span>Set</span>
+        </div>
+    
+       </div>
+    
+       </ng-container> -->
+    
+        <ng-container [ngTemplateOutlet]="myTemplate" [ngTemplateOutletContext]="{ filterObj: filterPayload, index: 0, previous: {}, ctr: 0 }">
+           
+        </ng-container>
+    
+        <textarea placeholder="{}" id="filter" class="mt-2" style="height: 100px;" [(ngModel)]="filterPayload"
+            (keydown.delete)="$event.stopPropagation()" *ngIf="advancedToggle && !hold"></textarea>
+        <button type="button" class="btn btn-primary mt-4 w-100" [disabled]="!isValid()" (click)="done()" *ngIf="edit.status">Done</button>
+    
     </div>
+    
+    <div *ngIf="listToggle" class="second-div border-left border-bottom border-top" [ngStyle]="{right: secondCss}">
+        <div class="d-flex flex-column p-2" *ngIf="sources.length > 0">
+            <div *ngFor="let source of sources">
 
-   <div class="d-flex ">
-    <div class="d-flex text-primary hover ml-4" (click)="createCondition('or')" >
-        <span class="dsi dsi-plus-circle mr-2 d-flex justify-content-center align-items-center"></span>
-        <span>Rule</span>
+                <div class="d-flex align-items-center">
+                    <span class="dsi hover text-muted" (click)="toggleSource(source.nodeId)"
+                        [ngClass]="{'dsi-plus':source.collapsed,'dsi-minus':!source.collapsed}"></span>
+                    <div class="py-2">
+                        <span class="fw-600 text-primary">{{source.name}}</span>
+                        <span *ngIf="getNodeDataType(source)=='Object'"
+                            class="fw-600 text-dark font-12 ml-3 dsi dsi-object"></span>
+                        <span *ngIf="getNodeDataType(source)=='Array'"
+                            class="fw-600 text-dark font-12 ml-3 dsi dsi-array"></span>
+                    </div>
+                </div>
+            <!-- <span>{{source.nodeId}}</span> -->
+           <ng-container *ngIf="!source.collapsed">
+            <div *ngFor="let item of source.keys" class="ml-2 d-flex align-items-center justify-content-start">
+                <div class="spacer" [ngStyle]="{'width':(item.def.depth*10)+'px'}"></div>
+                <div class="field-type mr-2">
+                    <odp-field-type [field]="item.def" [onMapper]="true"></odp-field-type>
+                </div>
+                <div class="field-key" [draggable]="edit.status" (dragover)="onSourceDrag($event, item)">{{item.label}}</div>
+            </div>
+           </ng-container>
+            </div>
+        </div>  
     </div>
-    <div class="d-flex text-primary hover ml-4" (click)="createCondition('or')" >
-        <span class="dsi dsi-plus-circle mr-2 d-flex justify-content-center align-items-center"></span>
-        <span>Set</span>
-    </div>
-
-   </div>
-
-   </ng-container> -->
-
-    <ng-container [ngTemplateOutlet]="myTemplate" [ngTemplateOutletContext]="{ filterObj: filterPayload, index: 0, previous: {}, ctr: 0 }">
-       
-    </ng-container>
-
-    <textarea placeholder="{}" id="filter" class="mt-2" style="height: 100px;" [(ngModel)]="filterPayload"
-        (keydown.delete)="$event.stopPropagation()" *ngIf="advancedToggle && !hold"></textarea>
-    <button type="button" class="btn btn-primary mt-4 w-100" [disabled]="!isValid()" (click)="done()" *ngIf="edit.status">Done</button>
-
+    
 </div>
-
 
 <ng-template #alertModal>
     <div class="delete-modal-body modal-body p-4 d-flex flex-column align-items-center ignore-outside">

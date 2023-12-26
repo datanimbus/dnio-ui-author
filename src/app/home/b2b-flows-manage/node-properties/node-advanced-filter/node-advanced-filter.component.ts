@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild 
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'lodash';
 import { CommonService } from 'src/app/utils/services/common.service';
+import { B2bFlowService } from '../../b2b-flow.service';
 
 @Component({
   selector: 'odp-node-advanced-filter',
@@ -32,9 +33,13 @@ export class NodeAdvancedFilterComponent implements OnInit {
   hold: boolean = false;
   showOptionsDropdown: Boolean = false;
   filterPayload:any;
+  suggestions: Array<any> = [];
+  listToggle: boolean= false;
+  sources : Array<any> = [];
+  currentSource: any = {};
   
 
-  constructor(private commonService: CommonService) {
+  constructor(private commonService: CommonService, private flowService: B2bFlowService) {
     this.alertModalData = {
       title: 'Are you sure you want to toggle filter?',
       message: 'This action will result in losing all the changes you have made on the filter.',
@@ -48,14 +53,14 @@ export class NodeAdvancedFilterComponent implements OnInit {
     this.advancedToggle = this.currNode.options.isAdvancedFilter || false;
     this.filterPayload= this.currNode.options.filter || {
       condition: '$and',
-      rules:[]
+      conditions:[]
     }
     this.definition.forEach(ele => {
       ele['filterOptions'] = this.setFilterTypeOptions(ele)
     });
 
     this.currNode.options.filterString = this.advancedToggle ? this.filterPayload : this.showFilterString();
-    if(!_.isEmpty(this.currNode?.options?.filter)){
+    if(!_.isEmpty(this.currNode?.options?.filter) && !this.advancedToggle){
       this.filterPayload = this.convertToJSONStructure(_.cloneDeep(this.currNode?.options?.filter || {}))
     }
     // this.filterArray = this.convertToFilters(_.cloneDeep(this.currNode?.options?.filter?.$and || []))
@@ -63,6 +68,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
     // if (this.filterArray.length === 0 && (Array.isArray(this.currNode?.options?.filter) ? this.currNode?.options?.filter.length > 0 : this.currNode.options.filter)) {
     //   this.advancedToggle = true
     // }
+    this.sources = this.transform(this.getAllSources())
   }
 
   addAdditionalDef() {
@@ -101,61 +107,49 @@ export class NodeAdvancedFilterComponent implements OnInit {
     this.filterPayload = this.initialValue;
     this.showFromDatePicker = [];
     this.showToDatePicker = [];
+    this.listToggle=false;
     this.toggle = false;
     this.advancedToggle = false
     this.toggleChange.emit(this.toggle);
   }
 
-  // addCondition(op) {
-  //   const filterObj = {
-  //    operator: op,
-  //    condition: {
-  //     path: this.definition[0].properties.dataPath,
-  //     operator: this.getFilterOptionsItem(this.definition[0])[0].value,
-  //     value: {},
-  //    }
-  //   }
-  //   this.showFromDatePicker[this.filterArray.length] = false;
-  //   this.showToDatePicker[this.filterArray.length] = false;
-  //   this.filterArray.push(filterObj);
-  // }
-
-  // removeCondition(i) {
-  //   this.filterArray.splice(i, 1);
-  //   this.showFromDatePicker.splice(i, 1);
-  //   this.showToDatePicker.splice(i, 1);
-  // }
-
   setFilterTypeOptions(item: any) {
-    if (item.type === 'Date') {
-      return [
-        { name: 'Equals', value: 'equals' },
-        { name: 'Greater than', value: 'greaterThan' },
-        { name: 'Less than', value: 'lessThan' },
-        { name: 'In range', value: 'inRange' }
-      ];
-    } else if (item.type === 'Number') {
-      return [
-        { name: 'Equals', value: 'equals' },
-        { name: 'Greater than', value: 'greaterThan' },
-        { name: 'Less than', value: 'lessThan' },
-        { name: 'Not equal', value: 'notEquals' },
-        { name: 'In range', value: 'inRange' }
-      ];
-    } else if (item.type === 'Boolean') {
-      return [
-        // { name: 'Select', value: '' },
-        { name: 'Yes', value: 'Yes' },
-        { name: 'No', value: 'No' }
-      ];
-    } else {
-      return [
-        { name: 'Equals', value: 'equals' },
+    // if (item.type === 'Date') {
+    //   return [
+    //     { name: 'Equals', value: 'equals' },
+    //     { name: 'Greater than', value: 'greaterThan' },
+    //     { name: 'Less than', value: 'lessThan' },
+    //     { name: 'In range', value: 'inRange' }
+    //   ];
+    // } else if (item.type === 'Number') {
+    //   return [
+    //     { name: 'Equals', value: 'equals' },
+    //     { name: 'Greater than', value: 'greaterThan' },
+    //     { name: 'Less than', value: 'lessThan' },
+    //     { name: 'Not equal', value: 'notEquals' },
+    //     { name: 'In range', value: 'inRange' }
+    //   ];
+    // } else if (item.type === 'Boolean') {
+    //   return [
+    //     // { name: 'Select', value: '' },
+    //     { name: 'Yes', value: 'Yes' },
+    //     { name: 'No', value: 'No' }
+    //   ];
+    // } else {
+    //   return [
+    //     { name: 'Equals', value: 'equals' },
+    //     { name: 'Not equal', value: 'notEquals' },
+    //     { name: 'Contains', value: 'contains' },
+    //     { name: 'Does not contain', value: 'notContains' }
+    //   ];
+    return [ { name: 'Equals', value: 'equals' },
         { name: 'Not equal', value: 'notEquals' },
         { name: 'Contains', value: 'contains' },
-        { name: 'Does not contain', value: 'notContains' }
-      ];
-    }
+        { name: 'Does not contain', value: 'notContains' },
+        { name: 'Greater than', value: 'greaterThan' },
+        { name: 'Less than', value: 'lessThan' },
+        { name: 'In range', value: 'inRange' }
+      ]
   }
 
   done() {
@@ -164,15 +158,16 @@ export class NodeAdvancedFilterComponent implements OnInit {
 
       this.value = this.filterPayload
       this.valueChange.emit(this.value);
-
+      this.listToggle=false;
       this.toggle = false;
       this.toggleChange.emit(this.toggle);
     }
     else {
       // this.currNode.options.filterString = this.showFilterString();
-      console.log(this.filterPayload)
       const finalPayload = this.convertToMongoFilter(this.filterPayload)
-      this.valueChange.emit(finalPayload); this.toggle = false;
+      this.valueChange.emit(finalPayload); 
+      this.listToggle = false;
+      this.toggle = false;
       this.toggleChange.emit(this.toggle);
 
     }
@@ -206,8 +201,8 @@ export class NodeAdvancedFilterComponent implements OnInit {
         }
     if (query.condition) {
         const condition = conditionMap[query.condition] || query.condition;
-        const rules = query.rules.map(rule => this.convertToMongoFilter(rule));
-        return { [condition]: rules };
+        const conditions = query.conditions.map(rule => this.convertToMongoFilter(rule));
+        return { [condition]: conditions };
     } else if (query.path && query.operator && query.value !== undefined) {
         const operator = operatorsMap[query.operator] || query.operator;
         if(query.operator == 'inRange'){
@@ -225,67 +220,6 @@ export class NodeAdvancedFilterComponent implements OnInit {
 
     return {};
 }
-
-
-  // convertToFilters(queryArray) {
-  //   let prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : ''
-  //   const filters = [];
-
-  //   queryArray.forEach(queryObject => {
-  //     let path = Object.keys(queryObject)[0];
-  //     if (path.startsWith('_metadata')) {
-  //       prefix = '_metadata.'
-  //     }
-  //     const value = queryObject[path];
-  //     path = path.replace(prefix, '');
-
-  //     if (value.hasOwnProperty('$eq') || value.hasOwnProperty('$ne')) {
-  //       const type = this.definition.find(ele => ele.properties.dataPath === path).type;
-  //       const operator = value.hasOwnProperty('$eq') ? 'equals' : 'notEquals';
-  //       const query = {
-  //         path: path,
-  //         operator: operator,
-  //         value: type === 'Date' ? { from: value['$eq'] || value['$ne'] } : { val: value['$eq'] || value['$ne'] }
-  //       };
-  //       filters.push(query);
-  //     } else if (value.hasOwnProperty('$regex') || value.hasOwnProperty('$not')) {
-  //       const operator = value.hasOwnProperty('$regex') ? 'contains' : 'notContains';
-  //       const query = {
-  //         path: path,
-  //         operator: operator,
-  //         value: { val: value['$regex'] }
-  //       };
-  //       filters.push(query);
-  //     } else if (value.hasOwnProperty('$gt') || value.hasOwnProperty('$lt')) {
-  //       const operator = value.hasOwnProperty('$gt') ? 'greaterThan' : 'lessThan';
-  //       const queryVal = value['$gt'] || value['$lt'];
-  //       const finalQueryVal = typeof queryVal === 'number' ? { val: queryVal } : { from: queryVal, to: queryVal };
-  //       const query = {
-  //         path: path,
-  //         operator: operator,
-  //         value: finalQueryVal
-  //       };
-  //       filters.push(query);
-  //     } else if (value.hasOwnProperty('$gte') && value.hasOwnProperty('$lte')) {
-  //       const query = {
-  //         path: path,
-  //         operator: 'inRange',
-  //         value: { from: value['$gte'], to: value['$lte'] }
-  //       };
-  //       filters.push(query);
-  //     } else if (typeof value === 'boolean') {
-  //       // const operator = value ? 'Yes' : 'No';
-  //       const query = {
-  //         path: path,
-  //         operator: value ? 'Yes' : 'No',
-  //         value: { val: value ? 'Yes' : 'No' }
-  //       };
-  //       filters.push(query);
-  //     }
-  //   });
-  //   console.log(filters);
-  //   return filters;
-  // }
 
   convertToJSONStructure(mongoQuery) {
     const operatorsMap = {
@@ -307,8 +241,8 @@ export class NodeAdvancedFilterComponent implements OnInit {
 
     if (mongoQuery.$and || mongoQuery.$or) {
         const condition = Object.keys(mongoQuery)[0];
-        const rules = mongoQuery[condition].map(rule => this.convertToJSONStructure(rule));
-        return { condition: conditionMap[condition] || condition, rules };
+        const conditions = mongoQuery[condition].map(rule => this.convertToJSONStructure(rule));
+        return { condition: conditionMap[condition] || condition, conditions };
     } else {
         let path = Object.keys(mongoQuery)[0];
         if (path.includes('_metadata')) {
@@ -339,7 +273,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
 
   showFilterString() {
     const opObj = {
-      'equals': '=',
+      'equals': '==',
       'notEquals': '!=',
       'greaterThan': '>',
       'lesserThan': '<',
@@ -347,19 +281,23 @@ export class NodeAdvancedFilterComponent implements OnInit {
       'notContains': 'does not contain',
       '$and': '&&',
       '$or': '||',
-      'Yes': '=',
-      'No': '=',
+      'Yes': '==',
+      'No': '==',
+      'inRange': '>='
     }
     const condition = this.filterPayload?.condition || ''
-    if(condition){
+    if(condition && this.filterPayload?.conditions && !this.advancedToggle){
       let str = ''
-      for (const ele of this.filterPayload.rules) {
+      for (const ele of this.filterPayload.conditions) {
         if (ele.path) {
           str = `${ele.path} ${opObj[ele.operator]} ${ele.value.val || ele.value.from || ele.value.to} ${opObj[condition]} ...`;
           return str;
         }
       }
       return str;
+    }
+    else if(this.advancedToggle){
+      return this.filterPayload.toString().length > 100 ? this.filterPayload.toString().substring(0, 100) + '...' : this.filterPayload.toString()
     }
     else{
       return ''
@@ -381,6 +319,9 @@ export class NodeAdvancedFilterComponent implements OnInit {
         val: obj.operator
       }
     }
+    else{
+      obj['value']['val'] = null
+    }
   }
 
   toggleDatePicker() {
@@ -393,8 +334,8 @@ export class NodeAdvancedFilterComponent implements OnInit {
   } else {
       let result = [];
       array.forEach(obj => {
-          if (obj.rules) {
-              result = result.concat(this.accessNestedLevel(obj.rules, level - 1));
+          if (obj.conditions) {
+              result = result.concat(this.accessNestedLevel(obj.conditions, level - 1));
           }
       });
       return result;
@@ -403,12 +344,12 @@ export class NodeAdvancedFilterComponent implements OnInit {
 }
 
   removeAllDatePickers(data){
-    data.rules.forEach((ele)=>{
+    data.conditions.forEach((ele)=>{
       if(ele.path){
         ele.showFromDatePicker = false;
         ele.showToDatePicker = false;
       }
-      else if(ele.rules){
+      else if(ele.conditions){
         this.removeAllDatePickers(ele);
       }
      })
@@ -437,14 +378,17 @@ export class NodeAdvancedFilterComponent implements OnInit {
   }
 
   isValidPayload(obj) {
+    if(this.advancedToggle){
+      return true
+    }
     if (typeof obj !== 'object' || obj === null) {
         return false;
     }
-    if (obj.hasOwnProperty('rules')) {
-        if (!Array.isArray(obj.rules) || obj.rules.length === 0) {
+    if (obj.hasOwnProperty('conditions')) {
+        if (!Array.isArray(obj.conditions) || obj.conditions.length === 0) {
             return false;
         }
-        for (let rule of obj.rules) {
+        for (let rule of obj.conditions) {
             if (!this.isValidPayload(rule)) {
                 return false;
             }
@@ -471,7 +415,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
         this.advancedToggle = value;
         this.filterPayload =  this.advancedToggle ? [] : {
           condition: '$and',
-          rules:[]
+          conditions:[]
         };
       }
       else {
@@ -490,30 +434,126 @@ export class NodeAdvancedFilterComponent implements OnInit {
       showFromDatePicker: false
     }
 
-    ruleObj.rules.push(obj)
+    ruleObj.conditions.push(obj)
   }
   
   removeRule(i, obj){
-    obj?.rules?.splice(i,1);
+    obj?.conditions?.splice(i,1);
   }
 
   addRuleSet(ruleObj){
     const obj = {
       condition: '$and',
-      rules:[{
+      conditions:[{
         path: this.definition[0].properties.dataPath,
         operator: this.getFilterOptionsItem(this.definition[0])[0].value,
         value: {},
       }]
     }
-    ruleObj.rules.push(obj);
+    ruleObj.conditions.push(obj);
   }
 
   removeRuleSet(i, obj){
-    obj?.rules?.splice(i,1);
+    obj?.conditions?.splice(i,1);
   }
 
   switchCondition(obj,value){
     obj.condition = value;
   }
+
+
+  getAllSources(){
+    const currNode = this.currNode
+    const list = currNode ? this.flowService.getNodesBefore(currNode) : [];
+    const temp = list.map(node => {
+      let list = [];
+
+      if (node.dataStructure?.outgoing?.definition) {
+        list = list.concat(this.getNestedSuggestions(node, node.dataStructure.outgoing.definition));
+      }
+      return list;
+    })
+    return _.flatten(temp);
+  }
+
+  getNestedSuggestions(node: any, definition: Array<any>, parentKey?: any, parentDef?: any) {
+    let list = [];
+    if (definition && definition.length > 0) {
+      definition.forEach((def: any) => {
+        def.depth = parentDef ? parentDef.depth + 1 : 0;
+        let key = def.properties?.dataPathSegs?.join('.');
+        if (def.type == 'Object') {
+          list = list.concat(this.getNestedSuggestions(node, def.definition, key, def));
+        } else {
+          let item: any = {};
+          const label = key.split('.').pop()
+          item.label = item.label == '_id' ? 'ID' : label.charAt(0).toUpperCase() + label.slice(1);
+          item.value = node._id + '.responseBody.' + key;
+          item.nodeId = node._id;
+          item.name = node.name;
+          item.def=def;
+          list.push(item);
+        }
+      });
+    }
+    return list;
+  }
+
+ transform(input){
+  const result = {};
+
+  input.forEach(item => {
+    const { nodeId, name, label, value, def } = item;
+
+    if (!result[nodeId]) {
+      result[nodeId] = { keys: [], name: name };
+    }
+
+    result[nodeId].keys.push({ label, value, def });
+  });
+
+  // Convert the result object into an array
+  const outputArray = Object.keys(result).map(nodeId => ({
+    nodeId,
+    name: result[nodeId].name,
+    keys: result[nodeId].keys,
+    collapsed: false
+  }));
+
+  return outputArray;
+ }
+
+
+ onBasicDrop(event: any, obj, type = 'val') {
+  console.log(this.currentSource.value);
+  obj['value'][type] = `{{${this.currentSource.value}}}`
+}
+
+onSourceDrag(event: any, item: any) {
+  this.currentSource = item;
+}
+
+getNodeDataType(source: any) {
+  const list = this.currNode ? this.flowService.getNodesBefore(this.currNode) : [];
+  const node = list.find(ele => ele._id==source.nodeId)
+  if (node.dataStructure && node.dataStructure?.outgoing && node.dataStructure?.outgoing?._id) {
+    if (node.dataStructure.outgoing._id.startsWith('SRVC')) {
+      return 'Array';
+    } else {
+      return node.dataStructure?.outgoing?.type || 'Object';
+    }
+  }
+  return 'Object';
+}
+
+toggleSource(nodeId: any) {
+  const node = this.sources.find(ele => ele.nodeId == nodeId)
+  node.collapsed = !node.collapsed
+}
+
+ get secondCss(){
+  const width = document.getElementById('main').offsetWidth;
+  return width+'px';
+ }
+
 }
