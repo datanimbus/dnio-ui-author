@@ -449,7 +449,7 @@ export class NodePropertiesComponent implements OnInit {
     } if (this.currNode.type == 'API' && this.currNode.options.contentType == 'multipart/form-data') {
       flag = true;
     }
-    if (flag && !(this.currNode?.dataStructure?.outgoing?.formatType === 'XML'
+    if (!(this.currNode?.dataStructure?.outgoing?.formatType === 'XML'
       || this.currNode?.dataStructure?.outgoing?.formatType === 'JSON')) {
       flag = true;
     } else {
