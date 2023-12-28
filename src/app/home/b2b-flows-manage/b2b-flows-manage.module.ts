@@ -69,6 +69,7 @@ import { DatePickerModule } from 'src/app/utils/date-picker/datePicker.module';
 import { FlowPropertiesComponent } from './node-properties/flow-properties/flow-properties.component';
 import { ConditionPropertiesComponent } from './node-properties/condition-properties/condition-properties.component';
 import { SearchTermModule } from 'src/app/utils/search-term/search-term.module';
+import { ForeachPropertiesComponent } from './node-properties/foreach-properties/foreach-properties.component';
 
 const routes: Routes = [
   {
@@ -111,6 +112,7 @@ const routes: Routes = [
     NodeAdvancedFilterComponent,
     FlowPropertiesComponent,
     ConditionPropertiesComponent,
+    ForeachPropertiesComponent,
   ],
   imports: [
     CommonModule,
