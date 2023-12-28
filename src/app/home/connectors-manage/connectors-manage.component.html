@@ -16,7 +16,8 @@
                         class="btn btn-white border mr-3" (click)="deleteConnector()">
                         <span class="dsi dsi-trash"></span>
                     </button>
-                    <button class="btn btn-outline-primary btn-min-width mr-3" (click)="testConnection()" *ngIf="connector.category === 'DB' || connector.type === 'SFTP'">
+                    <button class="btn btn-outline-primary btn-min-width mr-3" (click)="testConnection()"
+                        *ngIf="connector.category === 'DB' || connector.type === 'SFTP'">
                         <span>Test</span>
                     </button>
                     <button class="btn btn-white border btn-min-width mr-3" routerLink="../">
@@ -27,7 +28,8 @@
                             [disabled]="connector.name === 'Default DB Connector' || connector.name === 'Default File Connector'">
                             <span>Edit</span>
                         </button>
-                        <button *ngIf="edit.status" [disabled]="!connector.name" class="btn btn-primary btn-min-width" (click)="saveConnector()">
+                        <button *ngIf="edit.status" [disabled]="!connector.name" class="btn btn-primary btn-min-width"
+                            (click)="saveConnector()">
                             <span>Save</span>
                         </button>
                     </ng-container>
@@ -54,7 +56,7 @@
                     <ng-container *ngIf="item.type==connector.type">
                         <ng-container *ngFor="let field of item.fields">
                             <div *ngIf="parseCondition(field.condition)" class="form-group">
-                                <label class="text-secondary font-12 fw-500"
+                                <label *ngIf="field.htmlInputType!='checkbox'" class="text-secondary font-12 fw-500"
                                     [attr.for]="field.key">{{field.label}}</label>
                                 <input
                                     *ngIf="field.htmlInputType=='text' || field.htmlInputType=='password' || field.htmlInputType=='number'"
@@ -70,8 +72,17 @@
                                     [disabled]="!edit.status" [required]="field.required">
                                     <option *ngFor="let sel of field.options" [value]="sel.value">{{sel.label}}</option>
                                 </select>
-                                <div *ngIf="field.htmlInputType=='password'" class="form-text text-muted font-11">This
-                                    value will be stored encrypted</div>
+                                <div *ngIf="field.htmlInputType=='password'" class="form-text text-muted font-11">
+                                    This value will be stored encrypted
+                                </div>
+                                <div *ngIf="field.htmlInputType=='checkbox'" class="form-check">
+                                    <input class="form-check-input" type="checkbox" [id]="field.key"
+                                        [ngModel]="getValue(field.key)" (ngModelChange)="setValue(field.key,$event)"
+                                        [disabled]="!edit.status" [required]="field.required">
+                                    <label class="form-check-label text-secondary font-12 fw-500" [for]="field.key">
+                                        {{field.label}}
+                                    </label>
+                                </div>
                             </div>
                         </ng-container>
                     </ng-container>
