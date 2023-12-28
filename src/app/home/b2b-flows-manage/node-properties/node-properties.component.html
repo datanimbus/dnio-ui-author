@@ -378,6 +378,12 @@
                         (ngModelChange)="changesDone.emit()" (keydown.delete)="$event.stopPropagation();"
                         [disabled]="!edit.status">
                 </div>
+                <div class="form-group" *ngIf="showSheetSelect">
+                    <label for="sheetNo" class="font-14 fw-400 text-dark">Sheet No</label>
+                    <input id="sheetNo" type="number" class="form-control" [(ngModel)]="currNode.options.sheetNo"
+                        (ngModelChange)="changesDone.emit()" (keydown.delete)="$event.stopPropagation();"
+                        [disabled]="!edit.status">
+                </div>
             </div>
         </ng-container>
         <ng-container *ngIf="currNode.type=='DEDUPE'">

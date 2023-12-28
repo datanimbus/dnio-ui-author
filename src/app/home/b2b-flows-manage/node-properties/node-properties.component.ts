@@ -449,7 +449,7 @@ export class NodePropertiesComponent implements OnInit {
     } if (this.currNode.type == 'API' && this.currNode.options.contentType == 'multipart/form-data') {
       flag = true;
     }
-    if (flag && !(this.currNode?.dataStructure?.outgoing?.formatType === 'XML'
+    if (!(this.currNode?.dataStructure?.outgoing?.formatType === 'XML'
       || this.currNode?.dataStructure?.outgoing?.formatType === 'JSON')) {
       flag = true;
     } else {
@@ -457,6 +457,14 @@ export class NodePropertiesComponent implements OnInit {
       this.currNode.options['skipRows'] = null;
       this.currNode.options['maxRows'] = null;
       flag = false
+    }
+    return flag;
+  }
+
+  get showSheetSelect() {
+    let flag = false;
+    if (this.currNode?.dataStructure?.outgoing?.formatType === 'EXCEL') {
+      flag = true;
     }
     return flag;
   }
