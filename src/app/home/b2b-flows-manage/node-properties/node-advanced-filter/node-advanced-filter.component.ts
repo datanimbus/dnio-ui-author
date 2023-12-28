@@ -481,13 +481,13 @@ export class NodeAdvancedFilterComponent implements OnInit {
     if (definition && definition.length > 0) {
       definition.forEach((def: any) => {
         def.depth = parentDef ? parentDef.depth + 1 : 0;
-        let key = def.properties?.dataPathSegs?.join('.');
+        let key = def.properties?.dataPathSegs?.join('.') || def.key;
         if (def.type == 'Object') {
           list = list.concat(this.getNestedSuggestions(node, def.definition, key, def));
         } else {
           let item: any = {};
           const label = key.split('.').pop()
-          item.label = item.label == '_id' ? 'ID' : label.charAt(0).toUpperCase() + label.slice(1);
+          item.label = label == '_id' ? 'ID' : label.charAt(0).toUpperCase() + label.slice(1);
           item.value = node._id + '.responseBody.' + key;
           item.nodeId = node._id;
           item.name = node.name;
