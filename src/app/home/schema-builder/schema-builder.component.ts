@@ -776,14 +776,14 @@ export class SchemaBuilderComponent implements
         }
     }
 
-    fillDetails(id) {
+    async fillDetails(id) {
         const self = this;
         (self.form.get('definition') as UntypedFormArray).clear();
         self.edit.loading = true;
         self.subscriptions['getservice'] = self.commonService.get('serviceManager', `/${this.commonService.app._id}/service/` + id + '?draft=true', { filter: { app: this.commonService.app._id } })
-            .subscribe(res => {
+            .subscribe(async res => {
                 self.commonService.apiCalls.componentLoading = false;
-                self.schemaService.initialState(res);
+                await self.schemaService.initialState(res);
                 res.definition = self.schemaService.patchType(res.definition);
                 self.serviceObj = res;
                 self.schemaService.serviceObj = res;
