@@ -233,29 +233,54 @@
       </div>
     </div>
     <div class="mb-3 mt-2 d-flex align-items-center">
-      <div class="d-flex align-items-center hover mr-3" (click)="toggleSchemaType(false)">
+      <div class="d-flex align-items-center hover mr-3" (click)="toggleSchemaType(false); dbType = 'MONGODB'">
         <odp-round-radio size="18" [edit]="true" [checked]="form.get('schemaFree').value==false"
           (checkedChange)="toggleSchemaType(false)">
         </odp-round-radio>
         <span class="text ml-2">Schema Based</span>
       </div>
-      <div class="d-flex align-items-center hover" (click)="toggleSchemaType(true)">
+      <div class="d-flex align-items-center hover" (click)="toggleSchemaType(true); dbType = 'MONGODB'">
         <odp-round-radio size="18" [edit]="true" [checked]="form.get('schemaFree').value==true"
           (checkedChange)="toggleSchemaType(true)">
         </odp-round-radio>
         <span class="text ml-2">Schema Free</span>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" *ngIf="form.get('schemaFree').value !== null">
+      <label class="font-13 text-secondary" for="category">Database Type</label>
+      <select id="data" class="form-control" (change)="dbType = $event.target.value" [disabled]="form.get('schemaFree').value" [value]="dbType">
+        <option [value]="type" *ngFor="let type of getDbType()"
+          [selected]="type === 'MONGODB'">{{type}}</option>
+      </select>
+    </div>
+    <div class="form-group" *ngIf="form.get('schemaFree').value !== null && dbType">
       <label class="font-13 text-secondary" for="category">Data Connector</label>
-      <select id="data" class="form-control" (change)="selectConnector($event,'data')">
+      <select id="data" class="form-control" (change)="selectConnector($event,'data'); fetchTables()">
         <option [value]="connector._id" *ngFor="let connector of dataConnectors"
           [selected]="checkDefault(connector._id)">{{connector.name}}</option>
       </select>
     </div>
-    <div class="form-group">
+    <div class="mb-3 mt-2 d-flex align-items-center" *ngIf="form.get('schemaFree').value !== null">
+      <div class="d-flex align-items-center hover mr-3" (click)="tableType = 'new'; selectTables(null)">
+        <odp-round-radio size="18" [edit]="true"
+          (checkedChange)="tableType = 'new'" [checked]="tableType === 'new'">
+        </odp-round-radio>
+        <span class="text ml-2">New Table</span>
+      </div>
+      <div class="d-flex align-items-center hover" (click)="tableType='existing'; fetchTables()">
+        <odp-round-radio size="18" [edit]="true"
+          (checkedChange)="tableType = 'existing'" [checked]="tableType === 'existing'">
+        </odp-round-radio>
+        <span class="text ml-2">Existing Table</span>
+      </div>
+    </div>
+    <div class="form-group" *ngIf="form.get('schemaFree').value !== null && tableType === 'existing'">
       <label class="font-13 text-secondary" for="table">Tables</label>
-      <div odpClickOutside (outside)="showDropdownOptions=false">
+
+      <select id="data" class="form-control" (change)="selectTables($event.target.value)">
+        <option [value]="table.name" *ngFor="let table of tables">{{table.name}}</option>
+      </select>
+      <!-- <div odpClickOutside (outside)="showDropdownOptions=false">
         <input type="text" name="city" list="tableName" class="form-control" (click)="showDropdownOptions = true"
           autocomplete="off" [value]="form.get('connectors')?.get('data')?.value?.options?.tableName || ''"
           (blur)="selectTables($event?.target?.value)">
@@ -264,12 +289,12 @@
           <span class="popover-options" *ngFor="let table of tables"
             (click)="selectTables(table.name);showDropdownOptions=false ">{{table.name}}</span>
         </div>
-      </div>
+      </div> -->
       <!-- <select id="data" class="form-control" (change)="selectTables($event)">
         <option [value]="table.name" *ngFor="let table of tables">{{table.name}}</option>
       </select> -->
     </div>
-    <div class="form-group" *ngIf="!form.get('schemaFree').value">
+    <div class="form-group" *ngIf="form.get('schemaFree').value !== null && !form.get('schemaFree').value">
       <label class="font-13 text-secondary" for="category">File Connector</label>
       <select id="file" class="form-control" (change)="selectConnector($event,'file')">
         <option [value]="connector._id" *ngFor="let connector of fileConnectors"
