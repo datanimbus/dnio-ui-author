@@ -64,7 +64,7 @@ export class DataServicePropertiesComponent implements OnInit {
   selectDataService(data: any) {
     this.currNode.dataStructure.incoming = this.appService.cloneObject(data);
     this.currNode.dataStructure.outgoing = this.appService.cloneObject(data);
-    this.currNode.options.filter = [];
+    this.currNode.options.filter = null;
     this.currNode.options.filterString = [];
   }
 

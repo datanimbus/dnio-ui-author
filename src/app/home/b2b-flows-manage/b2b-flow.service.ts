@@ -304,18 +304,20 @@ export class B2bFlowService {
     else {
       nodeId = currNode._id;
     }
-    let prevNode = this.nodeList.find(e => {
+    let prevNodes = this.nodeList.filter(e => {
       let nexItems = _.concat((e.onSuccess || []), (e.onError || []), (e.conditions || []));
       if (nexItems.find((es) => es._id == nodeId)) {
         return true;
       }
       return false;
     });
-    if (prevNode) {
-      if (prevNode.type != 'CONDITION') {
-        temp.push(prevNode);
-      }
-      temp = temp.concat(this.getNodesBefore(prevNode));
+    if (prevNodes.length > 0) {
+      prevNodes.forEach(prevNode => {
+        if (prevNode.type != 'CONDITION') {
+          temp.push(prevNode);
+        }
+        temp = temp.concat(this.getNodesBefore(prevNode));
+      })
     }
     return temp;
   }
@@ -399,9 +401,7 @@ export class B2bFlowService {
           list = list.concat(this.getNestedSuggestions(node, def.definition, key));
         } else {
           let item: any = {};
-          item.label = (node._id || node.type) + '/body/' + key;
-          item.value = node._id + '.body.' + key;
-          list.push(item);
+         
           if (node.type == "DATASERVICE") {
             item = {};
             item.label = (node._id || node.type) + '/responseBody[0]/' + key;

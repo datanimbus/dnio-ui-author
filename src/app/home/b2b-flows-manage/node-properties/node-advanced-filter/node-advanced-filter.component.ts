@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild 
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'lodash';
 import { CommonService } from 'src/app/utils/services/common.service';
+import { B2bFlowService } from '../../b2b-flow.service';
 
 @Component({
   selector: 'odp-node-advanced-filter',
@@ -30,27 +31,44 @@ export class NodeAdvancedFilterComponent implements OnInit {
   alertModalRef: NgbModalRef;
   alertModalData: any = {};
   hold: boolean = false;
+  showOptionsDropdown: Boolean = false;
+  filterPayload:any;
+  suggestions: Array<any> = [];
+  listToggle: boolean= false;
+  sources : Array<any> = [];
+  currentSource: any = {};
+  
 
-  constructor(private commonService: CommonService) {
+  constructor(private commonService: CommonService, private flowService: B2bFlowService) {
     this.alertModalData = {
       title: 'Are you sure you want to toggle filter?',
       message: 'This action will result in losing all the changes you have made on the filter.',
     }
   }
+  isEmpty= _.isEmpty
 
   ngOnInit(): void {
     this.definition = this.createDefinition(this.currNode?.options?.dataService?.definition || []);
     this.definition = this.definition.concat(this.addAdditionalDef())
-    console.log(this.definition);
-
+    this.advancedToggle = this.currNode.options.isAdvancedFilter || false;
+    this.filterPayload= this.currNode.options.filter || {
+      condition: '$and',
+      conditions:[]
+    }
     this.definition.forEach(ele => {
       ele['filterOptions'] = this.setFilterTypeOptions(ele)
     });
-    this.filterArray = this.convertToFilters(_.cloneDeep(this.currNode?.options?.filter?.$and || []))
-    this.initialValue = _.cloneDeep(this.filterArray)
-    if (this.filterArray.length === 0 && (Array.isArray(this.currNode?.options?.filter) ? this.currNode?.options?.filter.length > 0 : this.currNode.options.filter)) {
-      this.advancedToggle = true
+
+    this.currNode.options.filterString = this.advancedToggle ? this.filterPayload : this.showFilterString();
+    if(!_.isEmpty(this.currNode?.options?.filter) && !this.advancedToggle){
+      this.filterPayload = this.convertToJSONStructure(_.cloneDeep(this.currNode?.options?.filter || {}))
     }
+    // this.filterArray = this.convertToFilters(_.cloneDeep(this.currNode?.options?.filter?.$and || []))
+    this.initialValue = _.cloneDeep(this.filterPayload)
+    // if (this.filterArray.length === 0 && (Array.isArray(this.currNode?.options?.filter) ? this.currNode?.options?.filter.length > 0 : this.currNode.options.filter)) {
+    //   this.advancedToggle = true
+    // }
+    this.sources = this.transform(this.getAllSources())
   }
 
   addAdditionalDef() {
@@ -86,255 +104,269 @@ export class NodeAdvancedFilterComponent implements OnInit {
   }
 
   cancel() {
-    this.filterArray = this.initialValue;
+    this.filterPayload = this.initialValue;
     this.showFromDatePicker = [];
     this.showToDatePicker = [];
+    this.listToggle=false;
     this.toggle = false;
     this.advancedToggle = false
     this.toggleChange.emit(this.toggle);
   }
 
-  addCondition() {
-    const filterObj = {
-      path: this.definition[0].properties.dataPath,
-      operator: this.getFilterOptionsItem(this.definition[0])[0].value,
-      value: {}
-    }
-    this.showFromDatePicker[this.filterArray.length] = false;
-    this.showToDatePicker[this.filterArray.length] = false;
-    this.filterArray.push(filterObj);
-  }
-
-  removeCondition(i) {
-    this.filterArray.splice(i, 1);
-    this.showFromDatePicker.splice(i, 1);
-    this.showToDatePicker.splice(i, 1);
-  }
-
   setFilterTypeOptions(item: any) {
-    if (item.type === 'Date') {
-      return [
-        { name: 'Equals', value: 'equals' },
-        { name: 'Greater than', value: 'greaterThan' },
-        { name: 'Less than', value: 'lessThan' },
-        { name: 'In range', value: 'inRange' }
-      ];
-    } else if (item.type === 'Number') {
-      return [
-        { name: 'Equals', value: 'equals' },
-        { name: 'Greater than', value: 'greaterThan' },
-        { name: 'Less than', value: 'lessThan' },
-        { name: 'Not equal', value: 'notEquals' },
-        { name: 'In range', value: 'inRange' }
-      ];
-    } else if (item.type === 'Boolean') {
-      return [
-        // { name: 'Select', value: '' },
-        { name: 'Yes', value: 'Yes' },
-        { name: 'No', value: 'No' }
-      ];
-    } else {
-      return [
-        { name: 'Equals', value: 'equals' },
+    // if (item.type === 'Date') {
+    //   return [
+    //     { name: 'Equals', value: 'equals' },
+    //     { name: 'Greater than', value: 'greaterThan' },
+    //     { name: 'Less than', value: 'lessThan' },
+    //     { name: 'In range', value: 'inRange' }
+    //   ];
+    // } else if (item.type === 'Number') {
+    //   return [
+    //     { name: 'Equals', value: 'equals' },
+    //     { name: 'Greater than', value: 'greaterThan' },
+    //     { name: 'Less than', value: 'lessThan' },
+    //     { name: 'Not equal', value: 'notEquals' },
+    //     { name: 'In range', value: 'inRange' }
+    //   ];
+    // } else if (item.type === 'Boolean') {
+    //   return [
+    //     // { name: 'Select', value: '' },
+    //     { name: 'Yes', value: 'Yes' },
+    //     { name: 'No', value: 'No' }
+    //   ];
+    // } else {
+    //   return [
+    //     { name: 'Equals', value: 'equals' },
+    //     { name: 'Not equal', value: 'notEquals' },
+    //     { name: 'Contains', value: 'contains' },
+    //     { name: 'Does not contain', value: 'notContains' }
+    //   ];
+    return [ { name: 'Equals', value: 'equals' },
         { name: 'Not equal', value: 'notEquals' },
         { name: 'Contains', value: 'contains' },
-        { name: 'Does not contain', value: 'notContains' }
-      ];
-    }
+        { name: 'Does not contain', value: 'notContains' },
+        { name: 'Greater than', value: 'greaterThan' },
+        { name: 'Less than', value: 'lessThan' },
+        { name: 'In range', value: 'inRange' }
+      ]
   }
 
   done() {
+    this.currNode.options.isAdvancedFilter = this.advancedToggle;
     if (this.advancedToggle) {
 
-      this.value = this.currNode.options.filter
+      this.value = this.filterPayload
       this.valueChange.emit(this.value);
-
+      this.listToggle=false;
       this.toggle = false;
       this.toggleChange.emit(this.toggle);
     }
     else {
-      let prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : '';
-      this.currNode.options.filterString = this.showFilterString();
-      const filterPayload = this.filterArray.map(filter => {
-        if (['lastUpdated', 'createdAt'].includes(filter['path'])) {
-          prefix = '_metadata.'
-        }
-        if (filter['operator'].toLowerCase().includes('equal')) {
-          const operator = filter['operator'] === 'equals' ? '$eq' : '$ne';
-          const path = filter['path'];
-          const query = {};
-          query[operator] = filter['value']['val'] || filter['value']['from'];
-          let final = {};
-          final[prefix + path.toString()] = query;
-          return final;
-        }
-
-        if (filter['operator'].toLowerCase().includes('contain')) {
-          const regex = { $regex: filter['value']['val'], $options: 'i' }
-          const operation = filter['operator'] === 'contains' ? regex : { $not: regex };
-          const path = filter['path'];
-          let final = {};
-          final[prefix + path.toString()] = operation;
-          return final;
-        }
-
-        if (filter['operator'].includes('Than')) {
-          const operator = filter['operator'] === 'greaterThan' ? '$gt' : '$lt';
-          const path = filter['path'];
-          const query = {};
-          query[operator] = filter['value']['val'] || filter['value']['from'];
-          let final = {};
-          final[prefix + path.toString()] = query;
-          return final;
-        }
-
-        if (filter['operator'] === 'inRange') {
-          const path = filter['path'];
-          const from = filter['value']['from'];
-          const to = filter['value']['to'];
-          const query = { $gte: from, $lte: to };
-          let final = {};
-          final[prefix + path.toString()] = query;
-          return final;
-        }
-
-        if (filter['operator'] === 'Yes' || filter['operator'] === 'No') {
-          const path = filter['path'];
-          const query = filter['operator'] === 'Yes' ? true : false;
-          let final = {};
-          final[path.toString()] = query;
-          return final;
-        }
-      })
-      this.value = filterPayload ? { $and: filterPayload } : {};
-      this.valueChange.emit(this.value); this.toggle = false;
+      // this.currNode.options.filterString = this.showFilterString();
+      const finalPayload = this.convertToMongoFilter(this.filterPayload)
+      this.valueChange.emit(finalPayload); 
+      this.listToggle = false;
+      this.toggle = false;
       this.toggleChange.emit(this.toggle);
+
     }
 
-    this.advancedToggle = false
-
   }
+  convertToMongoFilter(query) {
+    if (!query || typeof query !== 'object') {
+        return {};
+    }
 
+    const operatorsMap = {
+        equals: '$eq',
+        notEquals: '$ne',
+        greaterThan: '$gt',
+        lessThan: '$lt',
+        contains: '$regex',
+        notContains: '$not',
+        Yes: 'Yes',
+        No: 'No',
+        
+    };
 
-  convertToFilters(queryArray) {
+    const conditionMap = {
+        $and: '$and',
+        $or: '$or',
+    };
+    let prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : '';
+
+    if (['lastUpdated', 'createdAt'].includes(query.path)) {
+          prefix = '_metadata.'
+        }
+    if (query.condition) {
+        const condition = conditionMap[query.condition] || query.condition;
+        const conditions = query.conditions.map(rule => this.convertToMongoFilter(rule));
+        return { [condition]: conditions };
+    } else if (query.path && query.operator && query.value !== undefined) {
+        const operator = operatorsMap[query.operator] || query.operator;
+        if(query.operator == 'inRange'){
+          return { [prefix+query.path.toString()]: { $gte: query.value.from, $lte: query.value.to } };
+        }
+        if(query.operator.toLowerCase().includes('contains')){
+          const regex = { $regex: query.value?.val || query.value, $options: 'i' };
+          return {[prefix+query.path.toString()]: (query.operator === 'contains' ? regex : {$not: regex})}
+        }
+        if (query.operator.includes('Than')) {
+          return { [prefix+query.path.toString()]: { [operator]: (query['value']['val'] || query['value']['from']) } };
+        }
+        return { [prefix+query.path.toString()]: { [operator]: query.value.val || query.value.from || query.val } };
+    }
+
+    return {};
+}
+
+  convertToJSONStructure(mongoQuery) {
+    const operatorsMap = {
+        $eq: 'equals',
+        $ne: 'notEquals',
+        $gt: 'greaterThan',
+        $lt: 'lessThan',
+        $regex: 'contains',
+        $not: 'notContains',
+    };
+
+    const conditionMap = {
+        $and: '$and',
+        $or: '$or',
+    };
+    let finalOperator = ''
+
     let prefix = ['DATASERVICE_APPROVE', 'DATASERVCE_REJECT'].includes(this.currNode.type) ? 'data.new.' : ''
-    const filters = [];
 
-    queryArray.forEach(queryObject => {
-      let path = Object.keys(queryObject)[0];
-      if (path.startsWith('_metadata')) {
-        prefix = '_metadata.'
-      }
-      const value = queryObject[path];
-      path = path.replace(prefix, '');
-
-      if (value.hasOwnProperty('$eq') || value.hasOwnProperty('$ne')) {
+    if (mongoQuery.$and || mongoQuery.$or) {
+        const condition = Object.keys(mongoQuery)[0];
+        const conditions = mongoQuery[condition].map(rule => this.convertToJSONStructure(rule));
+        return { condition: conditionMap[condition] || condition, conditions };
+    } else {
+        let path = Object.keys(mongoQuery)[0];
+        if (path.includes('_metadata')) {
+          prefix = '_metadata.'
+        }
+        let operator = Object.keys(mongoQuery[path])[0];
+        finalOperator = operatorsMap[operator];
+        if(mongoQuery[path].hasOwnProperty('$gte') && mongoQuery[path].hasOwnProperty('$lte')){
+          finalOperator = 'inRange'
+        }
+        let value = mongoQuery?.[path]?.[operator];
+        path=path.replace(prefix,'')
         const type = this.definition.find(ele => ele.properties.dataPath === path).type;
-        const operator = value.hasOwnProperty('$eq') ? 'equals' : 'notEquals';
-        const query = {
-          path: path,
-          operator: operator,
-          value: type === 'Date' ? { from: value['$eq'] || value['$ne'] } : { val: value['$eq'] || value['$ne'] }
-        };
-        filters.push(query);
-      } else if (value.hasOwnProperty('$regex') || value.hasOwnProperty('$not')) {
-        const operator = value.hasOwnProperty('$regex') ? 'contains' : 'notContains';
-        const query = {
-          path: path,
-          operator: operator,
-          value: { val: value['$regex'] }
-        };
-        filters.push(query);
-      } else if (value.hasOwnProperty('$gt') || value.hasOwnProperty('$lt')) {
-        const operator = value.hasOwnProperty('$gt') ? 'greaterThan' : 'lessThan';
-        const queryVal = value['$gt'] || value['$lt'];
-        const finalQueryVal = typeof queryVal === 'number' ? { val: queryVal } : { from: queryVal, to: queryVal };
-        const query = {
-          path: path,
-          operator: operator,
-          value: finalQueryVal
-        };
-        filters.push(query);
-      } else if (value.hasOwnProperty('$gte') && value.hasOwnProperty('$lte')) {
-        const query = {
-          path: path,
-          operator: 'inRange',
-          value: { from: value['$gte'], to: value['$lte'] }
-        };
-        filters.push(query);
-      } else if (typeof value === 'boolean') {
-        // const operator = value ? 'Yes' : 'No';
-        const query = {
-          path: path,
-          operator: value ? 'Yes' : 'No',
-          value: { val: value ? 'Yes' : 'No' }
-        };
-        filters.push(query);
-      }
-    });
-    console.log(filters);
-    return filters;
-  }
-
+        if(type === 'Date'){
+          value = finalOperator === 'inRange' ? {from: mongoQuery[prefix+path]['$gte'], to: mongoQuery[prefix+path]['$lte']} : {from: value}
+        }
+        else if(typeof mongoQuery[prefix+path] === 'boolean'){
+          finalOperator = mongoQuery[prefix+path] ? 'Yes' : 'No';
+          value = {val: mongoQuery[prefix+path] ? 'Yes' : 'No'}
+        } 
+        else {
+          value = {val: value}
+        }
+        return { path, operator: finalOperator || operator, value };
+    }
+    
+}
 
   showFilterString() {
     const opObj = {
-      'equals': '=',
+      'equals': '==',
       'notEquals': '!=',
       'greaterThan': '>',
       'lesserThan': '<',
       'contains': 'contains',
       'notContains': 'does not contain',
-
+      '$and': '&&',
+      '$or': '||',
+      'Yes': '==',
+      'No': '==',
+      'inRange': '>='
     }
-    return this.filterArray.length === 0 ? ['{}'] : this.filterArray.map(filter => {
-      if (filter.operator === 'inRange') {
-        return `${filter.value.from}' <= ${filter.path} <= '${filter.value.to}'`;
-      } else {
-        return `${filter.path} ${filter.operator === 'Yes' || filter.operator === 'No' ? 'is' : opObj[filter.operator]} '${filter.value.val || filter.value.from}' ${filter.value.to ? "and '" + filter.value.to + "'" : ''}`;
+    const condition = this.filterPayload?.condition || ''
+    if(condition && this.filterPayload?.conditions && !this.advancedToggle){
+      let str = ''
+      for (const ele of this.filterPayload.conditions) {
+        if (ele.path) {
+          str = `${ele.path} ${opObj[ele.operator]} ${ele.value.val || ele.value.from || ele.value.to} ${opObj[condition]} ...`;
+          return str;
+        }
       }
-    })
+      return str;
+    }
+    else if(this.advancedToggle){
+      return this.filterPayload.toString().length > 100 ? this.filterPayload.toString().substring(0, 100) + '...' : this.filterPayload.toString()
+    }
+    else{
+      return ''
+    }
   }
 
-  assignDate(event, i, type) {
-    this.filterArray[i].value[type] = event
+  assignDate(event, obj, type) {
+    obj.value[type] = event
   }
 
-  assignDefaultFilter(i) {
-    this.filterArray[i].operator = this.getFilterOptions(i)[0].value;
-    this.assignValue(i);
+  assignDefaultFilter(obj) {
+    obj.operator = this.getFilterOptions(obj)[0].value;
+    this.assignValue(obj);
   }
 
-  assignValue(i) {
-    if (this.definition.find(ele => ele.properties.dataPath === this.filterArray[i].path).type === 'Boolean') {
-      this.filterArray[i].value = {
-        val: this.filterArray[i].operator
+  assignValue(obj) {
+    if (this.definition.find(ele => ele.properties.dataPath === obj.path).type === 'Boolean') {
+      obj.value = {
+        val: obj.operator
       }
     }
+    else{
+      obj['value']['val'] = null
+    }
   }
 
-  toggleDatePicker(i, type) {
-    if (type === 'from') {
-      this.showFromDatePicker.fill(false).fill(!this.showFromDatePicker[i], i, i + 1)
-    }
-    else {
-      this.showToDatePicker.fill(false).fill(!this.showToDatePicker[i], i, i + 1)
-    }
-    // this.showFromDatePicker[i]=!this.showFromDatePicker[i]
+  toggleDatePicker() {
+   this.removeAllDatePickers(this.filterPayload);
   }
-  getFilterOptions(i) {
-    return this.definition.find(ele => ele.properties.dataPath == this.filterArray[i].path)?.filterOptions || []
+
+   accessNestedLevel(array, level) {
+    if (level === 0) {
+      return array;
+  } else {
+      let result = [];
+      array.forEach(obj => {
+          if (obj.conditions) {
+              result = result.concat(this.accessNestedLevel(obj.conditions, level - 1));
+          }
+      });
+      return result;
+  }
+    
+}
+
+  removeAllDatePickers(data){
+    data.conditions.forEach((ele)=>{
+      if(ele.path){
+        ele.showFromDatePicker = false;
+        ele.showToDatePicker = false;
+      }
+      else if(ele.conditions){
+        this.removeAllDatePickers(ele);
+      }
+     })
+  }
+  getFilterOptions(obj) {
+    return this.definition.find(ele => ele.properties.dataPath == obj.path)?.filterOptions || []
   }
 
   getFilterOptionsItem(def) {
     return this.definition.find(ele => ele.properties.dataPath == def.properties.dataPath)?.filterOptions
   }
 
-  getType(i) {
-    return this.definition.find(ele => ele.properties.dataPath == this.filterArray[i].path)?.type
+  getType(obj) {
+    return this.definition.find(ele => ele.properties.dataPath == obj.path)?.type
   }
-  getDateType(i) {
-    return this.definition.find(ele => ele.properties.dataPath == this.filterArray[i].path)?.properties?.dateType?.split('-')?.[0] || 'date'
+  getDateType(obj) {
+    return this.definition.find(ele => ele.properties.dataPath == obj.path)?.properties?.dateType?.split('-')?.[0] || 'date'
   }
 
   show(value) {
@@ -342,23 +374,38 @@ export class NodeAdvancedFilterComponent implements OnInit {
   }
 
   isValid() {
-    const check = this.filterArray.map(ele => {
-      if (['greaterThan', 'lesserThan'].includes(ele.operator) && (ele.value.from || ele.value.val)) {
-        return true
-      }
-      if (ele.operator === 'inRange' && ele.value.from && ele.value.to) {
-        return true
-      }
-      if (ele.value.val || ele.value.from) {
-        return true
-      }
-      return false
-    })
-    if (check.filter(ele => !ele).length > 0) {
-      return false
-    }
-    return true
+    return this.isValidPayload(this.filterPayload)
   }
+
+  isValidPayload(obj) {
+    if(this.advancedToggle){
+      return true
+    }
+    if (typeof obj !== 'object' || obj === null) {
+        return false;
+    }
+    if (obj.hasOwnProperty('conditions')) {
+        if (!Array.isArray(obj.conditions) || obj.conditions.length === 0) {
+            return false;
+        }
+        for (let rule of obj.conditions) {
+            if (!this.isValidPayload(rule)) {
+                return false;
+            }
+        }
+    }
+    if (obj.hasOwnProperty('value')) {
+        let value = obj.value;
+        if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) {
+            return false;
+        }
+        if (typeof value === 'string' && value.trim() === '') {
+            return false;
+        }
+    }
+
+    return true;
+}
   onToggle(value) {
     this.alertModalRef = this.commonService.modal(this.alertModal, { centered: true });
     this.hold = true;
@@ -366,7 +413,10 @@ export class NodeAdvancedFilterComponent implements OnInit {
       if (close) {
         this.hold = false;
         this.advancedToggle = value;
-        this.filterArray = [];
+        this.filterPayload =  this.advancedToggle ? [] : {
+          condition: '$and',
+          conditions:[]
+        };
       }
       else {
         this.hold = false
@@ -374,4 +424,136 @@ export class NodeAdvancedFilterComponent implements OnInit {
       }
     });
   }
+  
+  addCondition(ruleObj){
+    const obj = {
+      path: this.definition[0].properties.dataPath,
+      operator: this.getFilterOptionsItem(this.definition[0])[0].value,
+      value: {},
+      showToDatePicker: false,
+      showFromDatePicker: false
+    }
+
+    ruleObj.conditions.push(obj)
+  }
+  
+  removeRule(i, obj){
+    obj?.conditions?.splice(i,1);
+  }
+
+  addRuleSet(ruleObj){
+    const obj = {
+      condition: '$and',
+      conditions:[{
+        path: this.definition[0].properties.dataPath,
+        operator: this.getFilterOptionsItem(this.definition[0])[0].value,
+        value: {},
+      }]
+    }
+    ruleObj.conditions.push(obj);
+  }
+
+  removeRuleSet(i, obj){
+    obj?.conditions?.splice(i,1);
+  }
+
+  switchCondition(obj,value){
+    obj.condition = value;
+  }
+
+
+  getAllSources(){
+    const currNode = this.currNode
+    const list = currNode ? this.flowService.getNodesBefore(currNode) : [];
+    const temp = list.map(node => {
+      let list = [];
+
+      if (node.dataStructure?.outgoing?.definition) {
+        list = list.concat(this.getNestedSuggestions(node, node.dataStructure.outgoing.definition));
+      }
+      return list;
+    })
+    return _.flatten(temp);
+  }
+
+  getNestedSuggestions(node: any, definition: Array<any>, parentKey?: any, parentDef?: any) {
+    let list = [];
+    if (definition && definition.length > 0) {
+      definition.forEach((def: any) => {
+        def.depth = parentDef ? parentDef.depth + 1 : 0;
+        let key = def.properties?.dataPathSegs?.join('.');
+        if (def.type == 'Object') {
+          list = list.concat(this.getNestedSuggestions(node, def.definition, key, def));
+        } else {
+          let item: any = {};
+          const label = key.split('.').pop()
+          item.label = item.label == '_id' ? 'ID' : label.charAt(0).toUpperCase() + label.slice(1);
+          item.value = node._id + '.responseBody.' + key;
+          item.nodeId = node._id;
+          item.name = node.name;
+          item.def=def;
+          list.push(item);
+        }
+      });
+    }
+    return list;
+  }
+
+ transform(input){
+  const result = {};
+
+  input.forEach(item => {
+    const { nodeId, name, label, value, def } = item;
+
+    if (!result[nodeId]) {
+      result[nodeId] = { keys: [], name: name };
+    }
+
+    result[nodeId].keys.push({ label, value, def });
+  });
+
+  // Convert the result object into an array
+  const outputArray = Object.keys(result).map(nodeId => ({
+    nodeId,
+    name: result[nodeId].name,
+    keys: result[nodeId].keys,
+    collapsed: false
+  }));
+
+  return outputArray;
+ }
+
+
+ onBasicDrop(event: any, obj, type = 'val') {
+  console.log(this.currentSource.value);
+  obj['value'][type] = `{{${this.currentSource.value}}}`
+}
+
+onSourceDrag(event: any, item: any) {
+  this.currentSource = item;
+}
+
+getNodeDataType(source: any) {
+  const list = this.currNode ? this.flowService.getNodesBefore(this.currNode) : [];
+  const node = list.find(ele => ele._id==source.nodeId)
+  if (node.dataStructure && node.dataStructure?.outgoing && node.dataStructure?.outgoing?._id) {
+    if (node.dataStructure.outgoing._id.startsWith('SRVC')) {
+      return 'Array';
+    } else {
+      return node.dataStructure?.outgoing?.type || 'Object';
+    }
+  }
+  return 'Object';
+}
+
+toggleSource(nodeId: any) {
+  const node = this.sources.find(ele => ele.nodeId == nodeId)
+  node.collapsed = !node.collapsed
+}
+
+ get secondCss(){
+  const width = document.getElementById('main').offsetWidth;
+  return width+'px';
+ }
+
 }
