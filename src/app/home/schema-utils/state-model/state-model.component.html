@@ -113,16 +113,16 @@
                             </div>
                             <div class="col-8" [ngClass]="{'mb-2': !edit.status }">
                                 <mat-form-field class="example-chip-list w-100" appearance="fill">
-                                    <mat-chip-listbox #chipList aria-label="Next State selection"
+                                    <mat-chip-grid  #chipList aria-label="Next State selection"
                                         [disabled]="!edit.status">
-                                        <mat-chip-option *ngFor="let nextState of nextStates(stateData.state)"
-                                            [selectable]="selectable" [removable]="removable"
+                                        <mat-chip-row *ngFor="let nextState of nextStates(stateData.state)"
+                                            [removable]="removable"
                                             (removed)="removeNextState(nextState, stateData.state)">
                                             {{nextState}}
                                             <mat-icon matChipRemove *ngIf="removable">
                                                 <span class="fa fa-times"></span>
                                             </mat-icon>
-                                        </mat-chip-option>
+                                        </mat-chip-row>
                                         <input placeholder="{{ edit.status ? 'Next State...': '' }}" #chipInput
                                             [formControl]="stateCtrl" [matChipInputFor]="chipList"
                                             [matAutocomplete]="auto"
@@ -130,7 +130,7 @@
                                             [matChipInputAddOnBlur]="addOnBlur"
                                             (matChipInputTokenEnd)="addNewNextState($event, stateData.state , chipInput, auto)"
                                             autocomplete="disabled">
-                                    </mat-chip-listbox>
+                                    </mat-chip-grid >
 
                                     <mat-autocomplete #auto="matAutocomplete"
                                         (optionSelected)="selectedNextState($event, chipInput, i)">
