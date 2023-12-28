@@ -1,3 +1,6 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
 .dynamic-variable-button {
     top: 39px;
     left: 9px;
@@ -14,6 +17,14 @@
     z-index: 1;
 }
 
+.second-div {
+    position: fixed;
+    top: 130px;
+    z-index: 2; 
+    width: 200px;
+    min-height: 60vh;
+    background-color: white;
+  }
 .node-type {
     width: 120px;
 }
@@ -37,4 +48,25 @@
 .filter-wrapper{
     max-height: 200px;
     overflow-y: auto;
+}
+
+.active {
+&:disabled{
+    background-color: $primary;
+    color: white;
+}
+}
+
+.sources:hover {
+        text-decoration: underline;
+}
+
+.form-control{
+    width: 200px;
+}
+
+
+.styled-wrapper {
+    max-width: 420px;
+    width: 420px;
 }
