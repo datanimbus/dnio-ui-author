@@ -5,14 +5,14 @@
         [ngClass]="{'text-dark font-weight-bold': activeSubTab==0}" (click)="activeSubTab=0">
         <span class="">Data Services</span>
       </div>
-      <div *ngIf="hasPermission('PVGAL') || hasPermission('PMGAL')" class="px-3 py-2 hover"
+      <!-- <div *ngIf="hasPermission('PVGAL') || hasPermission('PMGAL')" class="px-3 py-2 hover"
         [ngClass]="{'text-dark font-weight-bold': activeSubTab==1}" (click)="activeSubTab=1">
         <span class="">Library</span>
       </div>
       <div *ngIf="hasPermission('PVGAF') || hasPermission('PMGAF')" class="px-3 py-2 hover"
         [ngClass]="{'text-dark font-weight-bold': activeSubTab==2}" (click)="activeSubTab=2">
         <span class="">Functions</span>
-      </div>
+      </div> -->
       <div *ngIf="hasPermission('PVGACON') || hasPermission('PMGACON')" class="px-3 py-2 hover"
         [ngClass]="{'text-dark font-weight-bold': activeSubTab==3}" (click)="activeSubTab=3">
         <span class="">Connectors</span>

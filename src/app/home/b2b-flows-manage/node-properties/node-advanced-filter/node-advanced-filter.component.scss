@@ -24,6 +24,8 @@
     width: 200px;
     min-height: 60vh;
     background-color: white;
+    max-height: 80vh;
+    overflow: auto;
   }
 .node-type {
     width: 120px;
