@@ -230,14 +230,18 @@
 .react-flow__node-group {
   padding: 10px;
   border-radius: 3px;
-  width: 150px;
-  font-size: 12px;
+  width: 100px;
+  height:20px;
+  font-size: 6px;
   color: #222;
   text-align: center;
   border-width: 1px;
   border-style: solid;
   border-color: #1a192b;
   background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .react-flow__node-default.selectable:hover, .react-flow__node-input.selectable:hover, .react-flow__node-output.selectable:hover, .react-flow__node-group.selectable:hover {
       box-shadow: 0 1px 4px 1px rgba(0, 0, 0, 0.08);

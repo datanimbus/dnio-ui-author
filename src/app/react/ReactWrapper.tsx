@@ -16,13 +16,25 @@ import ReactFlowComponent from "./ReactFlowComponent";
   })
   export class CustomReactWrapperComponent implements OnChanges, OnDestroy, AfterViewInit {
     @ViewChild(containerElementRef, { static: true }) containerRef!: ElementRef;
-    
+    @Output() public contextMenu = new EventEmitter<void>();
+    @Input() nodeList: Array<any>;
+
     constructor() {
-      this.handleClick = this.handleClick.bind(this);
+      this.handleContextMenu = this.handleContextMenu.bind(this);
     }
   
-    public handleClick() {
+    public handleContextMenu(event) {
+      if (this.contextMenu) {
+        this.contextMenu.emit(event);
+        this.render();
+      }
     }
+
+    reRender(nodeList){
+      this.nodeList = nodeList;
+      this.render();
+    }
+  
   
     ngOnChanges(changes: SimpleChanges): void {
       this.render();
@@ -35,12 +47,14 @@ import ReactFlowComponent from "./ReactFlowComponent";
     ngOnDestroy() {
       ReactDOM.unmountComponentAtNode(this.containerRef.nativeElement);
     }
+
+    
   
     private render() {  
       ReactDOM.render(
         <React.StrictMode>
           <div id='reactStuff'>
-            <ReactFlowComponent/>
+            <ReactFlowComponent onContextMenu={(e) => this.handleContextMenu(e)} nodeList={this.nodeList}/>
           </div>
         </React.StrictMode>,
         this.containerRef.nativeElement

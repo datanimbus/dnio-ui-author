@@ -10,6 +10,8 @@ import { AppService } from 'src/app/utils/services/app.service';
 import { CommonService } from 'src/app/utils/services/common.service';
 import { environment } from 'src/environments/environment';
 import { B2bFlowService } from './b2b-flow.service';
+import { Position } from 'reactflow';
+import { CustomReactWrapperComponent } from 'src/app/react/ReactWrapper';
 
 @Component({
   selector: 'odp-b2b-flows-manage',
@@ -21,6 +23,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
   @ViewChild('pageChangeModalTemplate', { static: false }) pageChangeModalTemplate: TemplateRef<HTMLElement>;
   @ViewChild('keyValModalTemplate', { static: false }) keyValModalTemplate: TemplateRef<HTMLElement>;
+  @ViewChild('wrapper', { static: false }) wrapper: CustomReactWrapperComponent;
   pageChangeModalTemplateRef: NgbModalRef;
   keyValModalTemplateRef: NgbModalRef;
   edit: any;
@@ -59,6 +62,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   nodeOptions: Array<any> = [];
   openIssues: boolean = false;
   zoomAction: EventEmitter<any>;
+  allNodes: Array<any> = [];
   constructor(private commonService: CommonService,
     private appService: AppService,
     private route: ActivatedRoute,
@@ -525,12 +529,18 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
       const tempNode = this.flowService.getNodeObject(type, this.nodeList, anotherInputNode);
       tempNode.coordinates = {};
-      const ele: HTMLElement = document.querySelectorAll('.flow-designer-svg')[0] as HTMLElement;
-      const rect = ele.getBoundingClientRect();
-      tempNode.coordinates.x = Number(this.contextMenuStyle?.left.replace('px', '')) - rect.left - 70;
-      tempNode.coordinates.y = Number(this.contextMenuStyle?.top.replace('px', '')) - rect.top - 18;
+      // const ele: HTMLElement = document.querySelectorAll('.flow-designer-svg')[0] as HTMLElement;
+      const rect = this.contextMenuStyle.nodeXY;
+     console.log(this.contextMenuStyle.nodeXY);
+      // tempNode.coordinates.x = Number(this.contextMenuStyle?.left.replace('px', '')) - coordinates.x - 70;
+      // tempNode.coordinates.y = Number(this.contextMenuStyle?.top.replace('px', '')) - coordinates.y - 18;
+      tempNode.coordinates =  {
+        x:  rect.x-80,
+        y:  rect.y-60
+      };
       this.contextMenuStyle = null;
       this.nodeList.push(tempNode);
+      this.wrapper.reRender(this.nodeList)
     }
   }
 
@@ -540,7 +550,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     this.addNode(event, type);
   }
 
-  onRightClick(event: PointerEvent) {
+  onRightClick(event) {
     event.preventDefault();
     const clientHeight = (event.target as HTMLElement).clientHeight;
     if (clientHeight > 330 && (event.clientY + 330) > clientHeight) {
@@ -548,6 +558,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     } else {
       this.contextMenuStyle = { top: event.clientY + 'px', left: event.clientX + 'px' };
     }
+    this.contextMenuStyle['nodeXY'] = event.nodeXY;
   }
 
   scroll() {
