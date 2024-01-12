@@ -125,6 +125,7 @@ export default function ReactFlowComponent(props: FlowProps) {
             targetHandle: 'success',
             label: success.name,
             data: success,
+            type: 'step',
             style: success['color'] ? { stroke: `#${success.color}` } : {}
           });
         });
@@ -138,6 +139,7 @@ export default function ReactFlowComponent(props: FlowProps) {
             targetHandle: 'error',
             label: error.name,
             data: error,
+            type: 'step',
             style: { stroke: '#F44336' }
 
           });
