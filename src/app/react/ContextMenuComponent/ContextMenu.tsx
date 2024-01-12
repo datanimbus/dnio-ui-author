@@ -6,27 +6,32 @@ const onDragStart = (event, nodeType, item) => {
         nodeType, item
     }));
     event.dataTransfer.effectAllowed = 'move';
+    event.target.innerHtml = `
+    <div>
+          <span class="font-13 fw-400">{item.name}</span>
+        </div>
+    `
   };
 
-function TreeNode({ item, index, ctr, addNode }) {
+function TreeNode({ item, index, ctr, edit }) {
     const evaluateCondition = (condition) => {
-      // Implement your condition evaluation logic here
-      return true; // Example: Always true in this case
+      return true; 
     };
   
+    const editable = edit?.status;
     return (
       <div
         className={`node-item border-bottom pl-3 pr-2 py-2 d-flex align-items-center justify-content-between hover ${item.disabled ? 'disabled' : ''}`}
         style={{ display: evaluateCondition(item.condition) ? 'block' : 'none' }}
       >
-        <div className="d-flex align-items-center" onDragStart={(event) => onDragStart(event, 'default', item)} draggable onClick={(e) => e.preventDefault()}>
+        <div className="d-flex align-items-center flex-grow-1" onDragStart={(event) => onDragStart(event, 'default', item)} draggable={editable} onClick={(e) => e.preventDefault()}>
           <span className={`node-icon font-16 fw-400 mr-2 ${item.icon}`}></span>
-          <span className="font-13 fw-400">{item.name}</span>
+          <span className="font-13 fw-400 flex-grow-1">{item.name}</span>
         </div>
         {item.children && (
           <span className="node-icon font-16 fw-400 dsi dsi-drop-up fa-rotate-90 text-secondary"></span>
         )}
-        {/* {item.children && (
+        {item.children && (
           <div
             className="node-list-item bg-white rounded border"
             style={{
@@ -40,16 +45,16 @@ function TreeNode({ item, index, ctr, addNode }) {
                 item={child}
                 index={i}
                 ctr={ctr + 1}
-                addNode={addNode}
+                edit={edit}
               />
             ))}
           </div>
-        )} */}
+        )}
       </div>
     );
   }
   
-  function ContextMenu({ nodeOptions, addNode }) {
+  function ContextMenu({ nodeOptions, edit }) {
     return (
         <div
           className="available-nodes-dropdown bg-white position-fixed border rounded"
@@ -60,7 +65,7 @@ function TreeNode({ item, index, ctr, addNode }) {
               item={item}
               index={index}
               ctr={1}
-              addNode={addNode}
+              edit={edit}
             />
           ))}
         </div>

@@ -1136,6 +1136,11 @@ export class B2bFlowService {
         "nodeType": "RENDERER",
         "icon": "dsi dsi-refresh",
         "isInput": false
+      },
+      {
+        "nodeType": "ERROR",
+        "icon": "dsi dsi-danger-circle text-danger",
+        "isInput": false
       }
     ]
   }

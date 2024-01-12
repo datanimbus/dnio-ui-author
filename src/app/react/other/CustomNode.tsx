@@ -16,7 +16,6 @@ export default memo((props: handleProps) => {
       <Handle
         type="source"
         position={Position.Left}
-        onConnect={(params) => console.log('handle onConnect', params)}
         isConnectable={isConnectable}
         style={data.type == 'output' ? {display: 'none', background: '#fff'} : { background: '#fff', border: '1px solid rgb(102,102,102, 0.7)'}}
       />
@@ -24,21 +23,20 @@ export default memo((props: handleProps) => {
       <span className={data.icon + ' nodeIcon'}></span>
       <span>{data.label}</span>
       </div>
-      <Handle
+      {data.nodeType !== 'ERROR' && <Handle
         type="target"
         position={Position.Right}
         id="success"
         // style={{ top:5, bottom:'auto', background: '#ccf3e5', border: '1px solid rgb(47,196,143, 0.7)' }}
         isConnectable={isConnectable}
         className='successHandle'
-      />
+      />}
       <Handle
         type="target"
         position={Position.Right}
         id="error"
-        // style={{ bottom: 0, top: 'auto', background: '#f3adad', border: '1px solid rgb(243,173,173, 0.7)' }}
         isConnectable={isConnectable}
-        className='errorHandle'
+        className={data.nodeType === 'ERROR' ? 'errorNode' : 'errorHandle'}
       />
     </>
   );

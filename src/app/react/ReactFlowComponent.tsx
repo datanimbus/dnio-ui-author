@@ -5,69 +5,40 @@ import ReactFlow, {
   Background,
   useNodesState,
   useEdgesState,
-  addEdge,
   Position,
-  useViewport,
   ReactFlowProvider,
-  Edge,
 } from 'reactflow';
 import * as React from 'react'
 import ContextMenuComponent from './ContextMenuComponent/ContextMenuComponent';
 import * as _ from 'lodash';
 import CustomNode from './other/CustomNode';
+import CustomErrorNode from './other/CustomErrorNode';
 
-// import 'reactflow/dist/style.css';
 export interface FlowProps {
-  onContextMenu?: (event) => void;
   nodeList?: Array<any>;
   services?: any;
   addNode?: (event) => void;
   changeNodeList?: (event) => void;
-  openProperty?:(event) => void;
-  edit?:any ;
-  openPath?:(event) => void;
+  openProperty?: (event) => void;
+  edit?: any;
+  openPath?: (event) => void;
 }
 
-const initialNodes = [];
-const initialEdges = [
-  // { id: 'e1-2', source: '1', target: '2' }, { id: 'e1-3', source: '1', target: '3' }
-];
 
 const nodeTypes = {
   customNode: CustomNode,
+  customErrorNode: CustomErrorNode
 };
 
-export default function App(props: FlowProps) {
-  let { onContextMenu, nodeList, services, addNode , changeNodeList, openProperty, edit, openPath} = props;
+export default function ReactFlowComponent(props: FlowProps) {
+  const {  nodeList, services, addNode, changeNodeList, openProperty, edit, openPath } = props;
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const reactRef = React.useRef(null);
   const reactFlowWrapper = React.useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = React.useState(null);
   const isInputNode = (node) => {
     return nodeList[0]._id == node._id;
   }
-
-  React.useEffect(() => {
-    const iconList = services.flowService.getNodeIcon();
-    setEdges([])
-    const allNodes = nodeList.map(node => {
-      const iconObj = iconList.find(e => e.nodeType == node.type && isInputNode(node) === e.isInput) || {};
-      return {
-        id: node._id,
-        type: 'customNode',
-        position: { x: node.coordinates.x, y: node.coordinates.y },
-        data: { label: node.name, type: node.nodeType, icon: iconObj.icon },
-        sourcePosition: Position.Left,
-        targetPosition: Position.Right,
-      
-      }
-    });
-    updateEdges()
-    setNodes(allNodes)
-  },[JSON.stringify(edit), JSON.stringify(nodeList)]);
-
-
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
@@ -95,13 +66,13 @@ export default function App(props: FlowProps) {
 
   const removeNodeById = (list, id) => {
     return list.filter(item => item._id !== id)
- }
+  }
 
   const onNodesDelete = (event) => {
     const id = event[0]?.id;
-    if(id){
-     nodeList = removeNodeById(nodeList, id);
-     nodeList.forEach(entity => {
+    if (id) {
+      const list = removeNodeById(nodeList, id);
+      list.forEach(entity => {
         if (entity.onSuccess) {
           entity.onSuccess = removeNodeById(entity.onSuccess, id);
         }
@@ -109,7 +80,7 @@ export default function App(props: FlowProps) {
           entity.onError = removeNodeById(entity.onError, id);
         }
       })
-      changeNodeList(nodeList)
+      changeNodeList(list)
     }
   }
 
@@ -117,22 +88,22 @@ export default function App(props: FlowProps) {
     event.forEach(e => {
       const target = e?.target;
       const source = e?.source;
-      if(target && source ){
-        if(nodeList.find(node => node._id === source)){
+      if (target && source) {
+        if (nodeList.find(node => node._id === source)) {
           console.log('Deleting edge');
           const node = nodeList.find(node => node._id === target);
-         if(e.targetHandle === 'error'){
+          if (e.targetHandle === 'error') {
             node['onError'] = removeNodeById(node['onError'] || [], source);
           }
-          else if(e.targetHandle === 'success'){
-            node['onSuccess'] = removeNodeById(node['onSuccess'], source );
+          else if (e.targetHandle === 'success') {
+            node['onSuccess'] = removeNodeById(node['onSuccess'], source);
           }
         }
-        else{
+        else {
           const newEdges = edges.filter(edge => edge.id === e.id);
           setEdges(newEdges)
         }
-       console.log(nodeList);
+        console.log(nodeList);
       }
     })
 
@@ -151,7 +122,9 @@ export default function App(props: FlowProps) {
             target: entity._id,
             source: success._id,
             targetHandle: 'success',
-            label: success.name
+            label: success.name,
+            data: success,
+            style: success['color'] ? { stroke: `#${success.color}` } : {}
           });
         });
       }
@@ -162,7 +135,9 @@ export default function App(props: FlowProps) {
             target: entity._id,
             source: error._id,
             targetHandle: 'error',
-            label: error.name
+            label: error.name,
+            data: error,
+            style: { stroke: '#F44336' }
 
           });
         });
@@ -174,29 +149,26 @@ export default function App(props: FlowProps) {
   }
 
   const nodeChange = (currentEdges) => {
-    currentEdges.forEach(edge => {
-      const node =nodeList.find(node => node._id === edge.target)
-      const obj =  {
+    currentEdges.forEach((edge) => {
+      const node = nodeList.find((n) => n._id === edge.target);
+      const obj = {
         index: 0,
         name: edge.label || '',
         condition: edge.data?.condition || '',
-        _id: edge.source
-      }
-      if(edge.targetHandle === 'success'){
-        if(node.onSuccess && node.onSuccess.filter(ele => ele._id === edge.source).length === 0 ) {
-          node.onSuccess = [...node.onSuccess, obj]
+        _id: edge.source,
+      };
+      if (edge.targetHandle === 'success' || edge.targetHandle === 'error') {
+        const targetArray = node[edge.targetHandle] || [];
+        if (!targetArray.some((ele) => ele._id === edge.source)) {
+          node[edge.targetHandle] = [...targetArray, obj];
         }
       }
-      if(edge.targetHandle === 'error'){
-        if(node.onError && node.onError.filter(ele => ele._id === edge.source).length === 0 ) {
-          node.onError = [...node.onError, obj]
-        }
-      }
-    })
+    });
     setEdges(currentEdges);
     console.log(nodeList);
     // changeNodeList(nodeList)
-  }
+  };
+  
 
   const onConnect = (event) => {
     const type = event.targetHandle?.charAt(0);
@@ -206,26 +178,49 @@ export default function App(props: FlowProps) {
     nodeChange(currentEdges)
   };
 
-  const openProperties = (event,node) => {
+  const openProperties = (event, node) => {
     openProperty(node.id)
   }
 
-  const onNodeDragStop= (event, node) => {
+  const onNodeDragStop = (event, node) => {
     nodeList.find(e => e._id == node.id).coordinates = node.position;
     console.log(nodeList);
-    // changeNodeList(nodeList)
   }
 
 
-  const openEdges = (event) => {
-    openPath(event);
+  const openEdges = (event, edge) => {
+    openPath(edge);
   }
+
+  const editString = JSON.stringify(edit);
+  const nodeListString = JSON.stringify(nodeList);
+  React.useEffect(() => {
+    const iconList = services.flowService.getNodeIcon();
+    setEdges([])
+    const allNodes = nodeList.map(node => {
+      const iconObj = iconList.find(e => e.nodeType == node.type && isInputNode(node) === e.isInput) || {};
+      if(node.type && !node.nodeType){
+        node.nodeType = node.type === 'ERROR' ? 'customErrorNode' : 'customNode'
+      }
+      return {
+        id: node._id,
+        type: node.type === 'ERROR' ? 'customErrorNode' : 'customNode',
+        position: { x: node.coordinates.x, y: node.coordinates.y },
+        data: { label: node.name, type: node.nodeType, icon: iconObj.icon, nodeType: node.type },
+        sourcePosition: Position.Left,
+        targetPosition: Position.Right,
+
+      }
+    });
+    updateEdges()
+    setNodes(allNodes)
+  }, [editString, nodeListString]);
 
   return (
     <div >
       <ReactFlowProvider>
         <div style={{ position: 'absolute', left: '10px', top: '160px', zIndex: 5 }}>
-          <ContextMenuComponent services={services} />
+          <ContextMenuComponent services={services} edit={edit} />
         </div>
         <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{ width: '100vw', height: '90vh' }}>
           <ReactFlow
@@ -251,7 +246,7 @@ export default function App(props: FlowProps) {
             elementsSelectable={edit.status}
             onNodeDragStop={onNodeDragStop}
           >
-            <Controls showInteractive={false}/>
+            <Controls showInteractive={false} />
             <MiniMap zoomable pannable />
             <Background gap={12} size={1} />
           </ReactFlow>

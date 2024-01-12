@@ -72,13 +72,20 @@ export class PathPropertiesComponent implements OnInit {
     this.flowService.reCreatePaths.emit(null);
   }
 
-  onChange() {
+  onChange(event, type?) {
     this.toggle['colorPicker'] = false;
     this.flowService.reCreatePaths.emit(null);
   }
 
   cancel() {
     this.close.emit(false);
+  }
+
+  nameChange(event){
+    console.log(this.path);
+  }
+  colorChange(event){
+    console.log(this.path);
   }
 
   onPathTypeChange(event: any, type: string) {
@@ -108,7 +115,7 @@ export class PathPropertiesComponent implements OnInit {
         this.nodeList[this.nodeIndex].onSuccess.push(pathData);
         this.color = "666";
       }
-      this.onChange();
+      this.onChange(event);
     }
   }
 

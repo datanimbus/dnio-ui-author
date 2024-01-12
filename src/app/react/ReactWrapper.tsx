@@ -17,7 +17,7 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
   })
   export class CustomReactWrapperComponent implements OnChanges, OnDestroy, AfterViewInit, OnInit {
     @ViewChild(containerElementRef, { static: true }) containerRef!: ElementRef;
-    @Output() public contextMenu = new EventEmitter<void>();
+    @Output() public onAddNode = new EventEmitter<void>();
     @Output() public changeNodeList = new EventEmitter<void>();
     @Output() public openNodeProperty = new EventEmitter<void>();
     @Input() nodeList: Array<any>;
@@ -27,7 +27,6 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
     constructor(
       private flowService: B2bFlowService
     ) {
-      this.handleContextMenu = this.handleContextMenu.bind(this);
       this.services['flowService'] = this.flowService;
       this.edit = {
         status: true
@@ -41,9 +40,9 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
       });
     }
   
-    public handleContextMenu(event) {
-      if (this.contextMenu) {
-        this.contextMenu.emit(event);
+    addNode(event) {
+      if (this.onAddNode) {
+        this.onAddNode.emit(event);
         this.render();
       }
     }
@@ -62,6 +61,18 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
         prevNode: prevNode
       });
 
+    }
+
+    openEdgeProperty(edge: any){
+      const data = edge.data;
+      const index = data.index;
+      this.flowService.selectedNode.emit(null);
+      const path = edge.data;
+      path['type'] = edge.targetHandle;
+      const prevNode = this.nodeList.find(e => e._id == edge.target)._id;
+      path['prevNode'] = prevNode;
+      this.flowService.selectedPath.emit({ index, path });
+      console.log(edge);
     }
   
     ngOnChanges(changes: SimpleChanges): void {
@@ -83,11 +94,12 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
           <div id='reactStuff'>
             <ReactFlowComponent 
               edit={this.edit}
-              addNode={(e) => this.handleContextMenu(e)} 
+              addNode={(e) => this.addNode(e)} 
               nodeList={this.nodeList} 
               services={this.services} 
               changeNodeList={(e) => this.reRender(e)}
               openProperty={(e) => this.openProperty(e)}
+              openPath={(e) => this.openEdgeProperty(e)}
               />
           </div>
         </React.StrictMode>,

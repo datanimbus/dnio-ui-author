@@ -71,6 +71,12 @@
   .react-flow__edge:focus .react-flow__edge-path,
   .react-flow__edge:focus-visible .react-flow__edge-path {
     stroke: #0a6cff;
+    stroke-width: 2;
+  }
+
+  .react-flow__edge-path.selected{
+    stroke-width: 2;
+
   }
 .react-flow__edge-textwrapper {
     pointer-events: all;
@@ -240,6 +246,23 @@
   border-width: 1px;
   border-style: solid;
   border-color: rgb(102,102,102, 0.7);
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.react-flow__node-customErrorNode {
+  padding: 10px;
+  border-radius: 3px;
+  width: 90px;
+  height:30px;
+  font-size: 6px;
+  color: #222;
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
+  border-color: $danger;
   background-color: white;
   display: flex;
   justify-content: center;
@@ -505,4 +528,27 @@
   &:hover{
     background-color: rgb(233,100,100, 0.7);
   }
+}
+.errorNode{
+  bottom: auto;
+  background: #ecb4b4;
+  border: 1px solid rgb(233,100,100, 0.7);
+  &:hover{
+    background-color: rgb(233,100,100, 0.7);
+  }
+}
+
+
+.context-menu {
+  position: absolute;
+  top: 20px;
+  left: 60px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.context-menu.show {
+  opacity: 1;
+  transform: translateY(0);
 }

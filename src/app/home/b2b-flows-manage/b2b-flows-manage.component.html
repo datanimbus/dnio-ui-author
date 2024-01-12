@@ -144,7 +144,7 @@
                 </svg>
             </div> -->
             <div id="something">            
-                <odp-react-flow #wrapper (contextMenu)="addNodeReact($event)" [edit]="edit"
+                <odp-react-flow #wrapper (onAddNode)="addNodeReact($event)" [edit]="edit"
                     [nodeList]="nodeList" [flowData]="flowData" (changeNodeList)="changeNodeList($event)">
                 </odp-react-flow>
             </div>
