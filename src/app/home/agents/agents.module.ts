@@ -50,7 +50,7 @@ const routes: Routes = [
         OnChangeModule,
         CommonFilterModule,
         AgGridModule,
-        BasicInfoModule
+        BasicInfoModule,
     ],
     declarations: [
         AgentsComponent,

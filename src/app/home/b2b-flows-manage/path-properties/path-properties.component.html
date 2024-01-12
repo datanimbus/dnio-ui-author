@@ -30,7 +30,7 @@
     <div class="form-group">
         <label class="font-14 fw-400 text-dark" for="pathName">Path Name</label>
         <input id="pathName" type="text" class="form-control" [(ngModel)]="name"
-            (ngModelChange)="changesDone.emit();onChange()" [disabled]="!edit.status">
+            (ngModelChange)="changesDone.emit();onChange($event,'name'); nameChange($event)" [disabled]="!edit.status">
     </div>
     <ng-container *ngIf="pathType=='success'">
         <div class="form-group">
@@ -43,7 +43,7 @@
             </div>
         </div>
         <div *ngIf="toggle['colorPicker']" class="form-group">
-            <odp-color-picker #colorpicker [(color)]="color" (colorChange)="onChange();">
+            <odp-color-picker #colorpicker [(color)]="color" (colorChange)="onChange($event, 'color'); colorChange($event);">
             </odp-color-picker>
         </div>
     </ng-container>

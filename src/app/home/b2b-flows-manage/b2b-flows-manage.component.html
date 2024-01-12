@@ -128,7 +128,7 @@
                 <div class="text-uppercase border-right p-2">Main</div>
                 <div class="text-uppercase border-right p-2">For Loop</div>
             </div> -->
-            <div class="zoom-options d-flex border bg-white position-fixed">
+            <!-- <div class="zoom-options d-flex border bg-white position-fixed">
                 <div (click)="triggerZoomAction('in')" class="mr-2 p-2 hover dsi dsi-plus"></div>
                 <div (click)="triggerZoomAction('out')" class="mr-2 p-2 hover dsi dsi-minus"></div>
                 <div (click)="triggerZoomAction('reset')" class="mr-2 p-2 hover dsi dsi-refresh"></div>
@@ -142,6 +142,11 @@
                         <g odp-error-node *ngIf="node.type=='ERROR'" [node]="node" [nodeList]="nodeList"></g>
                     </g>
                 </svg>
+            </div> -->
+            <div id="something">            
+                <odp-react-flow #wrapper (onAddNode)="addNodeReact($event)" [edit]="edit"
+                    [nodeList]="nodeList" [flowData]="flowData" (changeNodeList)="changeNodeList($event)">
+                </odp-react-flow>
             </div>
             <div [ngClass]="{'show':showNodeProperties || showPathProperties}"
                 class="node-properties border-left border-top position-fixed bg-white">

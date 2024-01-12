@@ -18,11 +18,13 @@
       "es2018",
       "dom"
     ],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "jsx": "react"
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
+    "allowSyntheticDefaultImports": true,
     "enableIvy": true
   }
 }

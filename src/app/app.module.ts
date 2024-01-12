@@ -38,6 +38,7 @@ import { AuthUsersModule } from './auth-users/auth-users.module';
 import { ChangePasswordModule } from './utils/change-password/change-password.module';
 import { ClickOutsideModule } from './utils/directives/click-outside/click-outside.module';
 import { AdminModule } from './admin/admin.module';
+// import { CustomReactWrapperComponent } from './react/ReactWrapper';
 
 // enableProdMode();
 
@@ -47,7 +48,8 @@ import { AdminModule } from './admin/admin.module';
     LoginComponent,
     NotFoundComponent,
     AutoLogoutDirective,
-    HomeComponent
+    HomeComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -76,8 +78,10 @@ import { AdminModule } from './admin/admin.module';
     ClickOutsideModule,
     ChangePasswordModule,
     NgbTypeaheadModule,
-    AdminModule
+    AdminModule,
+    
   ],
+  exports:[],
   providers: [
     {
       provide: ErrorHandler,
