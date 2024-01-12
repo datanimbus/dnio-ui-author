@@ -144,7 +144,7 @@
                 </svg>
             </div> -->
             <div id="something">            
-                <odp-react-flow #wrapper (contextMenu)="onRightClick($event)" [nodeList]="nodeList"></odp-react-flow>
+                <odp-react-flow #wrapper (contextMenu)="addNodeReact($event)" [nodeList]="nodeList" [flowData]="flowData" (changeNodeList)="changeNodeList($event)"></odp-react-flow>
             </div>
             <div [ngClass]="{'show':showNodeProperties || showPathProperties}"
                 class="node-properties border-left border-top position-fixed bg-white">

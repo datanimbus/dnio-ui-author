@@ -1,5 +1,6 @@
-/* this gets exported as style.css and can be used for the default theming */
-/* these are the necessary styles for React Flow, they get used by base.css and style.css */
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
 .react-flow__container {
   position: absolute;
   width: 100%;
@@ -401,4 +402,79 @@
 .react-flow__resize-control.line.bottom {
   border-bottom-width: 1px;
   top: 100%;
+}
+
+
+.available-nodes-dropdown {
+  z-index: 3;
+
+  .node-item {
+    min-height: 32px;
+    max-height: 32px;
+    min-width: 150px;
+    max-width: 150px;
+
+    .node-text-icon {
+      min-width: 32px;
+      max-width: 32px;
+      min-height: 32px;
+      max-height: 32px;
+      line-height: 32px;
+      text-align: center;
+    }
+
+    .node-list-item {
+      min-width: 200px;
+      max-width: 200px;
+      position: absolute;
+      left: 140px;
+      display: none;
+
+      .node-item {
+        min-height: 32px;
+        max-height: 32px;
+        min-width: 200px;
+        max-width: 200px;
+      }
+    }
+
+    &:hover>.node-list-item {
+      display: block;
+    }
+
+    &:hover {
+      background: $light;
+      border-right: 1px solid $border-color;
+      border-radius: $border-radius;
+    }
+  }
+}
+
+
+.dsi-function.alt {
+  color: #A94CFF;
+}
+
+
+.tab-list-item {
+  &:not(:last-child) {
+    border-right: 1px solid $border;
+  }
+
+  &.active {
+    color: $accent;
+    font-weight: 500;
+  }
+}
+
+.spacer-lock {
+  min-width: 260px;
+}
+
+
+.disabled {
+  background-color: $gray-95;
+  pointer-events: none;
+  border-right: 1px solid $border-color;
+  cursor: none !important;
 }

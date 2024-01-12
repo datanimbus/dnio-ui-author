@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges,
-    OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core";
+    OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core";
   import * as React from "react";
   import * as ReactDOM from "react-dom";
 import ReactFlowComponent from "./ReactFlowComponent";  
+import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
 
 
   const containerElementRef = "customReactComponentContainer";
@@ -14,13 +15,21 @@ import ReactFlowComponent from "./ReactFlowComponent";
     // styleUrls: [""],
     encapsulation: ViewEncapsulation.None,
   })
-  export class CustomReactWrapperComponent implements OnChanges, OnDestroy, AfterViewInit {
+  export class CustomReactWrapperComponent implements OnChanges, OnDestroy, AfterViewInit, OnInit {
     @ViewChild(containerElementRef, { static: true }) containerRef!: ElementRef;
     @Output() public contextMenu = new EventEmitter<void>();
+    @Output() public changeNodeList = new EventEmitter<void>();
     @Input() nodeList: Array<any>;
-
-    constructor() {
+    @Input() flowData: any = {};
+    services: any = {};
+    constructor(
+      private flowService: B2bFlowService
+    ) {
       this.handleContextMenu = this.handleContextMenu.bind(this);
+      this.services['flowService'] = this.flowService
+    }
+
+    ngOnInit(): void {
     }
   
     public handleContextMenu(event) {
@@ -32,6 +41,7 @@ import ReactFlowComponent from "./ReactFlowComponent";
 
     reRender(nodeList){
       this.nodeList = nodeList;
+      this.changeNodeList.emit(nodeList)
       this.render();
     }
   
@@ -54,7 +64,7 @@ import ReactFlowComponent from "./ReactFlowComponent";
       ReactDOM.render(
         <React.StrictMode>
           <div id='reactStuff'>
-            <ReactFlowComponent onContextMenu={(e) => this.handleContextMenu(e)} nodeList={this.nodeList}/>
+            <ReactFlowComponent addNode={(e) => this.handleContextMenu(e)} nodeList={this.nodeList} services={this.services} changeNodeList={(e) => this.reRender(e)}/>
           </div>
         </React.StrictMode>,
         this.containerRef.nativeElement

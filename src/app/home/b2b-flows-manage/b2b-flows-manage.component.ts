@@ -550,6 +550,13 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     this.addNode(event, type);
   }
 
+  addNodeReact(event){
+    const tempNode = this.flowService.getNodeObject(event.item.action, this.nodeList);
+    tempNode.coordinates = {};
+    tempNode.coordinates = event.position;
+    this.nodeList.push(tempNode)
+  }
+
   onRightClick(event) {
     event.preventDefault();
     const clientHeight = (event.target as HTMLElement).clientHeight;
@@ -849,5 +856,9 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     return this.getWarnings().length;
   }
 
+  changeNodeList(event){
+    this.nodeList = event;
+    console.log(this.nodeList);
+  }
 
 }
