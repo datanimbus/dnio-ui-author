@@ -230,10 +230,10 @@ export class NodePropertiesComponent implements OnInit {
       this.currNode.type = 'DATASERVICE';
       const options = ['get', 'insert', 'update', 'delete'];
       options.forEach(item => {
-        this.currNode.options[item.toLowerCase()] = false
+        this.currNode.options[item?.toLowerCase()] = false
       })
       const subType = type.split('_')[1];
-      this.currNode.options[subType.toLowerCase()] = true;
+      this.currNode.options[subType?.toLowerCase()] = true;
       this.currNode.options.retry = {
         count: '',
         interval: ''
@@ -386,7 +386,7 @@ export class NodePropertiesComponent implements OnInit {
         if (this.searchTerm) {
           term = this.searchTerm.replace('{{', '');
         }
-        return matches.length === 0 && this.searchTerm === '' ? [] : this.variableSuggestions.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 15);
+        return matches.length === 0 && this.searchTerm === '' ? [] : this.variableSuggestions.filter((v) => v.label?.toLowerCase().indexOf(term?.toLowerCase()) > -1).slice(0, 15);
       }),
     );
 

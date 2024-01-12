@@ -21,6 +21,7 @@ export interface FlowProps {
   changeNodeList?: (event) => void;
   openProperty?: (event) => void;
   edit?: any;
+  errorList?: Array<any>;
   openPath?: (event) => void;
 }
 
@@ -31,7 +32,7 @@ const nodeTypes = {
 };
 
 export default function ReactFlowComponent(props: FlowProps) {
-  const {  nodeList, services, addNode, changeNodeList, openProperty, edit, openPath } = props;
+  const {  nodeList, services, addNode, changeNodeList, openProperty, edit, openPath, errorList } = props;
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const reactFlowWrapper = React.useRef(null);
@@ -194,6 +195,10 @@ export default function ReactFlowComponent(props: FlowProps) {
 
   const editString = JSON.stringify(edit);
   const nodeListString = JSON.stringify(nodeList);
+  const errorListString = JSON.stringify(errorList);
+
+
+
   React.useEffect(() => {
     const iconList = services.flowService.getNodeIcon();
     setEdges([])
@@ -202,6 +207,7 @@ export default function ReactFlowComponent(props: FlowProps) {
       if(node.type && !node.nodeType){
         node.nodeType = node.type === 'ERROR' ? 'customErrorNode' : 'customNode'
       }
+      // const hasErrors = errorList.find(e => e._id == node._id)?.errors?.length > 0;
       return {
         id: node._id,
         type: node.type === 'ERROR' ? 'customErrorNode' : 'customNode',
@@ -214,7 +220,7 @@ export default function ReactFlowComponent(props: FlowProps) {
     });
     updateEdges()
     setNodes(allNodes)
-  }, [editString, nodeListString]);
+  }, [editString, nodeListString,errorListString]);
 
   return (
     <div >

@@ -47,6 +47,69 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
       }
     }
 
+    getNodeError(id) {
+      const errors = this.getErrors().filter(obj => obj.id === id);
+      return errors;
+    }
+  
+    getErrors() {
+      const validations = this.flowService.getErrorValidations();
+  
+      const finalList = (this.nodeList ||[]).reduce((acc, node) => {
+        const nodeValidations = (validations.find(e => {
+          return e.node === node.type
+        }) || {}).validations || [];
+  
+        const errors = nodeValidations
+          .map(item => {
+            if (item['subType']) {
+              if (item['subType'] === (node.options.connectorType) || node.options[item['subType'].toLowerCase()])
+                return this.checkErrors(item, node);
+              else {
+                return null
+              }
+            }
+            else {
+              return this.checkErrors(item, node)
+            }
+          })
+          .filter(Boolean);
+  
+        if (errors.length) acc.push(errors);
+  
+        return acc;
+      }, []);
+      return finalList.flat()
+    }
+
+
+    checkErrors(item, node) {
+      if (item.condition && Object.getOwnPropertyNames(item.condition).includes('inputNode')) {
+        const isInputNode = this.isInputNode(node);
+        if (item.condition.inputNode !== isInputNode) {
+          return null;
+        }
+      }
+      const value = item.fieldPath.split('.').reduce((obj, key) => obj?.[key], node)
+      if (item.type === 'required' && (!value || value.length < 1)) {
+        return {
+          node: node.name,
+          id: node._id,
+          error: item.error
+        };
+      }
+      return null;
+    }
+
+
+  isInputNode(node) {
+    if (this.flowData && node) {
+      return this.flowData.inputNode._id == node._id;
+    }
+    return true;
+    // return this.nodeList[0]._id == this.currNode._id;
+  }
+
     reRender(nodeList){
       this.nodeList = nodeList;
       this.changeNodeList.emit(nodeList)
@@ -89,6 +152,12 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
 
     
     private render() {  
+      const errorList = this.nodeList.map(node => {
+        return {
+          _id: node._id,
+          errors: this.getNodeError(node._id)
+        }
+      })
       ReactDOM.render(
         <React.StrictMode>
           <div id='reactStuff'>
@@ -100,6 +169,7 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
               changeNodeList={(e) => this.reRender(e)}
               openProperty={(e) => this.openProperty(e)}
               openPath={(e) => this.openEdgeProperty(e)}
+              errorList={errorList}
               />
           </div>
         </React.StrictMode>,
