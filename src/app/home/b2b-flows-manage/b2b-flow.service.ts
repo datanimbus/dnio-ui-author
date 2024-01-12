@@ -238,13 +238,13 @@ export class B2bFlowService {
     if (type.startsWith('DS_')) {
       temp.type = 'DATASERVICE';
       const subType = type.split('_')[1] === 'FETCH' ? 'GET' : type.split('_')[1];
-      temp.options[subType.toLowerCase()] = true
+      temp.options[subType?.toLowerCase()] = true
     }
 
     if (type.startsWith('WF_')) {
       const subType = type.split('_')[1];
       temp.type = 'DATASERVICE_' + subType;
-      temp.options[subType.toLowerCase()] = true
+      temp.options[subType?.toLowerCase()] = true
     }
 
     if (type.startsWith('SFTP_')) {
@@ -258,7 +258,7 @@ export class B2bFlowService {
       temp.type = 'CONNECTOR';
       temp.options.connectorType = 'SFTP';
       const subType = changeObj[type.split('_')[1]];
-      temp.options[subType.toLowerCase()] = true
+      temp.options[subType?.toLowerCase()] = true
       if (subType == 'list') {
         temp.dataStructure['outgoing'] = this.getSftpListODS()
       }
@@ -998,6 +998,146 @@ export class B2bFlowService {
 
       ]
     }
+  }
+
+  getNodeIcon(){
+    return [
+      {
+        "nodeType": "API",
+        "icon": "dsi dsi-api-receiver",
+        "isInput": true
+      },
+      {
+        "nodeType": "API",
+        "icon": "dsi dsi-invoke-api",
+        "isInput": false
+      },
+      {
+        "nodeType": "API_XML",
+        "icon": "dsi dsi-invoke-api",
+        "isInput": false
+      },
+      {
+        "nodeType": "API_MULTIPART",
+        "icon": "dsi dsi-invoke-api",
+        "isInput": false
+      },
+      {
+        "nodeType": "FILE",
+        "icon": "dsi dsi-file",
+        "isInput": false
+      },
+      {
+        "nodeType": "FILE_READ",
+        "icon": "dsi dsi-file read",
+        "isInput": false
+      },
+      {
+        "nodeType": "FILE_WRITE",
+        "icon": "dsi dsi-file write",
+        "isInput": false
+      },
+      {
+        "nodeType": "TIMER",
+        "icon": "dsi dsi-clock",
+        "isInput": false
+      },
+      {
+        "nodeType": "CODEBLOCK",
+        "icon": "dsi dsi-console text-secondary",
+        "isInput": false
+      },
+      {
+        "nodeType": "CONNECTOR",
+        "icon": "dsi dsi-connector",
+        "isInput": false
+      },
+      {
+        "nodeType": "DATASERVICE",
+        "icon": "dsi dsi-data-service",
+        "isInput": false
+      },
+      {
+        "nodeType": "FUNCTION",
+        "icon": "dsi dsi-function",
+        "isInput": false
+      },
+      {
+        "nodeType": "FLOW",
+        "icon": "dsi dsi-flow",
+        "isInput": false
+      },
+      {
+        "nodeType": "MAPPING",
+        "icon": "dsi dsi-mapping",
+        "isInput": false
+      },
+      {
+        "nodeType": "DEDUPE",
+        "icon": "dsi dsi-copy",
+        "isInput": false
+      },
+      {
+        "nodeType": "CONFLICT",
+        "icon": "dsi dsi-insight",
+        "isInput": false
+      },
+      {
+        "nodeType": "FOREACH",
+        "icon": "dsi dsi-refresh",
+        "isInput": false
+      },
+      {
+        "nodeType": "REDUCE",
+        "icon": "dsi dsi-undo",
+        "isInput": false
+      },
+      {
+        "nodeType": "UNWIND",
+        "icon": "dsi dsi-expand",
+        "isInput": false
+      },
+      {
+        "nodeType": "PLUGIN",
+        "icon": "dsi dsi-library",
+        "isInput": false
+      },
+      {
+        "nodeType": "RESPONSE",
+        "icon": "dsi dsi-response",
+        "isInput": false
+      },
+      {
+        "nodeType": "FILE_READ",
+        "icon": "dsi dsi-file read",
+        "isInput": false
+      },
+      {
+        "nodeType": "FILE_WRITE",
+        "icon": "dsi dsi-file write",
+        "isInput": false
+      },
+      {
+        "nodeType": "CONVERT_JSON_JSON",
+        "icon": "dsi dsi-refresh text-secondary",
+        "isInput": false
+      },
+      {
+        "nodeType": "CONDITION",
+        "icon": "dsi dsi-branch",
+        "isInput": false
+      },
+      {
+        "nodeType": "PARSER",
+        "icon": "dsi dsi-refresh",
+        "isInput": false
+      },
+      {
+        "nodeType": "RENDERER",
+        "icon": "dsi dsi-refresh",
+        "isInput": false
+      }
+    ]
   }
 
 }

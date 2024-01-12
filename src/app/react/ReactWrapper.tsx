@@ -19,17 +19,26 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
     @ViewChild(containerElementRef, { static: true }) containerRef!: ElementRef;
     @Output() public contextMenu = new EventEmitter<void>();
     @Output() public changeNodeList = new EventEmitter<void>();
+    @Output() public openNodeProperty = new EventEmitter<void>();
     @Input() nodeList: Array<any>;
     @Input() flowData: any = {};
+    @Input() edit: any = {};
     services: any = {};
     constructor(
       private flowService: B2bFlowService
     ) {
       this.handleContextMenu = this.handleContextMenu.bind(this);
-      this.services['flowService'] = this.flowService
+      this.services['flowService'] = this.flowService;
+      this.edit = {
+        status: true
+      }
     }
 
     ngOnInit(): void {
+
+      this.services.flowService.reCreatePaths.subscribe(() => {
+        this.reRender(this.nodeList);
+      });
     }
   
     public handleContextMenu(event) {
@@ -45,9 +54,18 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
       this.render();
     }
   
+    openProperty(nodeId){
+      const currNode = this.nodeList.find(e => e._id == nodeId);
+      const prevNode = this.nodeList.find((e: any) => (e.onSuccess || []).find(ei => ei._id == nodeId));
+      this.flowService.selectedNode.emit({
+        currNode: currNode,
+        prevNode: prevNode
+      });
+
+    }
   
     ngOnChanges(changes: SimpleChanges): void {
-      this.render();
+      this.reRender(this.nodeList);
     }
   
     ngAfterViewInit() {
@@ -59,12 +77,18 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
     }
 
     
-  
     private render() {  
       ReactDOM.render(
         <React.StrictMode>
           <div id='reactStuff'>
-            <ReactFlowComponent addNode={(e) => this.handleContextMenu(e)} nodeList={this.nodeList} services={this.services} changeNodeList={(e) => this.reRender(e)}/>
+            <ReactFlowComponent 
+              edit={this.edit}
+              addNode={(e) => this.handleContextMenu(e)} 
+              nodeList={this.nodeList} 
+              services={this.services} 
+              changeNodeList={(e) => this.reRender(e)}
+              openProperty={(e) => this.openProperty(e)}
+              />
           </div>
         </React.StrictMode>,
         this.containerRef.nativeElement

@@ -46,6 +46,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   showNodeProperties: boolean;
   openDeleteModal: EventEmitter<any>;
   nodeList: Array<any>;
+  ogNodeList: Array<any>;
   changesDone: boolean = false;
   saved: boolean = false
 
@@ -250,15 +251,18 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       // this.appService.updateCodeEditorState.emit(this.edit);
       this.nodeList = [];
       if (this.flowData.inputNode) {
+        this.flowData.inputNode['nodeType'] = 'output';
         this.nodeList.push(this.flowData.inputNode);
       }
       if (this.flowData.nodes) {
         this.flowData.nodes.forEach(item => {
+          item['nodeType'] = 'default';
           this.nodeList.push(item);
         });
       }
       this.getCategories()
       if (this.flowData.errorNode) {
+        this.flowData.errorNode['nodeType'] = 'output';
         this.nodeList.push(this.flowData.errorNode);
       }
       this.nodeList.forEach((node, i) => {
@@ -275,8 +279,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
         node.coordinates.y = Math.floor(node.coordinates.y / 20) * 20;
       });
       this.flowService.cleanPayload(this.nodeList);
-      this.flowService.nodeList = this.nodeList;
-      // if (!environment.production) {
+      this.flowService.nodeList = this.nodeList;      // if (!environment.production) {
       //   setTimeout(() => {
       //     this.enableEditing()
       //   }, 1000);
@@ -343,6 +346,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       this.getFlow(this.flowData._id, true);
     } else {
       this.appService.updateCodeEditorState.emit(this.edit);
+      this.wrapper.reRender(this.nodeList)
     }
   }
 
@@ -730,7 +734,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   getErrors() {
     const validations = this.flowService.getErrorValidations();
 
-    const finalList = this.nodeList.reduce((acc, node) => {
+    const finalList = (this.nodeList ||[]).reduce((acc, node) => {
       const nodeValidations = (validations.find(e => {
         return e.node === node.type
       }) || {}).validations || [];
@@ -769,7 +773,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       warning: "Output Data Structure should't be generic",
     }]
 
-    const finalList = this.nodeList.reduce((acc, node) => {
+    const finalList = (this.nodeList ||[]).reduce((acc, node) => {
       let warnValidations = _.cloneDeep(validations)
       if (this.flowService.showOutputSelector(node, this.isInputNode(node))) {
         warnValidations = warnValidations.filter(ele => ele.fieldPath === 'dataStructure.outgoing')
@@ -858,7 +862,11 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
   changeNodeList(event){
     this.nodeList = event;
-    console.log(this.nodeList);
+  }
+
+  openProperty(event){
+    this.selectedNode['currNode'] = this.nodeList.find(node => node._id == event);
+    this.showNodeProperties = true;
   }
 
 }
