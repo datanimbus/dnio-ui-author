@@ -120,6 +120,7 @@ export default function ReactFlowComponent(props: FlowProps) {
         entity.onSuccess.forEach(success => {
           edges.push({
             id: `${entity._id}-${success._id}-s`,
+            type: 'step',
             target: entity._id,
             source: success._id,
             targetHandle: 'success',
@@ -133,6 +134,7 @@ export default function ReactFlowComponent(props: FlowProps) {
         entity.onError.forEach(error => {
           edges.push({
             id: `${entity._id}-${error._id}-e`,
+            type: 'step',
             target: entity._id,
             source: error._id,
             targetHandle: 'error',
