@@ -176,12 +176,11 @@ export class PathPropertiesComponent implements OnInit {
   set name(name: string) {
     if (this.pathType == 'error') {
       if (this.nodeList[this.nodeIndex] && this.nodeList[this.nodeIndex].onError && this.nodeList[this.nodeIndex].onError[this.path.index]) {
-        this.nodeList[this.nodeIndex].onSuccess.find(node => node._id === this.path.path._id).name = name;
-
+        this.nodeList[this.nodeIndex].onError[this.path.index].name = name;
       }
     } else {
       if(this.path?.path && this.nodeList[this.nodeIndex]?.onSuccess){
-        this.path.path.name = name ;
+        this.findNode(this.path.path).name = name;
       }
      else if (this.nodeList[this.nodeIndex] && this.nodeList[this.nodeIndex].onSuccess && this.nodeList[this.nodeIndex].onSuccess[this.path.index]) {
         this.nodeList[this.nodeIndex].onSuccess[this.path.index].name = name;
@@ -217,5 +216,19 @@ export class PathPropertiesComponent implements OnInit {
         this.nodeList[this.nodeIndex].onSuccess[this.path.index].color = color;
       }
     }
+  }
+
+  findNode(path){
+    let node: any = {};
+    if(!path){
+      return {}
+    }
+    if(path.prevNode){
+      node=  this.nodeList.find(node => node._id === path.prevNode)
+    }
+    else{
+      node=this.nodeList[0]
+    }
+    return node.onSuccess?.find(node => node._id === path._id)
   }
 }

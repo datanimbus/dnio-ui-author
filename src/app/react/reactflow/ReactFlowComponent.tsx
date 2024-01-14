@@ -13,9 +13,9 @@ import ReactFlow, {
 import * as React from 'react'
 import ContextMenuComponent from './ContextMenuComponent/ContextMenuComponent';
 import * as _ from 'lodash';
-import CustomNode from './custom-components/CustomNode';
-import CustomErrorNode from './custom-components/CustomErrorNode';
 import ConnectionLine from './custom-components/ConnectionLine';
+import CustomErrorNode from './custom-components/CustomErrorNode';
+import CustomNode from './custom-components/CustomNode';
 
 
 export interface FlowProps {
@@ -27,6 +27,7 @@ export interface FlowProps {
   edit?: any;
   errorList?: Array<any>;
   openPath?: (event) => void;
+  onChange?: (event) => void;
 }
 
 
@@ -36,9 +37,9 @@ const nodeTypes = {
 };
 
 export default function ReactFlowComponent(props: FlowProps) {
-  const {  nodeList, services, addNode, changeNodeList, openProperty, edit, openPath, errorList } = props;
+  const {  nodeList, services, addNode, changeNodeList, openProperty, edit, errorList, openPath, onChange } = props;
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, _] = useEdgesState([]);
   const reactFlowWrapper = React.useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = React.useState(null);
   const isInputNode = (node) => {
@@ -111,6 +112,7 @@ export default function ReactFlowComponent(props: FlowProps) {
       }
     })
 
+    onChange(event)
     updateEdges()
 
   }
@@ -151,7 +153,7 @@ export default function ReactFlowComponent(props: FlowProps) {
     });
 
     setEdges(edges)
-    services.flowService.selectedPath.emit(null)
+    // services.flowService.selectedPath.emit(null)
   }
 
   const nodeChange = (currentEdges) => {
@@ -208,32 +210,6 @@ export default function ReactFlowComponent(props: FlowProps) {
   const nodeListString = JSON.stringify(nodeList);
   const errorListString = JSON.stringify(errorList);
 
-
-
-  React.useEffect(() => {
-    const iconList = services.flowService.getNodeIcon();
-    setEdges([])
-    const allNodes = nodeList.map(node => {
-      const iconObj = iconList.find(e => e.nodeType == node.type && isInputNode(node) === e.isInput) || {};
-      if(node.type && !node.nodeType){
-        node.nodeType = node.type === 'ERROR' ? 'customErrorNode' : 'customNode'
-      }
-      // const hasErrors = errorList.find(e => e._id == node._id)?.errors?.length > 0;
-      return {
-        id: node._id,
-        type: node.type === 'ERROR' ? 'customErrorNode' : 'customNode',
-        position: { x: node.coordinates.x, y: node.coordinates.y },
-        data: { label: node.name, type: node.nodeType, icon: iconObj.icon, nodeType: node.type },
-        sourcePosition: Position.Left,
-        targetPosition: Position.Right,
-
-      }
-    });
-    updateEdges()
-    setNodes(allNodes)
-  }, [editString, nodeListString,errorListString]);
-
-
   const reactFlowProps: ReactFlowProps = {
     nodes,
     edges,
@@ -259,6 +235,31 @@ export default function ReactFlowComponent(props: FlowProps) {
     connectionLineComponent: ConnectionLine
   };
 
+
+
+
+  React.useEffect(() => {
+    const iconList = services.flowService.getNodeIcon();
+    setEdges([])
+    const allNodes = nodeList.map(node => {
+      const iconObj = iconList.find(e => e.nodeType == node.type && isInputNode(node) === e.isInput) || {};
+      if(node.type && !node.nodeType){
+        node.nodeType = node.type === 'ERROR' ? 'customErrorNode' : 'customNode'
+      }
+      // const hasErrors = errorList.find(e => e._id == node._id)?.errors?.length > 0;
+      return {
+        id: node._id,
+        type: node.type === 'ERROR' ? 'customErrorNode' : 'customNode',
+        position: { x: node.coordinates.x, y: node.coordinates.y },
+        data: { label: node.name, type: node.nodeType, icon: iconObj.icon, nodeType: node.type },
+        sourcePosition: Position.Left,
+        targetPosition: Position.Right,
+
+      }
+    });
+    updateEdges()
+    setNodes(allNodes)
+  }, [editString, nodeListString,errorListString]);
 
   return (
     <div className='d-flex'>

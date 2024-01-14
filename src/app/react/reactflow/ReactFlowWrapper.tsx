@@ -2,9 +2,8 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges,
     OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core";
   import * as React from "react";
   import * as ReactDOM from "react-dom";
-  import {createRoot} from 'react-dom/client';
 import ReactFlowComponent from "./ReactFlowComponent";  
-import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
+import { B2bFlowService } from "../../home/b2b-flows-manage/b2b-flow.service";
 
 
   const containerElementRef = "customReactComponentContainer";
@@ -113,7 +112,7 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
 
     reRender(nodeList){
       this.nodeList = nodeList;
-      this.flowService.selectedNode.emit(null)
+      // this.flowService.selectedNode.emit(null)
       this.changeNodeList.emit(nodeList)
       this.render();
     }
@@ -157,6 +156,11 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
         })
       })
     }
+
+    changeHandler(event){
+      this.flowService.selectedPath.emit(null)
+      this.flowService.selectedNode.emit(null)
+    }
   
     ngOnChanges(changes: SimpleChanges): void {
       // this.checkPaths();
@@ -180,9 +184,9 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
         }
       })
       // createRoot( this.containerRef.nativeElement)
-      ReactDOM.render(
+     ReactDOM.render(
         <React.StrictMode>
-          <div id='reactStuff'>
+          <div id='react-root'>
             <ReactFlowComponent 
               edit={this.edit}
               addNode={(e) => this.addNode(e)} 
@@ -192,10 +196,11 @@ import { B2bFlowService } from "../home/b2b-flows-manage/b2b-flow.service";
               openProperty={(e) => this.openProperty(e)}
               openPath={(e) => this.openEdgeProperty(e)}
               errorList={errorList}
+              onChange={(e) => this.changeHandler(e)}
               />
           </div>
         </React.StrictMode>,
-       this.containerRef.nativeElement
+        this.containerRef.nativeElement
       );
     }
   }
