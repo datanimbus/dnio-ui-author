@@ -7,12 +7,16 @@ import ReactFlow, {
   useEdgesState,
   Position,
   ReactFlowProvider,
+  ConnectionLineType,
+  ReactFlowProps,
 } from 'reactflow';
 import * as React from 'react'
 import ContextMenuComponent from './ContextMenuComponent/ContextMenuComponent';
 import * as _ from 'lodash';
-import CustomNode from './other/CustomNode';
-import CustomErrorNode from './other/CustomErrorNode';
+import CustomNode from './custom-components/CustomNode';
+import CustomErrorNode from './custom-components/CustomErrorNode';
+import ConnectionLine from './custom-components/ConnectionLine';
+
 
 export interface FlowProps {
   nodeList?: Array<any>;
@@ -104,7 +108,6 @@ export default function ReactFlowComponent(props: FlowProps) {
           const newEdges = edges.filter(edge => edge.id === e.id);
           setEdges(newEdges)
         }
-        console.log(nodeList);
       }
     })
 
@@ -120,11 +123,11 @@ export default function ReactFlowComponent(props: FlowProps) {
         entity.onSuccess.forEach(success => {
           edges.push({
             id: `${entity._id}-${success._id}-s`,
-            type: 'step',
+            type: ConnectionLineType.SmoothStep,
             target: entity._id,
             source: success._id,
             targetHandle: 'success',
-            label: success.name,
+            label: success.name || '',
             data: success,
             style: success['color'] ? { stroke: `#${success.color}` } : {}
           });
@@ -134,11 +137,11 @@ export default function ReactFlowComponent(props: FlowProps) {
         entity.onError.forEach(error => {
           edges.push({
             id: `${entity._id}-${error._id}-e`,
-            type: 'step',
+            type: ConnectionLineType.SmoothStep,
             target: entity._id,
             source: error._id,
             targetHandle: 'error',
-            label: error.name,
+            label: error.name || '',
             data: error,
             style: { stroke: '#F44336' }
 
@@ -148,7 +151,7 @@ export default function ReactFlowComponent(props: FlowProps) {
     });
 
     setEdges(edges)
-
+    services.flowService.selectedPath.emit(null)
   }
 
   const nodeChange = (currentEdges) => {
@@ -159,25 +162,32 @@ export default function ReactFlowComponent(props: FlowProps) {
         name: edge.label || '',
         condition: edge.data?.condition || '',
         _id: edge.source,
+        color: edge?.style?.stroke || ''
       };
       if (edge.targetHandle === 'success' || edge.targetHandle === 'error') {
-        const targetArray = node[edge.targetHandle] || [];
+        const element = edge.targetHandle === 'error' ? 'onError' : 'onSuccess';
+        const targetArray = node[element] || [];
         if (!targetArray.some((ele) => ele._id === edge.source)) {
-          node[edge.targetHandle] = [...targetArray, obj];
+          node[element] = edge.targetHandle === 'error' ? [obj] : addIndextoSuccess(targetArray, obj);
         }
       }
     });
     setEdges(currentEdges);
-    console.log(nodeList);
     // changeNodeList(nodeList)
   };
+
+  const addIndextoSuccess = (paths, toAdd) => {
+    // const newPath = paths.length;
+    // toAdd['index'] = paths.length;
+    return [...paths, toAdd];
+  }
   
 
   const onConnect = (event) => {
     const type = event.targetHandle?.charAt(0);
     event['id'] = `${event.target}-${event.source}-${type}`
+    event['type']= ConnectionLineType.SmoothStep;
     const currentEdges = [...edges, event];
-    console.log(currentEdges);
     nodeChange(currentEdges)
   };
 
@@ -187,7 +197,6 @@ export default function ReactFlowComponent(props: FlowProps) {
 
   const onNodeDragStop = (event, node) => {
     nodeList.find(e => e._id == node.id).coordinates = node.position;
-    console.log(nodeList);
   }
 
 
@@ -224,38 +233,43 @@ export default function ReactFlowComponent(props: FlowProps) {
     setNodes(allNodes)
   }, [editString, nodeListString,errorListString]);
 
+
+  const reactFlowProps: ReactFlowProps = {
+    nodes,
+    edges,
+    edgesUpdatable: edit.status,
+    edgesFocusable: edit.status,
+    nodesDraggable: edit.status,
+    nodesConnectable: edit.status,
+    elementsSelectable: edit.status,
+    fitView: true,
+    onNodesChange: onNodesChange,
+    onConnect: onConnect,
+    onDrop: onDrop,
+    onDragOver: onDragOver,
+    onInit: setReactFlowInstance,
+    onNodesDelete: onNodesDelete,
+    onEdgesDelete: onEdgesDelete,
+    onNodeClick: openProperties,
+    nodeTypes: nodeTypes,
+    onEdgeClick: openEdges,
+    onNodeDragStop: onNodeDragStop,
+    // connectionLineType: ConnectionLineType.SmoothStep,
+    proOptions: { hideAttribution: true },
+    connectionLineComponent: ConnectionLine
+  };
+
+
   return (
-    <div >
-      <ReactFlowProvider>
-        <div style={{ position: 'absolute', left: '10px', top: '160px', zIndex: 5 }}>
+    <div className='d-flex'>
+      <div style={{ }}>
           <ContextMenuComponent services={services} edit={edit} />
         </div>
-        <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{ width: '100vw', height: '90vh' }}>
-          <ReactFlow
-
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            // onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            fitView
-            onInit={setReactFlowInstance}
-            onNodesDelete={onNodesDelete}
-            onEdgesDelete={onEdgesDelete}
-            onNodeClick={openProperties}
-            nodeTypes={nodeTypes}
-            onEdgeClick={openEdges}
-            edgesUpdatable={edit.status}
-            edgesFocusable={edit.status}
-            nodesDraggable={edit.status}
-            nodesConnectable={edit.status}
-            elementsSelectable={edit.status}
-            onNodeDragStop={onNodeDragStop}
-          >
+      <ReactFlowProvider>
+        <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{ width: '100vw', height: '82vh' }}>
+          <ReactFlow {...reactFlowProps}>
             <Controls showInteractive={false} />
-            <MiniMap zoomable pannable />
+            <MiniMap zoomable pannable style={{ width: '150', height: '100' }} />
             <Background gap={12} size={1} />
           </ReactFlow>
         </div>

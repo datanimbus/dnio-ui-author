@@ -17,6 +17,12 @@ export default memo((props: handleProps) => {
         type="source"
         position={Position.Left}
         isConnectable={isConnectable}
+        style={data.type == 'output' ? {display: 'none', background: '#fff'} : { width: '10%', height: '50%', background: 'transparent' }}
+      />
+      <Handle
+        type="source"
+        position={Position.Left}
+        isConnectable={false}
         style={data.type == 'output' ? {display: 'none', background: '#fff'} : { background: '#fff', border: '1px solid rgb(102,102,102, 0.7)'}}
       />
       <div className='d-flex'>
