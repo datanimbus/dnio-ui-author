@@ -235,19 +235,19 @@ export class B2bFlowService {
         outgoing: {}
       }
     };
-    if (type.startsWith('DS_')) {
+    if (type?.startsWith('DS_')) {
       temp.type = 'DATASERVICE';
       const subType = type.split('_')[1] === 'FETCH' ? 'GET' : type.split('_')[1];
       temp.options[subType?.toLowerCase()] = true
     }
 
-    if (type.startsWith('WF_')) {
+    if (type?.startsWith('WF_')) {
       const subType = type.split('_')[1];
       temp.type = 'DATASERVICE_' + subType;
       temp.options[subType?.toLowerCase()] = true
     }
 
-    if (type.startsWith('SFTP_')) {
+    if (type?.startsWith('SFTP_')) {
       const changeObj = {
         'GET': 'read',
         'PUT': 'write',

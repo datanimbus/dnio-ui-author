@@ -27,10 +27,9 @@ export default function ContextMenuComponent(props: menuProps) {
 
   const nodeOptions = services.flowService.getNodeOptions();
   return (
-    <div>
-      <span className="dsi dsi-flow bg-white border rounded-circle p-3 hover" onClick={() => edit.status && toggleMenu(!showContextMenu)}>
-      </span>
-      { edit.status && renderContextMenu(nodeOptions, edit, showContextMenu)}
-    </div>
+    <ContextMenu
+    nodeOptions={nodeOptions}
+    edit={edit}
+  />
   );
 }

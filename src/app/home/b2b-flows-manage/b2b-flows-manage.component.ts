@@ -11,7 +11,7 @@ import { CommonService } from 'src/app/utils/services/common.service';
 import { environment } from 'src/environments/environment';
 import { B2bFlowService } from './b2b-flow.service';
 import { Position } from 'reactflow';
-import { CustomReactWrapperComponent } from 'src/app/react/ReactWrapper';
+import { CustomReactWrapperComponent } from 'src/app/react/reactflow/ReactFlowWrapper';
 
 @Component({
   selector: 'odp-b2b-flows-manage',

@@ -70,7 +70,7 @@ import { FlowPropertiesComponent } from './node-properties/flow-properties/flow-
 import { ConditionPropertiesComponent } from './node-properties/condition-properties/condition-properties.component';
 import { SearchTermModule } from 'src/app/utils/search-term/search-term.module';
 import { ForeachPropertiesComponent } from './node-properties/foreach-properties/foreach-properties.component';
-import { CustomReactWrapperComponent } from 'src/app/react/ReactWrapper';
+import { CustomReactWrapperComponent } from 'src/app/react/reactflow/ReactFlowWrapper';
 
 const routes: Routes = [
   {

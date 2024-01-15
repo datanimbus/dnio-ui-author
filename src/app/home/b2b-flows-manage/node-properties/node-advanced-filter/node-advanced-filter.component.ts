@@ -255,7 +255,7 @@ export class NodeAdvancedFilterComponent implements OnInit {
         }
         let value = mongoQuery?.[path]?.[operator];
         path=path.replace(prefix,'')
-        const type = this.definition.find(ele => ele.properties.dataPath === path).type;
+        const type = this.definition.find(ele => ele.properties.dataPath === path)?.type || '';
         if(type === 'Date'){
           value = finalOperator === 'inRange' ? {from: mongoQuery[prefix+path]['$gte'], to: mongoQuery[prefix+path]['$lte']} : {from: value}
         }
