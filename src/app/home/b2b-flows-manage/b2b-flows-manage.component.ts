@@ -64,6 +64,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   openIssues: boolean = false;
   zoomAction: EventEmitter<any>;
   allNodes: Array<any> = [];
+  errorCount: number = 0;
   constructor(private commonService: CommonService,
     private appService: AppService,
     private route: ActivatedRoute,
@@ -853,6 +854,10 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   }
 
   get totalErrors() {
+    if(this.errorCount != this.getErrors().length){
+      this.errorCount = this.getErrors().length;
+      this.wrapper.reRender(this.nodeList)
+    }
     return this.getErrors().length;
   }
 

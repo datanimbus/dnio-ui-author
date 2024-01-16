@@ -17,7 +17,7 @@ export default memo((props: handleProps) => {
         type="source"
         position={Position.Left}
         isConnectable={isConnectable}
-        style={data.type == 'output' ? {display: 'none', background: '#fff'} : { background: '#fff', border: '1px solid rgb(102,102,102, 0.7)'}}
+        style={data.nodeType === 'ERROR' ? {display: 'none', background: '#fff'} : { background: '#fff', border: '1px solid rgb(102,102,102, 0.7)'}}
       />
       <div className='d-flex'>
       <span className={data.icon + ' nodeIcon'}></span>

@@ -257,21 +257,9 @@
 }
 
 .react-flow__node-customErrorNode {
-  padding: 10px;
-  border-radius: 3px;
-  width: 70px;
-  height:25px;
-  font-size: 6px;
-  color: #222;
-  text-align: center;
-  border-width: 1px;
-  // border-style: solid;
-  border-color: $danger;
-  background-color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  filter: drop-shadow(0px 4px 3px rgb(0 0 0 / 0.2));
+ @extend .react-flow__node-customNode;
+ filter: drop-shadow(0px 4px 3px rgb(255 0 0 / 0.2));
+ color: $danger;
 
 }
 .react-flow__node-default.selectable:hover, .react-flow__node-input.selectable:hover, .react-flow__node-output.selectable:hover, .react-flow__node-group.selectable:hover {

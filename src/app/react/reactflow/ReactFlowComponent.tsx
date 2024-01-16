@@ -289,10 +289,14 @@ export function ReactFlowBase(props: FlowProps) {
       if(node.type && !node.nodeType){
         node.nodeType = node.type === 'ERROR' ? 'customErrorNode' : 'customNode'
       }
-      // const hasErrors = errorList.find(e => e._id == node._id)?.errors?.length > 0;
+       
+      const hasErrors = errorList.find(e => e._id == node._id)?.errors?.length > 0;
+      if(hasErrors){
+        node.nodeType = 'customErrorNode'
+      }
       return {
         id: node._id,
-        type: node.type === 'ERROR' ? 'customErrorNode' : 'customNode',
+        type: node.type === 'ERROR' || hasErrors ? 'customErrorNode' : 'customNode',
         position: { x: node.coordinates.x, y: node.coordinates.y },
         data: { label: node.name, type: node.nodeType, icon: iconObj.icon, nodeType: node.type },
         targetPosition: Position.Left,
@@ -304,7 +308,7 @@ export function ReactFlowBase(props: FlowProps) {
 
 
   React.useEffect(() => {
-    console.log(nodeList);
+    console.log(errorList);
     // const iconList = services.flowService.getNodeIcon();
     setEdges([])
     const allNodes = changeNode()
@@ -314,8 +318,7 @@ export function ReactFlowBase(props: FlowProps) {
 
   return (
     <div>
-
-      <div style={{ }}>
+      <div>
           <ContextMenuComponent services={services} edit={edit} />
         </div>
         <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{ width: '100vw', height: '82vh'}}>

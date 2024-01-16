@@ -449,14 +449,16 @@ export class NodePropertiesComponent implements OnInit {
     } if (this.currNode.type == 'API' && this.currNode.options.contentType == 'multipart/form-data') {
       flag = true;
     }
-    if (!(this.currNode?.dataStructure?.outgoing?.formatType === 'XML'
-      || this.currNode?.dataStructure?.outgoing?.formatType === 'JSON')) {
+    if (!['XML', 'JSON'].includes(this.currNode?.dataStructure?.outgoing?.formatType) && !_.isEmpty(this.currNode?.dataStructure?.outgoing)) {
       flag = true;
     } else {
       this.currNode.options['skipLines'] = null;
       this.currNode.options['skipRows'] = null;
       this.currNode.options['maxRows'] = null;
       flag = false
+    }
+    if(this.currNode.type === 'ERROR'){
+     flag = false
     }
     return flag;
   }
