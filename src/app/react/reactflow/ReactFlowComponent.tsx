@@ -11,6 +11,7 @@ import ReactFlow, {
   ReactFlowProps,
   MarkerType,
   DefaultEdgeOptions,
+  useReactFlow,
 } from 'reactflow';
 import * as React from 'react'
 import ContextMenuComponent from './ContextMenuComponent/ContextMenuComponent';
@@ -39,10 +40,12 @@ const nodeTypes = {
 };
 
 
-export default function ReactFlowComponent(props: FlowProps) {
+export function ReactFlowBase(props: FlowProps) {
   const {  nodeList, services, addNode, changeNodeList, openProperty, edit, errorList, openPath, onChange } = props;
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, _] = useEdgesState([]);
+  const { getIntersectingNodes } = useReactFlow();
+
   const reactFlowWrapper = React.useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = React.useState(null);
   const isInputNode = (node) => {
@@ -220,6 +223,16 @@ export default function ReactFlowComponent(props: FlowProps) {
     openPath(edge);
   }
 
+  const onNodeDrag =(_, node) => {
+    const intersections = getIntersectingNodes(node).map((n) => n.id);
+    setNodes((ns) =>
+    ns.map((n) => ({
+      ...n,
+      className: intersections.includes(n.id) ? 'highlight' : '',
+    }))
+  );
+  }
+
   const editString = JSON.stringify(edit);
   const nodeListString = JSON.stringify(nodeList);
   const errorListString = JSON.stringify(errorList);
@@ -247,6 +260,7 @@ export default function ReactFlowComponent(props: FlowProps) {
     onNodesDelete: onNodesDelete,
     onEdgesDelete: onEdgesDelete,
     onNodeClick: openProperties,
+    onNodeDrag: onNodeDrag,
     nodeTypes: nodeTypes,
     onEdgeClick: openEdges,
     onNodeDragStop: onNodeDragStop,
@@ -256,12 +270,9 @@ export default function ReactFlowComponent(props: FlowProps) {
     defaultEdgeOptions: defaultEdgeProps
   };
 
-
-  React.useEffect(() => {
+  const changeNode = (intersections?) => {
     const iconList = services.flowService.getNodeIcon();
-    console.log(nodeList);
-    setEdges([])
-    const allNodes = nodeList.map(node => {
+    return nodeList.map(node => {
       const iconObj = iconList.find(e => {
         if(e.subType){
           if(node.type === 'CONNECTOR'){
@@ -286,16 +297,24 @@ export default function ReactFlowComponent(props: FlowProps) {
         data: { label: node.name, type: node.nodeType, icon: iconObj.icon, nodeType: node.type },
         targetPosition: Position.Left,
         sourcePosition: Position.Right,
-
+        // className: intersections.includes(node._id) ? 'highlight' : ''
       }
     });
+  }
+
+
+  React.useEffect(() => {
+    console.log(nodeList);
+    // const iconList = services.flowService.getNodeIcon();
+    setEdges([])
+    const allNodes = changeNode()
     updateEdges()
     setNodes(allNodes)
   }, [editString, nodeListString,errorListString]);
 
   return (
     <div>
-      <ReactFlowProvider>
+
       <div style={{ }}>
           <ContextMenuComponent services={services} edit={edit} />
         </div>
@@ -308,7 +327,17 @@ export default function ReactFlowComponent(props: FlowProps) {
             <Background gap={12} size={1} style={{ opacity: '0.7' }} />
           </ReactFlow>
         </div>
-      </ReactFlowProvider>
     </div>
   );
+}
+
+
+export default function ReactFlowComponent(props: FlowProps) {
+  return (
+    <div>
+       <ReactFlowProvider>
+          <ReactFlowBase {...props}></ReactFlowBase>
+       </ReactFlowProvider>
+    </div>
+  )
 }

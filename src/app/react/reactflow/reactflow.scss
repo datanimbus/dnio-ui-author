@@ -565,3 +565,8 @@
   opacity: 1;
   transform: translateY(0);
 }
+
+.react-flow__node.highlight {
+  background-color: #ff0072;
+  color: white;
+}
