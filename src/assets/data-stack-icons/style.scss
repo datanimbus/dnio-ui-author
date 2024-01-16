@@ -539,4 +539,24 @@
     content: $dsi-app-panel; 
   }
 }
+.dsi-apachekafka {
+  &:before {
+    content: $dsi-apachekafka; 
+  }
+}
+.dsi-books {
+  &:before {
+    content: $dsi-books; 
+  }
+}
+.dsi-box-add {
+  &:before {
+    content: $dsi-box-add; 
+  }
+}
+.dsi-database {
+  &:before {
+    content: $dsi-database; 
+  }
+}
 

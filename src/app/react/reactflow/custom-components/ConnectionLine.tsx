@@ -14,7 +14,7 @@ export default ({ fromX, fromY, toX, toY }) => {
         x2={controlX}
         y2={controlY}
         stroke="#666"
-        strokeWidth={1.5}
+        strokeWidth={1}
         className="animated"
       />
       
@@ -25,7 +25,7 @@ export default ({ fromX, fromY, toX, toY }) => {
         x2={controlX}
         y2={toY}
         stroke="#666"
-        strokeWidth={1.5}
+        strokeWidth={1}
         className="animated"
       />
       
@@ -36,7 +36,7 @@ export default ({ fromX, fromY, toX, toY }) => {
         x2={toX}
         y2={toY}
         stroke="#666"
-        strokeWidth={1.5}
+        strokeWidth={1}
         className="animated"
       />
       

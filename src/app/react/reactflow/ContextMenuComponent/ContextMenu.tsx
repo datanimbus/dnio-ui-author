@@ -37,7 +37,7 @@ function TreeNode({ item, index, ctr, edit }) {
           <div
             className="node-list-item bg-white rounded border"
             style={{
-              left: ctr > 1 ? 150 : 110,
+              left: ctr > 1 ? 150 : 120,
               // top: index * 32,
             }}
           >
@@ -59,7 +59,7 @@ function TreeNode({ item, index, ctr, edit }) {
   function ContextMenu({ nodeOptions, edit }) {
     return (
         <div
-          className="available-nodes-dropdown bg-white border rounded"
+          className="available-nodes-dropdown bg-white border rounded position-absolute"
         >
           {nodeOptions.map((item, index) => (
             <TreeNode

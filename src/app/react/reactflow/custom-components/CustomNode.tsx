@@ -14,23 +14,17 @@ export default memo((props: handleProps) => {
   return (
     <>
       <Handle
-        type="source"
+        type="target"
         position={Position.Left}
         isConnectable={isConnectable}
-        style={data.type == 'output' ? {display: 'none', background: '#fff'} : { width: '10%', height: '50%', background: 'transparent' }}
+        style={data.type == 'output' ? {display: 'none', background: '#fff'} : { background: '#fff', border: '0.5px solid rgb(102,102,102, 0.7)'}}
       />
-      <Handle
-        type="source"
-        position={Position.Left}
-        isConnectable={false}
-        style={data.type == 'output' ? {display: 'none', background: '#fff'} : { background: '#fff', border: '1px solid rgb(102,102,102, 0.7)'}}
-      />
-      <div className='d-flex'>
+      <div className='d-flex align-items-center'>
       <span className={data.icon + ' nodeIcon'}></span>
       <span>{data.label}</span>
       </div>
       {data.nodeType !== 'ERROR' && <Handle
-        type="target"
+        type="source"
         position={Position.Right}
         id="success"
         // style={{ top:5, bottom:'auto', background: '#ccf3e5', border: '1px solid rgb(47,196,143, 0.7)' }}
@@ -38,7 +32,7 @@ export default memo((props: handleProps) => {
         className='successHandle'
       />}
       <Handle
-        type="target"
+        type="source"
         position={Position.Right}
         id="error"
         isConnectable={isConnectable}

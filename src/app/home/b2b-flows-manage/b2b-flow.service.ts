@@ -594,16 +594,16 @@ export class B2bFlowService {
     {
       action: 'DB',
       name: 'DB',
-      icon: 'dsi dsi-connector'
+      icon: 'dsi dsi-database'
     },
     {
       action: 'STORAGE',
       name: 'Storage',
-      icon: 'dsi dsi-connector'
+      icon: 'dsi dsi-books'
     },
     {
       name: 'Kafka Producer',
-      icon: 'dsi dsi-connector',
+      icon: 'dsi dsi-apachekafka',
       action: 'KAFKA_PRODUCER'
     },
     {
@@ -1049,7 +1049,19 @@ export class B2bFlowService {
       },
       {
         "nodeType": "CONNECTOR",
-        "icon": "dsi dsi-connector",
+        'subType': 'DB',
+        "icon": "dsi dsi-database",
+        "isInput": false
+      },
+      {
+        "nodeType": "CONNECTOR",
+        'subType': 'STORAGE',
+        "icon": "dsi dsi-books",
+        "isInput": false
+      },
+      {
+        "nodeType": "KAFKA_PRODUCER",
+        "icon": "dsi dsi-apachekafka",
         "isInput": false
       },
       {
