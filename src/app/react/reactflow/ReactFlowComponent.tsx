@@ -9,6 +9,8 @@ import ReactFlow, {
   ReactFlowProvider,
   ConnectionLineType,
   ReactFlowProps,
+  MarkerType,
+  DefaultEdgeOptions,
 } from 'reactflow';
 import * as React from 'react'
 import ContextMenuComponent from './ContextMenuComponent/ContextMenuComponent';
@@ -36,6 +38,7 @@ const nodeTypes = {
   customErrorNode: CustomErrorNode
 };
 
+
 export default function ReactFlowComponent(props: FlowProps) {
   const {  nodeList, services, addNode, changeNodeList, openProperty, edit, errorList, openPath, onChange } = props;
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -55,6 +58,7 @@ export default function ReactFlowComponent(props: FlowProps) {
     (event) => {
       event.preventDefault();
       const data = JSON.parse(event.dataTransfer.getData('application/reactflow'));
+      console.log(data);
       const type = data.nodeType;
       const item = data.item
       if (typeof type === 'undefined' || !type) {
@@ -64,8 +68,7 @@ export default function ReactFlowComponent(props: FlowProps) {
         x: event.clientX,
         y: event.clientY,
       });
-      addNode({ position, item })
-        ;
+      addNode({ position, item });
     },
     [reactFlowInstance],
   );
@@ -92,17 +95,17 @@ export default function ReactFlowComponent(props: FlowProps) {
 
   const onEdgesDelete = (event) => {
     event.forEach(e => {
-      const target = e?.target;
       const source = e?.source;
-      if (target && source) {
-        if (nodeList.find(node => node._id === source)) {
+      const target = e?.target;
+      if (source && target) {
+        if (nodeList.find(node => node._id === target)) {
           console.log('Deleting edge');
-          const node = nodeList.find(node => node._id === target);
-          if (e.targetHandle === 'error') {
-            node['onError'] = removeNodeById(node['onError'] || [], source);
+          const node = nodeList.find(node => node._id === source);
+          if (e.sourceHandle === 'error') {
+            node['onError'] = removeNodeById(node['onError'] || [], target);
           }
-          else if (e.targetHandle === 'success') {
-            node['onSuccess'] = removeNodeById(node['onSuccess'], source);
+          else if (e.sourceHandle === 'success') {
+            node['onSuccess'] = removeNodeById(node['onSuccess'], target);
           }
         }
         else {
@@ -124,29 +127,36 @@ export default function ReactFlowComponent(props: FlowProps) {
       if (entity.onSuccess && entity.onSuccess.length > 0) {
         entity.onSuccess.forEach(success => {
           edges.push({
-            id: `${entity._id}-${success._id}-s`,
+            id: `${entity._id}->${success._id}-s`,
             type: ConnectionLineType.SmoothStep,
-            target: entity._id,
-            source: success._id,
-            targetHandle: 'success',
+            source: entity._id,
+            target: success._id,
+            sourceHandle: 'success',
             label: success.name || '',
             data: success,
-            style: success['color'] ? { stroke: `#${success.color}` } : {}
+            style: success['color'] ? { stroke: `#${success.color}` } : {},
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              color: success['color'] ? `#${success.color}` : '#666',
+            }
           });
         });
       }
       if (entity.onError && entity.onError.length > 0) {
         entity.onError.forEach(error => {
           edges.push({
-            id: `${entity._id}-${error._id}-e`,
+            id: `${entity._id}->${error._id}-e`,
             type: ConnectionLineType.SmoothStep,
-            target: entity._id,
-            source: error._id,
-            targetHandle: 'error',
+            source: entity._id,
+            target: error._id,
+            sourceHandle: 'error',
             label: error.name || '',
             data: error,
-            style: { stroke: '#F44336' }
-
+            style: { stroke: '#F44336' },
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              color: '#F44336',
+            }
           });
         });
       }
@@ -158,19 +168,23 @@ export default function ReactFlowComponent(props: FlowProps) {
 
   const nodeChange = (currentEdges) => {
     currentEdges.forEach((edge) => {
-      const node = nodeList.find((n) => n._id === edge.target);
+      const node = nodeList.find((n) => n._id === edge.source);
       const obj = {
         index: 0,
         name: edge.label || '',
         condition: edge.data?.condition || '',
-        _id: edge.source,
-        color: edge?.style?.stroke || ''
+        _id: edge.target,
+        color: edge?.style?.stroke || '',
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: edge?.style?.stroke || '#666',
+        }
       };
-      if (edge.targetHandle === 'success' || edge.targetHandle === 'error') {
-        const element = edge.targetHandle === 'error' ? 'onError' : 'onSuccess';
-        const targetArray = node[element] || [];
-        if (!targetArray.some((ele) => ele._id === edge.source)) {
-          node[element] = edge.targetHandle === 'error' ? [obj] : addIndextoSuccess(targetArray, obj);
+      if (edge.sourceHandle === 'success' || edge.sourceHandle === 'error') {
+        const element = edge.sourceHandle === 'error' ? 'onError' : 'onSuccess';
+        const sourceArray = node[element] || [];
+        if (!sourceArray.some((ele) => ele._id === edge.target)) {
+          node[element] = edge.sourceHandle === 'error' ? [obj] : addIndextoSuccess(sourceArray, obj);
         }
       }
     });
@@ -186,8 +200,8 @@ export default function ReactFlowComponent(props: FlowProps) {
   
 
   const onConnect = (event) => {
-    const type = event.targetHandle?.charAt(0);
-    event['id'] = `${event.target}-${event.source}-${type}`
+    const type = event.sourceHandle?.charAt(0);
+    event['id'] = `${event.source}->${event.target}-${type}`
     event['type']= ConnectionLineType.SmoothStep;
     const currentEdges = [...edges, event];
     nodeChange(currentEdges)
@@ -210,6 +224,12 @@ export default function ReactFlowComponent(props: FlowProps) {
   const nodeListString = JSON.stringify(nodeList);
   const errorListString = JSON.stringify(errorList);
 
+  const defaultEdgeProps: DefaultEdgeOptions = {
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+    },
+
+  }
   const reactFlowProps: ReactFlowProps = {
     nodes,
     edges,
@@ -232,17 +252,29 @@ export default function ReactFlowComponent(props: FlowProps) {
     onNodeDragStop: onNodeDragStop,
     // connectionLineType: ConnectionLineType.SmoothStep,
     proOptions: { hideAttribution: true },
-    connectionLineComponent: ConnectionLine
+    connectionLineComponent: ConnectionLine,
+    defaultEdgeOptions: defaultEdgeProps
   };
-
-
 
 
   React.useEffect(() => {
     const iconList = services.flowService.getNodeIcon();
+    console.log(nodeList);
     setEdges([])
     const allNodes = nodeList.map(node => {
-      const iconObj = iconList.find(e => e.nodeType == node.type && isInputNode(node) === e.isInput) || {};
+      const iconObj = iconList.find(e => {
+        if(e.subType){
+          if(node.type === 'CONNECTOR'){
+            return e.subType === node.options.connectorType
+          }
+          else{
+            return false
+          }
+        }  
+        else{
+          return e.nodeType == node.type && isInputNode(node) === e.isInput
+        }      
+      }) || {};
       if(node.type && !node.nodeType){
         node.nodeType = node.type === 'ERROR' ? 'customErrorNode' : 'customNode'
       }
@@ -252,8 +284,8 @@ export default function ReactFlowComponent(props: FlowProps) {
         type: node.type === 'ERROR' ? 'customErrorNode' : 'customNode',
         position: { x: node.coordinates.x, y: node.coordinates.y },
         data: { label: node.name, type: node.nodeType, icon: iconObj.icon, nodeType: node.type },
-        sourcePosition: Position.Left,
-        targetPosition: Position.Right,
+        targetPosition: Position.Left,
+        sourcePosition: Position.Right,
 
       }
     });
@@ -262,16 +294,18 @@ export default function ReactFlowComponent(props: FlowProps) {
   }, [editString, nodeListString,errorListString]);
 
   return (
-    <div className='d-flex'>
+    <div>
+      <ReactFlowProvider>
       <div style={{ }}>
           <ContextMenuComponent services={services} edit={edit} />
         </div>
-      <ReactFlowProvider>
-        <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{ width: '100vw', height: '82vh' }}>
+        <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{ width: '100vw', height: '82vh'}}>
           <ReactFlow {...reactFlowProps}>
-            <Controls showInteractive={false} />
-            <MiniMap zoomable pannable style={{ width: '150', height: '100' }} />
-            <Background gap={12} size={1} />
+            <div>
+            <Controls showInteractive={false} position='bottom-right' style={{right: '160px', display: 'flex'}}/>
+            <MiniMap zoomable pannable style={{ width: '150', height: '80' }} />
+            </div>
+            <Background gap={12} size={1} style={{ opacity: '0.7' }} />
           </ReactFlow>
         </div>
       </ReactFlowProvider>

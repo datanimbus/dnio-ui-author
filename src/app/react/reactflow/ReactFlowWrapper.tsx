@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges,
     OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core";
   import * as React from "react";
   import * as ReactDOM from "react-dom";
+  import {createRoot} from 'react-dom/client';
 import ReactFlowComponent from "./ReactFlowComponent";  
 import { B2bFlowService } from "../../home/b2b-flows-manage/b2b-flow.service";
 
@@ -10,7 +11,7 @@ import { B2bFlowService } from "../../home/b2b-flows-manage/b2b-flow.service";
   
   @Component({
     selector: "odp-react-flow",
-    template: `<div #${containerElementRef}></div>`,
+template: `<div id='react-root'></div>`,
     styleUrls: ["./reactflow.scss"], 
     // styleUrls: [""],
     encapsulation: ViewEncapsulation.None,
@@ -24,6 +25,7 @@ import { B2bFlowService } from "../../home/b2b-flows-manage/b2b-flow.service";
     @Input() flowData: any = {};
     @Input() edit: any = {};
     services: any = {};
+    root: any;
     constructor(
       private flowService: B2bFlowService
     ) {
@@ -133,14 +135,14 @@ import { B2bFlowService } from "../../home/b2b-flows-manage/b2b-flow.service";
       const path = this.convertToPath(edge, data);
      
       this.flowService.selectedPath.emit({ index, path });
-      console.log(edge);
+      // console.log(edge);
     }
 
     convertToPath(edge,data){
       this.flowService.selectedNode.emit(null);
       const path =  edge.data;
-      path['type'] = edge.targetHandle;
-      const prevNode = this.nodeList.find(e => e._id == edge.target)._id;
+      path['type'] = edge.sourceHandle;
+      const prevNode = this.nodeList.find(e => e._id == edge.source)._id;
       path['prevNode'] = prevNode;
       return path;
     }
@@ -168,11 +170,12 @@ import { B2bFlowService } from "../../home/b2b-flows-manage/b2b-flow.service";
     }
   
     ngAfterViewInit() {
+      this.root = createRoot(document.getElementById('react-root'))
       this.render();
     }
   
     ngOnDestroy() {
-      ReactDOM.unmountComponentAtNode(this.containerRef.nativeElement);
+     this.root.unmount();
     }
 
     
@@ -182,9 +185,10 @@ import { B2bFlowService } from "../../home/b2b-flows-manage/b2b-flow.service";
           _id: node._id,
           errors: this.getNodeError(node._id)
         }
-      })
-      // createRoot( this.containerRef.nativeElement)
-     ReactDOM.render(
+      });
+      
+     if(this.root){
+      this.root.render(
         <React.StrictMode>
           <div id='react-root'>
             <ReactFlowComponent 
@@ -197,10 +201,10 @@ import { B2bFlowService } from "../../home/b2b-flows-manage/b2b-flow.service";
               openPath={(e) => this.openEdgeProperty(e)}
               errorList={errorList}
               onChange={(e) => this.changeHandler(e)}
-              />
+            />
           </div>
-        </React.StrictMode>,
-        this.containerRef.nativeElement
+        </React.StrictMode>
       );
+     }
     }
   }
