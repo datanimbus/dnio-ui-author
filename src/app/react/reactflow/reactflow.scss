@@ -85,7 +85,7 @@
     pointer-events: all;
   }
 .react-flow__edge-textbg {
-    fill: #edf2f6;
+    fill: #FEF8E9;
   }
 .react-flow__edge .react-flow__edge-text {
     pointer-events: none;
@@ -258,9 +258,8 @@
 
 .react-flow__node-customErrorNode {
  @extend .react-flow__node-customNode;
- filter: drop-shadow(0px 4px 3px rgb(255 0 0 / 0.2));
- color: $danger;
-
+ border: 1px solid $danger
+//  filter: drop-shadow(0px 4px 3px rgb(255 0 0 / 0.2));
 }
 .react-flow__node-default.selectable:hover, .react-flow__node-input.selectable:hover, .react-flow__node-output.selectable:hover, .react-flow__node-group.selectable:hover {
       box-shadow: 0 1px 4px 1px rgba(0, 0, 0, 0.08);
@@ -557,4 +556,11 @@
 .react-flow__node.highlight {
   background-color: #ff0072;
   color: white;
+}
+
+.icons {
+  max-width: 25px;
+  min-width: 25px;
+  max-height: 25px;
+  min-height: 25px;
 }

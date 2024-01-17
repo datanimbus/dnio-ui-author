@@ -19,6 +19,12 @@ export default memo((props: handleProps) => {
         isConnectable={isConnectable}
         style={data.type == 'output' ? {display: 'none', background: '#fff'} : { background: '#fff', border: '0.5px solid rgb(102,102,102, 0.7)'}}
       />
+       <Handle
+        type="source"
+        position={Position.Top}
+        isConnectable={false}
+        style={data.hasErrors ? { background: 'transparent', left: '55px', border: 'none'} : {display: 'none', background: '#fff'} }
+      ><span className='dsi dsi-danger-circle text-danger nodeIcon'></span></Handle>
       <div className='d-flex align-items-center'>
       <span className={data.icon + ' nodeIcon'}></span>
       <span>{data.label}</span>

@@ -14,7 +14,7 @@ import ReactFlow, {
   useReactFlow,
 } from 'reactflow';
 import * as React from 'react'
-import ContextMenuComponent from './ContextMenuComponent/ContextMenuComponent';
+import ContextMenuComponent from './custom-components/ContextMenuComponent';
 import * as _ from 'lodash';
 import ConnectionLine from './custom-components/ConnectionLine';
 import CustomErrorNode from './custom-components/CustomErrorNode';
@@ -296,9 +296,9 @@ export function ReactFlowBase(props: FlowProps) {
       }
       return {
         id: node._id,
-        type: node.type === 'ERROR' || hasErrors ? 'customErrorNode' : 'customNode',
+        type: node.type === 'ERROR' ? 'customErrorNode' : 'customNode',
         position: { x: node.coordinates.x, y: node.coordinates.y },
-        data: { label: node.name, type: node.nodeType, icon: iconObj.icon, nodeType: node.type },
+        data: { label: node.name, type: node.nodeType, icon: iconObj.icon, nodeType: node.type, hasErrors },
         targetPosition: Position.Left,
         sourcePosition: Position.Right,
         // className: intersections.includes(node._id) ? 'highlight' : ''
@@ -319,7 +319,7 @@ export function ReactFlowBase(props: FlowProps) {
   return (
     <div>
       <div>
-          <ContextMenuComponent services={services} edit={edit} />
+          <ContextMenuComponent services={services} edit={edit} nodeList={nodeList}/>
         </div>
         <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{ width: '100vw', height: '82vh'}}>
           <ReactFlow {...reactFlowProps}>
