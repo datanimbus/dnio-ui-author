@@ -14,7 +14,7 @@ export default memo((props: handleProps) => {
   return (
     <>
      <Handle
-        type="source"
+        type="target"
         position={Position.Left}
         isConnectable={isConnectable}
         style={data.nodeType === 'ERROR' ? {display: 'none', background: '#fff'} : { background: '#fff', border: '1px solid rgb(102,102,102, 0.7)'}}
@@ -24,7 +24,7 @@ export default memo((props: handleProps) => {
       <span>{'Global Error'}</span>
       </div>
       {data.nodeType !== 'ERROR' && <Handle
-        type="target"
+        type="source"
         position={Position.Right}
         id="success"
         // style={{ top:5, bottom:'auto', background: '#ccf3e5', border: '1px solid rgb(47,196,143, 0.7)' }}
@@ -32,7 +32,7 @@ export default memo((props: handleProps) => {
         className='successHandle'
       />}
       <Handle
-        type="target"
+        type="source"
         position={Position.Right}
         id="error"
         isConnectable={isConnectable}
