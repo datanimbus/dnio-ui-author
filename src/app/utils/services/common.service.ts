@@ -27,12 +27,6 @@ import {
 } from 'rxjs/operators';
 import * as sh from 'shorthash';
 import * as uuid from 'uuid/v1';
-import {
-  connect,
-  Socket,
-  ManagerOptions,
-  SocketOptions,
-} from 'socket.io-client';
 
 import { UserDetails } from 'src/app/utils/interfaces/userDetails';
 import { environment } from 'src/environments/environment';
@@ -92,7 +86,6 @@ export class CommonService {
   bulkUpload: {
     status: EventEmitter<any>;
   };
-  socket: Socket;
   permissions: Array<Permission>;
   rcvdKeys: any;
   sessionExpired: EventEmitter<void>;
@@ -1065,7 +1058,6 @@ export class CommonService {
     self.userDetails = {};
     self.apiCalls = {};
     self.noAccess = false;
-    // self.disconnectSocket();
     self.ts.clear();
     this.deleteAllCookies();
   }
@@ -1336,86 +1328,6 @@ export class CommonService {
       }, 10000)
     }
   }
-
-  // connectSocket() {
-  //   const self = this;
-  //   if (!self.socket && self.app && self.app._id) {
-  //     const socketConfig: Partial<ManagerOptions & SocketOptions> = {
-  //       query: {
-  //         app: self.app._id,
-  //         userId: self.userDetails._id,
-  //         portal: 'author',
-  //       },
-  //     };
-  //     self.socket = connect(
-  //       environment.production ? '/' : 'http://localhost',
-  //       socketConfig
-  //     );
-  //     self.socket.on('connected', (data) => {
-  //       self.socket.emit('authenticate', { token: self.userDetails.token });
-  //     });
-  //     self.socket.on('deleteService', (data) => {
-  //       if (data.app === self.app._id) {
-  //         self.entity.delete.emit(data);
-  //       }
-  //     });
-
-  //     self.socket.on('serviceStatus', (data) => {
-  //       if (data.app === self.app._id) {
-  //         self.entity.status.emit(data);
-  //       }
-  //     });
-
-  //     self.socket.on('newService', (data) => {
-  //       if (data.app === self.app._id) {
-  //         self.entity.new.emit(data);
-  //       }
-  //     });
-  //     self.socket.on('flowDeleted', (data) => {
-  //       if (data.app === self.app._id) {
-  //         self.flow.delete.emit(data);
-  //       }
-  //     });
-  //     self.socket.on('flowStatus', (data) => {
-  //       if (data.app === self.app._id) {
-  //         self.flow.status.emit(data);
-  //       }
-  //     });
-  //     self.socket.on('flowCreated', (data) => {
-  //       if (data.app === self.app._id) {
-  //         self.flow.new.emit(data);
-  //       }
-  //     });
-  //     self.socket.on('faasDeleted', (data) => {
-  //       if (data.app === self.app._id) {
-  //         self.faas.delete.emit(data);
-  //       }
-  //     });
-  //     self.socket.on('faasStatus', (data) => {
-  //       if (data.app === self.app._id) {
-  //         self.faas.status.emit(data);
-  //       }
-  //     });
-  //     self.socket.on('faasCreated', (data) => {
-  //       if (data.app === self.app._id) {
-  //         self.faas.new.emit(data);
-  //       }
-  //     });
-  //     self.socket.on('bulk-upload', (data) => {
-  //       if (data.app === self.app._id) {
-  //         self.bulkUpload.status.emit(data);
-  //       }
-  //     });
-  //   }
-  // }
-
-  // disconnectSocket() {
-  //   const self = this;
-  //   if (self.socket) {
-  //     self.socket.close();
-  //     self.socket = null;
-  //   }
-  // }
 
   modal(template, options?: NgbModalOptions): NgbModalRef {
     const self = this;
