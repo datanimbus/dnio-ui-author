@@ -219,6 +219,7 @@
   max-height: calc(100vh - 149px);
   overflow-y: auto;
   transition: 0.2s;
+  z-index: 1
 }
 
 .active-warn {

@@ -35,6 +35,10 @@ export class PathPropertiesComponent implements OnInit {
   ngOnInit(): void {
     // this.nodeIndex = this.nodeList.findIndex(e => (e.onSuccess || []).find((es, ei) => es._id == this.path.path._id && ei == this.path.index));
     this.nodeIndex = this.nodeList.findIndex(e => e._id == this.path.path.prevNode);
+   if(this.path?.path.type){
+      this.pathType = this.path.path.type;
+   }
+   else{
     const successIndex = (this.nodeList[this.nodeIndex].onSuccess || []).findIndex(e => e._id == this.path.path._id);
     const errorIndex = (this.nodeList[this.nodeIndex].onError || []).findIndex(e => e._id == this.path.path._id);
     if (successIndex > -1) {
@@ -42,9 +46,9 @@ export class PathPropertiesComponent implements OnInit {
     } else if (errorIndex > -1) {
       this.pathType = 'error';
     }
+   }
     if (!environment.production) {
       console.log(this.path);
-      console.log(this.nodeIndex);
     }
   }
 
@@ -72,13 +76,20 @@ export class PathPropertiesComponent implements OnInit {
     this.flowService.reCreatePaths.emit(null);
   }
 
-  onChange() {
+  onChange(event, type?) {
     this.toggle['colorPicker'] = false;
     this.flowService.reCreatePaths.emit(null);
   }
 
   cancel() {
     this.close.emit(false);
+  }
+
+  nameChange(event){
+    // console.log(this.path);
+  }
+  colorChange(event){
+    // console.log(this.path);
   }
 
   onPathTypeChange(event: any, type: string) {
@@ -108,7 +119,7 @@ export class PathPropertiesComponent implements OnInit {
         this.nodeList[this.nodeIndex].onSuccess.push(pathData);
         this.color = "666";
       }
-      this.onChange();
+      this.onChange(event);
     }
   }
 
@@ -123,6 +134,9 @@ export class PathPropertiesComponent implements OnInit {
         return this.nodeList[this.nodeIndex].onError[this.path.index].condition;
       }
     } else {
+      if(this.path?.path?.condition != null || this.path?.path?.condition != undefined){
+        return this.path.path.condition;
+      }
       if (this.nodeList[this.nodeIndex] && this.nodeList[this.nodeIndex].onSuccess && this.nodeList[this.nodeIndex].onSuccess[this.path.index]) {
         return this.nodeList[this.nodeIndex].onSuccess[this.path.index].condition;
       }
@@ -135,7 +149,10 @@ export class PathPropertiesComponent implements OnInit {
         this.nodeList[this.nodeIndex].onError[this.path.index].condition = condition;
       }
     } else {
-      if (this.nodeList[this.nodeIndex] && this.nodeList[this.nodeIndex].onSuccess && this.nodeList[this.nodeIndex].onSuccess[this.path.index]) {
+      if(this.path?.path && this.nodeList[this.nodeIndex]?.onSuccess){
+        this.nodeList[this.nodeIndex].onSuccess.find(node => node._id === this.path.path._id).condition = condition;
+      }
+      else if (this.nodeList[this.nodeIndex] && this.nodeList[this.nodeIndex].onSuccess && this.nodeList[this.nodeIndex].onSuccess[this.path.index]) {
         this.nodeList[this.nodeIndex].onSuccess[this.path.index].condition = condition;
       }
     }
@@ -147,6 +164,9 @@ export class PathPropertiesComponent implements OnInit {
         return this.nodeList[this.nodeIndex].onError[this.path.index].name;
       }
     } else {
+      if(this.path?.path?.name != null || this.path?.path?.name != undefined){
+        return this.path.path.name;
+      }
       if (this.nodeList[this.nodeIndex] && this.nodeList[this.nodeIndex].onSuccess && this.nodeList[this.nodeIndex].onSuccess[this.path.index]) {
         return this.nodeList[this.nodeIndex].onSuccess[this.path.index].name;
       }
@@ -159,7 +179,10 @@ export class PathPropertiesComponent implements OnInit {
         this.nodeList[this.nodeIndex].onError[this.path.index].name = name;
       }
     } else {
-      if (this.nodeList[this.nodeIndex] && this.nodeList[this.nodeIndex].onSuccess && this.nodeList[this.nodeIndex].onSuccess[this.path.index]) {
+      if(this.path?.path && this.nodeList[this.nodeIndex]?.onSuccess){
+        this.findNode(this.path.path).name = name;
+      }
+     else if (this.nodeList[this.nodeIndex] && this.nodeList[this.nodeIndex].onSuccess && this.nodeList[this.nodeIndex].onSuccess[this.path.index]) {
         this.nodeList[this.nodeIndex].onSuccess[this.path.index].name = name;
       }
     }
@@ -171,6 +194,9 @@ export class PathPropertiesComponent implements OnInit {
         return this.nodeList[this.nodeIndex].onError[this.path.index].color;
       }
     } else {
+      if(this.path?.path?.color != null || this.path?.path?.color != undefined){
+        return this.path.path.color;
+      }
       if (this.nodeList[this.nodeIndex] && this.nodeList[this.nodeIndex].onSuccess && this.nodeList[this.nodeIndex].onSuccess[this.path.index]) {
         return this.nodeList[this.nodeIndex].onSuccess[this.path.index].color;
       }
@@ -183,9 +209,26 @@ export class PathPropertiesComponent implements OnInit {
         this.nodeList[this.nodeIndex].onError[this.path.index].color = color || "F44336";
       }
     } else {
-      if (this.nodeList[this.nodeIndex] && this.nodeList[this.nodeIndex].onSuccess && this.nodeList[this.nodeIndex].onSuccess[this.path.index]) {
+      if(this.path?.path && this.nodeList[this.nodeIndex]?.onSuccess){
+        this.nodeList[this.nodeIndex].onSuccess.find(node => node._id === this.path.path._id).color = color;
+      }
+    else  if (this.nodeList[this.nodeIndex] && this.nodeList[this.nodeIndex].onSuccess && this.nodeList[this.nodeIndex].onSuccess[this.path.index]) {
         this.nodeList[this.nodeIndex].onSuccess[this.path.index].color = color;
       }
     }
+  }
+
+  findNode(path){
+    let node: any = {};
+    if(!path){
+      return {}
+    }
+    if(path.prevNode){
+      node=  this.nodeList.find(node => node._id === path.prevNode)
+    }
+    else{
+      node=this.nodeList[0]
+    }
+    return node.onSuccess?.find(node => node._id === path._id)
   }
 }

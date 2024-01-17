@@ -235,19 +235,19 @@ export class B2bFlowService {
         outgoing: {}
       }
     };
-    if (type.startsWith('DS_')) {
+    if (type?.startsWith('DS_')) {
       temp.type = 'DATASERVICE';
       const subType = type.split('_')[1] === 'FETCH' ? 'GET' : type.split('_')[1];
-      temp.options[subType.toLowerCase()] = true
+      temp.options[subType?.toLowerCase()] = true
     }
 
-    if (type.startsWith('WF_')) {
+    if (type?.startsWith('WF_')) {
       const subType = type.split('_')[1];
       temp.type = 'DATASERVICE_' + subType;
-      temp.options[subType.toLowerCase()] = true
+      temp.options[subType?.toLowerCase()] = true
     }
 
-    if (type.startsWith('SFTP_')) {
+    if (type?.startsWith('SFTP_')) {
       const changeObj = {
         'GET': 'read',
         'PUT': 'write',
@@ -258,7 +258,7 @@ export class B2bFlowService {
       temp.type = 'CONNECTOR';
       temp.options.connectorType = 'SFTP';
       const subType = changeObj[type.split('_')[1]];
-      temp.options[subType.toLowerCase()] = true
+      temp.options[subType?.toLowerCase()] = true
       if (subType == 'list') {
         temp.dataStructure['outgoing'] = this.getSftpListODS()
       }
@@ -594,16 +594,16 @@ export class B2bFlowService {
     {
       action: 'DB',
       name: 'DB',
-      icon: 'dsi dsi-connector'
+      icon: 'dsi dsi-database'
     },
     {
       action: 'STORAGE',
       name: 'Storage',
-      icon: 'dsi dsi-connector'
+      icon: 'dsi dsi-books'
     },
     {
       name: 'Kafka Producer',
-      icon: 'dsi dsi-connector',
+      icon: 'dsi dsi-apachekafka',
       action: 'KAFKA_PRODUCER'
     },
     {
@@ -998,6 +998,150 @@ export class B2bFlowService {
 
       ]
     }
+  }
+
+  getNodeIcon(){
+    return [
+      {
+        "nodeType": "API",
+        "icon": "dsi dsi-api-receiver",
+        "isInput": true
+      },
+      {
+        "nodeType": "API",
+        "icon": "dsi dsi-invoke-api",
+       
+      },
+      {
+        "nodeType": "FILE",
+        "icon": "dsi dsi-file",
+      },
+      {
+        "nodeType": "FILE_READ",
+        "icon": "dsi dsi-file read",
+       
+      },
+      {
+        "nodeType": "FILE_WRITE",
+        "icon": "dsi dsi-file write",
+       
+      },
+      {
+        "nodeType": "TIMER",
+        "icon": "dsi dsi-clock",
+      },
+      {
+        "nodeType": "CODEBLOCK",
+        "icon": "dsi dsi-console text-secondary",
+       
+      },
+      {
+        "nodeType": "CONNECTOR",
+        'subType': 'DB',
+        "icon": "dsi dsi-database",
+       
+      },
+      {
+        "nodeType": "CONNECTOR",
+        'subType': 'STORAGE',
+        "icon": "dsi dsi-books",
+       
+      },
+      {
+        "nodeType": "KAFKA",
+        "icon": "dsi dsi-apachekafka",
+      },
+      {
+        "nodeType": "DATASERVICE",
+        "icon": "dsi dsi-data-service",
+       
+      },
+      {
+        "nodeType": "FUNCTION",
+        "icon": "dsi dsi-function",
+       
+      },
+      {
+        "nodeType": "FLOW",
+        "icon": "dsi dsi-flow",
+       
+      },
+      {
+        "nodeType": "MAPPING",
+        "icon": "dsi dsi-mapping",
+       
+      },
+      {
+        "nodeType": "DEDUPE",
+        "icon": "dsi dsi-copy",
+       
+      },
+      {
+        "nodeType": "CONFLICT",
+        "icon": "dsi dsi-insight",
+       
+      },
+      {
+        "nodeType": "FOREACH",
+        "icon": "dsi dsi-refresh",
+       
+      },
+      {
+        "nodeType": "REDUCE",
+        "icon": "dsi dsi-undo",
+       
+      },
+      {
+        "nodeType": "UNWIND",
+        "icon": "dsi dsi-expand",
+       
+      },
+      {
+        "nodeType": "PLUGIN",
+        "icon": "dsi dsi-library",
+       
+      },
+      {
+        "nodeType": "RESPONSE",
+        "icon": "dsi dsi-response",
+       
+      },
+      {
+        "nodeType": "FILE_READ",
+        "icon": "dsi dsi-file read",
+       
+      },
+      {
+        "nodeType": "FILE_WRITE",
+        "icon": "dsi dsi-file write",
+       
+      },
+      {
+        "nodeType": "CONVERT_JSON_JSON",
+        "icon": "dsi dsi-refresh text-secondary",
+       
+      },
+      {
+        "nodeType": "CONDITION",
+        "icon": "dsi dsi-branch",
+       
+      },
+      {
+        "nodeType": "PARSER",
+        "icon": "dsi dsi-refresh",
+       
+      },
+      {
+        "nodeType": "RENDERER",
+        "icon": "dsi dsi-refresh",
+       
+      },
+      {
+        "nodeType": "ERROR",
+        "icon": "dsi dsi-danger-circle text-danger",
+       
+      }
+    ]
   }
 
 }

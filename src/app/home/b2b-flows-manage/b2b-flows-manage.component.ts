@@ -10,6 +10,8 @@ import { AppService } from 'src/app/utils/services/app.service';
 import { CommonService } from 'src/app/utils/services/common.service';
 import { environment } from 'src/environments/environment';
 import { B2bFlowService } from './b2b-flow.service';
+import { Position } from 'reactflow';
+import { CustomReactWrapperComponent } from 'src/app/react/reactflow/ReactFlowWrapper';
 
 @Component({
   selector: 'odp-b2b-flows-manage',
@@ -21,6 +23,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
   @ViewChild('pageChangeModalTemplate', { static: false }) pageChangeModalTemplate: TemplateRef<HTMLElement>;
   @ViewChild('keyValModalTemplate', { static: false }) keyValModalTemplate: TemplateRef<HTMLElement>;
+  @ViewChild('wrapper', { static: false }) wrapper: CustomReactWrapperComponent;
   pageChangeModalTemplateRef: NgbModalRef;
   keyValModalTemplateRef: NgbModalRef;
   edit: any;
@@ -43,6 +46,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   showNodeProperties: boolean;
   openDeleteModal: EventEmitter<any>;
   nodeList: Array<any>;
+  ogNodeList: Array<any>;
   changesDone: boolean = false;
   saved: boolean = false
 
@@ -59,6 +63,8 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   nodeOptions: Array<any> = [];
   openIssues: boolean = false;
   zoomAction: EventEmitter<any>;
+  allNodes: Array<any> = [];
+  errorCount: number = 0;
   constructor(private commonService: CommonService,
     private appService: AppService,
     private route: ActivatedRoute,
@@ -246,15 +252,18 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       // this.appService.updateCodeEditorState.emit(this.edit);
       this.nodeList = [];
       if (this.flowData.inputNode) {
+        this.flowData.inputNode['nodeType'] = 'output';
         this.nodeList.push(this.flowData.inputNode);
       }
       if (this.flowData.nodes) {
         this.flowData.nodes.forEach(item => {
+          item['nodeType'] = 'default';
           this.nodeList.push(item);
         });
       }
       this.getCategories()
       if (this.flowData.errorNode) {
+        this.flowData.errorNode['nodeType'] = 'output';
         this.nodeList.push(this.flowData.errorNode);
       }
       this.nodeList.forEach((node, i) => {
@@ -271,8 +280,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
         node.coordinates.y = Math.floor(node.coordinates.y / 20) * 20;
       });
       this.flowService.cleanPayload(this.nodeList);
-      this.flowService.nodeList = this.nodeList;
-      // if (!environment.production) {
+      this.flowService.nodeList = this.nodeList;      // if (!environment.production) {
       //   setTimeout(() => {
       //     this.enableEditing()
       //   }, 1000);
@@ -339,6 +347,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       this.getFlow(this.flowData._id, true);
     } else {
       this.appService.updateCodeEditorState.emit(this.edit);
+      this.wrapper.reRender(this.nodeList)
     }
   }
 
@@ -525,12 +534,18 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
 
       const tempNode = this.flowService.getNodeObject(type, this.nodeList, anotherInputNode);
       tempNode.coordinates = {};
-      const ele: HTMLElement = document.querySelectorAll('.flow-designer-svg')[0] as HTMLElement;
-      const rect = ele.getBoundingClientRect();
-      tempNode.coordinates.x = Number(this.contextMenuStyle?.left.replace('px', '')) - rect.left - 70;
-      tempNode.coordinates.y = Number(this.contextMenuStyle?.top.replace('px', '')) - rect.top - 18;
+      // const ele: HTMLElement = document.querySelectorAll('.flow-designer-svg')[0] as HTMLElement;
+      const rect = this.contextMenuStyle.nodeXY;
+     console.log(this.contextMenuStyle.nodeXY);
+      // tempNode.coordinates.x = Number(this.contextMenuStyle?.left.replace('px', '')) - coordinates.x - 70;
+      // tempNode.coordinates.y = Number(this.contextMenuStyle?.top.replace('px', '')) - coordinates.y - 18;
+      tempNode.coordinates =  {
+        x:  rect.x-80,
+        y:  rect.y-60
+      };
       this.contextMenuStyle = null;
       this.nodeList.push(tempNode);
+      this.wrapper.reRender(this.nodeList)
     }
   }
 
@@ -540,7 +555,14 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     this.addNode(event, type);
   }
 
-  onRightClick(event: PointerEvent) {
+  addNodeReact(event){
+    const tempNode = this.flowService.getNodeObject(event.item.action, this.nodeList);
+    tempNode.coordinates = {};
+    tempNode.coordinates = event.position;
+    this.nodeList.push(tempNode)
+  }
+
+  onRightClick(event) {
     event.preventDefault();
     const clientHeight = (event.target as HTMLElement).clientHeight;
     if (clientHeight > 330 && (event.clientY + 330) > clientHeight) {
@@ -548,6 +570,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     } else {
       this.contextMenuStyle = { top: event.clientY + 'px', left: event.clientX + 'px' };
     }
+    this.contextMenuStyle['nodeXY'] = event.nodeXY;
   }
 
   scroll() {
@@ -712,7 +735,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   getErrors() {
     const validations = this.flowService.getErrorValidations();
 
-    const finalList = this.nodeList.reduce((acc, node) => {
+    const finalList = (this.nodeList ||[]).reduce((acc, node) => {
       const nodeValidations = (validations.find(e => {
         return e.node === node.type
       }) || {}).validations || [];
@@ -751,7 +774,7 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
       warning: "Output Data Structure should't be generic",
     }]
 
-    const finalList = this.nodeList.reduce((acc, node) => {
+    const finalList = (this.nodeList ||[]).reduce((acc, node) => {
       let warnValidations = _.cloneDeep(validations)
       if (this.flowService.showOutputSelector(node, this.isInputNode(node))) {
         warnValidations = warnValidations.filter(ele => ele.fieldPath === 'dataStructure.outgoing')
@@ -831,6 +854,10 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
   }
 
   get totalErrors() {
+    if(this.errorCount != this.getErrors().length){
+      this.errorCount = this.getErrors().length;
+      this.wrapper.reRender(this.nodeList)
+    }
     return this.getErrors().length;
   }
 
@@ -838,5 +865,13 @@ export class B2bFlowsManageComponent implements OnInit, OnDestroy {
     return this.getWarnings().length;
   }
 
+  changeNodeList(event){
+    this.nodeList = event;
+  }
+
+  openProperty(event){
+    this.selectedNode['currNode'] = this.nodeList.find(node => node._id == event);
+    this.showNodeProperties = true;
+  }
 
 }

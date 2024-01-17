@@ -84,7 +84,7 @@ import { EnvVariableConfigComponent } from './env-variable-config/env-variable-c
     AgGridSharedFloatingFilterModule,
     DateFormatModule,
     ClickOutsideModule,
-    CodeEditorModule
+    CodeEditorModule,
   ],
   exports: [AppListComponent],
   declarations: [
@@ -102,7 +102,7 @@ import { EnvVariableConfigComponent } from './env-variable-config/env-variable-c
     MapperFormulasComponent,
     CustomNodeComponent,
     NpmLibrariesComponent,
-    EnvVariableConfigComponent
+    EnvVariableConfigComponent,
   ],
 })
 export class AdminModule { }

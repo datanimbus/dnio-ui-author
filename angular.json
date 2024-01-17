@@ -45,7 +45,12 @@
               "src/assets/scss/bootstrap/bootstrap.scss",
               "src/assets/scss/login.scss",
               "src/assets/scss/home.scss",
-              "src/styles.scss"
+              "src/styles.scss",
+              {
+                "input": "node_modules/reactflow/dist/style.css",
+                "inject": false,
+                "bundleName": "react-flow-styles"
+              }
             ],
             "scripts": []
           },
