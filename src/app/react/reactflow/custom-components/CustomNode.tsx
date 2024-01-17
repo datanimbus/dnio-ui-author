@@ -17,7 +17,7 @@ export default memo((props: handleProps) => {
         type="target"
         position={Position.Left}
         isConnectable={isConnectable}
-        style={data.type == 'output' ? {display: 'none', background: '#fff'} : { background: '#fff', border: '0.5px solid rgb(102,102,102, 0.7)'}}
+        style={data.isInputNode ? {display: 'none', background: '#fff'} : { background: '#fff', border: '0.5px solid rgb(102,102,102, 0.7)'}}
       />
        <Handle
         type="source"

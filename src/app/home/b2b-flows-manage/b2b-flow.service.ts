@@ -1010,149 +1010,136 @@ export class B2bFlowService {
       {
         "nodeType": "API",
         "icon": "dsi dsi-invoke-api",
-        "isInput": false
-      },
-      {
-        "nodeType": "API_XML",
-        "icon": "dsi dsi-invoke-api",
-        "isInput": false
-      },
-      {
-        "nodeType": "API_MULTIPART",
-        "icon": "dsi dsi-invoke-api",
-        "isInput": false
+       
       },
       {
         "nodeType": "FILE",
         "icon": "dsi dsi-file",
-        "isInput": false
       },
       {
         "nodeType": "FILE_READ",
         "icon": "dsi dsi-file read",
-        "isInput": false
+       
       },
       {
         "nodeType": "FILE_WRITE",
         "icon": "dsi dsi-file write",
-        "isInput": false
+       
       },
       {
         "nodeType": "TIMER",
         "icon": "dsi dsi-clock",
-        "isInput": false
       },
       {
         "nodeType": "CODEBLOCK",
         "icon": "dsi dsi-console text-secondary",
-        "isInput": false
+       
       },
       {
         "nodeType": "CONNECTOR",
         'subType': 'DB',
         "icon": "dsi dsi-database",
-        "isInput": false
+       
       },
       {
         "nodeType": "CONNECTOR",
         'subType': 'STORAGE',
         "icon": "dsi dsi-books",
-        "isInput": false
+       
       },
       {
-        "nodeType": "KAFKA_PRODUCER",
+        "nodeType": "KAFKA",
         "icon": "dsi dsi-apachekafka",
-        "isInput": false
       },
       {
         "nodeType": "DATASERVICE",
         "icon": "dsi dsi-data-service",
-        "isInput": false
+       
       },
       {
         "nodeType": "FUNCTION",
         "icon": "dsi dsi-function",
-        "isInput": false
+       
       },
       {
         "nodeType": "FLOW",
         "icon": "dsi dsi-flow",
-        "isInput": false
+       
       },
       {
         "nodeType": "MAPPING",
         "icon": "dsi dsi-mapping",
-        "isInput": false
+       
       },
       {
         "nodeType": "DEDUPE",
         "icon": "dsi dsi-copy",
-        "isInput": false
+       
       },
       {
         "nodeType": "CONFLICT",
         "icon": "dsi dsi-insight",
-        "isInput": false
+       
       },
       {
         "nodeType": "FOREACH",
         "icon": "dsi dsi-refresh",
-        "isInput": false
+       
       },
       {
         "nodeType": "REDUCE",
         "icon": "dsi dsi-undo",
-        "isInput": false
+       
       },
       {
         "nodeType": "UNWIND",
         "icon": "dsi dsi-expand",
-        "isInput": false
+       
       },
       {
         "nodeType": "PLUGIN",
         "icon": "dsi dsi-library",
-        "isInput": false
+       
       },
       {
         "nodeType": "RESPONSE",
         "icon": "dsi dsi-response",
-        "isInput": false
+       
       },
       {
         "nodeType": "FILE_READ",
         "icon": "dsi dsi-file read",
-        "isInput": false
+       
       },
       {
         "nodeType": "FILE_WRITE",
         "icon": "dsi dsi-file write",
-        "isInput": false
+       
       },
       {
         "nodeType": "CONVERT_JSON_JSON",
         "icon": "dsi dsi-refresh text-secondary",
-        "isInput": false
+       
       },
       {
         "nodeType": "CONDITION",
         "icon": "dsi dsi-branch",
-        "isInput": false
+       
       },
       {
         "nodeType": "PARSER",
         "icon": "dsi dsi-refresh",
-        "isInput": false
+       
       },
       {
         "nodeType": "RENDERER",
         "icon": "dsi dsi-refresh",
-        "isInput": false
+       
       },
       {
         "nodeType": "ERROR",
         "icon": "dsi dsi-danger-circle text-danger",
-        "isInput": false
+       
       }
     ]
   }

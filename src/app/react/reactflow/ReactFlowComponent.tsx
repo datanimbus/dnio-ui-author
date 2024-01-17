@@ -283,7 +283,7 @@ export function ReactFlowBase(props: FlowProps) {
           }
         }  
         else{
-          return e.nodeType == node.type && isInputNode(node) === e.isInput
+          return node.type.startsWith(e.nodeType) && (e.isInput ? isInputNode(node)===e.isInput : true)
         }      
       }) || {};
       if(node.type && !node.nodeType){
@@ -298,7 +298,7 @@ export function ReactFlowBase(props: FlowProps) {
         id: node._id,
         type: node.type === 'ERROR' ? 'customErrorNode' : 'customNode',
         position: { x: node.coordinates.x, y: node.coordinates.y },
-        data: { label: node.name, type: node.nodeType, icon: iconObj.icon, nodeType: node.type, hasErrors },
+        data: { label: node.name, type: node.nodeType, icon: iconObj.icon, nodeType: node.type, hasErrors, isInputNode: isInputNode(node) },
         targetPosition: Position.Left,
         sourcePosition: Position.Right,
         // className: intersections.includes(node._id) ? 'highlight' : ''
