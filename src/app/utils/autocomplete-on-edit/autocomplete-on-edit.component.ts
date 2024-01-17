@@ -123,7 +123,6 @@ export class AutocompleteOnEditComponent implements OnInit, ControlValueAccessor
       this.value = this.tmpValue;
     }
     // this.tempValue.emit(this.value);
-    this.onChange(this.value);
   }
 
   save() {
