@@ -72,6 +72,9 @@ export class NodePropertiesComponent implements OnInit {
     if (this.currNode && !this.currNode.options) {
       this.currNode.options = {};
     }
+    if (this.currNode && this.currNode.options.rejectUnauthorized == undefined) {
+      this.currNode.options.rejectUnauthorized = true;
+    }
     if (this.currNode && !this.currNode.options.retry) {
       this.currNode.options.retry = {};
     }
