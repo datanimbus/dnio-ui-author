@@ -21,7 +21,7 @@ export default memo((props: handleProps) => {
       />
       <div className='d-flex'>
       <span className={data.icon + ' nodeIcon'}></span>
-      <span>{data.label}</span>
+      <span>{'Global Error'}</span>
       </div>
       {data.nodeType !== 'ERROR' && <Handle
         type="target"
