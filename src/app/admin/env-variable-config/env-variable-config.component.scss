@@ -20,6 +20,21 @@
     word-break: break-all;
 }
 
+/* Tabs */
+.nav-tabs {
+    color: #181818;
+}
+
+.nav-link {
+    outline: none !important;
+    cursor: pointer;
+  
+    &.active {
+      color: #181818;
+      font-weight: 700;
+    }
+}
+
 /* Info Icon Styles */
 .info-icon-container, .info-icon {
     display: inline-block;
