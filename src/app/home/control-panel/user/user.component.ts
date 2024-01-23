@@ -787,6 +787,9 @@ export class UserComponent implements OnInit, OnDestroy {
             this.userInAzureAD = false;
             return;
           }
+          if (userData.username) {
+            username = userData.username;
+          }
           this.userInAzureAD = true;
           this.userForm.get('userData.username').patchValue(username);
           this.userForm.get('userData._id').patchValue(username);
