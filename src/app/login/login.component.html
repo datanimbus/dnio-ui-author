@@ -40,7 +40,7 @@
                 <button type="button" class="btn btn-lg btn-primary input-text form-button" (click)="this.authType === 'azure' ? doAzureLogin() : doLogin()"
                   style="margin-top: 20px" [disabled]="! (form.get('username').value && form.get('password').value)">
                   <span *ngIf="loader" class="fa fa-spinner fa-pulse mr-2"></span>
-                  <span class="btn-text">Login{{this.authType === 'azure' ? 'Azure Ad ' : ''}}</span>
+                  <span class="btn-text">Login{{this.authType === 'azure' ? ' with Azure' : ''}}</span>
                 </button>
               </div>
               <!-- <div
