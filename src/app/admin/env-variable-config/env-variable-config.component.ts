@@ -9,6 +9,7 @@ interface EnvironmentVariable {
   _id: string;
   usedIn: string;
   description: string;
+  classification: string;
 }
 
 @Component({
@@ -18,6 +19,8 @@ interface EnvironmentVariable {
 })
 export class EnvVariableConfigComponent implements OnInit, OnDestroy {
   envVariableList: EnvironmentVariable[] = [];
+  filteredEnvVariableList: EnvironmentVariable[] = [];
+  selectedTab: string = 'Runtime';
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -37,30 +40,54 @@ export class EnvVariableConfigComponent implements OnInit, OnDestroy {
     const selectFields = 'value,type,_id,usedIn,description,classification';
     const requestParams = { noApp: true, count: 100, select: selectFields };
 
-    const subscription = this.commonService.get('user', '/admin/environmentVariable', requestParams)
-      .subscribe(
-        (res: EnvironmentVariable[]) => {
-          this.envVariableList = res.sort((a, b) => a._id.toLowerCase().localeCompare(b._id.toLowerCase()));
-        },
-        (error) => {
-          this.handleError(error);
-        }
-      );
-
-    this.subscriptions.push(subscription);
+    this.subscriptions.push(
+      this.commonService.get('user', '/admin/environmentVariable', requestParams)
+        .subscribe(
+          (res: EnvironmentVariable[]) => {
+            this.envVariableList = res.sort((a, b) => a._id.toLowerCase().localeCompare(b._id.toLowerCase()));
+            this.filterVariables('Runtime');
+          },
+          (error) => this.handleError(error)
+        )
+    );
   }
 
   saveConfig(): void {
-    this.commonService.put('user', '/admin/environmentVariable', this.envVariableList)
+    this.commonService.put('user', '/admin/environmentVariable', this.filteredEnvVariableList)
       .subscribe(
         () => {
           this.fetchAllEnvVariables();
           this.toastrService.success('Environment Variable Configuration Updated');
         },
-        (error) => {
-          this.handleError(error);
-        }
+        (error) => this.handleError(error)
       );
+  }
+
+  filterVariables(classification: string): void {
+    this.selectedTab = classification;
+
+    // Determine user auth modes
+    const rbacUserAuthModesVariable = this.envVariableList.find(variable => variable._id === 'RBAC_USER_AUTH_MODES');
+    const rbacUserAuthModesValue = rbacUserAuthModesVariable ? rbacUserAuthModesVariable.value : 'local';
+
+    // Check if 'ldap' or 'azure' are enabled
+    const isLDAPEnabled = rbacUserAuthModesValue.includes('ldap');
+    const isAzureEnabled = rbacUserAuthModesValue.includes('azure');
+  
+    // Filter variables based on user auth modes
+    this.filteredEnvVariableList = this.envVariableList
+      .filter(variable => {
+        if ((!isLDAPEnabled && variable._id.startsWith('LDAP')) || (!isAzureEnabled && variable._id.startsWith('AZURE'))) {
+          return false;
+        }
+        return true;
+      })
+      .filter(variable => variable.classification === classification);
+  }
+  
+
+  inputType(type: string): string {
+    return type === 'number' ? 'number' : 'text';
   }
 
   private handleError(error: any): void {

@@ -55,6 +55,7 @@ export class LoginComponent
       password: ['', Validators.required],
     });
     self.commonService.apiCalls.componentLoading = true;
+    this.authType = 'local'
   }
 
   ngOnInit() {
@@ -139,7 +140,7 @@ export class LoginComponent
                 self.rbacUserReloginAction = res.rbacUserReloginAction;
                 self.activeSessionWarning();
               } else {
-                this.authType == 'azure' ? this.doAzureLogin() : this.doLogin();
+                // this.authType == 'azure' ? this.doAzureLogin() : this.doLogin();
               }
             }
           },
