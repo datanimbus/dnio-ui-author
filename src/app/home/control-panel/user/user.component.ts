@@ -772,12 +772,15 @@ export class UserComponent implements OnInit, OnDestroy {
           this.userInLocal = false;
           let userData;
           let statusCode;
+          let username;
           if (Array.isArray(res)) {
             userData = res[0].body;
             statusCode = res[0].statusCode;
+            username = res[0].username;
           } else {
             userData = res.body;
             statusCode = res.statusCode;
+            username = res.username;
           }
           if (statusCode != 200) {
             this.commonService.errorToast(null, 'User not found in Azure AD');
@@ -785,21 +788,17 @@ export class UserComponent implements OnInit, OnDestroy {
             return;
           }
           this.userInAzureAD = true;
+          this.userForm.get('userData.username').patchValue(username);
+          this.userForm.get('userData._id').patchValue(username);
           this.userForm.get('userData.auth.authType').patchValue('azure');
           this.userForm.get('userData.auth.authType').disable();
-          this.userForm
-            .get('userData.basicDetails.name')
-            .patchValue(userData.name);
+          this.userForm.get('userData.basicDetails.name').patchValue(userData.name);
           this.userForm.get('userData.basicDetails.name').disable();
           if (userData.phone) {
-            this.userForm
-              .get('userData.basicDetails.phone')
-              .patchValue(userData.phone);
+            this.userForm.get('userData.basicDetails.phone').patchValue(userData.phone);
           }
           if (userData.email) {
-            this.userForm
-              .get('userData.basicDetails.alternateEmail')
-              .patchValue(userData.email);
+            this.userForm.get('userData.basicDetails.alternateEmail').patchValue(userData.email);
           }
         },
         (err) => {
@@ -1335,7 +1334,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((res) => {
       if (res && this.hasPermission('PMUG')) {
-          this.fetchUserGroups()
+        this.fetchUserGroups()
       }
     });
   }
